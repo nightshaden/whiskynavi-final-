@@ -1,0 +1,19 @@
+{
+    "editor.formatOnSave": true,
+  
+    "[javascript]": { "editor.defaultFormatter": "biomejs.biome" },
+    "[typescript]": { "editor.defaultFormatter": "biomejs.biome" },
+    "[javascriptreact]": { "editor.defaultFormatter": "biomejs.biome" },
+    "[typescriptreact]": { "editor.defaultFormatter": "biomejs.biome" },
+    "[json]": { "editor.defaultFormatter": "biomejs.biome" },
+  
+    // 저장 시 Biome의 자동 수정(정렬/임포트 등) 실행
+    "editor.codeActionsOnSave": {
+      "source.fixAll.biome": "explicit"
+    },
+  
+    // Prettier와 ESLint의 포맷 기능 비활성화 (충돌 방지)
+    "prettier.enable": false,
+    "eslint.format.enable": false
+  }
+  
