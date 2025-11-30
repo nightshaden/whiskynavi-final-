@@ -2,11 +2,12 @@ import Image from "next/image";
 import Link, { type LinkProps } from "next/link";
 import type { FC } from "react";
 import { Button } from "@/components/ui/button";
+import { IconGlobal } from "@/icons";
 
 const Header = () => {
   return (
     <header className="hidden lg:block fixed top-0 w-full  py-8 px-10 z-1">
-      <div className="flex justify-between items-center max-w-screen-lg mx-auto w-full px-20">
+      <div className="flex justify-between items-center max-w-screen-xl mx-auto w-full px-20">
         <Link href="/">
           <Image src="/logo.png" alt="logo" width={186} height={40} />
         </Link>
@@ -28,6 +29,7 @@ const Header = () => {
               <NavLink href="/community">커뮤니티</NavLink>
             </li>
           </ul>
+          <div className="flex items-center gap-7">
           <Button
             variant="outline"
             size="lg"
@@ -35,6 +37,8 @@ const Header = () => {
           >
             <p className="text-white typo-bold-20">Login</p>
           </Button>
+          <IconGlobal size={24}/>
+          </div>
         </nav>
       </div>
     </header>

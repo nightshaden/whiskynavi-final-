@@ -3,9 +3,15 @@ import * as React from 'react';
 
 export type IconProps = React.SVGProps<SVGSVGElement> & { size?: number | string; title?: string };
 
+import GlobalSvg from './global.svg';
 import InstagramSvg from './instagram.svg';
 import YoutubeSvg from './youtube.svg';
 
+
+
+export const IconGlobal: React.FC<IconProps> = ({ size = 20, title, ...rest }) => {
+  return <GlobalSvg width={size} height={size} aria-hidden={title ? undefined : true} title={title} {...rest} />;
+};
 
 
 export const IconInstagram: React.FC<IconProps> = ({ size = 20, title, ...rest }) => {

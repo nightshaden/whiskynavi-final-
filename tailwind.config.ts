@@ -8,8 +8,8 @@ const config: Config = {
       // 태블릿
       md: "640px",
       // 데스크탑
-      lg: "1280px",
-      xl: "1440px",
+      lg: "1440px",
+      xl: "1600px",
       "2xl": "1920px",
     },
     extend: {

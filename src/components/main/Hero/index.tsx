@@ -103,7 +103,7 @@ const HeroItem = ({ item }: { item: HeroItem }) => {
       className="relative w-full h-screen pt-30 bg-cover bg-center before:absolute before:inset-0 before:bg-black/70 before:z-0"
       style={{ backgroundImage: `url(${item.bgImage})` }}
     >
-      <div className="relative h-full z-10 max-w-screen-lg pb-100 mx-auto">
+      <div className="relative h-full z-10 max-w-screen-xl pb-50 mx-auto">
         <div className="h-full flex justify-between px-30 mb-21">
           <div className="w-full max-w-[600px] flex flex-col justify-center">
             <h2 className="typo-bold-36 text-white whitespace-pre-line">
@@ -117,7 +117,7 @@ const HeroItem = ({ item }: { item: HeroItem }) => {
             </Button>
           </div>
           <div className="flex items-center">
-            <Image src={item.image} alt="hero-image" width={300} height={355} />
+            <Image src={item.image} alt="hero-image" width={440} height={520} />
           </div>
         </div>
       </div>

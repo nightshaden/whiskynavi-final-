@@ -126,8 +126,13 @@
 
 /* Typography 컴포넌트 클래스들 - tailwind.config.ts의 플러그인에서 이동 */
 @layer components {
+  .typo-bold-40 {
+    font-size: 40px;
+    font-weight: 700;
+    line-height: normal;
+  }
   .typo-bold-36 {
-    font-size: 32px;
+    font-size: 36px;
     font-weight: 700;
     line-height: 1.55;
   }
@@ -153,7 +158,12 @@
   }
   .typo-bold-20 {
     font-size: 20px;
-    font-weight: 700;
+      font-weight: 700;
+      line-height: normal;
+  }
+  .typo-medium-20 {
+    font-size: 20px;
+    font-weight: 500;
     line-height: normal;
   }
   .typo-bold-18 {

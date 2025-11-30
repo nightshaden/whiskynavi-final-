@@ -1,6 +1,6 @@
 const YouTube = () => {
   return (
-    <section className="mt-25 mb-30 w-full max-w-screen-lg mx-auto">
+    <section className="mt-25 mb-30 w-full max-w-screen-xl mx-auto">
       <h2 className="typo-bold-30 text-center text-white">YOUTUBE</h2>
       <div className="mt-10 px-4">
         <div className="w-full overflow-hidden rounded-2xl">
