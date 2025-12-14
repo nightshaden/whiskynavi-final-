@@ -1,7 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { BottleParams } from "@/apis/apis";
 import {
   Accordion,
@@ -20,49 +20,100 @@ interface ArchiveSidebarProps {
   params: BottleParams;
 }
 
-interface FilterState {
-  brands: string[];
-  maltTypes: string[];
-  distilleries: string[];
-  distillerySearch: string;
-  caskTypes: string[];
+interface FilterState extends BottleParams {
   abv: [number, number];
   vintage: [number, number];
-  age: [number, number];
 }
 
-const BRAND_OPTIONS = [
-  { value: "whiskynavi", label: "위스키나비" },
-  { value: "tails", label: "더 위스키테일즈" },
-  { value: "trail", label: "트레일 앤 테일" },
-  { value: "together", label: "투게더 인 스피릿" },
-];
-
-const MALT_OPTIONS = [
-  { value: "single-malt", label: "싱글 몰트" },
-  { value: "single-grain", label: "싱글 그레인" },
-  { value: "blended-malt", label: "블렌디드 몰트" },
-  { value: "etc", label: "etc" },
-];
-
-const DISTILLERY_OPTIONS = [
-  { value: "macallan", label: "맥켈란" },
-  { value: "balvenie", label: "발베니" },
-];
-
 export function ArchiveSidebar({ params }: ArchiveSidebarProps) {
-  console.log("bottleParams", params);
+  const allValues = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          (Object.keys(params) as (keyof BottleParams)[]).flatMap(
+            (key) => params[key as keyof BottleParams],
+          ),
+        ),
+      ),
+    [params],
+  );
+
+  // 값이 어느 카테고리에 속하는지 찾는 함수 (brands 우선)
+  const findCategory = (value: string): keyof BottleParams | null => {
+    // brands를 우선적으로 체크 (중복 값이 있을 경우 brands에 추가)
+    if (params.brands.includes(value)) {
+      return "brands";
+    }
+    for (const key of Object.keys(params) as (keyof BottleParams)[]) {
+      if (params[key].includes(value)) {
+        return key;
+      }
+    }
+    return null;
+  };
+
   const [filters, setFilters] = useState<FilterState>({
-    brands: ["whiskynavi"],
-    maltTypes: ["single-malt"],
+    brands: [],
     distilleries: [],
-    distillerySearch: "",
+    names: [],
+    series: [],
+    companies: [],
+    maltTypes: ["single malt"],
     caskTypes: [],
     abv: [0, 100],
     vintage: [1900, 2025],
-    age: [3, 50],
   });
-  console.log("test", filters.distilleries);
+  console.log("filters", filters);
+  // 전체 검색에서 현재 선택된 모든 값들
+  const allSelectedValues = useMemo(
+    () => [
+      ...filters.brands,
+      ...filters.distilleries,
+      ...filters.names,
+      ...filters.series,
+      ...filters.companies,
+      ...filters.maltTypes,
+      ...filters.caskTypes,
+    ],
+    [filters],
+  );
+
+  // 전체 검색 onChange 핸들러
+  const handleGlobalSearchChange = (newValues: string[]) => {
+    // 새로 추가된 값 찾기
+    const addedValues = newValues.filter((v) => !allSelectedValues.includes(v));
+    // 제거된 값 찾기
+    const removedValues = allSelectedValues.filter(
+      (v) => !newValues.includes(v),
+    );
+
+    setFilters((prev) => {
+      const updated = { ...prev };
+
+      // 추가된 값을 해당 카테고리에 추가
+      for (const value of addedValues) {
+        const category = findCategory(value);
+        if (category && Array.isArray(updated[category])) {
+          updated[category] = [...(updated[category] as string[]), value];
+        }
+      }
+
+      // 제거된 값을 해당 카테고리에서 제거
+      for (const value of removedValues) {
+        for (const key of Object.keys(updated) as (keyof FilterState)[]) {
+          const arr = updated[key];
+          if (Array.isArray(arr) && typeof arr[0] === "string") {
+            (updated[key] as string[]) = (arr as string[]).filter(
+              (v) => v !== value,
+            );
+          }
+        }
+      }
+
+      return updated;
+    });
+  };
+
   const toggleBrand = (brandId: string) => {
     setFilters((prev) => ({
       ...prev,
@@ -102,10 +153,10 @@ export function ArchiveSidebar({ params }: ArchiveSidebarProps) {
 
       <SearchableDropdown
         placeholder="보틀 이름, 시리즈명으로 검색하기"
-        value={filters.brands}
-        onChange={(val) => setFilters((prev) => ({ ...prev, brands: val }))}
+        value={allSelectedValues}
+        onChange={handleGlobalSearchChange}
         containerClassName="mb-3"
-        items={BRAND_OPTIONS}
+        items={allValues}
       />
       <div className="flex flex-wrap gap-1">
         {/* 활성 필터 태그 */}
@@ -182,22 +233,19 @@ export function ArchiveSidebar({ params }: ArchiveSidebarProps) {
           </AccordionTrigger>
           <AccordionContent>
             <div className="space-y-2.5 pb-4">
-              {BRAND_OPTIONS.map((brand) => (
-                <div
-                  key={brand.value}
-                  className="flex items-center gap-2 group"
-                >
+              {params.brands.map((brand) => (
+                <div key={brand} className="flex items-center gap-2 group">
                   <Checkbox
-                    id={`brand-${brand.value}`}
-                    checked={filters.brands.includes(brand.value)}
-                    onCheckedChange={() => toggleBrand(brand.value)}
+                    id={`brand-${brand}`}
+                    checked={filters.brands.includes(brand)}
+                    onCheckedChange={() => toggleBrand(brand)}
                     className="border-white/30 bg-white/10 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
                   />
                   <Label
-                    htmlFor={`brand-${brand.value}`}
+                    htmlFor={`brand-${brand}`}
                     className="text-white/90 typo-regular-14 group-hover:text-white cursor-pointer"
                   >
-                    {brand.label}
+                    {brand}
                   </Label>
                 </div>
               ))}
@@ -212,19 +260,19 @@ export function ArchiveSidebar({ params }: ArchiveSidebarProps) {
           </AccordionTrigger>
           <AccordionContent>
             <div className="space-y-2.5 pb-4">
-              {MALT_OPTIONS.map((malt) => (
-                <div key={malt.value} className="flex items-center gap-2 group">
+              {params.maltTypes.map((malt) => (
+                <div key={malt} className="flex items-center gap-2 group">
                   <Checkbox
-                    id={`malt-${malt.value}`}
-                    checked={filters.maltTypes.includes(malt.value)}
-                    onCheckedChange={() => toggleMaltType(malt.value)}
+                    id={`malt-${malt}`}
+                    checked={filters.maltTypes.includes(malt)}
+                    onCheckedChange={() => toggleMaltType(malt)}
                     className="border-white/30 bg-white/10 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
                   />
                   <Label
-                    htmlFor={`malt-${malt.value}`}
+                    htmlFor={`malt-${malt}`}
                     className="text-white/90 typo-regular-14 group-hover:text-white cursor-pointer"
                   >
-                    {malt.label}
+                    {malt}
                   </Label>
                 </div>
               ))}
@@ -246,7 +294,7 @@ export function ArchiveSidebar({ params }: ArchiveSidebarProps) {
                   setFilters((prev) => ({ ...prev, distilleries: val }))
                 }
                 containerClassName="mb-3"
-                items={DISTILLERY_OPTIONS}
+                items={params.distilleries}
               />
             </div>
           </AccordionContent>
@@ -266,7 +314,7 @@ export function ArchiveSidebar({ params }: ArchiveSidebarProps) {
                   setFilters((prev) => ({ ...prev, caskTypes: val }))
                 }
                 containerClassName="mb-3"
-                items={MALT_OPTIONS}
+                items={params.caskTypes}
               />
             </div>
           </AccordionContent>
@@ -366,56 +414,6 @@ export function ArchiveSidebar({ params }: ArchiveSidebarProps) {
                 }
                 min={1900}
                 max={2025}
-                step={1}
-              />
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-
-        {/* 숙성 년수 슬라이더 */}
-        <AccordionItem value="age" className="border-white/20">
-          <AccordionTrigger className="text-white typo-medium-16 hover:no-underline py-4">
-            숙성 년수
-          </AccordionTrigger>
-          <AccordionContent>
-            <div className="pb-4">
-              <div className="flex items-center gap-2 mb-3">
-                <Input
-                  type="number"
-                  value={filters.age[0]}
-                  onChange={(e) =>
-                    setFilters((prev) => ({
-                      ...prev,
-                      age: [Number(e.target.value), prev.age[1]],
-                    }))
-                  }
-                  className="w-20 bg-white/10 border-white/20 text-white text-center typo-regular-14"
-                />
-                <span className="text-white/60 typo-regular-14">년</span>
-                <span className="text-white/60">–</span>
-                <Input
-                  type="number"
-                  value={filters.age[1]}
-                  onChange={(e) =>
-                    setFilters((prev) => ({
-                      ...prev,
-                      age: [prev.age[0], Number(e.target.value)],
-                    }))
-                  }
-                  className="w-20 bg-white/10 border-white/20 text-white text-center typo-regular-14"
-                />
-                <span className="text-white/60 typo-regular-14">년</span>
-              </div>
-              <Slider
-                value={filters.age}
-                onValueChange={(value) =>
-                  setFilters((prev) => ({
-                    ...prev,
-                    age: value as [number, number],
-                  }))
-                }
-                min={3}
-                max={50}
                 step={1}
               />
             </div>

@@ -1,7 +1,13 @@
 "use client";
 
 import { Check } from "lucide-react";
-import * as React from "react";
+import {
+  forwardRef,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   Command,
   CommandEmpty,
@@ -17,13 +23,13 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
-export interface SearchableDropdownItem {
-  value: string;
-  label: string;
-}
+// export interface SearchableDropdownItem {
+//   value: string;
+//   label: string;
+// }
 
 export interface SearchableDropdownProps {
-  items: SearchableDropdownItem[];
+  items: string[];
   value?: string[];
   onChange?: (value: string[]) => void;
   placeholder?: string;
@@ -35,7 +41,7 @@ export interface SearchableDropdownProps {
   disabled?: boolean;
 }
 
-const SearchableDropdown = React.forwardRef<
+const SearchableDropdown = forwardRef<
   HTMLInputElement,
   SearchableDropdownProps
 >(
@@ -54,11 +60,11 @@ const SearchableDropdown = React.forwardRef<
     },
     ref,
   ) => {
-    const [open, setOpen] = React.useState(false);
-    const [internalValue, setInternalValue] = React.useState<string[]>([]);
-    const [searchValue, setSearchValue] = React.useState("");
-    const [isFocused, setIsFocused] = React.useState(false);
-    const inputRef = React.useRef<HTMLInputElement>(null);
+    const [open, setOpen] = useState(false);
+    const [internalValue, setInternalValue] = useState<string[]>([]);
+    const [searchValue, setSearchValue] = useState("");
+    const [isFocused, setIsFocused] = useState(false);
+    const inputRef = useRef<HTMLInputElement>(null);
 
     // Controlled vs Uncontrolled
     const isControlled = controlledValue !== undefined;
@@ -67,15 +73,14 @@ const SearchableDropdown = React.forwardRef<
     // focus 상태이거나 명시적으로 open이면 dropdown 표시
     const shouldShowDropdown = (isFocused || open) && !disabled;
 
-    const filteredItems = React.useMemo(() => {
+    const filteredItems = useMemo(() => {
       return items.filter((item) =>
-        item.label.toLowerCase().includes(searchValue.toLowerCase()),
+        item.toLowerCase().includes(searchValue.toLowerCase()),
       );
     }, [items, searchValue]);
 
     // ref 통합 (외부 ref와 내부 ref)
-    React.useImperativeHandle(ref, () => inputRef.current as HTMLInputElement);
-
+    useImperativeHandle(ref, () => inputRef.current as HTMLInputElement);
     return (
       <div className={cn("relative", containerClassName)}>
         <Popover open={shouldShowDropdown} onOpenChange={setOpen}>
@@ -131,8 +136,8 @@ const SearchableDropdown = React.forwardRef<
                 <CommandGroup>
                   {filteredItems.map((item) => (
                     <CommandItem
-                      key={item.value}
-                      value={item.value}
+                      key={item}
+                      value={item}
                       onSelect={(currentValue) => {
                         const newValue = selectedValues.includes(currentValue)
                           ? selectedValues.filter((v) => v !== currentValue)
@@ -144,11 +149,11 @@ const SearchableDropdown = React.forwardRef<
                         onChange?.(newValue);
                       }}
                     >
-                      {item.label}
+                      {item}
                       <Check
                         className={cn(
                           "ml-auto",
-                          selectedValues.includes(item.value)
+                          selectedValues.includes(item)
                             ? "opacity-100"
                             : "opacity-0",
                         )}
