@@ -2,8 +2,19 @@ import { http } from "./index";
 
 export type User = { id: number; name: string };
 
+export type BottleParams = {
+  names: string[];
+  companies: string[];
+  brands: string[];
+  series: string[];
+  maltTypes: string[];
+  distilleries: string[];
+  caskTypes: string[];
+};
+
 export const api = {
   getMe: () => http<User>("/me"),
+  getBottleParams: () => http<BottleParams>("/api/bottles/parameters"),
   // // ✅ GET: 본문 금지, params OK
   // getUsers: (params?: { role?: string }) => http<User[]>("/users", { params }),
 

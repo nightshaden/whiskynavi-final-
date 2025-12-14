@@ -5,6 +5,7 @@ export type IconProps = React.SVGProps<SVGSVGElement> & { size?: number | string
 
 import GlobalSvg from './global.svg';
 import InstagramSvg from './instagram.svg';
+import SearchSvg from './search.svg';
 import YoutubeSvg from './youtube.svg';
 
 
@@ -16,6 +17,11 @@ export const IconGlobal: React.FC<IconProps> = ({ size = 20, title, ...rest }) =
 
 export const IconInstagram: React.FC<IconProps> = ({ size = 20, title, ...rest }) => {
   return <InstagramSvg width={size} height={size} aria-hidden={title ? undefined : true} title={title} {...rest} />;
+};
+
+
+export const IconSearch: React.FC<IconProps> = ({ size = 20, title, ...rest }) => {
+  return <SearchSvg width={size} height={size} aria-hidden={title ? undefined : true} title={title} {...rest} />;
 };
 
 
