@@ -11,10 +11,9 @@ import {
 } from "../ui/accordion";
 import { Badge } from "../ui/badge";
 import { Checkbox } from "../ui/checkbox";
-import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import { RangeSlider } from "../ui/range-slider";
 import SearchableDropdown from "../ui/searchable-dropdown";
-import { Slider } from "../ui/slider";
 
 interface ArchiveSidebarProps {
   params: BottleParams;
@@ -61,8 +60,9 @@ export function ArchiveSidebar({ params }: ArchiveSidebarProps) {
     maltTypes: ["single malt"],
     caskTypes: [],
     abv: [0, 100],
-    vintage: [1900, 2025],
+    vintage: [1960, 2025],
   });
+
   console.log("filters", filters);
   // 전체 검색에서 현재 선택된 모든 값들
   const allSelectedValues = useMemo(
@@ -326,47 +326,15 @@ export function ArchiveSidebar({ params }: ArchiveSidebarProps) {
             도수
           </AccordionTrigger>
           <AccordionContent>
-            <div className="pb-4">
-              <div className="flex items-center gap-2 mb-3">
-                <Input
-                  type="number"
-                  value={filters.abv[0]}
-                  onChange={(e) =>
-                    setFilters((prev) => ({
-                      ...prev,
-                      abv: [Number(e.target.value), prev.abv[1]],
-                    }))
-                  }
-                  className="w-20 bg-white/10 border-white/20 text-white text-center typo-regular-14"
-                />
-                <span className="text-white/60 typo-regular-14">%</span>
-                <span className="text-white/60">–</span>
-                <Input
-                  type="number"
-                  value={filters.abv[1]}
-                  onChange={(e) =>
-                    setFilters((prev) => ({
-                      ...prev,
-                      abv: [prev.abv[0], Number(e.target.value)],
-                    }))
-                  }
-                  className="w-20 bg-white/10 border-white/20 text-white text-center typo-regular-14"
-                />
-                <span className="text-white/60 typo-regular-14">%</span>
-              </div>
-              <Slider
-                value={filters.abv}
-                onValueChange={(value) =>
-                  setFilters((prev) => ({
-                    ...prev,
-                    abv: value as [number, number],
-                  }))
-                }
-                min={0}
-                max={100}
-                step={1}
-              />
-            </div>
+            <RangeSlider
+              value={filters.abv}
+              onChange={(value) =>
+                setFilters((prev) => ({ ...prev, abv: value }))
+              }
+              min={0}
+              max={100}
+              unit="%"
+            />
           </AccordionContent>
         </AccordionItem>
 
@@ -376,47 +344,15 @@ export function ArchiveSidebar({ params }: ArchiveSidebarProps) {
             빈티지
           </AccordionTrigger>
           <AccordionContent>
-            <div className="pb-4">
-              <div className="flex items-center gap-2 mb-3">
-                <Input
-                  type="number"
-                  value={filters.vintage[0]}
-                  onChange={(e) =>
-                    setFilters((prev) => ({
-                      ...prev,
-                      vintage: [Number(e.target.value), prev.vintage[1]],
-                    }))
-                  }
-                  className="w-20 bg-white/10 border-white/20 text-white text-center typo-regular-14"
-                />
-                <span className="text-white/60 typo-regular-14">년</span>
-                <span className="text-white/60">–</span>
-                <Input
-                  type="number"
-                  value={filters.vintage[1]}
-                  onChange={(e) =>
-                    setFilters((prev) => ({
-                      ...prev,
-                      vintage: [prev.vintage[0], Number(e.target.value)],
-                    }))
-                  }
-                  className="w-20 bg-white/10 border-white/20 text-white text-center typo-regular-14"
-                />
-                <span className="text-white/60 typo-regular-14">년</span>
-              </div>
-              <Slider
-                value={filters.vintage}
-                onValueChange={(value) =>
-                  setFilters((prev) => ({
-                    ...prev,
-                    vintage: value as [number, number],
-                  }))
-                }
-                min={1900}
-                max={2025}
-                step={1}
-              />
-            </div>
+            <RangeSlider
+              value={filters.vintage}
+              onChange={(value) =>
+                setFilters((prev) => ({ ...prev, vintage: value }))
+              }
+              min={1960}
+              max={2025}
+              unit="년"
+            />
           </AccordionContent>
         </AccordionItem>
       </Accordion>
