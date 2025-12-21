@@ -72,15 +72,15 @@ const Page = async ({ params }: { params: Promise<{ bottleId: string }> }) => {
             </div>
             <div className="flex flex-col gap-5">
               {[
-                bottle.brand,
-                bottle.maltType,
-                bottle.distillery,
-                bottle.distillationDate,
-                bottle.bottledDate,
-                bottle.caskType,
-                bottle.caskNumber,
-                bottle.abv,
-                bottle.capacity,
+                bottle.brand || "-",
+                bottle.maltType || "-",
+                bottle.distillery || "-",
+                bottle.distillationDate || "-",
+                bottle.bottledDate || "-",
+                bottle.caskType || "-",
+                bottle.caskNumber || "-",
+                bottle.abv || "-",
+                bottle.capacity || "-",
               ].map((item) => (
                 <p key={item} className="text-gray-200 typo-medium-20">
                   {item}
@@ -92,7 +92,7 @@ const Page = async ({ params }: { params: Promise<{ bottleId: string }> }) => {
       </div>
       <div className="mt-10 mb-80 ">
         <p className="text-[#BCBCBC] typo-medium-18 whitespace-pre-line leading-loose">
-          {bottle.description}
+          {bottle?.description || "-"}
         </p>
       </div>
     </section>

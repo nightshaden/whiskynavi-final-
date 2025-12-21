@@ -92,8 +92,12 @@ export function parseFiltersFromSearchParams(
   const parseStringArray = (key: string): string[] =>
     searchParams.get(key)?.split(",").filter(Boolean) ?? [];
 
-  const parseNumber = (key: string, defaultValue: number): number =>
-    Number(searchParams.get(key)) || defaultValue;
+  const parseNumber = (key: string, defaultValue: number): number => {
+    const value = searchParams.get(key);
+    if (value === null) return defaultValue;
+    const parsed = Number(value);
+    return Number.isNaN(parsed) ? defaultValue : parsed;
+  };
 
   return {
     brands: parseStringArray("brand"),
@@ -149,4 +153,3 @@ export function getAllSelectedValues(filters: FilterState): string[] {
     ...filters.caskTypes,
   ];
 }
-
