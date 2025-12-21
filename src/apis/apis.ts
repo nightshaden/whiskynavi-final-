@@ -86,11 +86,12 @@ export const api = {
   getMe: () => http<User>("/me"),
   getBottleParams: () => http<BottleParams>("/api/bottles/parameters"),
   getBottles: (queries?: BottleQueries) => {
-    // URL의 'page'를 API의 'pageNumber'로 변환
+    //NOTE: URL의 'page'를 API의 'pageNumber'로 변환
     const { page, ...rest } = queries ?? {};
     const params = { pageSize: 15, ...rest, pageNumber: page };
     return http<BottleResponse>("/api/bottles", { params });
   },
+  getBottleById: (id: number) => http<Bottle>(`/api/bottles/${id}`),
   // // ✅ GET: 본문 금지, params OK
   // getUsers: (params?: { role?: string }) => http<User[]>("/users", { params }),
 

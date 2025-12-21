@@ -14,6 +14,7 @@ const config: Config = {
     },
     extend: {
       colors: {
+        white: "#FAFAFA",
         red: {
           900: "#A50D17",
           800: "#C51521",
@@ -34,7 +35,7 @@ const config: Config = {
           500: "#959595",
           400: "#BBBBBB",
           300: "#A0A0A0",
-          200: "#E4E4E4",
+          200: "#D8D8D8",
           100: "#EDEDED",
           70: "#F3F3F3",
           50: "#F9F9F9",
