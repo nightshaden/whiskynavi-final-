@@ -1,7 +1,7 @@
 "use client";
 
 import { debounce } from "es-toolkit/compat";
-import { useCallback, useState } from "react";
+import { useMemo, useState } from "react";
 import { Input } from "./input";
 import { Slider } from "./slider";
 
@@ -28,11 +28,11 @@ export function RangeSlider({
   const [localValue, setLocalValue] = useState<[number, number]>(value);
 
   // debounced 콜백 (부모에게 전달)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedOnChange = useCallback(
-    debounce((newValue: [number, number]) => {
-      onChange(newValue);
-    }, debounceMs),
+  const debouncedOnChange = useMemo(
+    () =>
+      debounce((newValue: [number, number]) => {
+        onChange(newValue);
+      }, debounceMs),
     [onChange, debounceMs],
   );
 
@@ -82,4 +82,3 @@ export function RangeSlider({
     </div>
   );
 }
-

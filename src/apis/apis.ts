@@ -12,9 +12,85 @@ export type BottleParams = {
   caskTypes: string[];
 };
 
+export type BottleQueries = Partial<{
+  vintageTo: number;
+  brand: string;
+  bottledDateTo: string;
+  distillery: string;
+  distillationDateFrom: string;
+  name: string;
+  abvTo: number;
+  pageSize: number;
+  vintageFrom: number;
+  caskType: string;
+  bottledDateFrom: string;
+  maltType: string;
+  series: string;
+  page: number;
+  distillationDateTo: string;
+  company: string;
+  abvFrom: number;
+}>;
+
+export type Bottle = {
+  id: number;
+  name: string;
+  company: string;
+  brand: string;
+  series: string;
+  imgUrl: string | null;
+  extraInfos: Record<string, unknown>;
+  maltType: string;
+  distillery: string;
+  distillationDate: string;
+  bottledDate: string;
+  caskType: string;
+  caskNumber: string;
+  abv: number;
+  capacity: number;
+  description: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PageableSort = {
+  empty: boolean;
+  sorted: boolean;
+  unsorted: boolean;
+};
+
+export type Pageable = {
+  pageNumber: number;
+  pageSize: number;
+  sort: PageableSort;
+  offset: number;
+  paged: boolean;
+  unpaged: boolean;
+};
+
+export type BottleResponse = {
+  content: Bottle[];
+  pageable: Pageable;
+  totalElements: number;
+  totalPages: number;
+  last: boolean;
+  size: number;
+  number: number;
+  sort: PageableSort;
+  numberOfElements: number;
+  first: boolean;
+  empty: boolean;
+};
+
 export const api = {
   getMe: () => http<User>("/me"),
   getBottleParams: () => http<BottleParams>("/api/bottles/parameters"),
+  getBottles: (queries?: BottleQueries) => {
+    // URL의 'page'를 API의 'pageNumber'로 변환
+    const { page, ...rest } = queries ?? {};
+    const params = { pageSize: 15, ...rest, pageNumber: page };
+    return http<BottleResponse>("/api/bottles", { params });
+  },
   // // ✅ GET: 본문 금지, params OK
   // getUsers: (params?: { role?: string }) => http<User[]>("/users", { params }),
 

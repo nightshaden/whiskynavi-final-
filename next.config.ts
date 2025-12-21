@@ -1,5 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // ✅ S3 이미지 호스트 허용
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "navi-s3-cask-bucket-a08be16e-142b-4537-86bb-0bbe737bd844.s3.ap-northeast-2.amazonaws.com",
+        pathname: "/**",
+      },
+    ],
+  },
+
   // ✅ Turbopack 설정 추가
   turbopack: {
     rules: {

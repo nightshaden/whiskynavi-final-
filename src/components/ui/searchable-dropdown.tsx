@@ -118,7 +118,7 @@ const SearchableDropdown = forwardRef<
             <PopoverContent
               sideOffset={0}
               className={cn(
-                "w-[269px] b-none p-0 translate-x-[-12px] rounded-t-none border-t-0",
+                "w-[239.5px] b-none p-0 translate-x-[-12px] rounded-t-none border-t-0",
                 popoverClassName,
               )}
               onOpenAutoFocus={(e) => {

@@ -6,12 +6,11 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
 
   return (
     <main className="mt-50 w-full mx-auto">
-      <h1 className="typo-bold-40 text-center text-white">아카이브</h1>
+      <h1 className="typo-bold-40 text-center text-white">제품 목록</h1>
       {/* 메인 영역 */}
-      <div className="flex gap-20 mx-[110px]">
+      <div className="flex gap-10 mx-20 mt-15">
         {/* 사이드바 영역 */}
         <ArchiveSidebar params={bottleParams} />
-
         {children}
       </div>
     </main>
