@@ -87,7 +87,7 @@ export const api = {
   getBottleParams: () => http<BottleParams>("/api/bottles/parameters"),
   getBottles: (queries?: BottleQueries) => {
     //NOTE: URL의 'page'를 API의 'pageNumber'로 변환
-    const { page, ...rest } = queries ?? {};
+    const { page = 0, ...rest } = queries ?? {};
     const params = { pageSize: 15, ...rest, pageNumber: page };
     return http<BottleResponse>("/api/bottles", { params });
   },

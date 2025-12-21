@@ -1,8 +1,8 @@
 "use client";
 
-import type { BottleParams } from "@/apis/apis";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { BottleParams } from "@/apis/apis";
 import { FILTER_DEFAULTS, type FilterState } from "./types";
 import {
   buildQueryString,
@@ -112,9 +112,7 @@ export function useFilters({ params }: UseFiltersOptions): UseFiltersReturn {
   const handleGlobalSearchChange = useCallback(
     (newValues: string[]) => {
       const currentSelected = getAllSelectedValues(filters);
-      const addedValues = newValues.filter(
-        (v) => !currentSelected.includes(v),
-      );
+      const addedValues = newValues.filter((v) => !currentSelected.includes(v));
       const removedValues = currentSelected.filter(
         (v) => !newValues.includes(v),
       );
@@ -179,4 +177,3 @@ export function useFilters({ params }: UseFiltersOptions): UseFiltersReturn {
     updateVintage,
   };
 }
-

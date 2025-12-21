@@ -25,9 +25,21 @@ const nextConfig = {
                 plugins: [
                   {
                     name: "preset-default",
-                    params: { overrides: { removeViewBox: false } },
+                    params: {
+                      overrides: {
+                        removeViewBox: false,
+                        cleanupIds: false, // ID 충돌 방지를 위해 비활성화
+                      },
+                    },
                   },
                   { name: "removeDimensions", active: true },
+                  {
+                    name: "prefixIds", // 파일별로 고유한 ID prefix 추가
+                    params: {
+                      prefixIds: true,
+                      prefixClassNames: true,
+                    },
+                  },
                 ],
               },
               titleProp: true,
