@@ -1,7 +1,7 @@
 "use client";
 
 import { debounce } from "es-toolkit/compat";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Input } from "./input";
 import { Slider } from "./slider";
 
@@ -27,19 +27,31 @@ export function RangeSlider({
   // 로컬 상태 (즉각적인 UI 반응)
   const [localValue, setLocalValue] = useState<[number, number]>(value);
 
+  // 최신 onChange를 항상 참조하기 위한 ref
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
+
   // 부모의 value prop이 변경되면 localValue 동기화
   useEffect(() => {
     setLocalValue(value);
   }, [value[0], value[1]]);
 
   // debounced 콜백 (부모에게 전달)
+  // onChange를 ref로 참조하여 debounce 함수가 재생성되지 않으면서도 항상 최신 콜백 사용
   const debouncedOnChange = useMemo(
     () =>
       debounce((newValue: [number, number]) => {
-        onChange(newValue);
+        onChangeRef.current(newValue);
       }, debounceMs),
-    [onChange, debounceMs],
+    [debounceMs],
   );
+
+  // 컴포넌트 언마운트 시 pending 호출 취소
+  useEffect(() => {
+    return () => {
+      debouncedOnChange.cancel();
+    };
+  }, [debouncedOnChange]);
 
   const handleChange = (newValue: [number, number]) => {
     setLocalValue(newValue); // 즉각 UI 업데이트
