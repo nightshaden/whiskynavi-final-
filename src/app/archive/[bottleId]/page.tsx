@@ -81,8 +81,11 @@ const Page = async ({ params }: { params: Promise<{ bottleId: string }> }) => {
                 bottle.caskNumber || "-",
                 bottle.abv || "-",
                 bottle.capacity || "-",
-              ].map((item) => (
-                <p key={item} className="text-gray-200 typo-medium-20">
+              ].map((item, index) => (
+                <p
+                  key={`${item}-${index}`}
+                  className="text-gray-200 typo-medium-20"
+                >
                   {item}
                 </p>
               ))}

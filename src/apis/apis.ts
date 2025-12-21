@@ -83,6 +83,8 @@ export type BottleResponse = {
 };
 
 export const api = {
+  signIn: (data: { email: string; password: string }) =>
+    http<User>("/api/auth/login", { method: "POST", json: data }),
   getMe: () => http<User>("/me"),
   getBottleParams: () => http<BottleParams>("/api/bottles/parameters"),
   getBottles: (queries?: BottleQueries) => {
