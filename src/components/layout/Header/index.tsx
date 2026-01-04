@@ -1,12 +1,31 @@
+"use client";
+
 import Image from "next/image";
 import Link, { type LinkProps } from "next/link";
-import type { FC } from "react";
+import { type FC, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { IconGlobal } from "@/icons";
 
 const Header = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll(); // 초기 상태 체크
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <header className="hidden lg:block fixed top-0 w-full  py-8 px-10 z-1">
+    <header
+      className={`hidden lg:block fixed top-0 w-full py-3.5 px-10 z-50 transition-all duration-300 ${
+        isScrolled ? "backdrop-blur-md" : "bg-transparent"
+      }`}
+    >
       <div className="flex justify-between items-center max-w-screen-xl mx-auto w-full px-20">
         <Link href="/">
           <Image src="/logo.png" alt="logo" width={186} height={40} />
