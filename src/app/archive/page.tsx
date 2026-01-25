@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import { api, type BottleQueries } from "@/apis/apis";
+import { BottleImage } from "./BottleImage";
 import {
   Pagination,
   PaginationContent,
@@ -93,15 +93,12 @@ const Page = async ({ searchParams }: PageProps) => {
               href={`/archive/${bottle.id}`}
               className="w-[240px] block"
             >
-              <div className="w-[240px] h-[240px] border-gray-300 border-solid border flex items-center justify-center overflow-hidden">
-                <Image
-                  src={bottle.imgUrl ?? "/detail-sample.png"}
-                  alt={bottle.name}
-                  width={180}
-                  height={240}
-                  className="h-[240px] w-auto object-contain"
-                />
-              </div>
+              <BottleImage
+                src={bottle.imgUrl ?? "/detail-sample.png"}
+                alt={bottle.name}
+                containerClassName="w-[240px] h-[240px] border-gray-300 border-solid border"
+                imageClassName="h-[240px]"
+              />
               <p className="mt-3 text-center text-white typo-medium-18">
                 {bottle.name}
               </p>

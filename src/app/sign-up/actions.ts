@@ -64,7 +64,8 @@ export async function signUpAction(
     return {
       success: false,
       error: generalError,
-      fieldErrors: Object.keys(fieldErrors).length > 0 ? fieldErrors : undefined,
+      fieldErrors:
+        Object.keys(fieldErrors).length > 0 ? fieldErrors : undefined,
     };
   }
 

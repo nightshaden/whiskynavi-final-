@@ -40,13 +40,13 @@ const Header = () => {
             </li>
           </ul>
           <div className="flex items-center gap-7">
-          <Link
-            href="/sign-in"
-            className="cursor-pointer text-white typo-bold-20"
-          >
-            <p className="text-white typo-bold-20">Login</p>
-          </Link>
-          <IconGlobal size={24}/>
+            <Link
+              href="/sign-in"
+              className="cursor-pointer text-white typo-bold-20"
+            >
+              <p className="text-white typo-bold-20">Login</p>
+            </Link>
+            <IconGlobal size={24} />
           </div>
         </nav>
       </div>

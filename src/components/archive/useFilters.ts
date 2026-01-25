@@ -177,5 +177,3 @@ export function useFilters({ params }: UseFiltersOptions): UseFiltersReturn {
     updateVintage,
   };
 }
-
-

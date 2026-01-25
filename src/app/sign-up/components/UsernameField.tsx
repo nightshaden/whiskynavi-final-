@@ -12,7 +12,10 @@ interface UsernameFieldProps {
   error?: string;
 }
 
-export function UsernameField({ onValidationChange, error }: UsernameFieldProps) {
+export function UsernameField({
+  onValidationChange,
+  error,
+}: UsernameFieldProps) {
   const [value, setValue] = useState("");
   const [localError, setLocalError] = useState<string | null>(null);
   const [isVerified, setIsVerified] = useState(false);

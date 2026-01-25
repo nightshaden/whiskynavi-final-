@@ -11,22 +11,17 @@ const Navigation = () => {
     {
       title: "OUR BRANDS",
       desc: "위스키내비에서 전개하고 있는 다양한 브랜드들을 만나보세요.",
-      path: "/brands",
+      path: "/brand",
     },
     {
       title: "ARCHIVE",
       desc: "위스키내비에서 발매한 제품들을 둘러보세요.",
-      path: "",
+      path: "/archive",
     },
     {
       title: "SHOP",
       desc: "전국 취급점에서 위스키내비 제품군을 만나보실 수 있습니다.",
-      path: "",
-    },
-    {
-      title: "COMMUNITY",
-      desc: "위스키내비 커뮤니티에서 다양한 소식들을 만나보세요.",
-      path: "",
+      path: "/shop",
     },
   ];
   return (
