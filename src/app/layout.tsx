@@ -4,6 +4,7 @@ import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import { siteConfig } from "@/config/site";
 import { pretendard } from "@/styles/fonts";
+import { OverlayProvider } from "overlay-kit";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL || "https://www.whiskynavi.com";
@@ -104,11 +105,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${pretendard.className} antialiased bg-[#1D2429]`}>
-        <Header />
-        {/* <main className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8"> */}
-        {children}
-        {/* </main> */}
-        <Footer />
+        <OverlayProvider>
+          <Header />
+          {/* <main className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8"> */}
+          {children}
+          {/* </main> */}
+          <Footer />
+        </OverlayProvider>
       </body>
     </html>
   );
