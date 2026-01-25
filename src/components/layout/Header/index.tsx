@@ -33,29 +33,19 @@ const Header = () => {
         <nav className="flex items-center gap-[50px]">
           <ul className="flex items-center gap-[50px]">
             <li>
-              <NavLink href="/about">회사소개</NavLink>
-            </li>
-            <li>
               <NavLink href="/brand">브랜드</NavLink>
             </li>
             <li>
               <NavLink href="/archive">아카이브</NavLink>
             </li>
-            <li>
-              <NavLink href="/find">매장찾기</NavLink>
-            </li>
-            <li>
-              <NavLink href="/community">커뮤니티</NavLink>
-            </li>
           </ul>
           <div className="flex items-center gap-7">
-          <Button
-            variant="outline"
-            size="lg"
-            className="cursor-pointer bg-transparent border-white text-white"
+          <Link
+            href="/sign-in"
+            className="cursor-pointer text-white typo-bold-20"
           >
             <p className="text-white typo-bold-20">Login</p>
-          </Button>
+          </Link>
           <IconGlobal size={24}/>
           </div>
         </nav>
