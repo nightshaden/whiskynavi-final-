@@ -15,8 +15,9 @@ export default function MembershipPage() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [membershipBenefits, setMembershipBenefits] =
     useState<MembershipBenefits>(initialMembershipBenefits);
-  const [editingBenefits, setEditingBenefits] =
-    useState<MembershipBenefits>(initialMembershipBenefits);
+  const [editingBenefits, setEditingBenefits] = useState<MembershipBenefits>(
+    initialMembershipBenefits,
+  );
 
   const handleEdit = () => {
     setEditingBenefits(membershipBenefits);
@@ -147,8 +148,9 @@ export default function MembershipPage() {
                           value={benefits.discount}
                           onChange={(e) => {
                             const newBenefits = { ...editingBenefits };
-                            newBenefits[selectedBrand][tier].discount =
-                              Number(e.target.value);
+                            newBenefits[selectedBrand][tier].discount = Number(
+                              e.target.value,
+                            );
                             setEditingBenefits(newBenefits);
                           }}
                           className="w-16 px-2 py-1 border border-gray-300 rounded text-right"

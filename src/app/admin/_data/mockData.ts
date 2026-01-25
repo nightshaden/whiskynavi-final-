@@ -106,9 +106,7 @@ export interface Reservation {
 export interface BlacklistItem {
   id: number;
   name: string;
-  email: string;
   reason: string;
-  restrictionType: "요주의 인물" | "예약 제한" | "전체 서비스 제한";
   startDate: string;
   endDate: string;
 }
@@ -579,28 +577,22 @@ export const initialBlacklist: BlacklistItem[] = [
   {
     id: 1,
     name: "홍길동",
-    email: "hong@example.com",
     reason:
       "중복 예약으로 인한 다른 회원 피해 발생. 3회 이상 반복된 행위로 예약 제한 조치.",
-    restrictionType: "예약 제한",
     startDate: "2026.01.01",
     endDate: "2026.06.30",
   },
   {
     id: 2,
     name: "김철수",
-    email: "kim@example.com",
     reason: "부적절한 언행 및 고객센터 직원에 대한 폭언. 회사 정책 위반 심각.",
-    restrictionType: "전체 서비스 제한",
     startDate: "2026.01.10",
     endDate: "영구",
   },
   {
     id: 3,
     name: "박영희",
-    email: "park@example.com",
     reason: "고액 주문 후 잦은 반품 이력 있음. 모니터링 필요.",
-    restrictionType: "요주의 인물",
     startDate: "-",
     endDate: "-",
   },

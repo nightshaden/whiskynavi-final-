@@ -14,11 +14,12 @@ interface ReservationsContentProps {
     limit?: string;
     q?: string;
     brand?: string;
-    status?: string;
   };
 }
 
-export default function ReservationsContent({ searchParams }: ReservationsContentProps) {
+export default function ReservationsContent({
+  searchParams,
+}: ReservationsContentProps) {
   const { toggle } = useSidebar();
   const router = useRouter();
 
@@ -27,11 +28,9 @@ export default function ReservationsContent({ searchParams }: ReservationsConten
   const itemsPerPage = Number(searchParams.limit) || 20;
   const searchQuery = searchParams.q || "";
   const brandFilter = searchParams.brand || "all";
-  const statusFilter = searchParams.status || "all";
 
   // 필터 드롭다운 상태
   const [showBrandFilter, setShowBrandFilter] = useState(false);
-  const [showStatusFilter, setShowStatusFilter] = useState(false);
 
   const reservations = useMemo(() => generateReservations(), []);
 
@@ -51,12 +50,10 @@ export default function ReservationsContent({ searchParams }: ReservationsConten
         reservation.brand.toLowerCase().includes(searchLower);
       const matchesBrand =
         brandFilter === "all" || reservation.brand === brandFilter;
-      const matchesStatus =
-        statusFilter === "all" || reservation.status === statusFilter;
 
-      return matchesSearch && matchesBrand && matchesStatus;
+      return matchesSearch && matchesBrand;
     });
-  }, [reservations, searchQuery, brandFilter, statusFilter]);
+  }, [reservations, searchQuery, brandFilter]);
 
   // 페이지네이션
   const paginatedReservations = useMemo(() => {
@@ -94,21 +91,6 @@ export default function ReservationsContent({ searchParams }: ReservationsConten
     }
     params.set("page", "1");
     router.push(`/admin/reservations?${params.toString()}`);
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "예약완료":
-        return "bg-green-100 text-green-700";
-      case "대기중":
-        return "bg-yellow-100 text-yellow-700";
-      case "취소됨":
-        return "bg-red-100 text-red-700";
-      case "수령완료":
-        return "bg-blue-100 text-blue-700";
-      default:
-        return "bg-gray-100 text-gray-700";
-    }
   };
 
   return (
@@ -172,33 +154,6 @@ export default function ReservationsContent({ searchParams }: ReservationsConten
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
                     수량
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase relative">
-                    <button
-                      onClick={() => setShowStatusFilter(!showStatusFilter)}
-                      className="flex items-center gap-1 hover:text-amber-600"
-                    >
-                      상태
-                      <Filter size={12} />
-                    </button>
-                    {showStatusFilter && (
-                      <div className="absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-20 w-32">
-                        {["all", "예약완료", "대기중", "취소됨", "수령완료"].map(
-                          (status) => (
-                            <button
-                              key={status}
-                              onClick={() => {
-                                updateFilter("status", status);
-                                setShowStatusFilter(false);
-                              }}
-                              className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${statusFilter === status ? "bg-amber-50 text-amber-700" : ""}`}
-                            >
-                              {status === "all" ? "전체" : status}
-                            </button>
-                          ),
-                        )}
-                      </div>
-                    )}
-                  </th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
                     예약일
                   </th>
@@ -227,13 +182,6 @@ export default function ReservationsContent({ searchParams }: ReservationsConten
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-600">
                       {reservation.quantity}
-                    </td>
-                    <td className="px-4 py-3 text-sm">
-                      <span
-                        className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(reservation.status)}`}
-                      >
-                        {reservation.status}
-                      </span>
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-600">
                       {reservation.reservationDate}

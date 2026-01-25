@@ -59,8 +59,8 @@ export default function UsersContent({ searchParams }: UsersContentProps) {
         memberTypeFilter === "all" || user.memberType === memberTypeFilter;
       const matchesNavi =
         naviFilter === "all" ||
-        (naviFilter === "none" && !user.whiskeyNaviMembership) ||
-        user.whiskeyNaviMembership === naviFilter;
+        (naviFilter === "member" && !!user.whiskeyNaviMembership) ||
+        (naviFilter === "none" && !user.whiskeyNaviMembership);
       const matchesTales =
         talesFilter === "all" ||
         (talesFilter === "none" && !user.whiskeyTalesMembership) ||
@@ -198,73 +198,119 @@ export default function UsersContent({ searchParams }: UsersContentProps) {
                       </div>
                     )}
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase relative">
+                  <th className="w-20 px-2 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase relative">
                     <button
                       onClick={() => setShowNaviFilter(!showNaviFilter)}
                       className="flex items-center gap-1 hover:text-amber-600"
                     >
-                      위스키내비
+                      내비
                       <Filter size={12} />
                     </button>
                     {showNaviFilter && (
                       <div className="absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-20 w-32">
-                        {["all", "VIP", "GOLD", "SILVER", "none"].map(
-                          (type) => (
-                            <button
-                              key={type}
-                              onClick={() => {
-                                updateFilter("navi", type);
-                                setShowNaviFilter(false);
-                              }}
-                              className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${
-                                naviFilter === type
-                                  ? "bg-amber-50 text-amber-700"
-                                  : ""
-                              }`}
-                            >
-                              {type === "all"
-                                ? "전체"
-                                : type === "none"
-                                  ? "미가입"
-                                  : type}
-                            </button>
-                          ),
-                        )}
+                        <button
+                          onClick={() => {
+                            updateFilter("navi", "all");
+                            setShowNaviFilter(false);
+                          }}
+                          className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${naviFilter === "all" ? "bg-amber-50 text-amber-700" : ""}`}
+                        >
+                          전체
+                        </button>
+                        <button
+                          onClick={() => {
+                            updateFilter("navi", "member");
+                            setShowNaviFilter(false);
+                          }}
+                          className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${naviFilter === "member" ? "bg-amber-50 text-amber-700" : ""}`}
+                        >
+                          가입됨
+                        </button>
+                        <button
+                          onClick={() => {
+                            updateFilter("navi", "none");
+                            setShowNaviFilter(false);
+                          }}
+                          className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${naviFilter === "none" ? "bg-amber-50 text-amber-700" : ""}`}
+                        >
+                          미가입
+                        </button>
                       </div>
                     )}
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase relative">
+                  <th className="w-20 px-2 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase relative">
                     <button
                       onClick={() => setShowTalesFilter(!showTalesFilter)}
                       className="flex items-center gap-1 hover:text-amber-600"
                     >
-                      위스키테일즈
+                      테일즈
                       <Filter size={12} />
                     </button>
                     {showTalesFilter && (
                       <div className="absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-20 w-32">
-                        {["all", "VIP", "GOLD", "SILVER", "none"].map(
-                          (type) => (
-                            <button
-                              key={type}
-                              onClick={() => {
-                                updateFilter("tales", type);
-                                setShowTalesFilter(false);
-                              }}
-                              className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${
-                                talesFilter === type
-                                  ? "bg-amber-50 text-amber-700"
-                                  : ""
-                              }`}
-                            >
-                              {type === "all"
-                                ? "전체"
-                                : type === "none"
-                                  ? "미가입"
-                                  : type}
-                            </button>
-                          ),
-                        )}
+                        <button
+                          onClick={() => {
+                            updateFilter("tales", "all");
+                            setShowTalesFilter(false);
+                          }}
+                          className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${talesFilter === "all" ? "bg-amber-50 text-amber-700" : ""}`}
+                        >
+                          전체
+                        </button>
+                        <button
+                          onClick={() => {
+                            updateFilter("tales", "LV.1");
+                            setShowTalesFilter(false);
+                          }}
+                          className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${talesFilter === "LV.1" ? "bg-amber-50 text-amber-700" : ""}`}
+                        >
+                          LV.1
+                        </button>
+                        <button
+                          onClick={() => {
+                            updateFilter("tales", "LV.2");
+                            setShowTalesFilter(false);
+                          }}
+                          className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${talesFilter === "LV.2" ? "bg-amber-50 text-amber-700" : ""}`}
+                        >
+                          LV.2
+                        </button>
+                        <button
+                          onClick={() => {
+                            updateFilter("tales", "LV.3");
+                            setShowTalesFilter(false);
+                          }}
+                          className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${talesFilter === "LV.3" ? "bg-amber-50 text-amber-700" : ""}`}
+                        >
+                          LV.3
+                        </button>
+                        <button
+                          onClick={() => {
+                            updateFilter("tales", "LV.4");
+                            setShowTalesFilter(false);
+                          }}
+                          className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${talesFilter === "LV.4" ? "bg-amber-50 text-amber-700" : ""}`}
+                        >
+                          LV.4
+                        </button>
+                        <button
+                          onClick={() => {
+                            updateFilter("tales", "LV.5");
+                            setShowTalesFilter(false);
+                          }}
+                          className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${talesFilter === "LV.5" ? "bg-amber-50 text-amber-700" : ""}`}
+                        >
+                          LV.5
+                        </button>
+                        <button
+                          onClick={() => {
+                            updateFilter("tales", "none");
+                            setShowTalesFilter(false);
+                          }}
+                          className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${talesFilter === "none" ? "bg-amber-50 text-amber-700" : ""}`}
+                        >
+                          미가입
+                        </button>
                       </div>
                     )}
                   </th>
@@ -310,16 +356,8 @@ export default function UsersContent({ searchParams }: UsersContentProps) {
                     </td>
                     <td className="px-4 py-3 text-sm">
                       {user.whiskeyNaviMembership ? (
-                        <span
-                          className={`px-2 py-1 rounded text-xs font-medium ${
-                            user.whiskeyNaviMembership === "VIP"
-                              ? "bg-amber-100 text-amber-700"
-                              : user.whiskeyNaviMembership === "GOLD"
-                                ? "bg-yellow-100 text-yellow-700"
-                                : "bg-gray-200 text-gray-700"
-                          }`}
-                        >
-                          {user.whiskeyNaviMembership}
+                        <span className="px-2 py-1 rounded text-xs font-medium bg-amber-100 text-amber-700">
+                          가입됨
                         </span>
                       ) : (
                         <span className="text-gray-400">-</span>
@@ -327,15 +365,7 @@ export default function UsersContent({ searchParams }: UsersContentProps) {
                     </td>
                     <td className="px-4 py-3 text-sm">
                       {user.whiskeyTalesMembership ? (
-                        <span
-                          className={`px-2 py-1 rounded text-xs font-medium ${
-                            user.whiskeyTalesMembership === "VIP"
-                              ? "bg-blue-100 text-blue-700"
-                              : user.whiskeyTalesMembership === "GOLD"
-                                ? "bg-yellow-100 text-yellow-700"
-                                : "bg-gray-200 text-gray-700"
-                          }`}
-                        >
+                        <span className="px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-700">
                           {user.whiskeyTalesMembership}
                         </span>
                       ) : (
@@ -359,7 +389,7 @@ export default function UsersContent({ searchParams }: UsersContentProps) {
                     <td className="px-4 py-3 text-sm">
                       <button
                         onClick={() => handleUserClick(user.id)}
-                        className="text-amber-600 hover:text-amber-700 font-medium"
+                        className="text-amber-600 hover:text-amber-700 font-medium cursor-pointer"
                       >
                         상세
                       </button>

@@ -6,11 +6,7 @@ import { Plus, Edit2, Trash2, X, AlertTriangle } from "lucide-react";
 import AdminHeader from "../../_components/AdminHeader";
 import { useSidebar } from "../../_components/AdminLayoutClient";
 import Pagination from "../../_components/Pagination";
-import {
-  initialBlacklist,
-  generateUsers,
-  type BlacklistItem,
-} from "../../_data/mockData";
+import { initialBlacklist, type BlacklistItem } from "../../_data/mockData";
 
 interface BlacklistContentProps {
   searchParams: {
@@ -20,7 +16,9 @@ interface BlacklistContentProps {
   };
 }
 
-export default function BlacklistContent({ searchParams }: BlacklistContentProps) {
+export default function BlacklistContent({
+  searchParams,
+}: BlacklistContentProps) {
   const { toggle } = useSidebar();
   const router = useRouter();
 
@@ -29,8 +27,7 @@ export default function BlacklistContent({ searchParams }: BlacklistContentProps
   const itemsPerPage = Number(searchParams.limit) || 20;
   const searchQuery = searchParams.q || "";
 
-  const [blacklist, setBlacklist] =
-    useState<BlacklistItem[]>(initialBlacklist);
+  const [blacklist, setBlacklist] = useState<BlacklistItem[]>(initialBlacklist);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingItem, setEditingItem] = useState<BlacklistItem | null>(null);
@@ -40,15 +37,11 @@ export default function BlacklistContent({ searchParams }: BlacklistContentProps
   // 새 블랙리스트 항목 상태
   const [newItem, setNewItem] = useState({
     name: "",
-    email: "",
     reason: "",
-    restrictionType: "요주의 인물" as BlacklistItem["restrictionType"],
     startDate: "",
     endDate: "",
     isPermanent: false,
   });
-
-  const users = useMemo(() => generateUsers(), []);
 
   // 필터링
   const filteredBlacklist = useMemo(() => {
@@ -56,7 +49,6 @@ export default function BlacklistContent({ searchParams }: BlacklistContentProps
       const searchLower = searchQuery.toLowerCase();
       return (
         item.name.toLowerCase().includes(searchLower) ||
-        item.email.toLowerCase().includes(searchLower) ||
         item.reason.toLowerCase().includes(searchLower)
       );
     });
@@ -69,7 +61,7 @@ export default function BlacklistContent({ searchParams }: BlacklistContentProps
   }, [filteredBlacklist, currentPage, itemsPerPage]);
 
   const handleAdd = () => {
-    if (!newItem.name || !newItem.email || !newItem.reason) {
+    if (!newItem.name || !newItem.reason) {
       alert("필수 항목을 입력해주세요.");
       return;
     }
@@ -80,9 +72,7 @@ export default function BlacklistContent({ searchParams }: BlacklistContentProps
       {
         id: newId,
         name: newItem.name,
-        email: newItem.email,
         reason: newItem.reason,
-        restrictionType: newItem.restrictionType,
         startDate: newItem.startDate || "-",
         endDate: newItem.isPermanent ? "영구" : newItem.endDate || "-",
       },
@@ -90,9 +80,7 @@ export default function BlacklistContent({ searchParams }: BlacklistContentProps
     setShowAddModal(false);
     setNewItem({
       name: "",
-      email: "",
       reason: "",
-      restrictionType: "요주의 인물",
       startDate: "",
       endDate: "",
       isPermanent: false,
@@ -127,19 +115,6 @@ export default function BlacklistContent({ searchParams }: BlacklistContentProps
     }
     setShowDeleteConfirm(false);
     setDeletingId(null);
-  };
-
-  const getRestrictionColor = (type: string) => {
-    switch (type) {
-      case "전체 서비스 제한":
-        return "bg-red-100 text-red-700";
-      case "예약 제한":
-        return "bg-orange-100 text-orange-700";
-      case "요주의 인물":
-        return "bg-yellow-100 text-yellow-700";
-      default:
-        return "bg-gray-100 text-gray-700";
-    }
   };
 
   const handleSearch = (value: string) => {
@@ -189,19 +164,13 @@ export default function BlacklistContent({ searchParams }: BlacklistContentProps
                     이름
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
-                    이메일
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
-                    제재 유형
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
                     사유
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
-                    시작일
+                    제재 시작일
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
-                    종료일
+                    제재 종료일
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
                     관리
@@ -219,16 +188,6 @@ export default function BlacklistContent({ searchParams }: BlacklistContentProps
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-900 font-medium">
                       {item.name}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-600">
-                      {item.email}
-                    </td>
-                    <td className="px-4 py-3 text-sm">
-                      <span
-                        className={`px-2 py-1 rounded text-xs font-medium ${getRestrictionColor(item.restrictionType)}`}
-                      >
-                        {item.restrictionType}
-                      </span>
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-600 max-w-[300px] truncate">
                       {item.reason}
@@ -311,42 +270,6 @@ export default function BlacklistContent({ searchParams }: BlacklistContentProps
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="이름 입력"
                 />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  이메일 *
-                </label>
-                <input
-                  type="email"
-                  value={newItem.email}
-                  onChange={(e) =>
-                    setNewItem({ ...newItem, email: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                  placeholder="이메일 입력"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  제재 유형 *
-                </label>
-                <select
-                  value={newItem.restrictionType}
-                  onChange={(e) =>
-                    setNewItem({
-                      ...newItem,
-                      restrictionType: e.target
-                        .value as BlacklistItem["restrictionType"],
-                    })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                >
-                  <option value="요주의 인물">요주의 인물</option>
-                  <option value="예약 제한">예약 제한</option>
-                  <option value="전체 서비스 제한">전체 서비스 제한</option>
-                </select>
               </div>
 
               <div>
@@ -465,41 +388,6 @@ export default function BlacklistContent({ searchParams }: BlacklistContentProps
                   }
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                 />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  이메일
-                </label>
-                <input
-                  type="email"
-                  value={editingItem.email}
-                  onChange={(e) =>
-                    setEditingItem({ ...editingItem, email: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  제재 유형
-                </label>
-                <select
-                  value={editingItem.restrictionType}
-                  onChange={(e) =>
-                    setEditingItem({
-                      ...editingItem,
-                      restrictionType: e.target
-                        .value as BlacklistItem["restrictionType"],
-                    })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                >
-                  <option value="요주의 인물">요주의 인물</option>
-                  <option value="예약 제한">예약 제한</option>
-                  <option value="전체 서비스 제한">전체 서비스 제한</option>
-                </select>
               </div>
 
               <div>

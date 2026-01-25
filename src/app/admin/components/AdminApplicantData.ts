@@ -18,8 +18,8 @@ export const extendedApplicants = [
     email: "whisky.lover@example.com",
     phone: "010-1234-5678",
     memberType: "일반",
-    whiskeyNaviMembership: "VIP",
-    whiskeyTalesMembership: "GOLD",
+    whiskeyNaviMembership: "가입됨",
+    whiskeyTalesMembership: "가입됨",
     pickupLocation: "강남점",
   },
   {
@@ -38,8 +38,8 @@ export const extendedApplicants = [
     email: "scotch.master.premium@example.com",
     phone: "010-2345-6789",
     memberType: "업장",
-    whiskeyNaviMembership: "GOLD",
-    whiskeyTalesMembership: null,
+    whiskeyNaviMembership: "가입됨",
+    whiskeyTalesMembership: "가입됨",
     pickupLocation: "홍대점",
   },
   {
@@ -58,8 +58,8 @@ export const extendedApplicants = [
     email: "whisky.fan.collection@example.com",
     phone: "010-3456-7890",
     memberType: "일반",
-    whiskeyNaviMembership: "SILVER",
-    whiskeyTalesMembership: "SILVER",
+    whiskeyNaviMembership: "가입됨",
+    whiskeyTalesMembership: "가입됨",
     pickupLocation: "부산점",
   },
 ];

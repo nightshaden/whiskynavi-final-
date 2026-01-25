@@ -7,7 +7,12 @@ import { stats } from "../_data/mockData";
 
 const menuItems = [
   { id: "users", label: "회원 관리", icon: Users, href: "/admin/users" },
-  { id: "products", label: "제품 관리", icon: Package, href: "/admin/products" },
+  {
+    id: "products",
+    label: "제품 관리",
+    icon: Package,
+    href: "/admin/products",
+  },
   {
     id: "reservations",
     label: "예약 관리",

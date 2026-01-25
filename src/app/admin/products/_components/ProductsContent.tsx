@@ -20,7 +20,9 @@ interface ProductsContentProps {
   };
 }
 
-export default function ProductsContent({ searchParams }: ProductsContentProps) {
+export default function ProductsContent({
+  searchParams,
+}: ProductsContentProps) {
   const { toggle } = useSidebar();
   const router = useRouter();
 

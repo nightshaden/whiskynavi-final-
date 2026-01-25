@@ -43,7 +43,9 @@ export default function Pagination({
 
   const handleItemsPerPageChange = (value: number) => {
     startTransition(() => {
-      router.push(`${basePath}?${createQueryString({ limit: String(value), page: "1" })}`);
+      router.push(
+        `${basePath}?${createQueryString({ limit: String(value), page: "1" })}`,
+      );
     });
   };
 
