@@ -2,11 +2,12 @@
 
 import Image from "next/image";
 import Link, { type LinkProps } from "next/link";
+import { usePathname } from "next/navigation";
 import { type FC, useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { IconGlobal } from "@/icons";
 
 const Header = () => {
+  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -19,6 +20,11 @@ const Header = () => {
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // /admin 경로에서는 Header를 렌더링하지 않음
+  if (pathname.startsWith("/admin")) {
+    return null;
+  }
 
   return (
     <header

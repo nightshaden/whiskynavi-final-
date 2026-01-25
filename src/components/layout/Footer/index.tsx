@@ -1,9 +1,19 @@
+"use client";
+
 import Image from "next/image";
 import Link, { type LinkProps } from "next/link";
+import { usePathname } from "next/navigation";
 import type { FC } from "react";
 import { IconInstagram, IconYoutube } from "@/icons";
 
 const Footer = () => {
+  const pathname = usePathname();
+
+  // /admin 경로에서는 Footer를 렌더링하지 않음
+  if (pathname.startsWith("/admin")) {
+    return null;
+  }
+
   return (
     <footer className="hidden lg:block px-10 pt-6 pb-12">
       <div className="flex flex-col gap-12 align-center justify-center">
