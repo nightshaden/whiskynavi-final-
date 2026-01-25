@@ -82,10 +82,46 @@ export type BottleResponse = {
   empty: boolean;
 };
 
+export type SignupRequest = {
+  email: string;
+  password: string;
+  name: string;
+  username: string;
+  birthDate?: string;
+  gender?: string;
+  phone?: string;
+  privacyAgree: boolean;
+  marketingAgree: boolean;
+  emailAgree: boolean;
+  smsAgree: boolean;
+  snsAgree: boolean;
+};
+
+export type AvailabilityResponse = {
+  available: boolean;
+};
+
 export const api = {
+  // Auth
   signIn: (data: { email: string; password: string }) =>
     http<User>("/api/auth/login", { method: "POST", json: data }),
+  checkEmail: (email: string) =>
+    http<AvailabilityResponse>("/api/auth/check-email", {
+      method: "POST",
+      json: { email },
+    }),
+  checkUsername: (username: string) =>
+    http<AvailabilityResponse>("/api/auth/check-username", {
+      method: "POST",
+      json: { username },
+    }),
+  signUp: (data: SignupRequest) =>
+    http<User>("/api/auth/signup", { method: "POST", json: data }),
+
+  // User
   getMe: () => http<User>("/me"),
+
+  // Bottles
   getBottleParams: () => http<BottleParams>("/api/bottles/parameters"),
   getBottles: (queries?: BottleQueries) => {
     //NOTE: URL의 'page'를 API의 'pageNumber'로 변환
