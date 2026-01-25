@@ -1,46 +1,33 @@
 "use client";
 
 import { Menu, Search } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 
 interface AdminHeaderProps {
   title: string;
   onToggleSidebar: () => void;
   showSearch?: boolean;
+  searchQuery?: string;
+  onSearch?: (value: string) => void;
 }
 
 export default function AdminHeader({
   title,
   onToggleSidebar,
   showSearch = true,
+  searchQuery = "",
+  onSearch,
 }: AdminHeaderProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
-  const [searchValue, setSearchValue] = useState(searchParams.get("q") || "");
-
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      if (value) {
-        params.set(name, value);
-      } else {
-        params.delete(name);
-      }
-      // 검색어가 변경되면 페이지를 1로 리셋
-      params.set("page", "1");
-      return params.toString();
-    },
-    [searchParams],
-  );
+  const [searchValue, setSearchValue] = useState(searchQuery);
 
   const handleSearch = (value: string) => {
     setSearchValue(value);
-    startTransition(() => {
-      router.push(`${pathname}?${createQueryString("q", value)}`);
-    });
+    if (onSearch) {
+      startTransition(() => {
+        onSearch(value);
+      });
+    }
   };
 
   return (

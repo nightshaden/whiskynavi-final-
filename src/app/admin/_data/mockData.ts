@@ -97,6 +97,9 @@ export interface Reservation {
   deadline: string;
   imageUrl: string;
   applicants: Applicant[];
+  username: string;
+  reservationDate: string;
+  quantity: number;
 }
 
 // 블랙리스트 타입
@@ -496,6 +499,9 @@ export function generateReservations(): Reservation[] {
       imageUrl:
         "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=400",
       applicants: extendedApplicants,
+      username: "whisky_lover",
+      reservationDate: "2026.01.10",
+      quantity: 2,
     },
     {
       id: 2,
@@ -511,6 +517,9 @@ export function generateReservations(): Reservation[] {
       imageUrl:
         "https://images.unsplash.com/photo-1527281400934-a78fc40cae85?w=400",
       applicants: [],
+      username: "scotch_master",
+      reservationDate: "2026.01.05",
+      quantity: 5,
     },
     {
       id: 3,
@@ -526,6 +535,9 @@ export function generateReservations(): Reservation[] {
       imageUrl:
         "https://images.unsplash.com/photo-1584916201218-f4242ceb4809?w=400",
       applicants: [],
+      username: "admin_user",
+      reservationDate: "2025.12.18",
+      quantity: 3,
     },
   ];
 
@@ -553,6 +565,9 @@ export function generateReservations(): Reservation[] {
       imageUrl:
         "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=400",
       applicants: [],
+      username: `user_${i}`,
+      reservationDate: `2026.01.${String((i % 28) + 1).padStart(2, "0")}`,
+      quantity: Math.floor(Math.random() * 200),
     });
   }
 

@@ -1,48 +1,49 @@
 "use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 
 interface PaginationProps {
   totalItems: number;
   itemsPerPage: number;
   currentPage: number;
+  searchParams: Record<string, string | undefined>;
+  basePath: string;
 }
 
 export default function Pagination({
   totalItems,
   itemsPerPage,
   currentPage,
+  searchParams,
+  basePath,
 }: PaginationProps) {
   const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
 
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set(name, value);
-      return params.toString();
-    },
-    [searchParams],
-  );
+  const createQueryString = (updates: Record<string, string>) => {
+    const params = new URLSearchParams();
+    Object.entries(searchParams).forEach(([k, v]) => {
+      if (v) params.set(k, v);
+    });
+    Object.entries(updates).forEach(([k, v]) => {
+      params.set(k, v);
+    });
+    return params.toString();
+  };
 
   const handlePageChange = (page: number) => {
     startTransition(() => {
-      router.push(`${pathname}?${createQueryString("page", String(page))}`);
+      router.push(`${basePath}?${createQueryString({ page: String(page) })}`);
     });
   };
 
   const handleItemsPerPageChange = (value: number) => {
     startTransition(() => {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set("limit", String(value));
-      params.set("page", "1");
-      router.push(`${pathname}?${params.toString()}`);
+      router.push(`${basePath}?${createQueryString({ limit: String(value), page: "1" })}`);
     });
   };
 
