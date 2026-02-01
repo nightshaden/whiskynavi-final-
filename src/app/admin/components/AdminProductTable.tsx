@@ -1,6 +1,7 @@
 "use client";
-import React from "react";
 import { Filter } from "lucide-react";
+import Image from "next/image";
+import type React from "react";
 
 interface AdminProductTableProps {
   paginatedData: any[];
@@ -51,8 +52,9 @@ export const AdminProductTable: React.FC<AdminProductTableProps> = ({
             </th>
             <th className="px-2 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase relative whitespace-nowrap">
               <button
+                type="button"
                 onClick={() => setShowBrandFilter(!showBrandFilter)}
-                className="flex items-center gap-1 hover:text-amber-600"
+                className="flex items-center gap-1 hover:text-amber-600 cursor-pointer"
               >
                 브랜드
                 <Filter size={12} />
@@ -60,52 +62,57 @@ export const AdminProductTable: React.FC<AdminProductTableProps> = ({
               {showBrandFilter && (
                 <div className="absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-20 w-40">
                   <button
+                    type="button"
                     onClick={() => {
                       setBrandFilter("all");
                       setShowBrandFilter(false);
                       setCurrentPage(1);
                     }}
-                    className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${brandFilter === "all" ? "bg-amber-50 text-amber-700" : ""}`}
+                    className={`block w-full cursor-pointer px-3 py-2 text-left text-xs hover:bg-gray-100 ${brandFilter === "all" ? "bg-amber-50 text-amber-700" : ""}`}
                   >
                     전체
                   </button>
                   <button
+                    type="button"
                     onClick={() => {
                       setBrandFilter("위스키내비");
                       setShowBrandFilter(false);
                       setCurrentPage(1);
                     }}
-                    className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${brandFilter === "위스키내비" ? "bg-amber-50 text-amber-700" : ""}`}
+                    className={`block w-full cursor-pointer px-3 py-2 text-left text-xs hover:bg-gray-100 ${brandFilter === "위스키내비" ? "bg-amber-50 text-amber-700" : ""}`}
                   >
                     위스키내비
                   </button>
                   <button
+                    type="button"
                     onClick={() => {
                       setBrandFilter("더 위스키테일즈");
                       setShowBrandFilter(false);
                       setCurrentPage(1);
                     }}
-                    className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${brandFilter === "더 위스키테일즈" ? "bg-amber-50 text-amber-700" : ""}`}
+                    className={`block w-full cursor-pointer px-3 py-2 text-left text-xs hover:bg-gray-100 ${brandFilter === "더 위스키테일즈" ? "bg-amber-50 text-amber-700" : ""}`}
                   >
                     더 위스키테일즈
                   </button>
                   <button
+                    type="button"
                     onClick={() => {
                       setBrandFilter("트레일 앤 테일");
                       setShowBrandFilter(false);
                       setCurrentPage(1);
                     }}
-                    className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${brandFilter === "트레일 앤 테일" ? "bg-amber-50 text-amber-700" : ""}`}
+                    className={`block w-full cursor-pointer px-3 py-2 text-left text-xs hover:bg-gray-100 ${brandFilter === "트레일 앤 테일" ? "bg-amber-50 text-amber-700" : ""}`}
                   >
                     트레일 앤 테일
                   </button>
                   <button
+                    type="button"
                     onClick={() => {
                       setBrandFilter("투게더 인 스피릿");
                       setShowBrandFilter(false);
                       setCurrentPage(1);
                     }}
-                    className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${brandFilter === "투게더 인 스피릿" ? "bg-amber-50 text-amber-700" : ""}`}
+                    className={`block w-full cursor-pointer px-3 py-2 text-left text-xs hover:bg-gray-100 ${brandFilter === "투게더 인 스피릿" ? "bg-amber-50 text-amber-700" : ""}`}
                   >
                     투게더 인 스피릿
                   </button>
@@ -114,8 +121,9 @@ export const AdminProductTable: React.FC<AdminProductTableProps> = ({
             </th>
             <th className="px-2 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase relative whitespace-nowrap">
               <button
+                type="button"
                 onClick={() => setShowDistilleryFilter(!showDistilleryFilter)}
-                className="flex items-center gap-1 hover:text-amber-600"
+                className="flex items-center gap-1 hover:text-amber-600 cursor-pointer"
               >
                 증류소
                 <Filter size={12} />
@@ -123,24 +131,26 @@ export const AdminProductTable: React.FC<AdminProductTableProps> = ({
               {showDistilleryFilter && (
                 <div className="absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-20 w-40 max-h-60 overflow-y-auto">
                   <button
+                    type="button"
                     onClick={() => {
                       setDistilleryFilter("all");
                       setShowDistilleryFilter(false);
                       setCurrentPage(1);
                     }}
-                    className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${distilleryFilter === "all" ? "bg-amber-50 text-amber-700" : ""}`}
+                    className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 cursor-pointer ${distilleryFilter === "all" ? "bg-amber-50 text-amber-700" : ""}`}
                   >
                     전체
                   </button>
                   {availableDistilleries.map((distillery) => (
                     <button
+                      type="button"
                       key={distillery}
                       onClick={() => {
                         setDistilleryFilter(distillery);
                         setShowDistilleryFilter(false);
                         setCurrentPage(1);
                       }}
-                      className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${distilleryFilter === distillery ? "bg-amber-50 text-amber-700" : ""}`}
+                      className={`block w-full cursor-pointer px-3 py-2 text-left text-xs hover:bg-gray-100 ${distilleryFilter === distillery ? "bg-amber-50 text-amber-700" : ""}`}
                     >
                       {distillery}
                     </button>
@@ -181,7 +191,7 @@ export const AdminProductTable: React.FC<AdminProductTableProps> = ({
                 {product.id}
               </td>
               <td className="px-2 py-1.5 whitespace-nowrap">
-                <img
+                <Image
                   src={
                     product.imgUrl ||
                     "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=100"
@@ -244,12 +254,13 @@ export const AdminProductTable: React.FC<AdminProductTableProps> = ({
               </td>
               <td className="px-2 py-1.5 text-xs whitespace-nowrap">
                 <button
+                  type="button"
                   onClick={() => {
                     setSelectedProduct(product.id);
                     setProductDetails(product);
                     setIsEditMode(false);
                   }}
-                  className="text-amber-600 hover:text-amber-700 font-medium"
+                  className="text-amber-600 hover:text-amber-700 font-medium cursor-pointer"
                 >
                   상세
                 </button>

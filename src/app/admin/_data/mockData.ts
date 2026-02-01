@@ -1,34 +1,34 @@
-// 회원 타입 정의
+// 회원 확장 정보 타입 정의
+export interface UserExtInfo {
+  privacyAgree: boolean;
+  marketingAgree: boolean;
+  emailAgree: boolean;
+  smsAgree: boolean;
+  isBanned: boolean;
+  banReason: string | null;
+  banStartAt: string | null;
+  banEndAt: string | null;
+}
+
+// 회원 타입 정의 (AdminUserResponse 기반)
 export interface User {
   id: number;
   username: string;
   name: string;
   email: string;
   phone: string;
-  memberType: "일반" | "업장";
   whiskeyNaviMembership: "VIP" | "GOLD" | "SILVER" | null;
   whiskeyTalesMembership: "VIP" | "GOLD" | "SILVER" | null;
-  status: "ACTIVE" | "INACTIVE";
-  joinDate: string;
-  lastLoginAt: string;
-  totalOrders: number;
-  totalSpent: number;
-  roles: string[];
-  socialConnections: {
-    google: boolean;
-    kakao: boolean;
-    naver: boolean;
-  };
-  userExt: {
-    privacyAgree: boolean;
-    marketingAgree: boolean;
-    emailAgree: boolean;
-    smsAgree: boolean;
-    isBanned: boolean;
-    banReason: string | null;
-    banStartDate: string | null;
-    banEndDate: string | null;
-  };
+  status: string;
+  roles: string[]; // memberType은 roles로 대체 (예: "ROLE_BUSINESS" = 업장, "ROLE_USER" = 일반)
+  createdAt: string; // 계정 생성 일시 (date-time 형식, 예: "2025-01-15T10:00:00Z")
+  updatedAt: string; // 계정 최종 수정 일시 (date-time 형식)
+  lastLoginAt: string; // 최근 로그인 일시 (date-time 형식)
+  userExt: UserExtInfo;
+  // 아래 필드들은 AdminUserResponse에 포함되지 않음 - 별도 API에서 조회 필요
+  totalOrders: number; // 총 주문 수
+  totalSpent: number; // 총 지출 금액
+  socialConnections: { google: boolean; kakao: boolean; naver: boolean }; // 소셜 로그인 연동 현황
 }
 
 // 제품 타입 정의
@@ -107,8 +107,8 @@ export interface BlacklistItem {
   id: number;
   name: string;
   reason: string;
-  startDate: string;
-  endDate: string;
+  startAt: string;
+  endAt: string;
 }
 
 // 멤버십 혜택 타입
@@ -215,16 +215,13 @@ export function generateUsers(): User[] {
       name: "홍길동",
       email: "whisky.lover@example.com",
       phone: "010-1234-5678",
-      memberType: "일반",
       whiskeyNaviMembership: "VIP",
       whiskeyTalesMembership: "GOLD",
       status: "ACTIVE",
-      joinDate: "2025.01.15",
-      lastLoginAt: "2026.01.21",
-      totalOrders: 5,
-      totalSpent: 1850000,
       roles: ["ROLE_USER", "ROLE_NAVI_VIP", "ROLE_TALES_GOLD"],
-      socialConnections: { google: true, kakao: false, naver: false },
+      createdAt: "2025-01-15T10:00:00Z",
+      updatedAt: "2026-01-20T15:30:00Z",
+      lastLoginAt: "2026-01-21T09:45:00Z",
       userExt: {
         privacyAgree: true,
         marketingAgree: true,
@@ -232,9 +229,12 @@ export function generateUsers(): User[] {
         smsAgree: false,
         isBanned: false,
         banReason: null,
-        banStartDate: null,
-        banEndDate: null,
+        banStartAt: null,
+        banEndAt: null,
       },
+      totalOrders: 15,
+      totalSpent: 4500000,
+      socialConnections: { google: true, kakao: true, naver: false },
     },
     {
       id: 2,
@@ -242,16 +242,13 @@ export function generateUsers(): User[] {
       name: "김영희",
       email: "scotch@example.com",
       phone: "010-2345-6789",
-      memberType: "업장",
       whiskeyNaviMembership: "GOLD",
       whiskeyTalesMembership: null,
       status: "ACTIVE",
-      joinDate: "2025.02.01",
-      lastLoginAt: "2026.01.20",
-      totalOrders: 12,
-      totalSpent: 4200000,
-      roles: ["ROLE_USER", "ROLE_NAVI_GOLD"],
-      socialConnections: { google: false, kakao: true, naver: false },
+      roles: ["ROLE_USER", "ROLE_BUSINESS", "ROLE_NAVI_GOLD"],
+      createdAt: "2025-02-01T09:00:00Z",
+      updatedAt: "2026-01-19T11:20:00Z",
+      lastLoginAt: "2026-01-20T14:30:00Z",
       userExt: {
         privacyAgree: true,
         marketingAgree: false,
@@ -259,9 +256,12 @@ export function generateUsers(): User[] {
         smsAgree: true,
         isBanned: false,
         banReason: null,
-        banStartDate: null,
-        banEndDate: null,
+        banStartAt: null,
+        banEndAt: null,
       },
+      totalOrders: 8,
+      totalSpent: 2800000,
+      socialConnections: { google: false, kakao: true, naver: true },
     },
     {
       id: 3,
@@ -269,16 +269,13 @@ export function generateUsers(): User[] {
       name: "관리자",
       email: "admin@whiskynavi.com",
       phone: "010-9999-0000",
-      memberType: "일반",
       whiskeyNaviMembership: "VIP",
       whiskeyTalesMembership: "VIP",
       status: "ACTIVE",
-      joinDate: "2024.01.01",
-      lastLoginAt: "2026.01.22",
-      totalOrders: 0,
-      totalSpent: 0,
       roles: ["ROLE_ADMIN", "ROLE_USER", "ROLE_NAVI_VIP", "ROLE_TALES_VIP"],
-      socialConnections: { google: true, kakao: true, naver: true },
+      createdAt: "2024-01-01T00:00:00Z",
+      updatedAt: "2026-01-22T08:00:00Z",
+      lastLoginAt: "2026-01-22T10:15:00Z",
       userExt: {
         privacyAgree: true,
         marketingAgree: true,
@@ -286,26 +283,21 @@ export function generateUsers(): User[] {
         smsAgree: true,
         isBanned: false,
         banReason: null,
-        banStartDate: null,
-        banEndDate: null,
+        banStartAt: null,
+        banEndAt: null,
       },
+      totalOrders: 25,
+      totalSpent: 12500000,
+      socialConnections: { google: true, kakao: true, naver: true },
     },
   ];
 
   const additionalUsers: User[] = [];
-  const memberTypes: ("일반" | "업장")[] = ["일반", "업장"];
   const memberships: ("VIP" | "GOLD" | "SILVER" | null)[] = [
     "VIP",
     "GOLD",
     "SILVER",
     null,
-  ];
-  const socialProviders = [
-    { google: true, kakao: false, naver: false },
-    { google: false, kakao: true, naver: false },
-    { google: false, kakao: false, naver: true },
-    { google: true, kakao: true, naver: false },
-    { google: false, kakao: false, naver: false },
   ];
 
   for (let i = 4; i <= 50; i++) {
@@ -314,8 +306,12 @@ export function generateUsers(): User[] {
     const naviRole = naviMembership ? `ROLE_NAVI_${naviMembership}` : null;
     const talesRole = talesMembership ? `ROLE_TALES_${talesMembership}` : null;
     const roles = ["ROLE_USER"];
+    if (i % 2 === 1) roles.push("ROLE_BUSINESS"); // 홀수 ID는 업장 회원
     if (naviRole) roles.push(naviRole);
     if (talesRole) roles.push(talesRole);
+
+    const day = String((i % 28) + 1).padStart(2, "0");
+    const loginDay = String(Math.min((i % 28) + 1, 22)).padStart(2, "0");
 
     additionalUsers.push({
       id: i,
@@ -323,16 +319,13 @@ export function generateUsers(): User[] {
       name: `회원${i}`,
       email: `user${i}@example.com`,
       phone: `010-${String(1000 + i).slice(-4)}-${String(5678 + i).slice(-4)}`,
-      memberType: memberTypes[i % 2],
       whiskeyNaviMembership: naviMembership,
       whiskeyTalesMembership: talesMembership,
       status: i % 10 === 0 ? "INACTIVE" : "ACTIVE",
-      joinDate: `2025.01.${String((i % 28) + 1).padStart(2, "0")}`,
-      lastLoginAt: `2026.01.${String(Math.min((i % 28) + 1, 22)).padStart(2, "0")}`,
-      totalOrders: Math.floor(Math.random() * 20),
-      totalSpent: Math.floor(Math.random() * 5000000),
       roles,
-      socialConnections: socialProviders[i % 5],
+      createdAt: `2025-01-${day}T10:00:00Z`,
+      updatedAt: `2026-01-${loginDay}T12:00:00Z`,
+      lastLoginAt: `2026-01-${loginDay}T14:30:00Z`,
       userExt: {
         privacyAgree: true,
         marketingAgree: i % 3 !== 0,
@@ -340,8 +333,15 @@ export function generateUsers(): User[] {
         smsAgree: i % 3 === 0,
         isBanned: i % 15 === 0,
         banReason: i % 15 === 0 ? "부적절한 행위로 인한 정지" : null,
-        banStartDate: i % 15 === 0 ? "2026.01.15" : null,
-        banEndDate: i % 15 === 0 ? "2026.02.15" : null,
+        banStartAt: i % 15 === 0 ? "2026-01-15T00:00:00Z" : null,
+        banEndAt: i % 15 === 0 ? "2026-02-15T00:00:00Z" : null,
+      },
+      totalOrders: i % 20,
+      totalSpent: (i % 20) * 350000,
+      socialConnections: {
+        google: i % 3 === 0,
+        kakao: i % 2 === 0,
+        naver: i % 4 === 0,
       },
     });
   }
@@ -579,22 +579,22 @@ export const initialBlacklist: BlacklistItem[] = [
     name: "홍길동",
     reason:
       "중복 예약으로 인한 다른 회원 피해 발생. 3회 이상 반복된 행위로 예약 제한 조치.",
-    startDate: "2026.01.01",
-    endDate: "2026.06.30",
+    startAt: "2026.01.01",
+    endAt: "2026.06.30",
   },
   {
     id: 2,
     name: "김철수",
     reason: "부적절한 언행 및 고객센터 직원에 대한 폭언. 회사 정책 위반 심각.",
-    startDate: "2026.01.10",
-    endDate: "영구",
+    startAt: "2026.01.10",
+    endAt: "영구",
   },
   {
     id: 3,
     name: "박영희",
     reason: "고액 주문 후 잦은 반품 이력 있음. 모니터링 필요.",
-    startDate: "-",
-    endDate: "-",
+    startAt: "-",
+    endAt: "-",
   },
 ];
 

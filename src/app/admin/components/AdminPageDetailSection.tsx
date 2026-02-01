@@ -1,19 +1,20 @@
 "use client";
-import React from "react";
 import {
-  Package,
-  Settings,
-  Upload,
-  Trash2,
-  Edit2,
-  Save,
-  X,
-  Filter,
+  CalendarDays,
   ChevronLeft,
   ChevronRight,
-  CalendarDays,
+  Edit2,
+  Filter,
+  Package,
+  Save,
+  Settings,
+  Trash2,
+  Upload,
+  X,
 } from "lucide-react";
-import { useState, useMemo } from "react";
+import Image from "next/image";
+import React, { useMemo, useState } from "react";
+import { Label } from "@/components/ui/label";
 
 interface DetailSectionProps {
   isEditMode: boolean;
@@ -30,7 +31,6 @@ export default function AdminPageDetailSection({
   setReservationDetails,
   formatDateForInput,
 }: DetailSectionProps) {
-  const [isImageHovered, setIsImageHovered] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<
     | "name"
@@ -125,18 +125,20 @@ export default function AdminPageDetailSection({
       case "approved":
         compareValue = a.approvedBottles - b.approvedBottles;
         break;
-      case "membershipNavi":
+      case "membershipNavi": {
         const naviOrder: any = { VIP: 3, GOLD: 2, SILVER: 1, null: 0 };
         compareValue =
           (naviOrder[a.whiskeyNaviMembership] || 0) -
           (naviOrder[b.whiskeyNaviMembership] || 0);
         break;
-      case "membershipTales":
+      }
+      case "membershipTales": {
         const talesOrder: any = { VIP: 3, GOLD: 2, SILVER: 1, null: 0 };
         compareValue =
           (talesOrder[a.whiskeyTalesMembership] || 0) -
           (talesOrder[b.whiskeyTalesMembership] || 0);
         break;
+      }
       case "appliedAt":
         compareValue =
           new Date(a.appliedAt).getTime() - new Date(b.appliedAt).getTime();
@@ -191,24 +193,22 @@ export default function AdminPageDetailSection({
       <div className="bg-white rounded-xl border border-gray-200 p-4 mb-4">
         <div className="flex gap-4">
           {/* 이미지 */}
-          <div
-            className="flex-shrink-0 relative"
-            onMouseEnter={() => setIsImageHovered(true)}
-            onMouseLeave={() => setIsImageHovered(false)}
-          >
+          <div className="shrink-0 relative group">
             {reservationDetails.imageUrl ? (
               <>
-                <img
+                <Image
                   src={reservationDetails.imageUrl}
+                  width={32}
+                  height={32}
                   alt={reservationDetails.productName}
                   className="w-32 h-32 object-cover rounded-lg border border-gray-200"
                   onError={(e) => {
                     (e.target as HTMLImageElement).style.display = "none";
                   }}
                 />
-                {isEditMode && isImageHovered && (
-                  <div className="absolute inset-0 bg-black bg-opacity-50 rounded-lg flex items-center justify-center gap-1">
-                    <label className="cursor-pointer px-2 py-1 bg-white text-gray-900 rounded hover:bg-gray-100 transition-colors text-xs flex items-center gap-1">
+                {isEditMode && (
+                  <div className="absolute inset-0 bg-black bg-opacity-50 rounded-lg flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Label className="cursor-pointer px-2 py-1 bg-white text-gray-900 rounded hover:bg-gray-100 transition-colors text-xs flex items-center gap-1">
                       <Upload size={12} />
                       변경
                       <input
@@ -229,15 +229,16 @@ export default function AdminPageDetailSection({
                         }}
                         className="hidden"
                       />
-                    </label>
+                    </Label>
                     <button
+                      type="button"
                       onClick={() =>
                         setReservationDetails({
                           ...reservationDetails,
                           imageUrl: "",
                         })
                       }
-                      className="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-xs flex items-center gap-1"
+                      className="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-xs flex items-center gap-1 cursor-pointer"
                     >
                       <Trash2 size={12} />
                       삭제
@@ -248,7 +249,7 @@ export default function AdminPageDetailSection({
             ) : (
               <div className="w-32 h-32 bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center">
                 {isEditMode && (
-                  <label className="cursor-pointer text-gray-500 hover:text-gray-700 flex flex-col items-center gap-1">
+                  <Label className="cursor-pointer text-gray-500 hover:text-gray-700 flex flex-col items-center gap-1">
                     <Upload size={16} />
                     <span className="text-xs">이미지 업로드</span>
                     <input
@@ -269,7 +270,7 @@ export default function AdminPageDetailSection({
                       }}
                       className="hidden"
                     />
-                  </label>
+                  </Label>
                 )}
               </div>
             )}
@@ -291,18 +292,20 @@ export default function AdminPageDetailSection({
               {isEditMode ? (
                 <div className="flex gap-2">
                   <button
+                    type="button"
                     onClick={() => {
                       setIsEditMode(false);
                       // 실제로는 여기서 저장 API 호출
                     }}
-                    className="px-3 py-1.5 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors text-xs flex items-center gap-1"
+                    className="px-3 py-1.5 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors text-xs flex items-center gap-1 cursor-pointer"
                   >
                     <Save size={14} />
                     저장
                   </button>
                   <button
+                    type="button"
                     onClick={() => setIsEditMode(false)}
-                    className="px-3 py-1.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-xs flex items-center gap-1"
+                    className="px-3 py-1.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-xs flex items-center gap-1 cursor-pointer"
                   >
                     <X size={14} />
                     취소
@@ -310,8 +313,9 @@ export default function AdminPageDetailSection({
                 </div>
               ) : (
                 <button
+                  type="button"
                   onClick={() => setIsEditMode(true)}
-                  className="px-3 py-1.5 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors text-xs flex items-center gap-1"
+                  className="px-3 py-1.5 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors text-xs flex items-center gap-1 cursor-pointer"
                 >
                   <Edit2 size={14} />
                   편집
@@ -321,9 +325,9 @@ export default function AdminPageDetailSection({
 
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               <div>
-                <label className="text-xs text-gray-600 mb-0.5 block">
+                <Label className="text-xs text-gray-600 mb-0.5 block">
                   가격
-                </label>
+                </Label>
                 {isEditMode ? (
                   <div className="flex items-center gap-1">
                     <input
@@ -347,9 +351,9 @@ export default function AdminPageDetailSection({
               </div>
 
               <div>
-                <label className="text-xs text-gray-600 mb-0.5 block">
+                <Label className="text-xs text-gray-600 mb-0.5 block">
                   총 수량
-                </label>
+                </Label>
                 {isEditMode ? (
                   <div className="flex items-center gap-1">
                     <input
@@ -373,9 +377,9 @@ export default function AdminPageDetailSection({
               </div>
 
               <div>
-                <label className="text-xs text-gray-600 mb-0.5 block">
+                <Label className="text-xs text-gray-600 mb-0.5 block">
                   예약 상태
-                </label>
+                </Label>
                 {isEditMode ? (
                   <select
                     value={reservationDetails.status}
@@ -401,9 +405,9 @@ export default function AdminPageDetailSection({
               </div>
 
               <div>
-                <label className="text-xs text-gray-600 mb-0.5 block">
+                <Label className="text-xs text-gray-600 mb-0.5 block">
                   예약 시작 일시
-                </label>
+                </Label>
                 {isEditMode ? (
                   <div className="relative">
                     <input
@@ -430,9 +434,9 @@ export default function AdminPageDetailSection({
               </div>
 
               <div>
-                <label className="text-xs text-gray-600 mb-0.5 block">
+                <Label className="text-xs text-gray-600 mb-0.5 block">
                   예약 마감 일시
-                </label>
+                </Label>
                 {isEditMode ? (
                   <div className="relative">
                     <input
@@ -540,8 +544,9 @@ export default function AdminPageDetailSection({
                     <span className="px-2 py-1 bg-amber-100 text-amber-700 rounded text-xs flex items-center gap-1">
                       검색: {searchQuery}
                       <button
+                        type="button"
                         onClick={() => setSearchQuery("")}
-                        className="hover:text-amber-900"
+                        className="hover:text-amber-900 cursor-pointer"
                       >
                         <X size={10} />
                       </button>
@@ -551,8 +556,9 @@ export default function AdminPageDetailSection({
                     <span className="px-2 py-1 bg-amber-100 text-amber-700 rounded text-xs flex items-center gap-1">
                       회원유형: {memberTypeFilter}
                       <button
+                        type="button"
                         onClick={() => setMemberTypeFilter("all")}
-                        className="hover:text-amber-900"
+                        className="hover:text-amber-900 cursor-pointer"
                       >
                         <X size={10} />
                       </button>
@@ -565,8 +571,9 @@ export default function AdminPageDetailSection({
                         ? "미가입"
                         : membershipNaviFilter}
                       <button
+                        type="button"
                         onClick={() => setMembershipNaviFilter("all")}
-                        className="hover:text-amber-900"
+                        className="hover:text-amber-900 cursor-pointer"
                       >
                         <X size={10} />
                       </button>
@@ -579,8 +586,9 @@ export default function AdminPageDetailSection({
                         ? "미가입"
                         : membershipTalesFilter}
                       <button
+                        type="button"
                         onClick={() => setMembershipTalesFilter("all")}
-                        className="hover:text-amber-900"
+                        className="hover:text-amber-900 cursor-pointer"
                       >
                         <X size={10} />
                       </button>
@@ -590,8 +598,9 @@ export default function AdminPageDetailSection({
                     <span className="px-2 py-1 bg-amber-100 text-amber-700 rounded text-xs flex items-center gap-1">
                       픽업장소: {pickupLocationFilter}
                       <button
+                        type="button"
                         onClick={() => setPickupLocationFilter("all")}
-                        className="hover:text-amber-900"
+                        className="hover:text-amber-900 cursor-pointer"
                       >
                         <X size={10} />
                       </button>
@@ -600,8 +609,9 @@ export default function AdminPageDetailSection({
                 </div>
 
                 <button
+                  type="button"
                   onClick={resetFilters}
-                  className="px-3 py-1 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-xs flex items-center gap-1 whitespace-nowrap"
+                  className="px-3 py-1 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-xs flex items-center gap-1 whitespace-nowrap "
                 >
                   <X size={12} />
                   전체 초기화
@@ -626,10 +636,11 @@ export default function AdminPageDetailSection({
                 </th>
                 <th className="w-20 px-3 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase relative">
                   <button
+                    type="button"
                     onClick={() =>
                       setShowMemberTypeFilter(!showMemberTypeFilter)
                     }
-                    className="flex items-center gap-1 hover:text-amber-600"
+                    className="flex items-center gap-1 hover:text-amber-600 cursor-pointer"
                   >
                     회원유형
                     <Filter size={12} />
@@ -637,29 +648,32 @@ export default function AdminPageDetailSection({
                   {showMemberTypeFilter && (
                     <div className="absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-20 w-32">
                       <button
+                        type="button"
                         onClick={() => {
                           setMemberTypeFilter("all");
                           setShowMemberTypeFilter(false);
                         }}
-                        className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${memberTypeFilter === "all" ? "bg-amber-50 text-amber-700" : ""}`}
+                        className={`block w-full px-3 cursor-pointer py-2 text-left text-xs hover:bg-gray-100 ${memberTypeFilter === "all" ? "bg-amber-50 text-amber-700" : ""}`}
                       >
                         전체
                       </button>
                       <button
+                        type="button"
                         onClick={() => {
                           setMemberTypeFilter("일반");
                           setShowMemberTypeFilter(false);
                         }}
-                        className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${memberTypeFilter === "일반" ? "bg-amber-50 text-amber-700" : ""}`}
+                        className={`block w-full px-3 cursor-pointer py-2 text-left text-xs hover:bg-gray-100 ${memberTypeFilter === "일반" ? "bg-amber-50 text-amber-700" : ""}`}
                       >
                         일반
                       </button>
                       <button
+                        type="button"
                         onClick={() => {
                           setMemberTypeFilter("업장");
                           setShowMemberTypeFilter(false);
                         }}
-                        className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${memberTypeFilter === "업장" ? "bg-amber-50 text-amber-700" : ""}`}
+                        className={`block w-full px-3 cursor-pointer py-2 text-left text-xs hover:bg-gray-100 ${memberTypeFilter === "업장" ? "bg-amber-50 text-amber-700" : ""}`}
                       >
                         업장
                       </button>
@@ -668,8 +682,9 @@ export default function AdminPageDetailSection({
                 </th>
                 <th className="w-28 px-3 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase relative">
                   <button
+                    type="button"
                     onClick={() => setShowNaviFilter(!showNaviFilter)}
-                    className="flex items-center gap-1 hover:text-amber-600"
+                    className="flex items-center gap-1 hover:text-amber-600 cursor-pointer"
                   >
                     위스키내비
                     <Filter size={12} />
@@ -677,47 +692,52 @@ export default function AdminPageDetailSection({
                   {showNaviFilter && (
                     <div className="absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-20 w-32">
                       <button
+                        type="button"
                         onClick={() => {
                           setMembershipNaviFilter("all");
                           setShowNaviFilter(false);
                         }}
-                        className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${membershipNaviFilter === "all" ? "bg-amber-50 text-amber-700" : ""}`}
+                        className={`block w-full px-3 cursor-pointer py-2 text-left text-xs hover:bg-gray-100 ${membershipNaviFilter === "all" ? "bg-amber-50 text-amber-700" : ""}`}
                       >
                         전체
                       </button>
                       <button
+                        type="button"
                         onClick={() => {
                           setMembershipNaviFilter("VIP");
                           setShowNaviFilter(false);
                         }}
-                        className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${membershipNaviFilter === "VIP" ? "bg-amber-50 text-amber-700" : ""}`}
+                        className={`block w-full px-3 cursor-pointer py-2 text-left text-xs hover:bg-gray-100 ${membershipNaviFilter === "VIP" ? "bg-amber-50 text-amber-700" : ""}`}
                       >
                         VIP
                       </button>
                       <button
+                        type="button"
                         onClick={() => {
                           setMembershipNaviFilter("GOLD");
                           setShowNaviFilter(false);
                         }}
-                        className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${membershipNaviFilter === "GOLD" ? "bg-amber-50 text-amber-700" : ""}`}
+                        className={`block w-full px-3 cursor-pointer py-2 text-left text-xs hover:bg-gray-100 ${membershipNaviFilter === "GOLD" ? "bg-amber-50 text-amber-700" : ""}`}
                       >
                         GOLD
                       </button>
                       <button
+                        type="button"
                         onClick={() => {
                           setMembershipNaviFilter("SILVER");
                           setShowNaviFilter(false);
                         }}
-                        className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${membershipNaviFilter === "SILVER" ? "bg-amber-50 text-amber-700" : ""}`}
+                        className={`block w-full px-3 cursor-pointer py-2 text-left text-xs hover:bg-gray-100 ${membershipNaviFilter === "SILVER" ? "bg-amber-50 text-amber-700" : ""}`}
                       >
                         SILVER
                       </button>
                       <button
+                        type="button"
                         onClick={() => {
                           setMembershipNaviFilter("none");
                           setShowNaviFilter(false);
                         }}
-                        className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${membershipNaviFilter === "none" ? "bg-amber-50 text-amber-700" : ""}`}
+                        className={`block w-full px-3 cursor-pointer py-2 text-left text-xs hover:bg-gray-100 ${membershipNaviFilter === "none" ? "bg-amber-50 text-amber-700" : ""}`}
                       >
                         미가입
                       </button>
@@ -726,8 +746,9 @@ export default function AdminPageDetailSection({
                 </th>
                 <th className="w-28 px-3 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase relative">
                   <button
+                    type="button"
                     onClick={() => setShowTalesFilter(!showTalesFilter)}
-                    className="flex items-center gap-1 hover:text-amber-600"
+                    className="flex items-center gap-1 hover:text-amber-600 cursor-pointer"
                   >
                     위스키테일즈
                     <Filter size={12} />
@@ -735,47 +756,52 @@ export default function AdminPageDetailSection({
                   {showTalesFilter && (
                     <div className="absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-20 w-32">
                       <button
+                        type="button"
                         onClick={() => {
                           setMembershipTalesFilter("all");
                           setShowTalesFilter(false);
                         }}
-                        className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${membershipTalesFilter === "all" ? "bg-amber-50 text-amber-700" : ""}`}
+                        className={`block w-full px-3 cursor-pointer py-2 text-left text-xs hover:bg-gray-100 ${membershipTalesFilter === "all" ? "bg-amber-50 text-amber-700" : ""}`}
                       >
                         전체
                       </button>
                       <button
+                        type="button"
                         onClick={() => {
                           setMembershipTalesFilter("VIP");
                           setShowTalesFilter(false);
                         }}
-                        className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${membershipTalesFilter === "VIP" ? "bg-amber-50 text-amber-700" : ""}`}
+                        className={`block w-full px-3 cursor-pointer py-2 text-left text-xs hover:bg-gray-100 ${membershipTalesFilter === "VIP" ? "bg-amber-50 text-amber-700" : ""}`}
                       >
                         VIP
                       </button>
                       <button
+                        type="button"
                         onClick={() => {
                           setMembershipTalesFilter("GOLD");
                           setShowTalesFilter(false);
                         }}
-                        className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${membershipTalesFilter === "GOLD" ? "bg-amber-50 text-amber-700" : ""}`}
+                        className={`block w-full px-3 cursor-pointer py-2 text-left text-xs hover:bg-gray-100 ${membershipTalesFilter === "GOLD" ? "bg-amber-50 text-amber-700" : ""}`}
                       >
                         GOLD
                       </button>
                       <button
+                        type="button"
                         onClick={() => {
                           setMembershipTalesFilter("SILVER");
                           setShowTalesFilter(false);
                         }}
-                        className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${membershipTalesFilter === "SILVER" ? "bg-amber-50 text-amber-700" : ""}`}
+                        className={`block w-full px-3 cursor-pointer py-2 text-left text-xs hover:bg-gray-100 ${membershipTalesFilter === "SILVER" ? "bg-amber-50 text-amber-700" : ""}`}
                       >
                         SILVER
                       </button>
                       <button
+                        type="button"
                         onClick={() => {
                           setMembershipTalesFilter("none");
                           setShowTalesFilter(false);
                         }}
-                        className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${membershipTalesFilter === "none" ? "bg-amber-50 text-amber-700" : ""}`}
+                        className={`block w-full px-3 cursor-pointer py-2 text-left text-xs hover:bg-gray-100 ${membershipTalesFilter === "none" ? "bg-amber-50 text-amber-700" : ""}`}
                       >
                         미가입
                       </button>
@@ -790,6 +816,7 @@ export default function AdminPageDetailSection({
                 </th>
                 <th className="w-24 px-3 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase relative">
                   <button
+                    type="button"
                     onClick={() => setShowPickupFilter(!showPickupFilter)}
                     className="flex items-center gap-1 hover:text-amber-600"
                   >
@@ -799,22 +826,24 @@ export default function AdminPageDetailSection({
                   {showPickupFilter && (
                     <div className="absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-20 w-32">
                       <button
+                        type="button"
                         onClick={() => {
                           setPickupLocationFilter("all");
                           setShowPickupFilter(false);
                         }}
-                        className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${pickupLocationFilter === "all" ? "bg-amber-50 text-amber-700" : ""}`}
+                        className={`block w-full px-3 cursor-pointer py-2 text-left text-xs hover:bg-gray-100 ${pickupLocationFilter === "all" ? "bg-amber-50 text-amber-700" : ""}`}
                       >
                         전체
                       </button>
                       {pickupLocations.map((location) => (
                         <button
                           key={location}
+                          type="button"
                           onClick={() => {
                             setPickupLocationFilter(location);
                             setShowPickupFilter(false);
                           }}
-                          className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${pickupLocationFilter === location ? "bg-amber-50 text-amber-700" : ""}`}
+                          className={`block w-full px-3 cursor-pointer py-2 text-left text-xs hover:bg-gray-100 ${pickupLocationFilter === location ? "bg-amber-50 text-amber-700" : ""}`}
                         >
                           {location}
                         </button>
@@ -829,9 +858,9 @@ export default function AdminPageDetailSection({
             </thead>
             <tbody className="divide-y divide-gray-100">
               {currentApplicants.length > 0 ? (
-                currentApplicants.map((applicant: any, index: number) => (
+                currentApplicants.map((applicant: any) => (
                   <tr
-                    key={index}
+                    key={applicant.id}
                     className="hover:bg-gray-50 transition-colors"
                   >
                     <td className="px-3 py-2 text-xs text-gray-900">
@@ -940,7 +969,7 @@ export default function AdminPageDetailSection({
         {/* 페이지네이션 */}
         <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <label className="text-sm text-gray-600">페이지당:</label>
+            <Label className="text-sm text-gray-600">페이지당:</Label>
             <select
               value={itemsPerPage}
               onChange={(e) => {
@@ -963,15 +992,16 @@ export default function AdminPageDetailSection({
 
           <div className="flex items-center gap-1">
             <button
+              type="button"
               onClick={() => setCurrentPage(currentPage - 1)}
               disabled={currentPage === 1}
-              className="p-1.5 rounded border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-1.5 rounded border cursor-pointer border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ChevronLeft size={18} />
             </button>
 
             {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-              let pageNum;
+              let pageNum: number;
               if (totalPages <= 5) {
                 pageNum = i + 1;
               } else if (currentPage <= 3) {
@@ -984,12 +1014,13 @@ export default function AdminPageDetailSection({
 
               return (
                 <button
+                  type="button"
                   key={pageNum}
                   onClick={() => setCurrentPage(pageNum)}
                   className={`w-8 h-8 rounded text-sm font-medium ${
                     currentPage === pageNum
                       ? "bg-amber-600 text-white"
-                      : "border border-gray-300 hover:bg-gray-50"
+                      : "border border-gray-300 hover:bg-gray-50 cursor-pointer"
                   }`}
                 >
                   {pageNum}
@@ -998,9 +1029,10 @@ export default function AdminPageDetailSection({
             })}
 
             <button
+              type="button"
               onClick={() => setCurrentPage(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="p-1.5 rounded border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-1.5 rounded border cursor-pointer border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ChevronRight size={18} />
             </button>

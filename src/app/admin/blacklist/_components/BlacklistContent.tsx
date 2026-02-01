@@ -1,15 +1,16 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { Edit2, Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Plus, Edit2, Trash2 } from "lucide-react";
+import { overlay } from "overlay-kit";
+import { useMemo, useState } from "react";
+import { Button } from "@/components/ui/button";
 import AdminHeader from "../../_components/AdminHeader";
 import { useSidebar } from "../../_components/AdminLayoutClient";
 import Pagination from "../../_components/Pagination";
-import { initialBlacklist, type BlacklistItem } from "../../_data/mockData";
-import { overlay } from "overlay-kit";
-import BlacklistFormModal from "./modals/BlacklistFormModal";
+import { type BlacklistItem, initialBlacklist } from "../../_data/mockData";
 import DeleteConfirmModal from "./modals/BlacklistDeleteModal";
+import BlacklistFormModal from "./modals/BlacklistFormModal";
 
 interface BlacklistContentProps {
   searchParams: {
@@ -29,7 +30,7 @@ export default function BlacklistContent({
   const currentPage = Number(searchParams.page) || 1;
   const itemsPerPage = Number(searchParams.limit) || 20;
   const searchQuery = searchParams.q || "";
-
+  console.log("initialBlacklist", initialBlacklist);
   const [blacklist, setBlacklist] = useState<BlacklistItem[]>(initialBlacklist);
 
   // 필터링
@@ -119,13 +120,10 @@ export default function BlacklistContent({
       <div className="p-8">
         {/* 추가 버튼 */}
         <div className="flex justify-end mb-4">
-          <button
-            onClick={openAddModal}
-            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2"
-          >
+          <Button variant="destructive" onClick={openAddModal}>
             <Plus size={16} />
             블랙리스트 추가
-          </button>
+          </Button>
         </div>
 
         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
@@ -169,33 +167,33 @@ export default function BlacklistContent({
                       {item.reason}
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-600">
-                      {item.startDate}
+                      {item.startAt}
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-600">
                       <span
                         className={
-                          item.endDate === "영구"
+                          item.endAt === "영구"
                             ? "text-red-600 font-semibold"
                             : ""
                         }
                       >
-                        {item.endDate}
+                        {item.endAt}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-sm">
                       <div className="flex items-center gap-2">
-                        <button
+                        <Button
+                          variant="edit"
                           onClick={() => openEditModal(item)}
-                          className="text-amber-600 hover:text-amber-700"
                         >
                           <Edit2 size={16} />
-                        </button>
-                        <button
+                        </Button>
+                        <Button
+                          variant="delete"
                           onClick={() => openDeleteModal(item.id)}
-                          className="text-red-600 hover:text-red-700"
                         >
                           <Trash2 size={16} />
-                        </button>
+                        </Button>
                       </div>
                     </td>
                   </tr>

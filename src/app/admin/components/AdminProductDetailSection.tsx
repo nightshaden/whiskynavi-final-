@@ -1,7 +1,8 @@
 "use client";
-import React from "react";
-import { Upload, Trash2, Plus, X, CalendarDays } from "lucide-react";
-import { useState } from "react";
+import { CalendarDays, Plus, Trash2, Upload, X } from "lucide-react";
+import Image from "next/image";
+import React, { useState } from "react";
+import { Label } from "@/components/ui/label";
 
 interface ProductDetailSectionProps {
   isEditMode: boolean;
@@ -14,7 +15,6 @@ export default function AdminProductDetailSection({
   productDetails,
   setProductDetails,
 }: ProductDetailSectionProps) {
-  const [isImageHovered, setIsImageHovered] = useState(false);
   const [newExtraInfoKey, setNewExtraInfoKey] = useState("");
   const [newExtraInfoValue, setNewExtraInfoValue] = useState("");
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -86,7 +86,7 @@ export default function AdminProductDetailSection({
             {/* 왼쪽: 모든 필드 (설명 제외) */}
             <div className="flex-1 space-y-2 pr-6">
               <div className="flex gap-3">
-                <label className="w-32 text-sm text-gray-700">제품명</label>
+                <Label className="w-32 text-sm text-gray-700">제품명</Label>
                 <input
                   type="text"
                   value={productDetails.name}
@@ -101,7 +101,7 @@ export default function AdminProductDetailSection({
               </div>
 
               <div className="flex gap-3">
-                <label className="w-32 text-sm text-gray-700">브랜드</label>
+                <Label className="w-32 text-sm text-gray-700">브랜드</Label>
                 <input
                   type="text"
                   value={productDetails.brand}
@@ -116,7 +116,7 @@ export default function AdminProductDetailSection({
               </div>
 
               <div className="flex gap-3">
-                <label className="w-32 text-sm text-gray-700">시리즈</label>
+                <Label className="w-32 text-sm text-gray-700">시리즈</Label>
                 <input
                   type="text"
                   value={productDetails.series || ""}
@@ -131,7 +131,7 @@ export default function AdminProductDetailSection({
               </div>
 
               <div className="flex gap-3">
-                <label className="w-32 text-sm text-gray-700">회사</label>
+                <Label className="w-32 text-sm text-gray-700">회사</Label>
                 <input
                   type="text"
                   value={productDetails.company || ""}
@@ -146,7 +146,7 @@ export default function AdminProductDetailSection({
               </div>
 
               <div className="flex gap-3">
-                <label className="w-32 text-sm text-gray-700">증류소</label>
+                <Label className="w-32 text-sm text-gray-700">증류소</Label>
                 <input
                   type="text"
                   value={productDetails.distillery || ""}
@@ -161,7 +161,7 @@ export default function AdminProductDetailSection({
               </div>
 
               <div className="flex gap-3">
-                <label className="w-32 text-sm text-gray-700">몰트 타입</label>
+                <Label className="w-32 text-sm text-gray-700">몰트 타입</Label>
                 <input
                   type="text"
                   value={productDetails.maltType || ""}
@@ -176,9 +176,9 @@ export default function AdminProductDetailSection({
               </div>
 
               <div className="flex gap-3">
-                <label className="w-32 text-sm text-gray-700">
+                <Label className="w-32 text-sm text-gray-700">
                   캐스크 타입
-                </label>
+                </Label>
                 <input
                   type="text"
                   value={productDetails.caskType || ""}
@@ -193,9 +193,9 @@ export default function AdminProductDetailSection({
               </div>
 
               <div className="flex gap-3">
-                <label className="w-32 text-sm text-gray-700">
+                <Label className="w-32 text-sm text-gray-700">
                   캐스크 번호
-                </label>
+                </Label>
                 <input
                   type="text"
                   value={productDetails.caskNumber || ""}
@@ -210,9 +210,9 @@ export default function AdminProductDetailSection({
               </div>
 
               <div className="flex gap-3">
-                <label className="w-32 text-sm text-gray-700">
+                <Label className="w-32 text-sm text-gray-700">
                   알코올 도수 (%)
-                </label>
+                </Label>
                 <input
                   type="number"
                   step="0.1"
@@ -228,7 +228,7 @@ export default function AdminProductDetailSection({
               </div>
 
               <div className="flex gap-3">
-                <label className="w-32 text-sm text-gray-700">용량 (ml)</label>
+                <Label className="w-32 text-sm text-gray-700">용량 (ml)</Label>
                 <input
                   type="number"
                   value={productDetails.capacity || ""}
@@ -243,7 +243,7 @@ export default function AdminProductDetailSection({
               </div>
 
               <div className="flex gap-3 items-center">
-                <label className="w-32 text-sm text-gray-700">증류 날짜</label>
+                <Label className="w-32 text-sm text-gray-700">증류 날짜</Label>
                 <div className="relative flex-1">
                   <input
                     type="date"
@@ -264,7 +264,7 @@ export default function AdminProductDetailSection({
               </div>
 
               <div className="flex gap-3 items-center">
-                <label className="w-32 text-sm text-gray-700">병입 날짜</label>
+                <Label className="w-32 text-sm text-gray-700">병입 날짜</Label>
                 <div className="relative flex-1">
                   <input
                     type="date"
@@ -285,9 +285,9 @@ export default function AdminProductDetailSection({
               </div>
 
               <div className="flex gap-3">
-                <label className="w-32 text-sm text-gray-700">
+                <Label className="w-32 text-sm text-gray-700">
                   숙성년수 (년)
-                </label>
+                </Label>
                 <input
                   type="number"
                   value={productDetails.agingYears || ""}
@@ -302,9 +302,9 @@ export default function AdminProductDetailSection({
               </div>
 
               <div className="flex gap-3">
-                <label className="w-32 text-sm text-gray-700">
+                <Label className="w-32 text-sm text-gray-700">
                   전체 수량 (병)
-                </label>
+                </Label>
                 <input
                   type="number"
                   value={productDetails.totalQuantity || ""}
@@ -320,9 +320,9 @@ export default function AdminProductDetailSection({
 
               {/* 추가 정보 */}
               <div className="pt-2 border-t">
-                <label className="text-sm text-gray-700 font-semibold block mb-2">
+                <Label className="text-sm text-gray-700 font-semibold block mb-2">
                   추가 정보
-                </label>
+                </Label>
                 <div className="space-y-2">
                   {Object.entries(productDetails.extraInfos || {}).map(
                     ([key, value]) => (
@@ -361,8 +361,9 @@ export default function AdminProductDetailSection({
                           placeholder="값"
                         />
                         <button
+                          type="button"
                           onClick={() => handleRemoveExtraInfo(key)}
-                          className="px-2 py-1 text-red-600 hover:text-red-700"
+                          className="px-2 py-1 text-red-600 hover:text-red-700 cursor-pointer"
                         >
                           <X size={18} />
                         </button>
@@ -387,8 +388,9 @@ export default function AdminProductDetailSection({
                       placeholder="새 값"
                     />
                     <button
+                      type="button"
                       onClick={handleAddExtraInfo}
-                      className="px-2 py-1 bg-amber-600 text-white rounded hover:bg-amber-700 transition-colors"
+                      className="px-2 py-1 bg-amber-600 text-white rounded hover:bg-amber-700 transition-colors cursor-pointer"
                     >
                       <Plus size={18} />
                     </button>
@@ -408,42 +410,40 @@ export default function AdminProductDetailSection({
             {/* 오른쪽: 이미지 */}
             <div className="flex-1 flex flex-col pl-6">
               {/* 큰 이미지 */}
-              <div
-                className="relative mb-4"
-                onMouseEnter={() => setIsImageHovered(true)}
-                onMouseLeave={() => setIsImageHovered(false)}
-              >
-                <img
+              <div className="relative mb-4 group">
+                <Image
                   src={currentImage}
+                  width={320}
+                  height={320}
                   alt={productDetails.name}
                   className="w-full h-80 object-cover rounded border border-gray-200"
                 />
-                {isImageHovered && (
-                  <div className="absolute inset-0 bg-black bg-opacity-50 rounded flex items-center justify-center">
-                    <label className="cursor-pointer px-4 py-2 bg-white text-gray-900 rounded hover:bg-gray-100 transition-colors font-semibold text-sm flex items-center gap-2">
-                      <Upload size={18} />
-                      이미지 추가
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            handleAddImage(file);
-                          }
-                        }}
-                        className="hidden"
-                      />
-                    </label>
-                  </div>
-                )}
+                <div className="absolute inset-0 bg-black bg-opacity-50 rounded flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Label className="cursor-pointer px-4 py-2 bg-white text-gray-900 rounded hover:bg-gray-100 transition-colors font-semibold text-sm flex items-center gap-2">
+                    <Upload size={18} />
+                    이미지 추가
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          handleAddImage(file);
+                        }
+                      }}
+                      className="hidden"
+                    />
+                  </Label>
+                </div>
               </div>
               {/* 썸네일 리스트 */}
               <div className="flex flex-wrap gap-2">
                 {imgUrls.map((url, index) => (
-                  <div key={index} className="relative group">
-                    <img
+                  <div key={url} className="relative group/thumb">
+                    <Image
                       src={url}
+                      width={16}
+                      height={16}
                       alt={`Product ${index + 1}`}
                       className={`w-16 h-16 object-cover rounded border-2 cursor-pointer transition-all ${
                         index === selectedImageIndex
@@ -453,8 +453,9 @@ export default function AdminProductDetailSection({
                       onClick={() => setSelectedImageIndex(index)}
                     />
                     <button
+                      type="button"
                       onClick={() => handleRemoveImage(index)}
-                      className="absolute -top-1 -right-1 w-5 h-5 bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="absolute -top-1 -right-1 w-5 h-5 bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover/thumb:opacity-100 transition-opacity cursor-pointer"
                     >
                       <X size={12} />
                     </button>
@@ -632,42 +633,40 @@ export default function AdminProductDetailSection({
             {/* 오른쪽: 이미지 */}
             <div className="flex-1 flex flex-col pl-6">
               {/* 큰 이미지 */}
-              <div
-                className="relative mb-4"
-                onMouseEnter={() => setIsImageHovered(true)}
-                onMouseLeave={() => setIsImageHovered(false)}
-              >
-                <img
+              <div className="relative mb-4 group">
+                <Image
                   src={currentImage}
+                  width={320}
+                  height={320}
                   alt={productDetails.name}
                   className="w-full h-80 object-cover rounded border border-gray-200"
                 />
-                {isImageHovered && (
-                  <div className="absolute inset-0 bg-black bg-opacity-50 rounded flex items-center justify-center">
-                    <label className="cursor-pointer px-4 py-2 bg-white text-gray-900 rounded hover:bg-gray-100 transition-colors font-semibold text-sm flex items-center gap-2">
-                      <Upload size={18} />
-                      이미지 추가
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            handleAddImage(file);
-                          }
-                        }}
-                        className="hidden"
-                      />
-                    </label>
-                  </div>
-                )}
+                <div className="absolute inset-0 bg-black bg-opacity-50 rounded flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Label className="cursor-pointer px-4 py-2 bg-white text-gray-900 rounded hover:bg-gray-100 transition-colors font-semibold text-sm flex items-center gap-2">
+                    <Upload size={18} />
+                    이미지 추가
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          handleAddImage(file);
+                        }
+                      }}
+                      className="hidden"
+                    />
+                  </Label>
+                </div>
               </div>
               {/* 썸네일 리스트 */}
               <div className="flex flex-wrap gap-2">
                 {imgUrls.map((url, index) => (
-                  <div key={index} className="relative group">
-                    <img
+                  <div key={url} className="relative group/thumb">
+                    <Image
                       src={url}
+                      width={64}
+                      height={64}
                       alt={`Product ${index + 1}`}
                       className={`w-16 h-16 object-cover rounded border-2 cursor-pointer transition-all ${
                         index === selectedImageIndex
@@ -677,8 +676,9 @@ export default function AdminProductDetailSection({
                       onClick={() => setSelectedImageIndex(index)}
                     />
                     <button
+                      type="button"
                       onClick={() => handleRemoveImage(index)}
-                      className="absolute -top-1 -right-1 w-5 h-5 bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="absolute -top-1 -right-1 w-5 h-5 bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover/thumb:opacity-100 transition-opacity cursor-pointer"
                     >
                       <X size={12} />
                     </button>

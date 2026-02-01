@@ -1,24 +1,29 @@
 "use client";
 
-import { useState } from "react";
-import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
-import { type BlacklistItem } from "../../../_data/mockData";
+import { CalendarIcon } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
   DialogFooter,
+  DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Calendar } from "@/components/ui/calendar";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import type { BlacklistItem } from "../../../_data/mockData";
 
 // 날짜 문자열을 Date 객체로 변환
 function parseDate(dateStr: string): Date | undefined {
@@ -52,9 +57,9 @@ export default function BlacklistFormModal({
   const [formData, setFormData] = useState({
     name: initialData?.name ?? "",
     reason: initialData?.reason ?? "",
-    startDate: parseDate(initialData?.startDate ?? ""),
-    endDate: parseDate(initialData?.endDate ?? ""),
-    isPermanent: initialData?.endDate === "영구",
+    startAt: parseDate(initialData?.startAt ?? ""),
+    endAt: parseDate(initialData?.endAt ?? ""),
+    isPermanent: initialData?.endAt === "영구",
   });
 
   const isAdd = mode === "add";
@@ -68,11 +73,11 @@ export default function BlacklistFormModal({
     onSubmit({
       name: formData.name,
       reason: formData.reason,
-      startDate: formData.startDate ? formatDateString(formData.startDate) : "-",
-      endDate: formData.isPermanent
+      startAt: formData.startAt ? formatDateString(formData.startAt) : "-",
+      endAt: formData.isPermanent
         ? "영구"
-        : formData.endDate
-          ? formatDateString(formData.endDate)
+        : formData.endAt
+          ? formatDateString(formData.endAt)
           : "-",
     });
     close();
@@ -88,52 +93,45 @@ export default function BlacklistFormModal({
         </DialogHeader>
 
         <div className="space-y-4 py-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              이름 {isAdd && "*"}
-            </label>
-            <input
-              type="text"
+          <div className="space-y-1.5">
+            <Label htmlFor="name">이름 {isAdd && "*"}</Label>
+            <Input
+              id="name"
               value={formData.name}
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
               placeholder="이름 입력"
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              사유 {isAdd && "*"}
-            </label>
-            <textarea
+          <div className="space-y-1.5">
+            <Label htmlFor="reason">사유 {isAdd && "*"}</Label>
+            <Textarea
+              id="reason"
               value={formData.reason}
               onChange={(e) =>
                 setFormData({ ...formData, reason: e.target.value })
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
               rows={3}
               placeholder="제재 사유 입력"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                시작일
-              </label>
+            <div className="space-y-1.5">
+              <Label>시작일</Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <button
                     type="button"
                     className={cn(
                       "w-full px-3 py-2 border border-gray-300 rounded-lg text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-red-500",
-                      !formData.startDate && "text-gray-400"
+                      !formData.startAt && "text-gray-400",
                     )}
                   >
-                    {formData.startDate
-                      ? format(formData.startDate, "yyyy년 MM월 dd일", {
+                    {formData.startAt
+                      ? format(formData.startAt, "yyyy년 MM월 dd일", {
                           locale: ko,
                         })
                       : "날짜 선택"}
@@ -143,19 +141,17 @@ export default function BlacklistFormModal({
                 <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
-                    selected={formData.startDate}
+                    selected={formData.startAt}
                     onSelect={(date) =>
-                      setFormData({ ...formData, startDate: date })
+                      setFormData({ ...formData, startAt: date })
                     }
                     locale={ko}
                   />
                 </PopoverContent>
               </Popover>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                종료일
-              </label>
+            <div className="space-y-1.5">
+              <Label>종료일</Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <button
@@ -163,13 +159,15 @@ export default function BlacklistFormModal({
                     disabled={formData.isPermanent}
                     className={cn(
                       "w-full px-3 py-2 border border-gray-300 rounded-lg text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-red-500 disabled:bg-gray-100 disabled:cursor-not-allowed",
-                      !formData.endDate && !formData.isPermanent && "text-gray-400"
+                      !formData.endAt &&
+                        !formData.isPermanent &&
+                        "text-gray-400",
                     )}
                   >
                     {formData.isPermanent
                       ? "영구 제재"
-                      : formData.endDate
-                        ? format(formData.endDate, "yyyy년 MM월 dd일", {
+                      : formData.endAt
+                        ? format(formData.endAt, "yyyy년 MM월 dd일", {
                             locale: ko,
                           })
                         : "날짜 선택"}
@@ -179,13 +177,13 @@ export default function BlacklistFormModal({
                 <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
-                    selected={formData.endDate}
+                    selected={formData.endAt}
                     onSelect={(date) =>
-                      setFormData({ ...formData, endDate: date })
+                      setFormData({ ...formData, endAt: date })
                     }
                     locale={ko}
                     disabled={(date) =>
-                      formData.startDate ? date < formData.startDate : false
+                      formData.startAt ? date < formData.startAt : false
                     }
                   />
                 </PopoverContent>
@@ -194,45 +192,32 @@ export default function BlacklistFormModal({
           </div>
 
           <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
+            <Checkbox
               id="permanent"
               checked={formData.isPermanent}
-              onChange={(e) =>
+              onCheckedChange={(checked) =>
                 setFormData({
                   ...formData,
-                  isPermanent: e.target.checked,
-                  endDate: e.target.checked ? undefined : formData.endDate,
+                  isPermanent: checked === true,
+                  endAt: checked === true ? undefined : formData.endAt,
                 })
               }
-              className="w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
             />
-            <label
-              htmlFor="permanent"
-              className="text-sm font-medium text-gray-700"
-            >
-              영구 제재
-            </label>
+            <Label htmlFor="permanent">영구 제재</Label>
           </div>
         </div>
 
         <DialogFooter className="gap-2 sm:gap-2">
-          <button
-            onClick={close}
-            className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-semibold"
-          >
+          <Button variant="outline" className="flex-1" onClick={close}>
             취소
-          </button>
-          <button
+          </Button>
+          <Button
+            variant={isAdd ? "destructive" : "default"}
+            className="flex-1"
             onClick={handleSubmit}
-            className={`flex-1 px-4 py-2 text-white rounded-lg transition-colors font-semibold ${
-              isAdd
-                ? "bg-red-600 hover:bg-red-700"
-                : "bg-amber-600 hover:bg-amber-700"
-            }`}
           >
             {isAdd ? "추가" : "저장"}
-          </button>
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

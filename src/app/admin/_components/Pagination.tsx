@@ -3,6 +3,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
+import { Label } from "@/components/ui/label";
 
 interface PaginationProps {
   totalItems: number;
@@ -57,7 +58,7 @@ export default function Pagination({
   return (
     <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
       <div className="flex items-center gap-2">
-        <label className="text-sm text-gray-600">페이지당:</label>
+        <Label className="text-sm text-gray-600">페이지당:</Label>
         <select
           value={itemsPerPage}
           onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
@@ -78,15 +79,16 @@ export default function Pagination({
 
       <div className="flex items-center gap-1">
         <button
+          type="button"
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1 || isPending}
-          className="p-1.5 rounded border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="p-1.5 rounded border border-gray-300 cursor-pointer hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <ChevronLeft size={18} />
         </button>
 
         {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-          let pageNum;
+          let pageNum: number;
           if (totalPages <= 5) {
             pageNum = i + 1;
           } else if (currentPage <= 3) {
@@ -99,10 +101,11 @@ export default function Pagination({
 
           return (
             <button
+              type="button"
               key={pageNum}
               onClick={() => handlePageChange(pageNum)}
               disabled={isPending}
-              className={`w-8 h-8 rounded text-sm font-medium ${
+              className={`w-8 h-8 rounded text-sm font-medium cursor-pointer ${
                 currentPage === pageNum
                   ? "bg-amber-600 text-white"
                   : "border border-gray-300 hover:bg-gray-50"
@@ -114,9 +117,10 @@ export default function Pagination({
         })}
 
         <button
+          type="button"
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages || isPending}
-          className="p-1.5 rounded border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="p-1.5 rounded border border-gray-300 cursor-pointer hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <ChevronRight size={18} />
         </button>

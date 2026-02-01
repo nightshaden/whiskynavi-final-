@@ -1,13 +1,14 @@
 "use client";
 
 import { AlertTriangle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogFooter,
-  DialogTitle,
   DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 
 // 삭제 확인 모달 컴포넌트
@@ -41,18 +42,16 @@ export default function DeleteConfirmModal({
         </DialogHeader>
 
         <DialogFooter className="gap-2 sm:gap-2">
-          <button
-            onClick={close}
-            className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-semibold"
-          >
+          <Button variant="outline" className="flex-1" onClick={close}>
             취소
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="destructive"
+            className="flex-1"
             onClick={handleConfirm}
-            className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold"
           >
             삭제
-          </button>
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

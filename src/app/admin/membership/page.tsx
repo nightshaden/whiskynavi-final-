@@ -1,7 +1,7 @@
 "use client";
 
+import { Check, Edit2, Save, X } from "lucide-react";
 import { useState } from "react";
-import { Edit2, Save, X, Check } from "lucide-react";
 import AdminHeader from "../_components/AdminHeader";
 import { useSidebar } from "../_components/AdminLayoutClient";
 import {
@@ -65,8 +65,9 @@ export default function MembershipPage() {
         {/* 브랜드 선택 탭 */}
         <div className="flex gap-4 mb-6">
           <button
+            type="button"
             onClick={() => setSelectedBrand("navi")}
-            className={`px-6 py-3 rounded-lg font-semibold transition-colors ${
+            className={`px-6 py-3 rounded-lg font-semibold transition-colors cursor-pointer ${
               selectedBrand === "navi"
                 ? "bg-amber-600 text-white"
                 : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
@@ -75,8 +76,9 @@ export default function MembershipPage() {
             위스키내비
           </button>
           <button
+            type="button"
             onClick={() => setSelectedBrand("tales")}
-            className={`px-6 py-3 rounded-lg font-semibold transition-colors ${
+            className={`px-6 py-3 rounded-lg font-semibold transition-colors cursor-pointer ${
               selectedBrand === "tales"
                 ? "bg-blue-600 text-white"
                 : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
@@ -96,6 +98,7 @@ export default function MembershipPage() {
             {isEditMode ? (
               <>
                 <button
+                  type="button"
                   onClick={handleSave}
                   className="px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors flex items-center gap-2"
                 >
@@ -103,6 +106,7 @@ export default function MembershipPage() {
                   저장
                 </button>
                 <button
+                  type="button"
                   onClick={handleCancel}
                   className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors flex items-center gap-2"
                 >
@@ -112,6 +116,7 @@ export default function MembershipPage() {
               </>
             ) : (
               <button
+                type="button"
                 onClick={handleEdit}
                 className="px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors flex items-center gap-2"
               >

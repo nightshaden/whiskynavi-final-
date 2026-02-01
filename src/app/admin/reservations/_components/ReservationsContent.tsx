@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { useRouter } from "next/navigation";
 import { Filter } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 import AdminHeader from "../../_components/AdminHeader";
 import { useSidebar } from "../../_components/AdminLayoutClient";
 import Pagination from "../../_components/Pagination";
@@ -116,8 +116,9 @@ export default function ReservationsContent({
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase relative">
                     <button
+                      type="button"
                       onClick={() => setShowBrandFilter(!showBrandFilter)}
-                      className="flex items-center gap-1 hover:text-amber-600"
+                      className="flex items-center gap-1 hover:text-amber-600 cursor-pointer"
                     >
                       브랜드
                       <Filter size={12} />
@@ -125,22 +126,24 @@ export default function ReservationsContent({
                     {showBrandFilter && (
                       <div className="absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-20 w-40 max-h-60 overflow-y-auto">
                         <button
+                          type="button"
                           onClick={() => {
                             updateFilter("brand", "all");
                             setShowBrandFilter(false);
                           }}
-                          className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${brandFilter === "all" ? "bg-amber-50 text-amber-700" : ""}`}
+                          className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 cursor-pointer ${brandFilter === "all" ? "bg-amber-50 text-amber-700" : ""}`}
                         >
                           전체
                         </button>
                         {brands.map((brand) => (
                           <button
+                            type="button"
                             key={brand}
                             onClick={() => {
                               updateFilter("brand", brand);
                               setShowBrandFilter(false);
                             }}
-                            className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${brandFilter === brand ? "bg-amber-50 text-amber-700" : ""}`}
+                            className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 cursor-pointer ${brandFilter === brand ? "bg-amber-50 text-amber-700" : ""}`}
                           >
                             {brand}
                           </button>
@@ -188,8 +191,9 @@ export default function ReservationsContent({
                     </td>
                     <td className="px-4 py-3 text-sm">
                       <button
+                        type="button"
                         onClick={() => handleReservationClick(reservation.id)}
-                        className="text-amber-600 hover:text-amber-700 font-medium"
+                        className="text-amber-600 hover:text-amber-700 cursor-pointer font-medium"
                       >
                         상세
                       </button>

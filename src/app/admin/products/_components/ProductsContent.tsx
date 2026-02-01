@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { useRouter } from "next/navigation";
 import { Filter } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 import AdminHeader from "../../_components/AdminHeader";
 import { useSidebar } from "../../_components/AdminLayoutClient";
 import Pagination from "../../_components/Pagination";
@@ -59,7 +59,7 @@ export default function ProductsContent({
 
   // 필터링 및 정렬
   const filteredProducts = useMemo(() => {
-    let result = products.filter((product) => {
+    const result = products.filter((product) => {
       const searchLower = searchQuery.toLowerCase();
       const matchesSearch =
         product.name.toLowerCase().includes(searchLower) ||
@@ -167,8 +167,9 @@ export default function ProductsContent({
                   </th>
                   <th className="px-2 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase relative whitespace-nowrap">
                     <button
+                      type="button"
                       onClick={() => setShowBrandFilter(!showBrandFilter)}
-                      className="flex items-center gap-1 hover:text-amber-600"
+                      className="flex items-center gap-1 hover:text-amber-600 cursor-pointer"
                     >
                       브랜드
                       <Filter size={12} />
@@ -176,22 +177,24 @@ export default function ProductsContent({
                     {showBrandFilter && (
                       <div className="absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-20 w-40">
                         <button
+                          type="button"
                           onClick={() => {
                             updateFilter("brand", "all");
                             setShowBrandFilter(false);
                           }}
-                          className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${brandFilter === "all" ? "bg-amber-50 text-amber-700" : ""}`}
+                          className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 cursor-pointer ${brandFilter === "all" ? "bg-amber-50 text-amber-700" : ""}`}
                         >
                           전체
                         </button>
                         {brands.map((brand) => (
                           <button
+                            type="button"
                             key={brand}
                             onClick={() => {
                               updateFilter("brand", brand);
                               setShowBrandFilter(false);
                             }}
-                            className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${brandFilter === brand ? "bg-amber-50 text-amber-700" : ""}`}
+                            className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 cursor-pointer ${brandFilter === brand ? "bg-amber-50 text-amber-700" : ""}`}
                           >
                             {brand}
                           </button>
@@ -201,10 +204,11 @@ export default function ProductsContent({
                   </th>
                   <th className="px-2 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase relative whitespace-nowrap">
                     <button
+                      type="button"
                       onClick={() =>
                         setShowDistilleryFilter(!showDistilleryFilter)
                       }
-                      className="flex items-center gap-1 hover:text-amber-600"
+                      className="flex items-center gap-1 hover:text-amber-600 cursor-pointer"
                     >
                       증류소
                       <Filter size={12} />
@@ -212,22 +216,24 @@ export default function ProductsContent({
                     {showDistilleryFilter && (
                       <div className="absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-20 w-40 max-h-60 overflow-y-auto">
                         <button
+                          type="button"
                           onClick={() => {
                             updateFilter("distillery", "all");
                             setShowDistilleryFilter(false);
                           }}
-                          className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${distilleryFilter === "all" ? "bg-amber-50 text-amber-700" : ""}`}
+                          className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 cursor-pointer ${distilleryFilter === "all" ? "bg-amber-50 text-amber-700" : ""}`}
                         >
                           전체
                         </button>
                         {distilleries.map((distillery) => (
                           <button
+                            type="button"
                             key={distillery}
                             onClick={() => {
                               updateFilter("distillery", distillery);
                               setShowDistilleryFilter(false);
                             }}
-                            className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 ${distilleryFilter === distillery ? "bg-amber-50 text-amber-700" : ""}`}
+                            className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 cursor-pointer ${distilleryFilter === distillery ? "bg-amber-50 text-amber-700" : ""}`}
                           >
                             {distillery}
                           </button>
@@ -334,8 +340,9 @@ export default function ProductsContent({
                     </td>
                     <td className="px-2 py-1.5 text-xs whitespace-nowrap">
                       <button
+                        type="button"
                         onClick={() => handleProductClick(product.id)}
-                        className="text-amber-600 hover:text-amber-700 font-medium"
+                        className="text-amber-600 hover:text-amber-700 cursor-pointer font-medium"
                       >
                         상세
                       </button>

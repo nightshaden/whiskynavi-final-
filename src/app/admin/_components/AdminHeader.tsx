@@ -36,8 +36,9 @@ export default function AdminHeader({
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-4">
             <button
+              type="button"
               onClick={onToggleSidebar}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
             >
               <Menu size={24} className="text-gray-600" />
             </button>
