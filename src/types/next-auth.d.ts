@@ -5,22 +5,26 @@ declare module "next-auth" {
   interface Session {
     user: {
       id: string;
+      roles?: string[];
     } & DefaultSession["user"];
-    // 백엔드 accessToken을 세션에 포함할 경우
-    // accessToken?: string;
+    accessToken?: string;
+    refreshToken?: string;
   }
 
   interface User extends DefaultUser {
-    // 백엔드에서 받는 추가 필드
-    // accessToken?: string;
+    roles?: string[];
+    accessToken?: string;
+    refreshToken?: string;
   }
 }
 
 declare module "next-auth/jwt" {
   interface JWT extends DefaultJWT {
     id?: string;
+    roles?: string[];
     provider?: string;
     providerAccountId?: string;
-    // accessToken?: string;
+    accessToken?: string;
+    refreshToken?: string;
   }
 }

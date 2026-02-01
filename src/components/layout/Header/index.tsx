@@ -3,11 +3,12 @@
 import Image from "next/image";
 import Link, { type LinkProps } from "next/link";
 import { usePathname } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
 import { type FC, useEffect, useState } from "react";
-import { IconGlobal } from "@/icons";
 
 const Header = () => {
   const pathname = usePathname();
+  const { data: session, status } = useSession();
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -44,15 +45,37 @@ const Header = () => {
             <li>
               <NavLink href="/archive">아카이브</NavLink>
             </li>
+            <li>
+              <NavLink href="/my-page">마이 페이지</NavLink>
+            </li>
           </ul>
           <div className="flex items-center gap-7">
-            <Link
-              href="/sign-in"
-              className="cursor-pointer text-white typo-bold-20"
-            >
-              <p className="text-white typo-bold-20">Login</p>
-            </Link>
-            <IconGlobal size={24} />
+            {status === "loading" ? (
+              <span className="text-white typo-bold-20 opacity-50">...</span>
+            ) : session ? (
+              <button
+                type="button"
+                onClick={() => signOut({ callbackUrl: "/" })}
+                className="cursor-pointer text-white typo-bold-20"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link
+                href="/sign-in"
+                className="cursor-pointer text-white typo-bold-20"
+              >
+                <p className="text-white typo-bold-20">Login</p>
+              </Link>
+            )}
+            {session?.user.roles?.includes("ROLE_ADMIN") && (
+              <Link
+                href="/admin"
+                className="cursor-pointer text-white typo-bold-20"
+              >
+                <p className="text-white typo-bold-20">Admin</p>
+              </Link>
+            )}
           </div>
         </nav>
       </div>

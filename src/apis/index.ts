@@ -44,11 +44,19 @@ export type MethodOptionsBody = BaseOptions & {
   json?: never;
 };
 
+/** 본문 없이 메서드만 지정할 때 (DELETE, POST 등) */
+export type MethodOptionsNoBody = BaseOptions & {
+  method: MethodWithBody;
+  json?: never;
+  body?: never;
+};
+
 /** 최종 옵션 oneOf */
 export type FetchOptions<TJson extends JsonValue = JsonValue> =
   | GetHeadOptions
   | MethodOptionsJson<TJson>
-  | MethodOptionsBody;
+  | MethodOptionsBody
+  | MethodOptionsNoBody;
 
 /** 절대 URL 여부 */
 function isAbsoluteUrl(path: string) {
@@ -76,6 +84,11 @@ export async function http<
 export async function http<TResponse = unknown>(
   path: string,
   options: MethodOptionsBody,
+): Promise<TResponse>;
+
+export async function http<TResponse = unknown>(
+  path: string,
+  options: MethodOptionsNoBody,
 ): Promise<TResponse>;
 
 export async function http<

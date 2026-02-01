@@ -54,13 +54,13 @@ export const authOptions: NextAuthOptions = {
             password: credentials.password,
           });
 
-          // 백엔드 응답에 맞게 수정 필요
-          // 예: { user: { id, name, email }, accessToken: "..." }
           return {
-            id: String(res.id),
-            name: res.name,
-            email: credentials.email,
-            // accessToken: res.accessToken, // 백엔드 응답 구조에 맞게
+            id: String(res.userId),
+            name: res.username,
+            email: res.email,
+            roles: res.userInfo.roles,
+            accessToken: res.accessToken,
+            refreshToken: res.refreshToken,
           };
         } catch (error) {
           const message =
@@ -101,13 +101,15 @@ export const authOptions: NextAuthOptions = {
       // 최초 로그인 시 user 정보를 token에 저장
       if (user) {
         token.id = user.id;
+        token.roles = user.roles;
+        token.accessToken = user.accessToken;
+        token.refreshToken = user.refreshToken;
+
         // 소셜 로그인의 경우 provider 정보 저장
         if (account) {
           token.provider = account.provider;
           token.providerAccountId = account.providerAccountId;
         }
-        // 백엔드에서 accessToken을 받는 경우
-        // token.accessToken = user.accessToken;
       }
       return token;
     },
@@ -116,8 +118,10 @@ export const authOptions: NextAuthOptions = {
       // token 정보를 session에 전달
       if (session.user) {
         session.user.id = token.id as string;
-        // session.accessToken = token.accessToken;
+        session.user.roles = token.roles;
       }
+      session.accessToken = token.accessToken;
+      session.refreshToken = token.refreshToken;
       return session;
     },
 

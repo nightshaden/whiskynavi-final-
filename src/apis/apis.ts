@@ -1,57 +1,8 @@
 import { http } from "./index";
 
-export type User = { id: number; name: string };
-
-export type BottleParams = {
-  names: string[];
-  companies: string[];
-  brands: string[];
-  series: string[];
-  maltTypes: string[];
-  distilleries: string[];
-  caskTypes: string[];
-};
-
-export type BottleQueries = Partial<{
-  vintageTo: number;
-  brand: string;
-  bottledDateTo: string;
-  distillery: string;
-  distillationDateFrom: string;
-  name: string;
-  abvTo: number;
-  pageSize: number;
-  vintageFrom: number;
-  caskType: string;
-  bottledDateFrom: string;
-  maltType: string;
-  series: string;
-  page: number;
-  distillationDateTo: string;
-  company: string;
-  abvFrom: number;
-}>;
-
-export type Bottle = {
-  id: number;
-  name: string;
-  company?: string;
-  brand?: string;
-  series?: string;
-  imgUrl?: string;
-  extraInfos?: Record<string, unknown>;
-  maltType?: string;
-  distillery?: string;
-  distillationDate?: string;
-  bottledDate?: string;
-  caskType?: string;
-  caskNumber?: string;
-  abv?: number;
-  capacity?: number;
-  description?: string;
-  createdAt: string;
-  updatedAt: string;
-};
+// ============================================================================
+// Common Types
+// ============================================================================
 
 export type PageableSort = {
   empty: boolean;
@@ -68,8 +19,8 @@ export type Pageable = {
   unpaged: boolean;
 };
 
-export type BottleResponse = {
-  content: Bottle[];
+export type PageResponse<T> = {
+  content: T[];
   pageable: Pageable;
   totalElements: number;
   totalPages: number;
@@ -80,6 +31,30 @@ export type BottleResponse = {
   numberOfElements: number;
   first: boolean;
   empty: boolean;
+};
+
+export type PageParams = {
+  page?: number;
+  size?: number;
+  sort?: string[];
+};
+
+// ============================================================================
+// Auth Types
+// ============================================================================
+
+export type AuthResponse = {
+  accessToken: string;
+  refreshToken: string;
+  userId: number;
+  email: string;
+  username: string;
+  userInfo: UserSelfResponse;
+};
+
+export type LoginRequest = {
+  email: string;
+  password: string;
 };
 
 export type SignupRequest = {
@@ -101,50 +76,990 @@ export type AvailabilityResponse = {
   available: boolean;
 };
 
+export type ChangePasswordRequest = {
+  currentPassword: string;
+  newPassword: string;
+};
+
+export type EmailVerificationRequest = {
+  email: string;
+};
+
+export type EmailVerificationVerifyRequest = {
+  email: string;
+  code: string;
+};
+
+export type ResetPasswordResponse = {
+  message: string;
+};
+
+// ============================================================================
+// User Types
+// ============================================================================
+
+export type UserRole =
+  | "ROLE_GUEST"
+  | "ROLE_USER"
+  | "ROLE_ADMIN"
+  | "ROLE_SUPER_ADMIN"
+  | "ROLE_CONSUMER"
+  | "ROLE_WHISKYNAVI_MEMBER"
+  | "ROLE_WHISKYTALES_MEMBER"
+  | "ROLE_BLIND_MEMBER"
+  | "ROLE_BUSINESS"
+  | "ROLE_TRAILNTALE_BUSINESS"
+  | "ROLE_COMMUNITY_BUSINESS"
+  | "ROLE_PICK_UP_BUSINESS";
+
+export type UserSelfResponse = {
+  id: number;
+  email: string;
+  name: string;
+  phone?: string;
+  gender?: string;
+  birthDate?: string;
+  roles: string[];
+  isBanned: boolean;
+  banStartDate?: string;
+  banEndDate?: string;
+  banReason?: string;
+  privacyAgree: boolean;
+  marketingAgree: boolean;
+  emailAgree: boolean;
+  smsAgree: boolean;
+  snsAgree: boolean;
+};
+
+export type AdminUserResponse = {
+  id: number;
+  email: string;
+  username: string;
+  name: string;
+  phone?: string;
+  status: string;
+  roles: string[];
+  createdAt: string;
+  updatedAt: string;
+  lastLoginAt?: string;
+  userExt?: UserExtInfo;
+};
+
+export type UserExtInfo = {
+  isBanned: boolean;
+  banStartDate?: string;
+  banEndDate?: string;
+  banReason?: string;
+  privacyAgree: boolean;
+  marketingAgree: boolean;
+  emailAgree: boolean;
+  smsAgree: boolean;
+};
+
+// ============================================================================
+// Business Types
+// ============================================================================
+
+export type UserBusinessApplicationRequest = {
+  businessName: string;
+  businessRegistrationNumber: string;
+  contact: string;
+  pickupAddress: string;
+};
+
+export type UserBusinessApplicationResponse = {
+  id: number;
+  userId: number;
+  businessName: string;
+  businessRegistrationNumber: string;
+  contact: string;
+  pickupAddress: string;
+  status: "PENDING" | "APPROVED" | "REJECTED";
+  rejectReason?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PickupLocationResponse = {
+  id: number;
+  businessName: string;
+  contact: string;
+  pickupAddress: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type AdminBusinessUserResponse = {
+  userId: number;
+  username: string;
+  name: string;
+  roles: UserRole[];
+  hasPickupRole: boolean;
+};
+
+// ============================================================================
+// Bottle Types
+// ============================================================================
+
+export type Bottle = {
+  id: number;
+  name: string;
+  company?: string;
+  brand?: string;
+  series?: string;
+  imgUrl?: string;
+  extraInfos?: Record<string, string>;
+  maltType?: string;
+  distillery?: string;
+  distillationDate?: string;
+  bottledDate?: string;
+  caskType?: string;
+  caskNumber?: string;
+  abv?: number;
+  capacity?: number;
+  description?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type BottleAdminResponse = Bottle & {
+  stockQuantity?: number;
+  supplyPrice?: number;
+  consumerPrice?: number;
+};
+
+export type BottleSearchParams = {
+  name?: string;
+  company?: string;
+  brand?: string;
+  series?: string;
+  maltType?: string;
+  distillery?: string;
+  caskType?: string;
+  abvFrom?: number;
+  abvTo?: number;
+  vintageFrom?: number;
+  vintageTo?: number;
+  bottledDateFrom?: string;
+  bottledDateTo?: string;
+  distillationDateFrom?: string;
+  distillationDateTo?: string;
+  pageNumber?: number;
+  pageSize?: number;
+};
+
+export type BottleSearchParameterValues = {
+  names: string[];
+  companies: string[];
+  brands: string[];
+  series: string[];
+  maltTypes: string[];
+  distilleries: string[];
+  caskTypes: string[];
+};
+
+// Legacy aliases for backward compatibility
+export type BottleQueries = BottleSearchParams;
+export type BottleParams = BottleSearchParameterValues;
+export type BottleResponse = PageResponse<Bottle>;
+
+// ============================================================================
+// Bottle Reservation Types
+// ============================================================================
+
+export type ReservationApplicationStatus =
+  | "APPLIED"
+  | "CANCELLED"
+  | "CONFIRMED"
+  | "WAITING_PICKUP"
+  | "RECEIVED"
+  | "REJECTED";
+
+export type BottleReservationGradeCondition = {
+  applicableFrom: string;
+  requiredRole: UserRole;
+};
+
+export type BottleReservationNoticeResponse = {
+  id: number;
+  bottleId: number;
+  bottleName: string;
+  price: number;
+  reservationStartAt: string;
+  reservationEndAt: string;
+  gradeConditions: BottleReservationGradeCondition[];
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type BottleReservationApplicationRequest = {
+  quantity: number;
+  userBusinessId: number;
+};
+
+export type BottleReservationApplicationResponse = {
+  id: number;
+  noticeId: number;
+  bottleId: number;
+  bottleName: string;
+  quantity: number;
+  confirmedQuantity?: number;
+  pickupUserBusinessId: number;
+  status: ReservationApplicationStatus;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type BottleReservationNoticeRequest = {
+  bottleId: number;
+  price: number;
+  reservationStartAt: string;
+  reservationEndAt: string;
+  gradeConditions?: BottleReservationGradeCondition[];
+};
+
+// ============================================================================
+// Order Types
+// ============================================================================
+
+export type OrderType = "RESERVATION" | "PICKUP" | "GENERAL";
+export type ProductType = "BOTTLE" | "MERCH";
+export type OrderStatus =
+  | "ORDER_REQUESTED"
+  | "PAYMENT_PENDING"
+  | "ORDER_PREPARING"
+  | "SHIPPING"
+  | "DELIVERY_COMPLETED"
+  | "RECEIPT_PENDING"
+  | "RECEIPT_COMPLETED"
+  | "ORDER_CANCELED"
+  | "REFUND_REQUESTED"
+  | "REFUND_COMPLETED";
+
+export type OrderCreateRequest = {
+  userId: number;
+  saleAnnouncementId?: number;
+  saleTitle?: string;
+  saleType?: OrderType;
+  orderType: OrderType;
+  productId: number;
+  productType: ProductType;
+  itemName: string;
+  unitPrice: number;
+  requestedQuantity: number;
+  businessId?: number;
+  importerId?: number;
+  orderNote?: string;
+};
+
+export type OrderResponse = {
+  id: number;
+  orderNumber: string;
+  userId: number;
+  saleAnnouncementId?: number;
+  saleTitle?: string;
+  saleType?: OrderType;
+  orderType: OrderType;
+  orderStatus: OrderStatus;
+  productId: number;
+  productType: ProductType;
+  itemName: string;
+  unitPrice: number;
+  requestedQuantity: number;
+  approvedQuantity?: number;
+  totalPrice: number;
+  businessId?: number;
+  importerId?: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type OrderCancelRequest = {
+  reason?: string;
+};
+
+export type OrderStatusUpdateRequest = {
+  orderStatus: OrderStatus;
+  reason?: string;
+};
+
+export type OrderApprovalRequest = {
+  approvedQuantity: number;
+};
+
+// ============================================================================
+// Sale Announcement Types
+// ============================================================================
+
+export type SaleStatus = "DRAFT" | "OPEN" | "CLOSED" | "SOLD_OUT";
+
+export type SaleAnnouncementResponse = {
+  id: number;
+  title: string;
+  productId: number;
+  productType: ProductType;
+  saleType: OrderType;
+  saleStatus: SaleStatus;
+  salePrice: number;
+  totalQuantity: number;
+  availableQuantity: number;
+  maxOrderQuantity?: number;
+  orderableRoles?: string[];
+  saleStartAt: string;
+  saleEndAt: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type SaleAnnouncementCreateRequest = {
+  title: string;
+  itemName?: string;
+  productId: number;
+  productType: ProductType;
+  saleType: OrderType;
+  saleStatus?: SaleStatus;
+  salePrice: number;
+  totalQuantity: number;
+  availableQuantity: number;
+  maxOrderQuantity?: number;
+  orderableRoles?: string[];
+  saleStartAt: string;
+  saleEndAt: string;
+};
+
+export type SaleAnnouncementUpdateRequest = Partial<
+  Omit<SaleAnnouncementCreateRequest, "title">
+> & {
+  title?: string;
+};
+
+// ============================================================================
+// Board Types
+// ============================================================================
+
+export type AnnouncementScope = "GLOBAL" | "BOARD";
+
+export type BoardResponse = {
+  id: number;
+  name: string;
+  slug: string;
+  description?: string;
+};
+
+export type AnnouncementResponse = {
+  id: number;
+  title: string;
+  content: string;
+  scope: AnnouncementScope;
+  boardId?: number;
+  createdAt: string;
+};
+
+export type PostSearchType = "TITLE" | "CONTENT" | "AUTHOR";
+
+export type PostResponse = {
+  id: number;
+  boardId: number;
+  authorId: number;
+  title: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type CreatePostRequest = {
+  title: string;
+  content: string;
+};
+
+export type UpdatePostRequest = {
+  title?: string;
+  content?: string;
+};
+
+export type BoardRequest = {
+  name: string;
+  slug: string;
+  description?: string;
+};
+
+export type AnnouncementRequest = {
+  title: string;
+  content: string;
+  scope: AnnouncementScope;
+  boardId?: number;
+};
+
+// ============================================================================
+// Banner Types
+// ============================================================================
+
+export type BannerResponse = {
+  id: number;
+  title: string;
+  description?: string;
+  link?: string;
+  mainUrl: string;
+  backgroundUrl: string;
+};
+
+// ============================================================================
+// Pre-register Types
+// ============================================================================
+
+export type PreRegisterRequest = {
+  email: string;
+  name: string;
+  phoneNumber?: string;
+  gender?: string;
+  birthday?: string;
+};
+
+export type PreRegisterResponse = {
+  id: number;
+  email: string;
+  name: string;
+  phoneNumber?: string;
+  gender?: string;
+  birthday?: string;
+  createdAt: string;
+};
+
+// ============================================================================
+// S3 Types
+// ============================================================================
+
+export type PresignUrlResponse = {
+  url: string;
+};
+
+// ============================================================================
+// Nice ID Types
+// ============================================================================
+
+export type NiceIdVerificationStartRequest = {
+  authType: string;
+  returnUrl?: string;
+  methodType?: string;
+  popupYn?: string;
+  closeUiType?: string;
+  receivedData?: string;
+};
+
+export type NiceIdVerificationStartResponse = {
+  formAction: string;
+  tokenVersionId: string;
+  encData: string;
+  integrityValue: string;
+  siteCode: string;
+  requestNo: string;
+  message?: string;
+};
+
+export type NiceIdDecryptedPayload = {
+  resultcode: string;
+  requestno: string;
+  responseno: string;
+  enctime: string;
+  sitecode: string;
+  name: string;
+  utf8_name: string;
+  birthdate: string;
+  gender: string;
+  nationalinfo: string;
+  mobileco: string;
+  mobileno: string;
+  ci: string;
+  di: string;
+  authtype: string;
+  businessno?: string;
+  receivedata?: string;
+};
+
+export type NiceIdVerificationResultResponse = {
+  status: string;
+  raw: string;
+  payload: NiceIdDecryptedPayload;
+};
+
+// ============================================================================
+// API Functions
+// ============================================================================
+
 export const api = {
+  // ==========================================================================
   // Auth
-  signIn: (data: { email: string; password: string }) =>
-    http<User>("/api/auth/login", { method: "POST", json: data }),
+  // ==========================================================================
+  signIn: (data: LoginRequest) =>
+    http<AuthResponse>("/api/auth/login", { method: "POST", json: data }),
+
+  signUp: (data: SignupRequest) =>
+    http<AuthResponse>("/api/auth/signup", { method: "POST", json: data }),
+
+  refreshToken: (refreshToken: string) =>
+    http<AuthResponse>("/api/auth/refresh", {
+      method: "POST",
+      json: { refreshToken },
+    }),
+
   checkEmail: (email: string) =>
     http<AvailabilityResponse>("/api/auth/check-email", {
       method: "POST",
       json: { email },
     }),
+
   checkUsername: (username: string) =>
     http<AvailabilityResponse>("/api/auth/check-username", {
       method: "POST",
       json: { username },
     }),
-  signUp: (data: SignupRequest) =>
-    http<User>("/api/auth/signup", { method: "POST", json: data }),
 
+  changePassword: (data: ChangePasswordRequest) =>
+    http<boolean>("/api/auth/change-password", { method: "POST", json: data }),
+
+  resetPassword: (email: string) =>
+    http<ResetPasswordResponse>("/api/auth/reset-password", {
+      method: "POST",
+      json: { email },
+    }),
+
+  // Email Verification
+  sendEmailVerification: (email: string) =>
+    http<Record<string, string>>("/api/auth/email-verification/send", {
+      method: "POST",
+      json: { email },
+    }),
+
+  verifyEmailCode: (data: EmailVerificationVerifyRequest) =>
+    http<Record<string, string>>("/api/auth/email-verification/verify", {
+      method: "POST",
+      json: data,
+    }),
+
+  sendResetEmailVerification: (email: string) =>
+    http<Record<string, string>>("/api/auth/email-verification/reset/send", {
+      method: "POST",
+      json: { email },
+    }),
+
+  verifyResetEmailCode: (data: EmailVerificationVerifyRequest) =>
+    http<Record<string, string>>("/api/auth/email-verification/reset/verify", {
+      method: "POST",
+      json: data,
+    }),
+
+  // ==========================================================================
   // User
-  getMe: () => http<User>("/me"),
+  // ==========================================================================
+  getMe: () => http<UserSelfResponse>("/api/users/me"),
 
+  // Business
+  applyBusiness: (data: UserBusinessApplicationRequest) =>
+    http<UserBusinessApplicationResponse>(
+      "/api/users/businesses/applications",
+      {
+        method: "POST",
+        json: data,
+      },
+    ),
+
+  getPickupLocations: () =>
+    http<PickupLocationResponse[]>("/api/users/businesses/pickup-locations"),
+
+  // ==========================================================================
   // Bottles
-  getBottleParams: () => http<BottleParams>("/api/bottles/parameters"),
-  getBottles: (queries?: BottleQueries) => {
-    //NOTE: URL의 'page'를 API의 'pageNumber'로 변환
-    const { page = 0, ...rest } = queries ?? {};
-    const params = { pageSize: 15, ...rest, pageNumber: page };
-    return http<BottleResponse>("/api/bottles", { params });
+  // ==========================================================================
+  getBottleParams: () =>
+    http<BottleSearchParameterValues>("/api/bottles/parameters"),
+
+  getBottles: (params?: BottleSearchParams) => {
+    const { pageNumber = 0, pageSize = 15, ...rest } = params ?? {};
+    return http<PageResponse<Bottle>>("/api/bottles", {
+      params: { pageNumber, pageSize, ...rest },
+    });
   },
+
   getBottleById: (id: number) => http<Bottle>(`/api/bottles/${id}`),
-  // // ✅ GET: 본문 금지, params OK
-  // getUsers: (params?: { role?: string }) => http<User[]>("/users", { params }),
 
-  // // ✅ GET by id
-  // getUserById: (id: number) => http<User>(`/users/${id}`),
+  // Bottle Reservations
+  getReservationNotices: (params?: PageParams) =>
+    http<PageResponse<BottleReservationNoticeResponse>>(
+      "/api/bottles/reservations/notices",
+      { params },
+    ),
 
-  // // ✅ POST JSON: json과 body는 oneOf라 동시에 불가
-  // createUser: (data: { name: string }) =>
-  //   http<User>("/users", { method: "POST", json: data }),
+  getReservationNotice: (noticeId: number) =>
+    http<BottleReservationNoticeResponse>(
+      `/api/bottles/reservations/notices/${noticeId}`,
+    ),
 
-  // // ✅ 파일 업로드: body(FormData) 사용
-  // uploadAvatar: (id: number, form: FormData) =>
-  //   http<{ ok: true }>(`/users/${id}/avatar`, { method: "POST", body: form }),
+  createReservationApplication: (
+    noticeId: number,
+    data: BottleReservationApplicationRequest,
+  ) =>
+    http<BottleReservationApplicationResponse>(
+      `/api/bottles/reservations/notices/${noticeId}/applications`,
+      { method: "POST", json: data },
+    ),
 
-  // // ✅ PATCH JSON
-  // updateUserName: (id: number, data: { name: string }) =>
-  //   http<User>(`/users/${id}`, { method: "PATCH", json: data }),
+  getMyReservationApplications: (params?: PageParams) =>
+    http<PageResponse<BottleReservationApplicationResponse>>(
+      "/api/bottles/reservations/applications/me",
+      { params },
+    ),
+
+  updateReservationApplication: (
+    applicationId: number,
+    data: BottleReservationApplicationRequest,
+  ) =>
+    http<BottleReservationApplicationResponse>(
+      `/api/bottles/reservations/applications/${applicationId}`,
+      { method: "PUT", json: data },
+    ),
+
+  cancelReservationApplication: (applicationId: number) =>
+    http<boolean>(`/api/bottles/reservations/applications/${applicationId}`, {
+      method: "DELETE",
+    }),
+
+  // ==========================================================================
+  // Orders
+  // ==========================================================================
+  getOrders: (userId?: number) =>
+    http<OrderResponse[]>("/api/orders", { params: userId ? { userId } : {} }),
+
+  getOrder: (orderId: number) => http<OrderResponse>(`/api/orders/${orderId}`),
+
+  createOrder: (data: OrderCreateRequest) =>
+    http<OrderResponse>("/api/orders", { method: "POST", json: data }),
+
+  cancelOrder: (orderId: number, data?: OrderCancelRequest) =>
+    http<OrderResponse>(`/api/orders/${orderId}/cancel`, {
+      method: "PATCH",
+      json: data ?? {},
+    }),
+
+  // ==========================================================================
+  // Sales
+  // ==========================================================================
+  getSales: (saleStatus?: SaleStatus) =>
+    http<SaleAnnouncementResponse[]>("/api/sales", {
+      params: saleStatus ? { saleStatus } : {},
+    }),
+
+  getSale: (saleId: number) =>
+    http<SaleAnnouncementResponse>(`/api/sales/${saleId}`),
+
+  // ==========================================================================
+  // Boards
+  // ==========================================================================
+  getBoards: () => http<BoardResponse[]>("/api/boards"),
+
+  getGlobalAnnouncements: () =>
+    http<AnnouncementResponse[]>("/api/boards/announcements/global"),
+
+  getBoardAnnouncements: (boardId: number) =>
+    http<AnnouncementResponse[]>(`/api/boards/announcements/board/${boardId}`),
+
+  getPosts: (
+    boardId: number,
+    params?: PageParams & { searchType?: PostSearchType; keyword?: string },
+  ) =>
+    http<PageResponse<PostResponse>>(`/api/boards/${boardId}/posts`, {
+      params,
+    }),
+
+  createPost: (boardId: number, data: CreatePostRequest) =>
+    http<PostResponse>(`/api/boards/${boardId}/posts`, {
+      method: "POST",
+      json: data,
+    }),
+
+  updatePost: (boardId: number, postId: number, data: UpdatePostRequest) =>
+    http<PostResponse>(`/api/boards/${boardId}/posts/${postId}`, {
+      method: "PUT",
+      json: data,
+    }),
+
+  deletePost: (boardId: number, postId: number) =>
+    http<boolean>(`/api/boards/${boardId}/posts/${postId}`, {
+      method: "DELETE",
+    }),
+
+  // ==========================================================================
+  // Banners
+  // ==========================================================================
+  getBanners: () => http<BannerResponse[]>("/api/banners"),
+
+  getBanner: (id: number) => http<BannerResponse>(`/api/banners/${id}`),
+
+  // ==========================================================================
+  // Pre-register
+  // ==========================================================================
+  preRegister: (data: PreRegisterRequest) =>
+    http<PreRegisterResponse>("/api/pre-register", {
+      method: "POST",
+      json: data,
+    }),
+
+  // ==========================================================================
+  // S3
+  // ==========================================================================
+  getPresignedUrl: (key: string, filename?: string) =>
+    http<PresignUrlResponse>("/api/s3/presigned", {
+      params: { key, ...(filename && { filename }) },
+    }),
+
+  uploadFile: (file: FormData) =>
+    http<Record<string, string>>("/api/s3/upload", {
+      method: "POST",
+      body: file,
+    }),
+
+  // ==========================================================================
+  // Nice ID (본인인증)
+  // ==========================================================================
+  startNiceIdVerification: (data: NiceIdVerificationStartRequest) =>
+    http<NiceIdVerificationStartResponse>("/api/user/niceid/verification", {
+      method: "POST",
+      json: data,
+    }),
+
+  getNiceIdResult: (tokenVersionId: string, encData: string) =>
+    http<NiceIdVerificationResultResponse>("/api/user/niceid/result", {
+      method: "POST",
+      params: { token_version_id: tokenVersionId, enc_data: encData },
+    }),
+};
+
+// ============================================================================
+// Admin API
+// ============================================================================
+
+export const adminApi = {
+  // ==========================================================================
+  // Users
+  // ==========================================================================
+  getUsers: () => http<AdminUserResponse[]>("/api/admin/users"),
+
+  getUser: (id: number) => http<AdminUserResponse>(`/api/admin/users/${id}`),
+
+  deleteUser: (id: number) =>
+    http<boolean>(`/api/admin/users/${id}`, { method: "DELETE" }),
+
+  updateUserStatus: (id: number, status: string) =>
+    http<AdminUserResponse>(`/api/admin/users/${id}/status`, {
+      method: "PATCH",
+      json: { status },
+    }),
+
+  addUserRoles: (id: number, roles: string[]) =>
+    http<AdminUserResponse>(`/api/admin/users/${id}/roles/add`, {
+      method: "PATCH",
+      json: { roles },
+    }),
+
+  removeUserRoles: (id: number, roles: string[]) =>
+    http<AdminUserResponse>(`/api/admin/users/${id}/roles/remove`, {
+      method: "PATCH",
+      json: { roles },
+    }),
+
+  banUser: (
+    id: number,
+    data: { reason: string; startAt?: string; endAt?: string },
+  ) =>
+    http<AdminUserResponse>(`/api/admin/users/${id}/ban`, {
+      method: "POST",
+      json: data,
+    }),
+
+  // ==========================================================================
+  // Business
+  // ==========================================================================
+  getBusinessApplications: (params?: PageParams) =>
+    http<PageResponse<UserBusinessApplicationResponse>>(
+      "/api/admin/businesses/applications",
+      { params },
+    ),
+
+  getBusinessApplication: (applicationId: number) =>
+    http<UserBusinessApplicationResponse>(
+      `/api/admin/businesses/applications/${applicationId}`,
+    ),
+
+  approveBusinessApplication: (applicationId: number) =>
+    http<UserBusinessApplicationResponse>(
+      `/api/admin/businesses/applications/${applicationId}/approve`,
+      { method: "POST" },
+    ),
+
+  rejectBusinessApplication: (applicationId: number, rejectReason: string) =>
+    http<UserBusinessApplicationResponse>(
+      `/api/admin/businesses/applications/${applicationId}/reject`,
+      { method: "POST", json: { rejectReason } },
+    ),
+
+  getBusinessUsers: () =>
+    http<AdminBusinessUserResponse[]>("/api/admin/businesses/members"),
+
+  grantPickupRole: (userId: number) =>
+    http<AdminBusinessUserResponse>(
+      `/api/admin/businesses/members/${userId}/pickup/grant`,
+      { method: "POST" },
+    ),
+
+  revokePickupRole: (userId: number) =>
+    http<AdminBusinessUserResponse>(
+      `/api/admin/businesses/members/${userId}/pickup/revoke`,
+      { method: "POST" },
+    ),
+
+  // ==========================================================================
+  // Bottles
+  // ==========================================================================
+  getAdminBottles: (params?: BottleSearchParams) =>
+    http<PageResponse<BottleAdminResponse>>("/api/admin/bottles", { params }),
+
+  getAdminBottle: (id: number) =>
+    http<BottleAdminResponse>(`/api/admin/bottles/${id}`),
+
+  createBottle: (data: FormData) =>
+    http<BottleAdminResponse>("/api/admin/bottles", {
+      method: "POST",
+      body: data,
+    }),
+
+  updateBottle: (id: number, data: FormData) =>
+    http<BottleAdminResponse>(`/api/admin/bottles/${id}`, {
+      method: "PATCH",
+      body: data,
+    }),
+
+  deleteBottle: (id: number) =>
+    http<boolean>(`/api/admin/bottles/${id}`, { method: "DELETE" }),
+
+  // ==========================================================================
+  // Bottle Reservations (Admin)
+  // ==========================================================================
+  getAdminReservationNotices: (params?: PageParams) =>
+    http<PageResponse<BottleReservationNoticeResponse>>(
+      "/api/admin/bottles/reservations/notices",
+      { params },
+    ),
+
+  getAdminReservationNotice: (noticeId: number) =>
+    http<BottleReservationNoticeResponse>(
+      `/api/admin/bottles/reservations/notices/${noticeId}`,
+    ),
+
+  createReservationNotice: (data: BottleReservationNoticeRequest) =>
+    http<BottleReservationNoticeResponse>(
+      "/api/admin/bottles/reservations/notices",
+      { method: "POST", json: data },
+    ),
+
+  updateReservationNotice: (
+    noticeId: number,
+    data: BottleReservationNoticeRequest,
+  ) =>
+    http<BottleReservationNoticeResponse>(
+      `/api/admin/bottles/reservations/notices/${noticeId}`,
+      { method: "PUT", json: data },
+    ),
+
+  getAdminReservationApplications: (
+    params?: PageParams & { userId?: number; noticeId?: number },
+  ) =>
+    http<PageResponse<BottleReservationApplicationResponse>>(
+      "/api/admin/bottles/reservations/applications",
+      { params },
+    ),
+
+  getAdminReservationApplication: (applicationId: number) =>
+    http<BottleReservationApplicationResponse>(
+      `/api/admin/bottles/reservations/applications/${applicationId}`,
+    ),
+
+  confirmReservationApplication: (
+    applicationId: number,
+    confirmedQuantity: number,
+  ) =>
+    http<BottleReservationApplicationResponse>(
+      `/api/admin/bottles/reservations/applications/${applicationId}/confirm`,
+      { method: "POST", json: { confirmedQuantity } },
+    ),
+
+  rejectReservationApplication: (applicationId: number) =>
+    http<BottleReservationApplicationResponse>(
+      `/api/admin/bottles/reservations/applications/${applicationId}/reject`,
+      { method: "POST" },
+    ),
+
+  cancelReservationApplicationAdmin: (applicationId: number) =>
+    http<BottleReservationApplicationResponse>(
+      `/api/admin/bottles/reservations/applications/${applicationId}/cancel`,
+      { method: "POST" },
+    ),
+
+  // ==========================================================================
+  // Orders (Admin)
+  // ==========================================================================
+  getAdminOrders: (params?: {
+    orderType?: OrderType;
+    orderStatus?: OrderStatus;
+  }) => http<OrderResponse[]>("/api/admin/orders", { params }),
+
+  approveOrder: (orderId: number, data: OrderApprovalRequest) =>
+    http<OrderResponse>(`/api/admin/orders/${orderId}/approve`, {
+      method: "PATCH",
+      json: data,
+    }),
+
+  updateOrderStatus: (orderId: number, data: OrderStatusUpdateRequest) =>
+    http<OrderResponse>(`/api/admin/orders/${orderId}/status`, {
+      method: "PATCH",
+      json: data,
+    }),
+
+  // ==========================================================================
+  // Sales (Admin)
+  // ==========================================================================
+  createSale: (data: SaleAnnouncementCreateRequest) =>
+    http<SaleAnnouncementResponse>("/api/admin/sales", {
+      method: "POST",
+      json: data,
+    }),
+
+  updateSale: (saleId: number, data: SaleAnnouncementUpdateRequest) =>
+    http<SaleAnnouncementResponse>(`/api/admin/sales/${saleId}`, {
+      method: "PATCH",
+      json: data,
+    }),
+
+  // ==========================================================================
+  // Boards (Admin)
+  // ==========================================================================
+  createBoard: (data: BoardRequest) =>
+    http<BoardResponse>("/api/admin/boards", { method: "POST", json: data }),
+
+  createAnnouncement: (data: AnnouncementRequest) =>
+    http<AnnouncementResponse>("/api/admin/boards/announcements", {
+      method: "POST",
+      json: data,
+    }),
+
+  deletePostAdmin: (boardId: number, postId: number) =>
+    http<boolean>(`/api/admin/boards/${boardId}/posts/${postId}`, {
+      method: "DELETE",
+    }),
+
+  // ==========================================================================
+  // Banners (Admin)
+  // ==========================================================================
+  createBanner: (data: FormData) =>
+    http<BannerResponse>("/api/banners", { method: "POST", body: data }),
+
+  updateBanner: (id: number, data: FormData) =>
+    http<BannerResponse>(`/api/banners/${id}`, { method: "PATCH", body: data }),
 };
