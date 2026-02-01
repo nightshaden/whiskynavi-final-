@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -23,64 +24,79 @@ import {
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import type { BlacklistItem } from "../../../_data/mockData";
 
-// 날짜 문자열을 Date 객체로 변환
-function parseDate(dateStr: string): Date | undefined {
-  if (!dateStr || dateStr === "-" || dateStr === "영구") return undefined;
-  // YYYY-MM-DD 또는 YYYY.MM.DD 형식 처리
-  const normalized = dateStr.replace(/\./g, "-");
-  const date = new Date(normalized);
-  return isNaN(date.getTime()) ? undefined : date;
+export type BlacklistFormData = {
+  userId?: number;
+  name?: string;
+  reason: string;
+  startAt?: string;
+  endAt?: string;
+};
+
+type BlacklistFormModalProps = {
+  isOpen: boolean;
+  close: () => void;
+  mode: "add" | "edit";
+  initialData?: BlacklistFormData;
+  onSubmit: (data: BlacklistFormData) => void | Promise<void>;
+};
+
+function parseDate(dateStr?: string): Date | undefined {
+  if (!dateStr) return undefined;
+  const date = new Date(dateStr);
+  return Number.isNaN(date.getTime()) ? undefined : date;
 }
 
-// Date 객체를 YYYY-MM-DD 형식으로 변환
 function formatDateString(date: Date | undefined): string {
   if (!date) return "";
   return format(date, "yyyy-MM-dd");
 }
 
-// 추가/수정 통합 모달 컴포넌트
 export default function BlacklistFormModal({
   isOpen,
   close,
   mode,
   initialData,
   onSubmit,
-}: {
-  isOpen: boolean;
-  close: () => void;
-  mode: "add" | "edit";
-  initialData?: BlacklistItem;
-  onSubmit: (item: Omit<BlacklistItem, "id">) => void;
-}) {
+}: BlacklistFormModalProps) {
   const [formData, setFormData] = useState({
+    userId: initialData?.userId?.toString() ?? "",
     name: initialData?.name ?? "",
     reason: initialData?.reason ?? "",
-    startAt: parseDate(initialData?.startAt ?? ""),
-    endAt: parseDate(initialData?.endAt ?? ""),
-    isPermanent: initialData?.endAt === "영구",
+    startAt: parseDate(initialData?.startAt),
+    endAt: parseDate(initialData?.endAt),
+    isPermanent: !initialData?.endAt,
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isAdd = mode === "add";
 
-  const handleSubmit = () => {
-    if (!formData.name || !formData.reason) {
-      alert("필수 항목을 입력해주세요.");
+  const handleSubmit = async () => {
+    if (isAdd && !formData.userId) {
+      alert("사용자 ID를 입력해주세요.");
+      return;
+    }
+    if (!formData.reason) {
+      alert("사유를 입력해주세요.");
       return;
     }
 
-    onSubmit({
-      name: formData.name,
-      reason: formData.reason,
-      startAt: formData.startAt ? formatDateString(formData.startAt) : "-",
-      endAt: formData.isPermanent
-        ? "영구"
-        : formData.endAt
-          ? formatDateString(formData.endAt)
-          : "-",
-    });
-    close();
+    setIsSubmitting(true);
+    try {
+      await onSubmit({
+        userId: formData.userId ? Number(formData.userId) : undefined,
+        name: formData.name,
+        reason: formData.reason,
+        startAt: formData.startAt ? formatDateString(formData.startAt) : undefined,
+        endAt: formData.isPermanent
+          ? undefined
+          : formData.endAt
+            ? formatDateString(formData.endAt)
+            : undefined,
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -93,20 +109,30 @@ export default function BlacklistFormModal({
         </DialogHeader>
 
         <div className="space-y-4 py-4">
-          <div className="space-y-1.5">
-            <Label htmlFor="name">이름 {isAdd && "*"}</Label>
-            <Input
-              id="name"
-              value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
-              placeholder="이름 입력"
-            />
-          </div>
+          {isAdd && (
+            <div className="space-y-1.5">
+              <Label htmlFor="userId">사용자 ID *</Label>
+              <Input
+                id="userId"
+                type="number"
+                value={formData.userId}
+                onChange={(e) =>
+                  setFormData({ ...formData, userId: e.target.value })
+                }
+                placeholder="사용자 ID 입력"
+              />
+            </div>
+          )}
+
+          {!isAdd && (
+            <div className="space-y-1.5">
+              <Label>이름</Label>
+              <Input value={formData.name} disabled className="bg-gray-100" />
+            </div>
+          )}
 
           <div className="space-y-1.5">
-            <Label htmlFor="reason">사유 {isAdd && "*"}</Label>
+            <Label htmlFor="reason">사유 *</Label>
             <Textarea
               id="reason"
               value={formData.reason}
@@ -126,7 +152,7 @@ export default function BlacklistFormModal({
                   <button
                     type="button"
                     className={cn(
-                      "w-full px-3 py-2 border border-gray-300 rounded-lg text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-red-500",
+                      "flex w-full items-center justify-between rounded-lg border border-gray-300 px-3 py-2 text-left focus:outline-none focus:ring-2 focus:ring-red-500",
                       !formData.startAt && "text-gray-400",
                     )}
                   >
@@ -158,7 +184,7 @@ export default function BlacklistFormModal({
                     type="button"
                     disabled={formData.isPermanent}
                     className={cn(
-                      "w-full px-3 py-2 border border-gray-300 rounded-lg text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-red-500 disabled:bg-gray-100 disabled:cursor-not-allowed",
+                      "flex w-full items-center justify-between rounded-lg border border-gray-300 px-3 py-2 text-left focus:outline-none focus:ring-2 focus:ring-red-500 disabled:cursor-not-allowed disabled:bg-gray-100",
                       !formData.endAt &&
                         !formData.isPermanent &&
                         "text-gray-400",
@@ -215,8 +241,9 @@ export default function BlacklistFormModal({
             variant={isAdd ? "destructive" : "default"}
             className="flex-1"
             onClick={handleSubmit}
+            disabled={isSubmitting}
           >
-            {isAdd ? "추가" : "저장"}
+            {isSubmitting ? "처리 중..." : isAdd ? "추가" : "저장"}
           </Button>
         </DialogFooter>
       </DialogContent>
