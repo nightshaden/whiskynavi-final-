@@ -1,26 +1,67 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { IconGoogle, IconKakao, IconNaver } from "@/icons";
-import { type SignInState, signInAction } from "./actions";
-
-const initialState: SignInState = {
-  success: false,
-};
 
 export function SignInForm() {
-  const [{ error }, formAction, isPending] = useActionState(
-    signInAction,
-    initialState,
-  );
+  const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, setIsPending] = useState(false);
+
+  const handleCredentialsSubmit = async (
+    e: React.FormEvent<HTMLFormElement>,
+  ) => {
+    e.preventDefault();
+    setError(null);
+    setIsPending(true);
+
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    // 클라이언트 유효성 검사
+    if (!email || !password) {
+      setError("이메일과 비밀번호를 모두 입력해주세요.");
+      setIsPending(false);
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("올바른 이메일 형식이 아닙니다.");
+      setIsPending(false);
+      return;
+    }
+
+    try {
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setError("이메일 또는 비밀번호가 올바르지 않습니다.");
+      } else if (result?.ok) {
+        router.push("/");
+        router.refresh();
+      }
+    } catch {
+      setError("로그인 중 오류가 발생했습니다.");
+    } finally {
+      setIsPending(false);
+    }
+  };
 
   return (
     <>
-      <form action={formAction} className="w-full">
+      <form onSubmit={handleCredentialsSubmit} className="w-full">
         {/* Email Input */}
         <div className="w-full mt-6">
           <Label
@@ -58,9 +99,7 @@ export function SignInForm() {
 
         {/* Error Message */}
         {error && (
-          <p className="mt-4 text-red-400 text-sm text-center">
-            이메일과 비밀번호를 확인해주세요.
-          </p>
+          <p className="mt-4 text-red-400 text-sm text-center">{error}</p>
         )}
 
         {/* Login Button */}
@@ -97,7 +136,9 @@ export function SignInForm() {
       <div className="w-full flex flex-col gap-3 mt-9">
         {/* Google Login */}
         <Button
+          type="button"
           variant="outline"
+          onClick={() => signIn("google", { callbackUrl: "/" })}
           className="w-full h-14 bg-white border-0 rounded-[10px] relative"
         >
           <span className="absolute left-6.5">
@@ -109,7 +150,11 @@ export function SignInForm() {
         </Button>
 
         {/* Naver Login */}
-        <Button className="w-full h-14 bg-[#03C75A] border-0 rounded-[10px] relative">
+        <Button
+          type="button"
+          onClick={() => signIn("naver", { callbackUrl: "/" })}
+          className="w-full h-14 bg-[#03C75A] border-0 rounded-[10px] relative"
+        >
           <span className="absolute left-4">
             <IconNaver size={44} />
           </span>
@@ -119,7 +164,11 @@ export function SignInForm() {
         </Button>
 
         {/* Kakao Login */}
-        <Button className="w-full h-14 bg-[#FEE500] border-0 rounded-[10px] relative">
+        <Button
+          type="button"
+          onClick={() => signIn("kakao", { callbackUrl: "/" })}
+          className="w-full h-14 bg-[#FEE500] border-0 rounded-[10px] relative"
+        >
           <span className="absolute left-4">
             <IconKakao size={44} />
           </span>

@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import { siteConfig } from "@/config/site";
+import { AuthProvider } from "@/providers/AuthProvider";
 import { pretendard } from "@/styles/fonts";
 import { OverlayProvider } from "overlay-kit";
 
@@ -105,13 +106,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${pretendard.className} antialiased bg-[#1D2429]`}>
-        <OverlayProvider>
-          <Header />
-          {/* <main className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8"> */}
-          {children}
-          {/* </main> */}
-          <Footer />
-        </OverlayProvider>
+        <AuthProvider>
+          <OverlayProvider>
+            <Header />
+            {/* <main className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8"> */}
+            {children}
+            {/* </main> */}
+            <Footer />
+          </OverlayProvider>
+        </AuthProvider>
       </body>
     </html>
   );

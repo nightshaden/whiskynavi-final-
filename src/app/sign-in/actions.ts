@@ -1,20 +1,15 @@
 "use server";
 
-import { redirect } from "next/navigation";
-import { api } from "@/apis/apis";
-
+// 유효성 검사만 서버에서 처리
 export type SignInState = {
   success: boolean;
   error?: string;
 };
 
-export async function signInAction(
-  _prevState: SignInState | null,
-  formData: FormData,
+export async function validateSignInForm(
+  email: string,
+  password: string,
 ): Promise<SignInState> {
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-
   // 기본 유효성 검사
   if (!email || !password) {
     return {
@@ -32,19 +27,5 @@ export async function signInAction(
     };
   }
 
-  try {
-    await api.signIn({ email, password });
-
-    // 로그인 성공 시 메인 페이지로 리다이렉트
-    // redirect()는 try 블록 밖에서 호출해야 합니다
-  } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "로그인에 실패했습니다.";
-    return {
-      success: false,
-      error: message,
-    };
-  }
-
-  redirect("/");
+  return { success: true };
 }
