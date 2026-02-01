@@ -18,7 +18,8 @@ const DEFAULT_BASE_URL =
 /** 내부적으로 사용: 공통 옵션 (body/method는 여기서 제외) */
 type BaseOptions = Omit<RequestInit, "body" | "method"> & {
   params?: Record<string, any>;
-
+  /** Authorization Bearer 토큰 (서버 컴포넌트에서 사용) */
+  token?: string;
   headers?: HeadersInit;
   cache?: RequestCache;
 };
@@ -98,10 +99,11 @@ export async function http<
   const {
     method = "GET",
     params,
+    token,
     headers,
     cache = "no-store",
     ...rest
-  } = options as FetchOptions<TJson>; // 좁히기 전에 공통만 분리
+  } = options as FetchOptions<TJson> & { token?: string }; // 좁히기 전에 공통만 분리
 
   // GET/HEAD이면 json/body가 없어야 함 (런타임 보호 – TS에서 이미 금지지만 안전망)
   if (
@@ -115,6 +117,14 @@ export async function http<
   const url = buildUrl(baseURL, path, options.params);
 
   const h = new Headers(headers);
+
+  // Bearer 토큰이 있으면 Authorization 헤더 추가
+  if (token && !h.has("Authorization")) {
+    // 토큰이 이미 "Bearer "로 시작하면 그대로 사용
+    const authValue = token.startsWith("Bearer ") ? token : `Bearer ${token}`;
+    h.set("Authorization", authValue);
+  }
+
   let finalBody: BodyInit | null | undefined;
 
   if (method !== "GET") {

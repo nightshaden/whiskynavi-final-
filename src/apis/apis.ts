@@ -145,6 +145,26 @@ export type AdminUserResponse = {
   userExt?: UserExtInfo;
 };
 
+export type AdminUserSearchParams = {
+  createdAtFrom?: string;
+  createdAtTo?: string;
+  email?: string;
+  isBanned?: boolean;
+  lastLoginAtFrom?: string;
+  lastLoginAtTo?: string;
+  name?: string;
+  pageNumber?: number;
+  pageSize?: number;
+  phone?: string;
+  role?: string;
+  sortBy?: string;
+  sortDirection?: string;
+  status?: string;
+  updatedAtFrom?: string;
+  updatedAtTo?: string;
+  username?: string;
+};
+
 export type UserExtInfo = {
   isBanned: boolean;
   banStartDate?: string;
@@ -836,230 +856,329 @@ export const api = {
 // Admin API
 // ============================================================================
 
+/** 서버 컴포넌트에서 인증 토큰을 전달하기 위한 옵션 */
+export type AuthOptions = {
+  token?: string;
+};
+
 export const adminApi = {
   // ==========================================================================
   // Users
   // ==========================================================================
-  getUsers: () => http<AdminUserResponse[]>("/api/admin/users"),
+  getUsers: (params?: AdminUserSearchParams, opts?: AuthOptions) =>
+    http<PageResponse<AdminUserResponse>>("/api/admin/users", {
+      params,
+      token: opts?.token,
+    }),
 
-  getUser: (id: number) => http<AdminUserResponse>(`/api/admin/users/${id}`),
+  getUser: (id: number, opts?: AuthOptions) =>
+    http<AdminUserResponse>(`/api/admin/users/${id}`, { token: opts?.token }),
 
-  deleteUser: (id: number) =>
-    http<boolean>(`/api/admin/users/${id}`, { method: "DELETE" }),
+  deleteUser: (id: number, opts?: AuthOptions) =>
+    http<boolean>(`/api/admin/users/${id}`, {
+      method: "DELETE",
+      token: opts?.token,
+    }),
 
-  updateUserStatus: (id: number, status: string) =>
+  updateUserStatus: (id: number, status: string, opts?: AuthOptions) =>
     http<AdminUserResponse>(`/api/admin/users/${id}/status`, {
       method: "PATCH",
       json: { status },
+      token: opts?.token,
     }),
 
-  addUserRoles: (id: number, roles: string[]) =>
+  addUserRoles: (id: number, roles: string[], opts?: AuthOptions) =>
     http<AdminUserResponse>(`/api/admin/users/${id}/roles/add`, {
       method: "PATCH",
       json: { roles },
+      token: opts?.token,
     }),
 
-  removeUserRoles: (id: number, roles: string[]) =>
+  removeUserRoles: (id: number, roles: string[], opts?: AuthOptions) =>
     http<AdminUserResponse>(`/api/admin/users/${id}/roles/remove`, {
       method: "PATCH",
       json: { roles },
+      token: opts?.token,
     }),
-
   banUser: (
     id: number,
     data: { reason: string; startAt?: string; endAt?: string },
+    opts?: AuthOptions,
   ) =>
     http<AdminUserResponse>(`/api/admin/users/${id}/ban`, {
       method: "POST",
       json: data,
+      token: opts?.token,
+    }),
+  editUserBan: (
+    id: number,
+    data: { reason: string; startAt?: string; endAt?: string },
+    opts?: AuthOptions,
+  ) =>
+    http<AdminUserResponse>(`/api/admin/users/${id}/ban`, {
+      method: "PATCH",
+      json: data,
+      token: opts?.token,
+    }),
+  cancelUserBan: (
+    id: number,
+    data: { reason: string; startAt?: string; endAt?: string },
+    opts?: AuthOptions,
+  ) =>
+    http<AdminUserResponse>(`/api/admin/users/${id}/ban`, {
+      method: "DELETE",
+      json: data,
+      token: opts?.token,
     }),
 
   // ==========================================================================
   // Business
   // ==========================================================================
-  getBusinessApplications: (params?: PageParams) =>
+  getBusinessApplications: (params?: PageParams, opts?: AuthOptions) =>
     http<PageResponse<UserBusinessApplicationResponse>>(
       "/api/admin/businesses/applications",
-      { params },
+      { params, token: opts?.token },
     ),
 
-  getBusinessApplication: (applicationId: number) =>
+  getBusinessApplication: (applicationId: number, opts?: AuthOptions) =>
     http<UserBusinessApplicationResponse>(
       `/api/admin/businesses/applications/${applicationId}`,
+      { token: opts?.token },
     ),
 
-  approveBusinessApplication: (applicationId: number) =>
+  approveBusinessApplication: (applicationId: number, opts?: AuthOptions) =>
     http<UserBusinessApplicationResponse>(
       `/api/admin/businesses/applications/${applicationId}/approve`,
-      { method: "POST" },
+      { method: "POST", token: opts?.token },
     ),
 
-  rejectBusinessApplication: (applicationId: number, rejectReason: string) =>
+  rejectBusinessApplication: (
+    applicationId: number,
+    rejectReason: string,
+    opts?: AuthOptions,
+  ) =>
     http<UserBusinessApplicationResponse>(
       `/api/admin/businesses/applications/${applicationId}/reject`,
-      { method: "POST", json: { rejectReason } },
+      { method: "POST", json: { rejectReason }, token: opts?.token },
     ),
 
-  getBusinessUsers: () =>
-    http<AdminBusinessUserResponse[]>("/api/admin/businesses/members"),
+  getBusinessUsers: (opts?: AuthOptions) =>
+    http<AdminBusinessUserResponse[]>("/api/admin/businesses/members", {
+      token: opts?.token,
+    }),
 
-  grantPickupRole: (userId: number) =>
+  grantPickupRole: (userId: number, opts?: AuthOptions) =>
     http<AdminBusinessUserResponse>(
       `/api/admin/businesses/members/${userId}/pickup/grant`,
-      { method: "POST" },
+      { method: "POST", token: opts?.token },
     ),
 
-  revokePickupRole: (userId: number) =>
+  revokePickupRole: (userId: number, opts?: AuthOptions) =>
     http<AdminBusinessUserResponse>(
       `/api/admin/businesses/members/${userId}/pickup/revoke`,
-      { method: "POST" },
+      { method: "POST", token: opts?.token },
     ),
 
   // ==========================================================================
   // Bottles
   // ==========================================================================
-  getAdminBottles: (params?: BottleSearchParams) =>
-    http<PageResponse<BottleAdminResponse>>("/api/admin/bottles", { params }),
+  getAdminBottles: (params?: BottleSearchParams, opts?: AuthOptions) =>
+    http<PageResponse<BottleAdminResponse>>("/api/admin/bottles", {
+      params,
+      token: opts?.token,
+    }),
 
-  getAdminBottle: (id: number) =>
-    http<BottleAdminResponse>(`/api/admin/bottles/${id}`),
+  getAdminBottle: (id: number, opts?: AuthOptions) =>
+    http<BottleAdminResponse>(`/api/admin/bottles/${id}`, {
+      token: opts?.token,
+    }),
 
-  createBottle: (data: FormData) =>
+  createBottle: (data: FormData, opts?: AuthOptions) =>
     http<BottleAdminResponse>("/api/admin/bottles", {
       method: "POST",
       body: data,
+      token: opts?.token,
     }),
 
-  updateBottle: (id: number, data: FormData) =>
+  updateBottle: (id: number, data: FormData, opts?: AuthOptions) =>
     http<BottleAdminResponse>(`/api/admin/bottles/${id}`, {
       method: "PATCH",
       body: data,
+      token: opts?.token,
     }),
 
-  deleteBottle: (id: number) =>
-    http<boolean>(`/api/admin/bottles/${id}`, { method: "DELETE" }),
+  deleteBottle: (id: number, opts?: AuthOptions) =>
+    http<boolean>(`/api/admin/bottles/${id}`, {
+      method: "DELETE",
+      token: opts?.token,
+    }),
 
   // ==========================================================================
   // Bottle Reservations (Admin)
   // ==========================================================================
-  getAdminReservationNotices: (params?: PageParams) =>
+  getAdminReservationNotices: (params?: PageParams, opts?: AuthOptions) =>
     http<PageResponse<BottleReservationNoticeResponse>>(
       "/api/admin/bottles/reservations/notices",
-      { params },
+      { params, token: opts?.token },
     ),
 
-  getAdminReservationNotice: (noticeId: number) =>
+  getAdminReservationNotice: (noticeId: number, opts?: AuthOptions) =>
     http<BottleReservationNoticeResponse>(
       `/api/admin/bottles/reservations/notices/${noticeId}`,
+      { token: opts?.token },
     ),
 
-  createReservationNotice: (data: BottleReservationNoticeRequest) =>
+  createReservationNotice: (
+    data: BottleReservationNoticeRequest,
+    opts?: AuthOptions,
+  ) =>
     http<BottleReservationNoticeResponse>(
       "/api/admin/bottles/reservations/notices",
-      { method: "POST", json: data },
+      { method: "POST", json: data, token: opts?.token },
     ),
 
   updateReservationNotice: (
     noticeId: number,
     data: BottleReservationNoticeRequest,
+    opts?: AuthOptions,
   ) =>
     http<BottleReservationNoticeResponse>(
       `/api/admin/bottles/reservations/notices/${noticeId}`,
-      { method: "PUT", json: data },
+      { method: "PUT", json: data, token: opts?.token },
     ),
 
   getAdminReservationApplications: (
     params?: PageParams & { userId?: number; noticeId?: number },
+    opts?: AuthOptions,
   ) =>
     http<PageResponse<BottleReservationApplicationResponse>>(
       "/api/admin/bottles/reservations/applications",
-      { params },
+      { params, token: opts?.token },
     ),
 
-  getAdminReservationApplication: (applicationId: number) =>
+  getAdminReservationApplication: (applicationId: number, opts?: AuthOptions) =>
     http<BottleReservationApplicationResponse>(
       `/api/admin/bottles/reservations/applications/${applicationId}`,
+      { token: opts?.token },
     ),
 
   confirmReservationApplication: (
     applicationId: number,
     confirmedQuantity: number,
+    opts?: AuthOptions,
   ) =>
     http<BottleReservationApplicationResponse>(
       `/api/admin/bottles/reservations/applications/${applicationId}/confirm`,
-      { method: "POST", json: { confirmedQuantity } },
+      { method: "POST", json: { confirmedQuantity }, token: opts?.token },
     ),
 
-  rejectReservationApplication: (applicationId: number) =>
+  rejectReservationApplication: (applicationId: number, opts?: AuthOptions) =>
     http<BottleReservationApplicationResponse>(
       `/api/admin/bottles/reservations/applications/${applicationId}/reject`,
-      { method: "POST" },
+      { method: "POST", token: opts?.token },
     ),
 
-  cancelReservationApplicationAdmin: (applicationId: number) =>
+  cancelReservationApplicationAdmin: (
+    applicationId: number,
+    opts?: AuthOptions,
+  ) =>
     http<BottleReservationApplicationResponse>(
       `/api/admin/bottles/reservations/applications/${applicationId}/cancel`,
-      { method: "POST" },
+      { method: "POST", token: opts?.token },
     ),
 
   // ==========================================================================
   // Orders (Admin)
   // ==========================================================================
-  getAdminOrders: (params?: {
-    orderType?: OrderType;
-    orderStatus?: OrderStatus;
-  }) => http<OrderResponse[]>("/api/admin/orders", { params }),
+  getAdminOrders: (
+    params?: {
+      orderType?: OrderType;
+      orderStatus?: OrderStatus;
+    },
+    opts?: AuthOptions,
+  ) =>
+    http<OrderResponse[]>("/api/admin/orders", { params, token: opts?.token }),
 
-  approveOrder: (orderId: number, data: OrderApprovalRequest) =>
+  approveOrder: (
+    orderId: number,
+    data: OrderApprovalRequest,
+    opts?: AuthOptions,
+  ) =>
     http<OrderResponse>(`/api/admin/orders/${orderId}/approve`, {
       method: "PATCH",
       json: data,
+      token: opts?.token,
     }),
 
-  updateOrderStatus: (orderId: number, data: OrderStatusUpdateRequest) =>
+  updateOrderStatus: (
+    orderId: number,
+    data: OrderStatusUpdateRequest,
+    opts?: AuthOptions,
+  ) =>
     http<OrderResponse>(`/api/admin/orders/${orderId}/status`, {
       method: "PATCH",
       json: data,
+      token: opts?.token,
     }),
 
   // ==========================================================================
   // Sales (Admin)
   // ==========================================================================
-  createSale: (data: SaleAnnouncementCreateRequest) =>
+  createSale: (data: SaleAnnouncementCreateRequest, opts?: AuthOptions) =>
     http<SaleAnnouncementResponse>("/api/admin/sales", {
       method: "POST",
       json: data,
+      token: opts?.token,
     }),
 
-  updateSale: (saleId: number, data: SaleAnnouncementUpdateRequest) =>
+  updateSale: (
+    saleId: number,
+    data: SaleAnnouncementUpdateRequest,
+    opts?: AuthOptions,
+  ) =>
     http<SaleAnnouncementResponse>(`/api/admin/sales/${saleId}`, {
       method: "PATCH",
       json: data,
+      token: opts?.token,
     }),
 
   // ==========================================================================
   // Boards (Admin)
   // ==========================================================================
-  createBoard: (data: BoardRequest) =>
-    http<BoardResponse>("/api/admin/boards", { method: "POST", json: data }),
+  createBoard: (data: BoardRequest, opts?: AuthOptions) =>
+    http<BoardResponse>("/api/admin/boards", {
+      method: "POST",
+      json: data,
+      token: opts?.token,
+    }),
 
-  createAnnouncement: (data: AnnouncementRequest) =>
+  createAnnouncement: (data: AnnouncementRequest, opts?: AuthOptions) =>
     http<AnnouncementResponse>("/api/admin/boards/announcements", {
       method: "POST",
       json: data,
+      token: opts?.token,
     }),
 
-  deletePostAdmin: (boardId: number, postId: number) =>
+  deletePostAdmin: (boardId: number, postId: number, opts?: AuthOptions) =>
     http<boolean>(`/api/admin/boards/${boardId}/posts/${postId}`, {
       method: "DELETE",
+      token: opts?.token,
     }),
 
   // ==========================================================================
   // Banners (Admin)
   // ==========================================================================
-  createBanner: (data: FormData) =>
-    http<BannerResponse>("/api/banners", { method: "POST", body: data }),
+  createBanner: (data: FormData, opts?: AuthOptions) =>
+    http<BannerResponse>("/api/banners", {
+      method: "POST",
+      body: data,
+      token: opts?.token,
+    }),
 
-  updateBanner: (id: number, data: FormData) =>
-    http<BannerResponse>(`/api/banners/${id}`, { method: "PATCH", body: data }),
+  updateBanner: (id: number, data: FormData, opts?: AuthOptions) =>
+    http<BannerResponse>(`/api/banners/${id}`, {
+      method: "PATCH",
+      body: data,
+      token: opts?.token,
+    }),
 };

@@ -1,4 +1,5 @@
 import type { NextAuthOptions } from "next-auth";
+import { getServerSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import KakaoProvider from "next-auth/providers/kakao";
@@ -35,6 +36,7 @@ const NaverProvider = {
 };
 
 export const authOptions: NextAuthOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     // 이메일/비밀번호 로그인
     CredentialsProvider({
@@ -153,3 +155,12 @@ export const authOptions: NextAuthOptions = {
 
   debug: process.env.NODE_ENV === "development",
 };
+
+/**
+ * 서버 컴포넌트에서 인증 토큰을 가져오는 헬퍼 함수
+ * @returns accessToken 또는 undefined
+ */
+export async function getAuthToken(): Promise<string | undefined> {
+  const session = await getServerSession(authOptions);
+  return session?.accessToken;
+}
