@@ -1,17 +1,80 @@
 "use client";
 
-import { Filter } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import type { AdminUserResponse, UserRole } from "@/apis/apis";
 import AdminHeader from "../../_components/AdminHeader";
 import { useSidebar } from "../../_components/AdminLayoutClient";
+import FilterHeader from "../../_components/FilterHeader";
 import Pagination from "../../_components/Pagination";
-import { generateUsers, type User } from "../../_data/mockData";
+import { useTableFilter } from "../../_components/useTableFilter";
 
-// 헬퍼 함수: roles에서 memberType 계산
-const getMemberType = (user: User): "일반" | "업장" => {
-  return user.roles.includes("ROLE_BUSINESS") ? "업장" : "일반";
+// Role → 한글 라벨 매핑
+const ROLE_LABEL_MAP: Record<UserRole, string> = {
+  ROLE_GUEST: "게스트",
+  ROLE_USER: "일반 회원",
+  ROLE_ADMIN: "관리자",
+  ROLE_SUPER_ADMIN: "총괄 관리자",
+  ROLE_CONSUMER: "소비자",
+  ROLE_WHISKYNAVI_MEMBER: "위스키내비 멤버",
+  ROLE_WHISKYTALES_MEMBER: "위스키테일즈 멤버",
+  ROLE_BLIND_MEMBER: "블라인드 멤버",
+  ROLE_BUSINESS: "업장",
+  ROLE_TRAILNTALE_BUSINESS: "트레일테일 업장",
+  ROLE_COMMUNITY_BUSINESS: "커뮤니티 업장",
+  ROLE_PICK_UP_BUSINESS: "픽업 업장",
+};
+
+// Role별 Badge 색상
+const ROLE_COLOR_MAP: Record<UserRole, string> = {
+  ROLE_SUPER_ADMIN: "bg-red-100 text-red-700",
+  ROLE_ADMIN: "bg-red-100 text-red-700",
+  ROLE_BUSINESS: "bg-purple-100 text-purple-700",
+  ROLE_TRAILNTALE_BUSINESS: "bg-purple-100 text-purple-700",
+  ROLE_COMMUNITY_BUSINESS: "bg-purple-100 text-purple-700",
+  ROLE_PICK_UP_BUSINESS: "bg-purple-100 text-purple-700",
+  ROLE_WHISKYNAVI_MEMBER: "bg-amber-100 text-amber-700",
+  ROLE_WHISKYTALES_MEMBER: "bg-blue-100 text-blue-700",
+  ROLE_BLIND_MEMBER: "bg-indigo-100 text-indigo-700",
+  ROLE_CONSUMER: "bg-gray-100 text-gray-700",
+  ROLE_USER: "bg-gray-100 text-gray-700",
+  ROLE_GUEST: "bg-gray-100 text-gray-500",
+};
+
+// 헬퍼 함수: 회원 유형 (SUPER_ADMIN > ADMIN > 나머지 일반 roles)
+const MEMBER_TYPE_ROLES: UserRole[] = [
+  "ROLE_SUPER_ADMIN",
+  "ROLE_ADMIN",
+];
+
+const getMemberType = (roles: UserRole[]): { label: string; color: string } => {
+  for (const role of MEMBER_TYPE_ROLES) {
+    if (roles.includes(role)) {
+      return { label: ROLE_LABEL_MAP[role], color: ROLE_COLOR_MAP[role] };
+    }
+  }
+  return { label: ROLE_LABEL_MAP.ROLE_USER, color: ROLE_COLOR_MAP.ROLE_USER };
+};
+
+// 헬퍼 함수: 비즈니스 roles 추출
+const BUSINESS_ROLES: UserRole[] = [
+  "ROLE_BUSINESS",
+  "ROLE_TRAILNTALE_BUSINESS",
+  "ROLE_COMMUNITY_BUSINESS",
+  "ROLE_PICK_UP_BUSINESS",
+];
+
+const SUB_BUSINESS_ROLES: UserRole[] = [
+  "ROLE_TRAILNTALE_BUSINESS",
+  "ROLE_COMMUNITY_BUSINESS",
+  "ROLE_PICK_UP_BUSINESS",
+];
+
+const getBusinessRoles = (roles: UserRole[]): { label: string; color: string }[] => {
+  const hasSub = SUB_BUSINESS_ROLES.some((role) => roles.includes(role));
+  return BUSINESS_ROLES
+    .filter((role) => roles.includes(role) && !(hasSub && role === "ROLE_BUSINESS"))
+    .map((role) => ({ label: ROLE_LABEL_MAP[role], color: ROLE_COLOR_MAP[role] }));
 };
 
 // 헬퍼 함수: createdAt을 가입일 형식으로 변환
@@ -27,107 +90,76 @@ const formatJoinDate = (createdAt: string): string => {
     .replace(/\.$/, "");
 };
 
+// 필터 옵션 정의
+const ROLE_OPTIONS = [
+  { value: "all", label: "전체" },
+  { value: "ROLE_SUPER_ADMIN", label: "총괄 관리자" },
+  { value: "ROLE_ADMIN", label: "관리자" },
+  { value: "ROLE_USER", label: "일반 회원" },
+];
+
+const NAVI_OPTIONS = [
+  { value: "all", label: "전체" },
+  { value: "Y", label: "가입" },
+  { value: "N", label: "미가입" },
+];
+
+const TALES_OPTIONS = [
+  { value: "all", label: "전체" },
+  { value: "Y", label: "가입" },
+  { value: "N", label: "미가입" },
+];
+
+const BUSINESS_OPTIONS = [
+  { value: "all", label: "전체" },
+  { value: "ROLE_TRAILNTALE_BUSINESS", label: "트레일테일" },
+  { value: "ROLE_COMMUNITY_BUSINESS", label: "커뮤니티" },
+  { value: "ROLE_PICK_UP_BUSINESS", label: "픽업" },
+];
+
+const STATUS_OPTIONS = [
+  { value: "all", label: "전체" },
+  { value: "ACTIVE", label: "활성" },
+  { value: "INACTIVE", label: "비활성" },
+];
+
 interface UsersContentProps {
   searchParams: {
     page?: string;
     limit?: string;
     q?: string;
-    memberType?: string;
+    role?: string;
     navi?: string;
     tales?: string;
+    business?: string;
+    status?: string;
     sortBy?: string;
-    order?: string;
+    sortDirection?: string;
   };
+  users: AdminUserResponse[];
+  totalElements: number;
 }
 
-export default function UsersContent({ searchParams }: UsersContentProps) {
+export default function UsersContent({
+  searchParams,
+  users,
+  totalElements,
+}: UsersContentProps) {
   const { toggle } = useSidebar();
   const router = useRouter();
 
-  // searchParams에서 상태 읽기
   const currentPage = Number(searchParams.page) || 1;
   const itemsPerPage = Number(searchParams.limit) || 20;
   const searchQuery = searchParams.q || "";
-  const memberTypeFilter = searchParams.memberType || "all";
-  const naviFilter = searchParams.navi || "all";
-  const talesFilter = searchParams.tales || "all";
-  const sortBy = (searchParams.sortBy as "name" | "joinDate") || "joinDate";
-  const sortOrder = (searchParams.order as "asc" | "desc") || "desc";
 
-  // 필터 드롭다운 상태
-  const [showMemberTypeFilter, setShowMemberTypeFilter] = useState(false);
-  const [showNaviFilter, setShowNaviFilter] = useState(false);
-  const [showTalesFilter, setShowTalesFilter] = useState(false);
-
-  const users = useMemo(() => generateUsers(), []);
-
-  // 필터링 및 정렬
-  const filteredUsers = useMemo(() => {
-    const result = users.filter((user) => {
-      const searchLower = searchQuery.toLowerCase();
-      const matchesSearch =
-        user.name.toLowerCase().includes(searchLower) ||
-        user.email.toLowerCase().includes(searchLower) ||
-        user.username.toLowerCase().includes(searchLower);
-      const matchesMemberType =
-        memberTypeFilter === "all" || getMemberType(user) === memberTypeFilter;
-      const matchesNavi =
-        naviFilter === "all" ||
-        (naviFilter === "member" && !!user.whiskeyNaviMembership) ||
-        (naviFilter === "none" && !user.whiskeyNaviMembership);
-      const matchesTales =
-        talesFilter === "all" ||
-        (talesFilter === "none" && !user.whiskeyTalesMembership) ||
-        user.whiskeyTalesMembership === talesFilter;
-
-      return matchesSearch && matchesMemberType && matchesNavi && matchesTales;
-    });
-
-    result.sort((a, b) => {
-      let compareValue = 0;
-      switch (sortBy) {
-        case "name":
-          compareValue = a.name.localeCompare(b.name);
-          break;
-        case "joinDate":
-          compareValue =
-            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-          break;
-      }
-      return sortOrder === "asc" ? compareValue : -compareValue;
-    });
-
-    return result;
-  }, [
-    users,
-    searchQuery,
-    memberTypeFilter,
-    naviFilter,
-    talesFilter,
-    sortBy,
-    sortOrder,
-  ]);
-
-  // 페이지네이션
-  const paginatedUsers = useMemo(() => {
-    const start = (currentPage - 1) * itemsPerPage;
-    return filteredUsers.slice(start, start + itemsPerPage);
-  }, [filteredUsers, currentPage, itemsPerPage]);
-
-  const updateFilter = (key: string, value: string) => {
-    const params = new URLSearchParams();
-    // 기존 params 복사
-    Object.entries(searchParams).forEach(([k, v]) => {
-      if (v) params.set(k, v);
-    });
-    if (value === "all") {
-      params.delete(key);
-    } else {
-      params.set(key, value);
-    }
-    params.set("page", "1");
-    router.push(`/admin/users?${params.toString()}`);
-  };
+  const {
+    openFilter,
+    filterRef,
+    toggleFilter,
+    closeFilter,
+    getFilterValue,
+    updateFilter,
+  } = useTableFilter({ searchParams, basePath: "/admin/users" });
 
   const handleUserClick = (userId: number) => {
     router.push(`/admin/users/${userId}`);
@@ -157,10 +189,10 @@ export default function UsersContent({ searchParams }: UsersContentProps) {
       />
 
       <div className="p-8">
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-          <div className="overflow-x-auto">
+        <div className={`bg-white rounded-lg border border-gray-200 ${openFilter ? "" : "overflow-hidden"}`}>
+          <div className={openFilter ? "" : "overflow-x-auto"}>
             <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead ref={filterRef} className="bg-gray-50 border-b border-gray-200 relative">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
                     ID
@@ -174,170 +206,64 @@ export default function UsersContent({ searchParams }: UsersContentProps) {
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
                     이메일
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase relative">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setShowMemberTypeFilter(!showMemberTypeFilter)
-                      }
-                      className="flex items-center gap-1 hover:text-amber-600 cursor-pointer"
-                    >
-                      회원 유형
-                      <Filter size={12} />
-                    </button>
-                    {showMemberTypeFilter && (
-                      <div className="absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-20 w-32">
-                        {["all", "일반", "업장"].map((type) => (
-                          <button
-                            type="button"
-                            key={type}
-                            onClick={() => {
-                              updateFilter("memberType", type);
-                              setShowMemberTypeFilter(false);
-                            }}
-                            className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 cursor-pointer ${
-                              memberTypeFilter === type
-                                ? "bg-amber-50 text-amber-700"
-                                : ""
-                            }`}
-                          >
-                            {type === "all" ? "전체" : type}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </th>
-                  <th className="w-20 px-2 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase relative">
-                    <button
-                      type="button"
-                      onClick={() => setShowNaviFilter(!showNaviFilter)}
-                      className="flex items-center gap-1 hover:text-amber-600 cursor-pointer"
-                    >
-                      내비
-                      <Filter size={12} />
-                    </button>
-                    {showNaviFilter && (
-                      <div className="absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-20 w-32">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            updateFilter("navi", "all");
-                            setShowNaviFilter(false);
-                          }}
-                          className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 cursor-pointer ${naviFilter === "all" ? "bg-amber-50 text-amber-700" : ""}`}
-                        >
-                          전체
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            updateFilter("navi", "member");
-                            setShowNaviFilter(false);
-                          }}
-                          className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 cursor-pointer ${naviFilter === "member" ? "bg-amber-50 text-amber-700" : ""}`}
-                        >
-                          가입됨
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            updateFilter("navi", "none");
-                            setShowNaviFilter(false);
-                          }}
-                          className={`block w-full px-3 py-2 text-left text-xs cursor-pointer hover:bg-gray-100 ${naviFilter === "none" ? "bg-amber-50 text-amber-700" : ""}`}
-                        >
-                          미가입
-                        </button>
-                      </div>
-                    )}
-                  </th>
-                  <th className="w-20 px-2 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase relative">
-                    <button
-                      type="button"
-                      onClick={() => setShowTalesFilter(!showTalesFilter)}
-                      className="flex items-center gap-1 hover:text-amber-600  cursor-pointer"
-                    >
-                      테일즈
-                      <Filter size={12} />
-                    </button>
-                    {showTalesFilter && (
-                      <div className="absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-20 w-32">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            updateFilter("tales", "all");
-                            setShowTalesFilter(false);
-                          }}
-                          className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 cursor-pointer ${talesFilter === "all" ? "bg-amber-50 text-amber-700" : ""}`}
-                        >
-                          전체
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            updateFilter("tales", "LV.1");
-                            setShowTalesFilter(false);
-                          }}
-                          className={`block w-full px-3 py-2 text-left text-xs cursor-pointer hover:bg-gray-100 ${talesFilter === "LV.1" ? "bg-amber-50 text-amber-700" : ""}`}
-                        >
-                          LV.1
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            updateFilter("tales", "LV.2");
-                            setShowTalesFilter(false);
-                          }}
-                          className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100  cursor-pointer${talesFilter === "LV.2" ? "bg-amber-50 text-amber-700" : ""}`}
-                        >
-                          LV.2
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            updateFilter("tales", "LV.3");
-                            setShowTalesFilter(false);
-                          }}
-                          className={`block w-full px-3 py-2 text-left text-xs cursor-pointer hover:bg-gray-100 ${talesFilter === "LV.3" ? "bg-amber-50 text-amber-700" : ""}`}
-                        >
-                          LV.3
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            updateFilter("tales", "LV.4");
-                            setShowTalesFilter(false);
-                          }}
-                          className={`block w-full px-3 py-2 text-left text-xs cursor-pointer hover:bg-gray-100 ${talesFilter === "LV.4" ? "bg-amber-50 text-amber-700" : ""}`}
-                        >
-                          LV.4
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            updateFilter("tales", "LV.5");
-                            setShowTalesFilter(false);
-                          }}
-                          className={`block w-full px-3 py-2 text-left text-xs cursor-pointer hover:bg-gray-100 ${talesFilter === "LV.5" ? "bg-amber-50 text-amber-700" : ""}`}
-                        >
-                          LV.5
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            updateFilter("tales", "none");
-                            setShowTalesFilter(false);
-                          }}
-                          className={`block w-full px-3 py-2 text-left text-xs cursor-pointer hover:bg-gray-100 ${talesFilter === "none" ? "bg-amber-50 text-amber-700" : ""}`}
-                        >
-                          미가입
-                        </button>
-                      </div>
-                    )}
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
-                    상태
-                  </th>
+                  <FilterHeader
+                    label="회원 유형"
+                    filterKey="role"
+                    options={ROLE_OPTIONS}
+                    currentValue={getFilterValue("role")}
+                    isOpen={openFilter === "role"}
+                    onToggle={toggleFilter}
+                    onSelect={updateFilter}
+                    onClose={closeFilter}
+                    dropdownWidth="w-40"
+                  />
+                  <FilterHeader
+                    label="내비"
+                    filterKey="navi"
+                    options={NAVI_OPTIONS}
+                    currentValue={getFilterValue("navi")}
+                    isOpen={openFilter === "navi"}
+                    onToggle={toggleFilter}
+                    onSelect={updateFilter}
+                    onClose={closeFilter}
+                    iconSize={10}
+                    dropdownWidth="w-28"
+                    className="w-20 px-2 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase"
+                  />
+                  <FilterHeader
+                    label="테일즈"
+                    filterKey="tales"
+                    options={TALES_OPTIONS}
+                    currentValue={getFilterValue("tales")}
+                    isOpen={openFilter === "tales"}
+                    onToggle={toggleFilter}
+                    onSelect={updateFilter}
+                    onClose={closeFilter}
+                    iconSize={10}
+                    dropdownWidth="w-28"
+                    className="w-20 px-2 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase"
+                  />
+                  <FilterHeader
+                    label="업장"
+                    filterKey="business"
+                    options={BUSINESS_OPTIONS}
+                    currentValue={getFilterValue("business")}
+                    isOpen={openFilter === "business"}
+                    onToggle={toggleFilter}
+                    onSelect={updateFilter}
+                    onClose={closeFilter}
+                  />
+                  <FilterHeader
+                    label="상태"
+                    filterKey="status"
+                    options={STATUS_OPTIONS}
+                    currentValue={getFilterValue("status")}
+                    isOpen={openFilter === "status"}
+                    onToggle={toggleFilter}
+                    onSelect={updateFilter}
+                    onClose={closeFilter}
+                    dropdownWidth="w-32"
+                  />
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
                     가입일
                   </th>
@@ -347,83 +273,101 @@ export default function UsersContent({ searchParams }: UsersContentProps) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {paginatedUsers.map((user) => (
-                  <tr
-                    key={user.id}
-                    className="hover:bg-gray-50 transition-colors"
-                  >
-                    <td className="px-4 py-3 text-sm text-gray-900">
-                      {user.id}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-900 font-medium">
-                      {user.name}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-600">
-                      @{user.username}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-600">
-                      {user.email}
-                    </td>
-                    <td className="px-4 py-3 text-sm">
-                      <Badge
-                        className={
-                          getMemberType(user) === "업장"
-                            ? "bg-purple-100 text-purple-700"
-                            : "bg-gray-100 text-gray-700"
-                        }
-                      >
-                        {getMemberType(user)}
-                      </Badge>
-                    </td>
-                    <td className="px-4 py-3 text-sm">
-                      {user.whiskeyNaviMembership ? (
-                        <Badge className="bg-amber-100 text-amber-700">
-                          가입됨
-                        </Badge>
-                      ) : (
-                        <span className="text-gray-400">-</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-sm">
-                      {user.whiskeyTalesMembership ? (
-                        <Badge className="bg-blue-100 text-blue-700">
-                          {user.whiskeyTalesMembership}
-                        </Badge>
-                      ) : (
-                        <span className="text-gray-400">-</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-sm">
-                      <Badge
-                        className={
-                          user.status === "ACTIVE"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-700"
-                        }
-                      >
-                        {user.status === "ACTIVE" ? "활성" : "비활성"}
-                      </Badge>
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-600">
-                      {formatJoinDate(user.createdAt)}
-                    </td>
-                    <td className="px-4 py-3 text-sm">
-                      <button
-                        type="button"
-                        onClick={() => handleUserClick(user.id)}
-                        className="text-amber-600 hover:text-amber-700 cursor-pointer font-medium cursor-pointer"
-                      >
-                        상세
-                      </button>
+                {users.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={11}
+                      className="px-4 py-8 text-center text-gray-500"
+                    >
+                      회원이 없습니다.
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  users.map((user) => (
+                    <tr
+                      key={user.id}
+                      className="hover:bg-gray-50 transition-colors"
+                    >
+                      <td className="px-4 py-3 text-sm text-gray-900">
+                        {user.id}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-900 font-medium">
+                        {user.name}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-600">
+                        @{user.username}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-600">
+                        {user.email}
+                      </td>
+                      <td className="px-4 py-3 text-sm">
+                        <Badge className={getMemberType(user.roles).color}>
+                          {getMemberType(user.roles).label}
+                        </Badge>
+                      </td>
+                      <td className="px-4 py-3 text-sm">
+                        {user.roles.includes("ROLE_WHISKYNAVI_MEMBER") ? (
+                          <Badge className="bg-amber-100 text-amber-700">
+                          내비
+                          </Badge>
+                        ) : (
+                          <span className="text-gray-400">-</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-sm">
+                        {user.roles.includes("ROLE_WHISKYTALES_MEMBER") ? (
+                          <Badge className="bg-blue-100 text-blue-700">
+                            테일즈
+                          </Badge>
+                        ) : (
+                          <span className="text-gray-400">-</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-sm">
+                        {getBusinessRoles(user.roles).length > 0 ? (
+                          <div className="flex flex-wrap gap-1">
+                            {getBusinessRoles(user.roles).map((role) => (
+                              <Badge key={role.label} className={role.color}>
+                                {role.label}
+                              </Badge>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="text-gray-400">-</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-sm">
+                        <Badge
+                          className={
+                            user.status === "ACTIVE"
+                              ? "bg-green-100 text-green-700"
+                              : "bg-red-100 text-red-700"
+                          }
+                        >
+                          {user.status === "ACTIVE" ? "활성" : "비활성"}
+                        </Badge>
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-600">
+                        {formatJoinDate(user.createdAt)}
+                      </td>
+                      <td className="px-4 py-3 text-sm">
+                        <button
+                          type="button"
+                          onClick={() => handleUserClick(user.id)}
+                          className="text-amber-600 hover:text-amber-700 cursor-pointer font-medium"
+                        >
+                          상세
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
 
           <Pagination
-            totalItems={filteredUsers.length}
+            totalItems={totalElements}
             itemsPerPage={itemsPerPage}
             currentPage={currentPage}
             searchParams={searchParams}
