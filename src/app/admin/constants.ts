@@ -7,8 +7,8 @@ export const ROLE_LABEL_MAP: Record<UserRole, string> = {
     ROLE_ADMIN: "관리자",
     ROLE_SUPER_ADMIN: "총괄 관리자",
     ROLE_CONSUMER: "소비자",
-    ROLE_WHISKYNAVI_MEMBER: "위스키내비 멤버",
-    ROLE_WHISKYTALES_MEMBER: "위스키테일즈 멤버",
+    ROLE_WHISKYNAVI_MEMBER: "내비",
+    ROLE_WHISKYTALES_MEMBER: "테일즈",
     ROLE_BLIND_MEMBER: "블라인드 멤버",
     ROLE_BUSINESS: "업장",
     ROLE_TRAILNTALE_BUSINESS: "트레일테일 업장",
@@ -59,6 +59,23 @@ export const ORDER_STATUS_COLOR: Record<string, string> = {
   REFUND_COMPLETED: "bg-red-100 text-red-700",
 };
 
+
+// ─── 예약 신청 상태 매핑 ──────────────────────────────────────
+export const RESERVATION_STATUS_LABEL: Record<string, string> = {
+  APPLIED: "신청완료",
+  CONFIRMED: "확정",
+  CANCELLED: "취소",
+  WAITING_PICKUP: "픽업대기",
+  RECEIVED: "수령완료",
+};
+
+export const RESERVATION_STATUS_COLOR: Record<string, string> = {
+  APPLIED: "bg-blue-100 text-blue-700",
+  CONFIRMED: "bg-green-100 text-green-700",
+  CANCELLED: "bg-gray-200 text-gray-700",
+  WAITING_PICKUP: "bg-amber-100 text-amber-700",
+  RECEIVED: "bg-emerald-100 text-emerald-700",
+};
 
 // 권한 추가 드롭다운에 표시할 역할 (GUEST 제외)
 export const ASSIGNABLE_ROLES: UserRole[] = [
