@@ -2,9 +2,10 @@
 
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
-import { CalendarIcon } from "lucide-react";
-import { useState } from "react";
+import { CalendarIcon, Loader2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
+import type { AdminUserResponse, BlacklistRequest } from "@/apis/apis";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -15,22 +16,20 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { SearchInput } from "@/components/ui/search-input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { searchUsersAction } from "../../actions";
 
-export type BlacklistFormData = {
-  userId?: number;
-  name?: string;
-  reason: string;
-  startAt?: string;
-  endAt?: string;
+type BlacklistFormData = BlacklistRequest & {
+  userId: number;
+  name: string;
 };
 
 type BlacklistFormModalProps = {
@@ -47,9 +46,11 @@ function parseDate(dateStr?: string): Date | undefined {
   return Number.isNaN(date.getTime()) ? undefined : date;
 }
 
-function formatDateString(date: Date | undefined): string {
+function formatDateString(date: Date | undefined, isEndDate = false): string {
   if (!date) return "";
-  return format(date, "yyyy-MM-dd");
+  // LocalDateTime 형식으로 변환 (시작일은 00:00:00, 종료일은 23:59:59)
+  const time = isEndDate ? "T23:59:59" : "T00:00:00";
+  return format(date, "yyyy-MM-dd") + time;
 }
 
 export default function BlacklistFormModal({
@@ -64,16 +65,94 @@ export default function BlacklistFormModal({
     name: initialData?.name ?? "",
     reason: initialData?.reason ?? "",
     startAt: parseDate(initialData?.startAt),
-    endAt: parseDate(initialData?.endAt),
+    endAt: initialData?.endAt ? parseDate(initialData.endAt) : null,
     isPermanent: !initialData?.endAt,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // 사용자 검색 관련 state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<AdminUserResponse[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<AdminUserResponse | null>(
+    null,
+  );
+  const searchContainerRef = useRef<HTMLDivElement>(null);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+
   const isAdd = mode === "add";
+
+  // 외부 클릭 시 드롭다운 닫기
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchContainerRef.current &&
+        !searchContainerRef.current.contains(event.target as Node)
+      ) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // 검색 디바운싱
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      setShowDropdown(false);
+      return;
+    }
+
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    debounceTimerRef.current = setTimeout(async () => {
+      setIsSearching(true);
+      try {
+        const result = await searchUsersAction(searchQuery);
+        if (result.success && result.data) {
+          setSearchResults(result.data);
+          setShowDropdown(true);
+        } else {
+          console.error("사용자 검색 실패:", result.error);
+          setSearchResults([]);
+        }
+      } catch (error) {
+        console.error("사용자 검색 실패:", error);
+        setSearchResults([]);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 300);
+
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [searchQuery]);
+
+  // 사용자 선택 핸들러
+  const handleSelectUser = (user: AdminUserResponse) => {
+    setSelectedUser(user);
+    setFormData({ ...formData, userId: user.id.toString(), name: user.name });
+    setSearchQuery("");
+    setShowDropdown(false);
+  };
+
+  // 선택된 사용자 해제
+  const handleClearSelection = () => {
+    setSelectedUser(null);
+    setFormData({ ...formData, userId: "", name: "" });
+  };
 
   const handleSubmit = async () => {
     if (isAdd && !formData.userId) {
-      alert("사용자 ID를 입력해주세요.");
+      alert("사용자를 선택해주세요.");
       return;
     }
     if (!formData.reason) {
@@ -84,15 +163,13 @@ export default function BlacklistFormModal({
     setIsSubmitting(true);
     try {
       await onSubmit({
-        userId: formData.userId ? Number(formData.userId) : undefined,
+        userId: Number(formData.userId),
         name: formData.name,
         reason: formData.reason,
-        startAt: formData.startAt ? formatDateString(formData.startAt) : undefined,
+        startAt: formatDateString(formData.startAt),
         endAt: formData.isPermanent
-          ? undefined
-          : formData.endAt
-            ? formatDateString(formData.endAt)
-            : undefined,
+          ? null
+          : formatDateString(formData.endAt ?? undefined, true),
       });
     } finally {
       setIsSubmitting(false);
@@ -111,23 +188,76 @@ export default function BlacklistFormModal({
         <div className="space-y-4 py-4">
           {isAdd && (
             <div className="space-y-1.5">
-              <Label htmlFor="userId">사용자 ID *</Label>
-              <Input
-                id="userId"
-                type="number"
-                value={formData.userId}
-                onChange={(e) =>
-                  setFormData({ ...formData, userId: e.target.value })
-                }
-                placeholder="사용자 ID 입력"
-              />
+              <Label>사용자 선택 *</Label>
+              {selectedUser ? (
+                <div className="flex items-center justify-between rounded-lg border border-gray-300 bg-gray-50 px-3 py-2">
+                  <div>
+                    <span className="font-medium">{selectedUser.name}</span>
+                    <span className="ml-2 text-sm text-gray-500">
+                      ({selectedUser.email})
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleClearSelection}
+                    className="text-sm text-red-500 hover:text-red-700"
+                  >
+                    취소
+                  </button>
+                </div>
+              ) : (
+                <div ref={searchContainerRef} className="relative">
+                  <SearchInput
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onFocus={() => searchQuery && setShowDropdown(true)}
+                    placeholder="이름으로 사용자 검색..."
+                    className="w-full"
+                  />
+                  {isSearching && (
+                    <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-gray-400" />
+                  )}
+                  {showDropdown && searchResults.length > 0 && (
+                    <div className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-lg border border-gray-200 bg-white shadow-lg">
+                      {searchResults.map((user) => (
+                        <button
+                          key={user.id}
+                          type="button"
+                          onClick={() => handleSelectUser(user)}
+                          className="flex w-full items-center justify-between px-3 py-2 text-left hover:bg-gray-100"
+                        >
+                          <div>
+                            <span className="font-medium">{user.name}</span>
+                            <span className="ml-2 text-sm text-gray-500">
+                              {user.email}
+                            </span>
+                          </div>
+                          <span className="text-xs text-gray-400">
+                            ID: {user.id}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {showDropdown &&
+                    !isSearching &&
+                    searchQuery &&
+                    searchResults.length === 0 && (
+                      <div className="absolute z-50 mt-1 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-500 shadow-lg">
+                        검색 결과가 없습니다
+                      </div>
+                    )}
+                </div>
+              )}
             </div>
           )}
 
           {!isAdd && (
             <div className="space-y-1.5">
               <Label>이름</Label>
-              <Input value={formData.name} disabled className="bg-gray-100" />
+              <div className="rounded-lg border border-gray-300 bg-gray-100 px-3 py-2 text-gray-700">
+                {formData.name}
+              </div>
             </div>
           )}
 
@@ -203,9 +333,9 @@ export default function BlacklistFormModal({
                 <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
-                    selected={formData.endAt}
+                    selected={formData.endAt ?? undefined}
                     onSelect={(date) =>
-                      setFormData({ ...formData, endAt: date })
+                      setFormData({ ...formData, endAt: date ?? null })
                     }
                     locale={ko}
                     disabled={(date) =>

@@ -18,7 +18,7 @@ export default async function BlacklistPage({
 
   const blacklist = await adminApi.getUsers(
     {
-      pageNumber: params.page ? Number(params.page) : 0,
+      pageNumber: params.page ? Number(params.page) - 1 : 0,
       pageSize: params.limit ? Number(params.limit) : 10,
       isBanned: true,
       sortBy: "banStartDate",
@@ -26,7 +26,6 @@ export default async function BlacklistPage({
     },
     { token },
   );
-
   return (
     <BlacklistContent searchParams={params} blacklist={blacklist.content} />
   );

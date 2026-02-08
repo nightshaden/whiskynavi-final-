@@ -131,6 +131,12 @@ export type UserSelfResponse = {
   snsAgree: boolean;
 };
 
+export type BlacklistRequest = {
+  reason: string;
+  startAt: string;
+  endAt: string | null;
+};
+
 export type AdminUserResponse = {
   id: number;
   email: string;
@@ -900,36 +906,28 @@ export const adminApi = {
       json: { roles },
       token: opts?.token,
     }),
-  banUser: (
-    id: number,
-    data: { reason: string; startAt?: string; endAt?: string },
-    opts?: AuthOptions,
-  ) =>
-    http<AdminUserResponse>(`/api/admin/users/${id}/ban`, {
-      method: "POST",
-      json: data,
-      token: opts?.token,
-    }),
-  editUserBan: (
-    id: number,
-    data: { reason: string; startAt?: string; endAt?: string },
-    opts?: AuthOptions,
-  ) =>
+  banUser: (id: number, data: BlacklistRequest, opts?: AuthOptions) =>
     http<AdminUserResponse>(`/api/admin/users/${id}/ban`, {
       method: "PATCH",
       json: data,
       token: opts?.token,
     }),
-  cancelUserBan: (
-    id: number,
-    data: { reason: string; startAt?: string; endAt?: string },
-    opts?: AuthOptions,
-  ) =>
-    http<AdminUserResponse>(`/api/admin/users/${id}/ban`, {
-      method: "DELETE",
+  editUserBan: (id: number, data: BlacklistRequest, opts?: AuthOptions) =>
+    http<AdminUserResponse>(`/api/admin/users/${id}/ban/update`, {
+      method: "PATCH",
       json: data,
       token: opts?.token,
     }),
+  /**
+   * 사용자 제재 해제 (endAt을 현재 시간으로 설정)
+   */
+  cancelUserBan: (id: number, opts?: AuthOptions) => {
+    return http<AdminUserResponse>(`/api/admin/users/${id}/ban/update`, {
+      method: "PATCH",
+      json: { endAt: "2000-01-01T00:00:00", reason: "제재 해제" },
+      token: opts?.token,
+    });
+  },
 
   // ==========================================================================
   // Business

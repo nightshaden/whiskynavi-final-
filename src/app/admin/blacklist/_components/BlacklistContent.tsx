@@ -163,6 +163,12 @@ export default function BlacklistContent({
     return new Date(dateString).toLocaleDateString("ko-KR");
   };
 
+  const isPermanentBan = (dateString?: string) => {
+    if (!dateString) return true;
+    const date = new Date(dateString);
+    return date.getFullYear() >= 3000;
+  };
+
   return (
     <>
       <AdminHeader
@@ -259,14 +265,14 @@ export default function BlacklistContent({
                       <td className="px-4 py-3 text-sm text-gray-600">
                         <span
                           className={
-                            !item.userExt?.banEndDate
+                            isPermanentBan(item.userExt?.banEndDate)
                               ? "font-semibold text-red-600"
                               : ""
                           }
                         >
-                          {item.userExt?.banEndDate
-                            ? formatDate(item.userExt.banEndDate)
-                            : "영구"}
+                          {isPermanentBan(item.userExt?.banEndDate)
+                            ? "영구"
+                            : formatDate(item.userExt?.banEndDate)}
                         </span>
                       </td>
                       <td className="px-4 py-3 text-sm">
