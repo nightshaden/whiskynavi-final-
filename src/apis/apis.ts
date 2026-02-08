@@ -401,6 +401,18 @@ export type OrderResponse = {
   updatedAt: string;
 };
 
+export type AdminUserOrderSummaryResponse = {
+  userId: number;
+  orders: OrderResponse[];
+  totalAmount: number;
+  totalElements: number;
+  totalPages: number;
+  pageNumber: number;
+  pageSize: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
+};
+
 export type OrderCancelRequest = {
   reason?: string;
 };
@@ -887,10 +899,10 @@ export const adminApi = {
       token: opts?.token,
     }),
 
-  updateUserStatus: (id: number, status: string, opts?: AuthOptions) =>
+  updateUserStatus: (id: number, user: AdminUserResponse, opts?: AuthOptions) =>
     http<AdminUserResponse>(`/api/admin/users/${id}/status`, {
       method: "PATCH",
-      json: { status },
+      json: user,
       token: opts?.token,
     }),
 
@@ -1119,6 +1131,16 @@ export const adminApi = {
       json: data,
       token: opts?.token,
     }),
+
+  getUserOrders: (
+    userId: number,
+    params?: { page?: number; size?: number; sort?: string[] },
+    opts?: AuthOptions,
+  ) =>
+    http<AdminUserOrderSummaryResponse>(
+      `/api/admin/orders/users/${userId}`,
+      { params, token: opts?.token },
+    ),
 
   // ==========================================================================
   // Sales (Admin)

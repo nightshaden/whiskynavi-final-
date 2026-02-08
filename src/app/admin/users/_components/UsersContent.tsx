@@ -1,5 +1,6 @@
 "use client";
 
+import { Eye, Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import type { AdminUserResponse, UserRole } from "@/apis/apis";
@@ -8,38 +9,8 @@ import { useSidebar } from "../../_components/AdminLayoutClient";
 import FilterHeader from "../../_components/FilterHeader";
 import Pagination from "../../_components/Pagination";
 import { useTableFilter } from "../../_components/useTableFilter";
+import { ROLE_COLOR_MAP, ROLE_LABEL_MAP } from "../../constants";
 
-// Role → 한글 라벨 매핑
-const ROLE_LABEL_MAP: Record<UserRole, string> = {
-  ROLE_GUEST: "게스트",
-  ROLE_USER: "일반 회원",
-  ROLE_ADMIN: "관리자",
-  ROLE_SUPER_ADMIN: "총괄 관리자",
-  ROLE_CONSUMER: "소비자",
-  ROLE_WHISKYNAVI_MEMBER: "위스키내비 멤버",
-  ROLE_WHISKYTALES_MEMBER: "위스키테일즈 멤버",
-  ROLE_BLIND_MEMBER: "블라인드 멤버",
-  ROLE_BUSINESS: "업장",
-  ROLE_TRAILNTALE_BUSINESS: "트레일테일 업장",
-  ROLE_COMMUNITY_BUSINESS: "커뮤니티 업장",
-  ROLE_PICK_UP_BUSINESS: "픽업 업장",
-};
-
-// Role별 Badge 색상
-const ROLE_COLOR_MAP: Record<UserRole, string> = {
-  ROLE_SUPER_ADMIN: "bg-red-100 text-red-700",
-  ROLE_ADMIN: "bg-red-100 text-red-700",
-  ROLE_BUSINESS: "bg-purple-100 text-purple-700",
-  ROLE_TRAILNTALE_BUSINESS: "bg-purple-100 text-purple-700",
-  ROLE_COMMUNITY_BUSINESS: "bg-purple-100 text-purple-700",
-  ROLE_PICK_UP_BUSINESS: "bg-purple-100 text-purple-700",
-  ROLE_WHISKYNAVI_MEMBER: "bg-amber-100 text-amber-700",
-  ROLE_WHISKYTALES_MEMBER: "bg-blue-100 text-blue-700",
-  ROLE_BLIND_MEMBER: "bg-indigo-100 text-indigo-700",
-  ROLE_CONSUMER: "bg-gray-100 text-gray-700",
-  ROLE_USER: "bg-gray-100 text-gray-700",
-  ROLE_GUEST: "bg-gray-100 text-gray-500",
-};
 
 // 헬퍼 함수: 회원 유형 (SUPER_ADMIN > ADMIN > 나머지 일반 roles)
 const MEMBER_TYPE_ROLES: UserRole[] = [
@@ -47,13 +18,16 @@ const MEMBER_TYPE_ROLES: UserRole[] = [
   "ROLE_ADMIN",
 ];
 
-const getMemberType = (roles: UserRole[]): { label: string; color: string } => {
+const getMemberType = (roles: UserRole[]): { label: string; color: string } | null => {
   for (const role of MEMBER_TYPE_ROLES) {
     if (roles.includes(role)) {
       return { label: ROLE_LABEL_MAP[role], color: ROLE_COLOR_MAP[role] };
     }
   }
-  return { label: ROLE_LABEL_MAP.ROLE_USER, color: ROLE_COLOR_MAP.ROLE_USER };
+  if (roles.includes("ROLE_USER")) {
+    return { label: ROLE_LABEL_MAP.ROLE_USER, color: ROLE_COLOR_MAP.ROLE_USER };
+  }
+  return null;
 };
 
 // 헬퍼 함수: 비즈니스 roles 추출
@@ -161,10 +135,6 @@ export default function UsersContent({
     updateFilter,
   } = useTableFilter({ searchParams, basePath: "/admin/users" });
 
-  const handleUserClick = (userId: number) => {
-    router.push(`/admin/users/${userId}`);
-  };
-
   const handleSearch = (value: string) => {
     const params = new URLSearchParams();
     Object.entries(searchParams).forEach(([k, v]) => {
@@ -178,7 +148,6 @@ export default function UsersContent({
     params.set("page", "1");
     router.push(`/admin/users?${params.toString()}`);
   };
-
   return (
     <>
       <AdminHeader
@@ -283,7 +252,9 @@ export default function UsersContent({
                     </td>
                   </tr>
                 ) : (
-                  users.map((user) => (
+                  users.map((user) => {
+                    const memberType = getMemberType(user.roles);
+                    return (
                     <tr
                       key={user.id}
                       className="hover:bg-gray-50 transition-colors"
@@ -301,9 +272,13 @@ export default function UsersContent({
                         {user.email}
                       </td>
                       <td className="px-4 py-3 text-sm">
-                        <Badge className={getMemberType(user.roles).color}>
-                          {getMemberType(user.roles).label}
-                        </Badge>
+                        {memberType ? (
+                          <Badge className={memberType.color}>
+                            {memberType.label}
+                          </Badge>
+                        ) : (
+                          <span className="text-gray-400">-</span>
+                        )}
                       </td>
                       <td className="px-4 py-3 text-sm">
                         {user.roles.includes("ROLE_WHISKYNAVI_MEMBER") ? (
@@ -351,16 +326,28 @@ export default function UsersContent({
                         {formatJoinDate(user.createdAt)}
                       </td>
                       <td className="px-4 py-3 text-sm">
-                        <button
-                          type="button"
-                          onClick={() => handleUserClick(user.id)}
-                          className="text-amber-600 hover:text-amber-700 cursor-pointer font-medium"
-                        >
-                          상세
-                        </button>
+                        <div className="flex items-center gap-1">
+                          <button
+                            type="button"
+                            onClick={() => router.push(`/admin/users/${user.id}`)}
+                            className="p-1.5 text-gray-500 hover:text-amber-600 hover:bg-amber-50 rounded-md transition-colors cursor-pointer"
+                            title="상세"
+                          >
+                            <Eye size={16} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => router.push(`/admin/users/${user.id}/edit`)}
+                            className="p-1.5 text-gray-500 hover:text-amber-600 hover:bg-amber-50 rounded-md transition-colors cursor-pointer"
+                            title="수정"
+                          >
+                            <Pencil size={16} />
+                          </button>
+                        </div>
                       </td>
                     </tr>
-                  ))
+                    );
+                  })
                 )}
               </tbody>
             </table>
