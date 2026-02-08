@@ -1,0 +1,80 @@
+"use client";
+
+import { Filter } from "lucide-react";
+
+export interface FilterOption {
+  value: string;
+  label: string;
+}
+
+interface FilterHeaderProps {
+  label: string;
+  filterKey: string;
+  options: FilterOption[];
+  currentValue: string;
+  isOpen: boolean;
+  onToggle: (key: string) => void;
+  onSelect: (key: string, value: string) => void;
+  onClose: () => void;
+  /** 아이콘 크기 (기본 12) */
+  iconSize?: number;
+  /** 드롭다운 너비 클래스 (기본 "w-36") */
+  dropdownWidth?: string;
+  /** th에 적용할 추가 className */
+  className?: string;
+}
+
+export default function FilterHeader({
+  label,
+  filterKey,
+  options,
+  currentValue,
+  isOpen,
+  onToggle,
+  onSelect,
+  onClose,
+  iconSize = 12,
+  dropdownWidth = "w-36",
+  className = "px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase",
+}: FilterHeaderProps) {
+  const isActive = currentValue !== "all";
+
+  return (
+    <th className={`${className} relative`}>
+      <button
+        type="button"
+        onClick={() => onToggle(filterKey)}
+        className={`flex items-center gap-1 hover:text-amber-600 cursor-pointer ${isActive ? "text-amber-600" : ""}`}
+      >
+        {label}
+        <Filter
+          size={iconSize}
+          className={isActive ? "fill-amber-600" : ""}
+        />
+      </button>
+      {isOpen && (
+        <div
+          className={`absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-50 ${dropdownWidth}`}
+        >
+          {options.map((option) => (
+            <button
+              type="button"
+              key={option.value}
+              onClick={() => {
+                onSelect(filterKey, option.value);
+                onClose();
+              }}
+              className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 cursor-pointer ${
+                currentValue === option.value
+                  ? "bg-amber-50 text-amber-700"
+                  : ""
+              }`}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </th>
+  );
+}

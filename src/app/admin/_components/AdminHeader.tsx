@@ -55,7 +55,7 @@ export default function AdminHeader({
               />
               <input
                 type="text"
-                placeholder="검색..."
+                placeholder="이름으로 검색..."
                 value={searchValue}
                 onChange={(e) => handleSearch(e.target.value)}
                 className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
