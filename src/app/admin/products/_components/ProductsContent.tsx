@@ -1,12 +1,13 @@
 "use client";
 
-import { Filter } from "lucide-react";
+import type { BottleAdminResponse } from "@/apis/generated/api";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
 import AdminHeader from "../../_components/AdminHeader";
 import { useSidebar } from "../../_components/AdminLayoutClient";
+import FilterHeader from "../../_components/FilterHeader";
 import Pagination from "../../_components/Pagination";
-import { generateProducts } from "../../_data/mockData";
+import { useTableFilter } from "../../_components/useTableFilter";
+import Image from "next/image";
 
 interface ProductsContentProps {
   searchParams: {
@@ -15,113 +16,45 @@ interface ProductsContentProps {
     q?: string;
     brand?: string;
     distillery?: string;
-    sortBy?: string;
-    order?: string;
   };
+  products: BottleAdminResponse[];
+  totalElements: number;
+  brands: string[];
+  distilleries: string[];
 }
 
 export default function ProductsContent({
   searchParams,
+  products,
+  totalElements,
+  brands,
+  distilleries,
 }: ProductsContentProps) {
   const { toggle } = useSidebar();
   const router = useRouter();
 
-  // searchParams에서 상태 읽기
   const currentPage = Number(searchParams.page) || 1;
   const itemsPerPage = Number(searchParams.limit) || 20;
   const searchQuery = searchParams.q || "";
-  const brandFilter = searchParams.brand || "all";
-  const distilleryFilter = searchParams.distillery || "all";
-  const sortBy =
-    (searchParams.sortBy as
-      | "createdAt"
-      | "bottledDate"
-      | "distillationDate"
-      | "abv"
-      | "capacity") || "createdAt";
-  const sortOrder = (searchParams.order as "asc" | "desc") || "desc";
 
-  // 필터 드롭다운 상태
-  const [showBrandFilter, setShowBrandFilter] = useState(false);
-  const [showDistilleryFilter, setShowDistilleryFilter] = useState(false);
+  const {
+    openFilter,
+    filterRef,
+    toggleFilter,
+    closeFilter,
+    getFilterValue,
+    updateFilter,
+  } = useTableFilter({ searchParams, basePath: "/admin/products" });
 
-  const products = useMemo(() => generateProducts(), []);
+  const brandOptions = [
+    { value: "all", label: "전체" },
+    ...brands.map((b) => ({ value: b, label: b })),
+  ];
 
-  // 브랜드 및 증류소 목록 추출
-  const brands = useMemo(
-    () => [...new Set(products.map((p) => p.brand))],
-    [products],
-  );
-  const distilleries = useMemo(
-    () => [...new Set(products.map((p) => p.distillery))],
-    [products],
-  );
-
-  // 필터링 및 정렬
-  const filteredProducts = useMemo(() => {
-    const result = products.filter((product) => {
-      const searchLower = searchQuery.toLowerCase();
-      const matchesSearch =
-        product.name.toLowerCase().includes(searchLower) ||
-        product.distillery.toLowerCase().includes(searchLower) ||
-        product.brand.toLowerCase().includes(searchLower);
-      const matchesBrand =
-        brandFilter === "all" || product.brand === brandFilter;
-      const matchesDistillery =
-        distilleryFilter === "all" || product.distillery === distilleryFilter;
-
-      return matchesSearch && matchesBrand && matchesDistillery;
-    });
-
-    result.sort((a, b) => {
-      let compareValue = 0;
-      switch (sortBy) {
-        case "createdAt":
-          compareValue =
-            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-          break;
-        case "bottledDate":
-          compareValue =
-            new Date(a.bottledDate).getTime() -
-            new Date(b.bottledDate).getTime();
-          break;
-        case "distillationDate":
-          compareValue =
-            new Date(a.distillationDate).getTime() -
-            new Date(b.distillationDate).getTime();
-          break;
-        case "abv":
-          compareValue = a.abv - b.abv;
-          break;
-        case "capacity":
-          compareValue = a.capacity - b.capacity;
-          break;
-      }
-      return sortOrder === "asc" ? compareValue : -compareValue;
-    });
-
-    return result;
-  }, [products, searchQuery, brandFilter, distilleryFilter, sortBy, sortOrder]);
-
-  // 페이지네이션
-  const paginatedProducts = useMemo(() => {
-    const start = (currentPage - 1) * itemsPerPage;
-    return filteredProducts.slice(start, start + itemsPerPage);
-  }, [filteredProducts, currentPage, itemsPerPage]);
-
-  const updateFilter = (key: string, value: string) => {
-    const params = new URLSearchParams();
-    Object.entries(searchParams).forEach(([k, v]) => {
-      if (v) params.set(k, v);
-    });
-    if (value === "all") {
-      params.delete(key);
-    } else {
-      params.set(key, value);
-    }
-    params.set("page", "1");
-    router.push(`/admin/products?${params.toString()}`);
-  };
+  const distilleryOptions = [
+    { value: "all", label: "전체" },
+    ...distilleries.map((d) => ({ value: d, label: d })),
+  ];
 
   const handleProductClick = (productId: number) => {
     router.push(`/admin/products/${productId}`);
@@ -154,7 +87,7 @@ export default function ProductsContent({
         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead ref={filterRef} className="bg-gray-50 border-b border-gray-200">
                 <tr>
                   <th className="px-2 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase whitespace-nowrap">
                     ID
@@ -165,82 +98,30 @@ export default function ProductsContent({
                   <th className="px-2 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase whitespace-nowrap">
                     제품명
                   </th>
-                  <th className="px-2 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase relative whitespace-nowrap">
-                    <button
-                      type="button"
-                      onClick={() => setShowBrandFilter(!showBrandFilter)}
-                      className="flex items-center gap-1 hover:text-amber-600 cursor-pointer"
-                    >
-                      브랜드
-                      <Filter size={12} />
-                    </button>
-                    {showBrandFilter && (
-                      <div className="absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-20 w-40">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            updateFilter("brand", "all");
-                            setShowBrandFilter(false);
-                          }}
-                          className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 cursor-pointer ${brandFilter === "all" ? "bg-amber-50 text-amber-700" : ""}`}
-                        >
-                          전체
-                        </button>
-                        {brands.map((brand) => (
-                          <button
-                            type="button"
-                            key={brand}
-                            onClick={() => {
-                              updateFilter("brand", brand);
-                              setShowBrandFilter(false);
-                            }}
-                            className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 cursor-pointer ${brandFilter === brand ? "bg-amber-50 text-amber-700" : ""}`}
-                          >
-                            {brand}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </th>
-                  <th className="px-2 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase relative whitespace-nowrap">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setShowDistilleryFilter(!showDistilleryFilter)
-                      }
-                      className="flex items-center gap-1 hover:text-amber-600 cursor-pointer"
-                    >
-                      증류소
-                      <Filter size={12} />
-                    </button>
-                    {showDistilleryFilter && (
-                      <div className="absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-20 w-40 max-h-60 overflow-y-auto">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            updateFilter("distillery", "all");
-                            setShowDistilleryFilter(false);
-                          }}
-                          className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 cursor-pointer ${distilleryFilter === "all" ? "bg-amber-50 text-amber-700" : ""}`}
-                        >
-                          전체
-                        </button>
-                        {distilleries.map((distillery) => (
-                          <button
-                            type="button"
-                            key={distillery}
-                            onClick={() => {
-                              updateFilter("distillery", distillery);
-                              setShowDistilleryFilter(false);
-                            }}
-                            className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 cursor-pointer ${distilleryFilter === distillery ? "bg-amber-50 text-amber-700" : ""}`}
-                          >
-                            {distillery}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </th>
+                  <FilterHeader
+                    label="브랜드"
+                    filterKey="brand"
+                    options={brandOptions}
+                    currentValue={getFilterValue("brand")}
+                    isOpen={openFilter === "brand"}
+                    onToggle={toggleFilter}
+                    onSelect={updateFilter}
+                    onClose={closeFilter}
+                    dropdownWidth="w-40"
+                    className="px-2 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase whitespace-nowrap"
+                  />
+                  <FilterHeader
+                    label="증류소"
+                    filterKey="distillery"
+                    options={distilleryOptions}
+                    currentValue={getFilterValue("distillery")}
+                    isOpen={openFilter === "distillery"}
+                    onToggle={toggleFilter}
+                    onSelect={updateFilter}
+                    onClose={closeFilter}
+                    dropdownWidth="w-40 max-h-60 overflow-y-auto"
+                    className="px-2 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase whitespace-nowrap"
+                  />
                   <th className="px-2 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase whitespace-nowrap">
                     시리즈
                   </th>
@@ -268,7 +149,7 @@ export default function ProductsContent({
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {paginatedProducts.map((product) => (
+                {products.map((product) => (
                   <tr
                     key={product.id}
                     className="hover:bg-gray-50 transition-colors"
@@ -277,12 +158,14 @@ export default function ProductsContent({
                       {product.id}
                     </td>
                     <td className="px-2 py-1.5 whitespace-nowrap">
-                      <img
+                      <Image
+                        width={40}
+                        height={40}
                         src={
                           product.imgUrl ||
                           "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=100"
                         }
-                        alt={product.name}
+                        alt={product.name ?? ""}
                         className="w-10 h-10 object-cover rounded"
                         onError={(e) => {
                           e.currentTarget.src =
@@ -341,7 +224,7 @@ export default function ProductsContent({
                     <td className="px-2 py-1.5 text-xs whitespace-nowrap">
                       <button
                         type="button"
-                        onClick={() => handleProductClick(product.id)}
+                        onClick={() => handleProductClick(product.id!)}
                         className="text-amber-600 hover:text-amber-700 cursor-pointer font-medium"
                       >
                         상세
@@ -354,7 +237,7 @@ export default function ProductsContent({
           </div>
 
           <Pagination
-            totalItems={filteredProducts.length}
+            totalItems={totalElements}
             itemsPerPage={itemsPerPage}
             currentPage={currentPage}
             searchParams={searchParams}
