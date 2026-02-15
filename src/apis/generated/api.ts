@@ -490,6 +490,15 @@ export interface BoardResponse {
   slug?: string;
 }
 
+export interface BottleAdminParameterValues {
+  brands?: string[];
+  caskTypes?: string[];
+  companies?: string[];
+  distilleries?: string[];
+  maltTypes?: string[];
+  series?: string[];
+}
+
 /**
  * Additional metadata key/value pairs.
  */
@@ -2106,13 +2115,6 @@ export interface UpdatePostRequest {
   title?: string;
 }
 
-export interface UserBusinessApplicationRequest {
-  businessName?: string;
-  businessRegistrationNumber?: string;
-  contact?: string;
-  pickupAddress?: string;
-}
-
 export type UserBusinessApplicationSubmitResponseStatus =
   (typeof UserBusinessApplicationSubmitResponseStatus)[keyof typeof UserBusinessApplicationSubmitResponseStatus];
 
@@ -2153,10 +2155,35 @@ export interface UsernameRequest {
   username?: string;
 }
 
+export type PostApiAdminBannersParams = {
+  /**
+   * @minLength 1
+   */
+  title: string;
+  description?: string;
+  link?: string;
+};
+
+export type PostApiAdminBannersBody = {
+  backgroundImg: Blob;
+  mainImg: Blob;
+};
+
+export type PatchApiAdminBannersIdParams = {
+  title?: string;
+  description?: string;
+  link?: string;
+};
+
+export type PatchApiAdminBannersIdBody = {
+  backgroundImg?: Blob;
+  mainImg?: Blob;
+};
+
 /**
  * 게시판을 생성하거나 수정할 때 사용하는 요청 본문입니다.
  */
-export type CreateBoardBody = {
+export type PostApiAdminBoardsBody = {
   /**
    * 게시판에 표시할 선택 설명입니다.
    * @minLength 0
@@ -2180,10 +2207,10 @@ export type CreateBoardBody = {
 /**
  * 공지 범위(전체 또는 게시판별)를 지정합니다.
  */
-export type CreateAnnouncementBodyScope =
-  (typeof CreateAnnouncementBodyScope)[keyof typeof CreateAnnouncementBodyScope];
+export type PostApiAdminBoardsAnnouncementsBodyScope =
+  (typeof PostApiAdminBoardsAnnouncementsBodyScope)[keyof typeof PostApiAdminBoardsAnnouncementsBodyScope];
 
-export const CreateAnnouncementBodyScope = {
+export const PostApiAdminBoardsAnnouncementsBodyScope = {
   GLOBAL: "GLOBAL",
   BOARD: "BOARD",
 } as const;
@@ -2191,7 +2218,7 @@ export const CreateAnnouncementBodyScope = {
 /**
  * 새 공지사항을 등록할 때 사용하는 요청 본문입니다.
  */
-export type CreateAnnouncementBody = {
+export type PostApiAdminBoardsAnnouncementsBody = {
   /** 범위가 게시판일 때 대상 게시판 ID입니다. */
   boardId?: number;
   /**
@@ -2200,7 +2227,7 @@ export type CreateAnnouncementBody = {
    */
   content?: string;
   /** 공지 범위(전체 또는 게시판별)를 지정합니다. */
-  scope: CreateAnnouncementBodyScope;
+  scope: PostApiAdminBoardsAnnouncementsBodyScope;
   /**
    * 사용자에게 보여줄 공지 제목입니다.
    * @minLength 0
@@ -2209,7 +2236,7 @@ export type CreateAnnouncementBody = {
   title?: string;
 };
 
-export type ListAdminBottlesParams = {
+export type GetApiAdminBottlesParams = {
   filters: {
     abvFrom?: number;
     abvTo?: number;
@@ -2231,28 +2258,32 @@ export type ListAdminBottlesParams = {
   };
 };
 
-export type CreateAdminBottleBody = {
-  abv?: number;
-  bottledDate?: string;
-  brand?: string;
-  capacity?: number;
-  caskNumber?: string;
-  caskType?: string;
-  company?: string;
-  consumerPrice?: number;
-  description?: string;
-  distillationDate?: string;
-  distillery?: string;
-  labelImg: Blob;
-  maltType?: string;
+export type PostApiAdminBottlesParams = {
   name: string;
+  company?: string;
+  brand?: string;
   series?: string;
-  stockQuantity?: number;
+  extraInfos?: string;
+  maltType?: string;
+  distillery?: string;
+  distillationDate?: string;
+  bottledDate?: string;
+  caskType?: string;
+  caskNumber?: string;
+  abv?: number;
+  capacity?: number;
+  description?: string;
   supplyPrice?: number;
+  consumerPrice?: number;
+  stockQuantity?: number;
   visible?: boolean;
 };
 
-export type ListAdminReservationApplicationsParams = {
+export type PostApiAdminBottlesBody = {
+  labelImg: Blob;
+};
+
+export type GetApiAdminBottlesReservationsApplicationsParams = {
   userId?: number;
   noticeId?: number;
   /**
@@ -2271,12 +2302,13 @@ export type ListAdminReservationApplicationsParams = {
   sort?: string[];
 };
 
-export type ConfirmApplicationBody = {
-  /** @minimum 1 */
-  confirmedQuantity: number;
-};
+export type PostApiAdminBottlesReservationsApplicationsApplicationidConfirmBody =
+  {
+    /** @minimum 1 */
+    confirmedQuantity: number;
+  };
 
-export type ListNoticesParams = {
+export type GetApiAdminBottlesReservationsNoticesParams = {
   /**
    * Zero-based page index (0..N)
    * @minimum 0
@@ -2293,94 +2325,101 @@ export type ListNoticesParams = {
   sort?: string[];
 };
 
-export type CreateNoticeBodyGradeConditionsItemRequiredRole =
-  (typeof CreateNoticeBodyGradeConditionsItemRequiredRole)[keyof typeof CreateNoticeBodyGradeConditionsItemRequiredRole];
+export type PostApiAdminBottlesReservationsNoticesBodyGradeConditionsItemRequiredRole =
+  (typeof PostApiAdminBottlesReservationsNoticesBodyGradeConditionsItemRequiredRole)[keyof typeof PostApiAdminBottlesReservationsNoticesBodyGradeConditionsItemRequiredRole];
 
-export const CreateNoticeBodyGradeConditionsItemRequiredRole = {
-  ROLE_GUEST: "ROLE_GUEST",
-  ROLE_USER: "ROLE_USER",
-  ROLE_ADMIN: "ROLE_ADMIN",
-  ROLE_SUPER_ADMIN: "ROLE_SUPER_ADMIN",
-  ROLE_CONSUMER: "ROLE_CONSUMER",
-  ROLE_WHISKYNAVI_MEMBER: "ROLE_WHISKYNAVI_MEMBER",
-  ROLE_WHISKYTALES_MEMBER: "ROLE_WHISKYTALES_MEMBER",
-  ROLE_BLIND_MEMBER: "ROLE_BLIND_MEMBER",
-  ROLE_BUSINESS: "ROLE_BUSINESS",
-  ROLE_TRAILNTALE_BUSINESS: "ROLE_TRAILNTALE_BUSINESS",
-  ROLE_COMMUNITY_BUSINESS: "ROLE_COMMUNITY_BUSINESS",
-  ROLE_PICK_UP_BUSINESS: "ROLE_PICK_UP_BUSINESS",
-} as const;
+export const PostApiAdminBottlesReservationsNoticesBodyGradeConditionsItemRequiredRole =
+  {
+    ROLE_GUEST: "ROLE_GUEST",
+    ROLE_USER: "ROLE_USER",
+    ROLE_ADMIN: "ROLE_ADMIN",
+    ROLE_SUPER_ADMIN: "ROLE_SUPER_ADMIN",
+    ROLE_CONSUMER: "ROLE_CONSUMER",
+    ROLE_WHISKYNAVI_MEMBER: "ROLE_WHISKYNAVI_MEMBER",
+    ROLE_WHISKYTALES_MEMBER: "ROLE_WHISKYTALES_MEMBER",
+    ROLE_BLIND_MEMBER: "ROLE_BLIND_MEMBER",
+    ROLE_BUSINESS: "ROLE_BUSINESS",
+    ROLE_TRAILNTALE_BUSINESS: "ROLE_TRAILNTALE_BUSINESS",
+    ROLE_COMMUNITY_BUSINESS: "ROLE_COMMUNITY_BUSINESS",
+    ROLE_PICK_UP_BUSINESS: "ROLE_PICK_UP_BUSINESS",
+  } as const;
 
-export type CreateNoticeBodyGradeConditionsItem = {
+export type PostApiAdminBottlesReservationsNoticesBodyGradeConditionsItem = {
   applicableFrom: string;
-  requiredRole: CreateNoticeBodyGradeConditionsItemRequiredRole;
+  requiredRole: PostApiAdminBottlesReservationsNoticesBodyGradeConditionsItemRequiredRole;
 };
 
-export type CreateNoticeBody = {
+export type PostApiAdminBottlesReservationsNoticesBody = {
   bottleId: number;
   /** @minItems 1 */
-  gradeConditions?: CreateNoticeBodyGradeConditionsItem[];
+  gradeConditions?: PostApiAdminBottlesReservationsNoticesBodyGradeConditionsItem[];
   /** @minimum 0 */
   price: number;
   reservationEndAt: string;
   reservationStartAt: string;
 };
 
-export type UpdateNoticeBodyGradeConditionsItemRequiredRole =
-  (typeof UpdateNoticeBodyGradeConditionsItemRequiredRole)[keyof typeof UpdateNoticeBodyGradeConditionsItemRequiredRole];
+export type PutApiAdminBottlesReservationsNoticesNoticeidBodyGradeConditionsItemRequiredRole =
+  (typeof PutApiAdminBottlesReservationsNoticesNoticeidBodyGradeConditionsItemRequiredRole)[keyof typeof PutApiAdminBottlesReservationsNoticesNoticeidBodyGradeConditionsItemRequiredRole];
 
-export const UpdateNoticeBodyGradeConditionsItemRequiredRole = {
-  ROLE_GUEST: "ROLE_GUEST",
-  ROLE_USER: "ROLE_USER",
-  ROLE_ADMIN: "ROLE_ADMIN",
-  ROLE_SUPER_ADMIN: "ROLE_SUPER_ADMIN",
-  ROLE_CONSUMER: "ROLE_CONSUMER",
-  ROLE_WHISKYNAVI_MEMBER: "ROLE_WHISKYNAVI_MEMBER",
-  ROLE_WHISKYTALES_MEMBER: "ROLE_WHISKYTALES_MEMBER",
-  ROLE_BLIND_MEMBER: "ROLE_BLIND_MEMBER",
-  ROLE_BUSINESS: "ROLE_BUSINESS",
-  ROLE_TRAILNTALE_BUSINESS: "ROLE_TRAILNTALE_BUSINESS",
-  ROLE_COMMUNITY_BUSINESS: "ROLE_COMMUNITY_BUSINESS",
-  ROLE_PICK_UP_BUSINESS: "ROLE_PICK_UP_BUSINESS",
-} as const;
+export const PutApiAdminBottlesReservationsNoticesNoticeidBodyGradeConditionsItemRequiredRole =
+  {
+    ROLE_GUEST: "ROLE_GUEST",
+    ROLE_USER: "ROLE_USER",
+    ROLE_ADMIN: "ROLE_ADMIN",
+    ROLE_SUPER_ADMIN: "ROLE_SUPER_ADMIN",
+    ROLE_CONSUMER: "ROLE_CONSUMER",
+    ROLE_WHISKYNAVI_MEMBER: "ROLE_WHISKYNAVI_MEMBER",
+    ROLE_WHISKYTALES_MEMBER: "ROLE_WHISKYTALES_MEMBER",
+    ROLE_BLIND_MEMBER: "ROLE_BLIND_MEMBER",
+    ROLE_BUSINESS: "ROLE_BUSINESS",
+    ROLE_TRAILNTALE_BUSINESS: "ROLE_TRAILNTALE_BUSINESS",
+    ROLE_COMMUNITY_BUSINESS: "ROLE_COMMUNITY_BUSINESS",
+    ROLE_PICK_UP_BUSINESS: "ROLE_PICK_UP_BUSINESS",
+  } as const;
 
-export type UpdateNoticeBodyGradeConditionsItem = {
-  applicableFrom: string;
-  requiredRole: UpdateNoticeBodyGradeConditionsItemRequiredRole;
-};
+export type PutApiAdminBottlesReservationsNoticesNoticeidBodyGradeConditionsItem =
+  {
+    applicableFrom: string;
+    requiredRole: PutApiAdminBottlesReservationsNoticesNoticeidBodyGradeConditionsItemRequiredRole;
+  };
 
-export type UpdateNoticeBody = {
+export type PutApiAdminBottlesReservationsNoticesNoticeidBody = {
   bottleId: number;
   /** @minItems 1 */
-  gradeConditions?: UpdateNoticeBodyGradeConditionsItem[];
+  gradeConditions?: PutApiAdminBottlesReservationsNoticesNoticeidBodyGradeConditionsItem[];
   /** @minimum 0 */
   price: number;
   reservationEndAt: string;
   reservationStartAt: string;
 };
 
-export type UpdateAdminBottleBody = {
-  abv?: number;
-  bottledDate?: string;
-  brand?: string;
-  capacity?: number;
-  caskNumber?: string;
-  caskType?: string;
-  company?: string;
-  consumerPrice?: number;
-  description?: string;
-  distillationDate?: string;
-  distillery?: string;
-  labelImg?: Blob;
-  maltType?: string;
+export type PatchApiAdminBottlesIdParams = {
   name?: string;
+  company?: string;
+  brand?: string;
   series?: string;
-  stockQuantity?: number;
+  extraInfos?: string;
+  maltType?: string;
+  distillery?: string;
+  distillationDate?: string;
+  bottledDate?: string;
+  caskType?: string;
+  caskNumber?: string;
+  abv?: number;
+  capacity?: number;
+  description?: string;
   supplyPrice?: number;
+  consumerPrice?: number;
+  stockQuantity?: number;
   visible?: boolean;
 };
 
-export type ListApplicationsParams = {
+export type PatchApiAdminBottlesIdBody = {
+  labelImg?: Blob;
+};
+
+export type GetApiAdminBusinessesApplicationsParams = {
   /**
    * Zero-based page index (0..N)
    * @minimum 0
@@ -2400,7 +2439,7 @@ export type ListApplicationsParams = {
 /**
  * 관리자가 비즈니스 신청을 반려할 때 입력하는 사유입니다.
  */
-export type RejectApplicationBody = {
+export type PostApiAdminBusinessesApplicationsApplicationidRejectBody = {
   /**
    * 거절 사유
    * @minLength 1
@@ -2408,7 +2447,7 @@ export type RejectApplicationBody = {
   rejectReason?: string;
 };
 
-export type ListBusinessUsersParams = {
+export type GetApiAdminBusinessesMembersParams = {
   /**
    * Zero-based page index (0..N)
    * @minimum 0
@@ -2425,11 +2464,11 @@ export type ListBusinessUsersParams = {
   sort?: string[];
 };
 
-export type RevokeTokenBody = { [key: string]: string };
+export type PostApiAdminNiceidRevokeBody = { [key: string]: string };
 
-export type RevokeToken200 = { [key: string]: string };
+export type PostApiAdminNiceidRevoke200 = { [key: string]: string };
 
-export type ListAdminOrdersParams = {
+export type GetApiAdminOrdersParams = {
   /**
    * Zero-based page index (0..N)
    * @minimum 0
@@ -2444,23 +2483,23 @@ export type ListAdminOrdersParams = {
    * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
    */
   sort?: string[];
-  orderType?: ListAdminOrdersOrderType;
-  orderStatus?: ListAdminOrdersOrderStatus;
+  orderType?: GetApiAdminOrdersOrderType;
+  orderStatus?: GetApiAdminOrdersOrderStatus;
 };
 
-export type ListAdminOrdersOrderType =
-  (typeof ListAdminOrdersOrderType)[keyof typeof ListAdminOrdersOrderType];
+export type GetApiAdminOrdersOrderType =
+  (typeof GetApiAdminOrdersOrderType)[keyof typeof GetApiAdminOrdersOrderType];
 
-export const ListAdminOrdersOrderType = {
+export const GetApiAdminOrdersOrderType = {
   RESERVATION: "RESERVATION",
   PICKUP: "PICKUP",
   GENERAL: "GENERAL",
 } as const;
 
-export type ListAdminOrdersOrderStatus =
-  (typeof ListAdminOrdersOrderStatus)[keyof typeof ListAdminOrdersOrderStatus];
+export type GetApiAdminOrdersOrderStatus =
+  (typeof GetApiAdminOrdersOrderStatus)[keyof typeof GetApiAdminOrdersOrderStatus];
 
-export const ListAdminOrdersOrderStatus = {
+export const GetApiAdminOrdersOrderStatus = {
   ORDER_REQUESTED: "ORDER_REQUESTED",
   PAYMENT_PENDING: "PAYMENT_PENDING",
   ORDER_PREPARING: "ORDER_PREPARING",
@@ -2473,7 +2512,7 @@ export const ListAdminOrdersOrderStatus = {
   REFUND_COMPLETED: "REFUND_COMPLETED",
 } as const;
 
-export type GetUserOrdersParams = {
+export type GetApiAdminOrdersUsersUseridParams = {
   /**
    * Zero-based page index (0..N)
    * @minimum 0
@@ -2493,7 +2532,7 @@ export type GetUserOrdersParams = {
 /**
  * 주문 승인/수량 조정 요청
  */
-export type ApproveOrderBody = {
+export type PatchApiAdminOrdersOrderidApproveBody = {
   /** 승인 수량 */
   approvedQuantity: number;
 };
@@ -2501,10 +2540,10 @@ export type ApproveOrderBody = {
 /**
  * 변경할 주문 상태
  */
-export type UpdateAdminOrderStatusBodyOrderStatus =
-  (typeof UpdateAdminOrderStatusBodyOrderStatus)[keyof typeof UpdateAdminOrderStatusBodyOrderStatus];
+export type PatchApiAdminOrdersOrderidStatusBodyOrderStatus =
+  (typeof PatchApiAdminOrdersOrderidStatusBodyOrderStatus)[keyof typeof PatchApiAdminOrdersOrderidStatusBodyOrderStatus];
 
-export const UpdateAdminOrderStatusBodyOrderStatus = {
+export const PatchApiAdminOrdersOrderidStatusBodyOrderStatus = {
   ORDER_REQUESTED: "ORDER_REQUESTED",
   PAYMENT_PENDING: "PAYMENT_PENDING",
   ORDER_PREPARING: "ORDER_PREPARING",
@@ -2520,9 +2559,9 @@ export const UpdateAdminOrderStatusBodyOrderStatus = {
 /**
  * 주문 상태 변경 요청
  */
-export type UpdateAdminOrderStatusBody = {
+export type PatchApiAdminOrdersOrderidStatusBody = {
   /** 변경할 주문 상태 */
-  orderStatus: UpdateAdminOrderStatusBodyOrderStatus;
+  orderStatus: PatchApiAdminOrdersOrderidStatusBodyOrderStatus;
   /**
    * 사유
    * @minLength 0
@@ -2534,10 +2573,10 @@ export type UpdateAdminOrderStatusBody = {
 /**
  * 판매 상품 유형
  */
-export type CreateAdminSaleBodyProductType =
-  (typeof CreateAdminSaleBodyProductType)[keyof typeof CreateAdminSaleBodyProductType];
+export type PostApiAdminSalesBodyProductType =
+  (typeof PostApiAdminSalesBodyProductType)[keyof typeof PostApiAdminSalesBodyProductType];
 
-export const CreateAdminSaleBodyProductType = {
+export const PostApiAdminSalesBodyProductType = {
   BOTTLE: "BOTTLE",
   MERCH: "MERCH",
 } as const;
@@ -2545,10 +2584,10 @@ export const CreateAdminSaleBodyProductType = {
 /**
  * 판매 공고 상태
  */
-export type CreateAdminSaleBodySaleStatus =
-  (typeof CreateAdminSaleBodySaleStatus)[keyof typeof CreateAdminSaleBodySaleStatus];
+export type PostApiAdminSalesBodySaleStatus =
+  (typeof PostApiAdminSalesBodySaleStatus)[keyof typeof PostApiAdminSalesBodySaleStatus];
 
-export const CreateAdminSaleBodySaleStatus = {
+export const PostApiAdminSalesBodySaleStatus = {
   DRAFT: "DRAFT",
   OPEN: "OPEN",
   CLOSED: "CLOSED",
@@ -2558,10 +2597,10 @@ export const CreateAdminSaleBodySaleStatus = {
 /**
  * 판매 유형
  */
-export type CreateAdminSaleBodySaleType =
-  (typeof CreateAdminSaleBodySaleType)[keyof typeof CreateAdminSaleBodySaleType];
+export type PostApiAdminSalesBodySaleType =
+  (typeof PostApiAdminSalesBodySaleType)[keyof typeof PostApiAdminSalesBodySaleType];
 
-export const CreateAdminSaleBodySaleType = {
+export const PostApiAdminSalesBodySaleType = {
   RESERVATION: "RESERVATION",
   PICKUP: "PICKUP",
   GENERAL: "GENERAL",
@@ -2570,7 +2609,7 @@ export const CreateAdminSaleBodySaleType = {
 /**
  * 판매 공고 생성 요청
  */
-export type CreateAdminSaleBody = {
+export type PostApiAdminSalesBody = {
   /** 현재 판매 가능 수량 */
   availableQuantity?: number;
   /**
@@ -2586,7 +2625,7 @@ export type CreateAdminSaleBody = {
   /** 판매 상품 ID */
   productId: number;
   /** 판매 상품 유형 */
-  productType: CreateAdminSaleBodyProductType;
+  productType: PostApiAdminSalesBodyProductType;
   /** 판매 종료 시각 */
   saleEndAt?: string;
   /** 판매 단가 */
@@ -2594,9 +2633,9 @@ export type CreateAdminSaleBody = {
   /** 판매 시작 시각 */
   saleStartAt?: string;
   /** 판매 공고 상태 */
-  saleStatus?: CreateAdminSaleBodySaleStatus;
+  saleStatus?: PostApiAdminSalesBodySaleStatus;
   /** 판매 유형 */
-  saleType: CreateAdminSaleBodySaleType;
+  saleType: PostApiAdminSalesBodySaleType;
   /**
    * 판매 공고 제목
    * @minLength 0
@@ -2610,10 +2649,10 @@ export type CreateAdminSaleBody = {
 /**
  * 판매 상품 유형
  */
-export type UpdateAdminSaleBodyProductType =
-  (typeof UpdateAdminSaleBodyProductType)[keyof typeof UpdateAdminSaleBodyProductType];
+export type PatchApiAdminSalesSaleidBodyProductType =
+  (typeof PatchApiAdminSalesSaleidBodyProductType)[keyof typeof PatchApiAdminSalesSaleidBodyProductType];
 
-export const UpdateAdminSaleBodyProductType = {
+export const PatchApiAdminSalesSaleidBodyProductType = {
   BOTTLE: "BOTTLE",
   MERCH: "MERCH",
 } as const;
@@ -2621,10 +2660,10 @@ export const UpdateAdminSaleBodyProductType = {
 /**
  * 판매 공고 상태
  */
-export type UpdateAdminSaleBodySaleStatus =
-  (typeof UpdateAdminSaleBodySaleStatus)[keyof typeof UpdateAdminSaleBodySaleStatus];
+export type PatchApiAdminSalesSaleidBodySaleStatus =
+  (typeof PatchApiAdminSalesSaleidBodySaleStatus)[keyof typeof PatchApiAdminSalesSaleidBodySaleStatus];
 
-export const UpdateAdminSaleBodySaleStatus = {
+export const PatchApiAdminSalesSaleidBodySaleStatus = {
   DRAFT: "DRAFT",
   OPEN: "OPEN",
   CLOSED: "CLOSED",
@@ -2634,7 +2673,7 @@ export const UpdateAdminSaleBodySaleStatus = {
 /**
  * 판매 공고 수정 요청
  */
-export type UpdateAdminSaleBody = {
+export type PatchApiAdminSalesSaleidBody = {
   /** 현재 판매 가능 수량 */
   availableQuantity?: number;
   /** 1회 최대 주문 가능 수량 */
@@ -2644,7 +2683,7 @@ export type UpdateAdminSaleBody = {
   /** 판매 상품 ID */
   productId?: number;
   /** 판매 상품 유형 */
-  productType?: UpdateAdminSaleBodyProductType;
+  productType?: PatchApiAdminSalesSaleidBodyProductType;
   /** 판매 종료 시각 */
   saleEndAt?: string;
   /** 판매 단가 */
@@ -2652,7 +2691,7 @@ export type UpdateAdminSaleBody = {
   /** 판매 시작 시각 */
   saleStartAt?: string;
   /** 판매 공고 상태 */
-  saleStatus?: UpdateAdminSaleBodySaleStatus;
+  saleStatus?: PatchApiAdminSalesSaleidBodySaleStatus;
   /**
    * 판매 공고 제목
    * @minLength 0
@@ -2663,7 +2702,7 @@ export type UpdateAdminSaleBody = {
   totalQuantity?: number;
 };
 
-export type ListUsersParams = {
+export type GetApiAdminUsersParams = {
   filters: {
     createdAtFrom?: string;
     createdAtTo?: string;
@@ -2688,7 +2727,7 @@ export type ListUsersParams = {
 /**
  * 관리자가 회원 밴 정보를 입력하기 위한 요청입니다.
  */
-export type BanUserBody = {
+export type PatchApiAdminUsersIdBanBody = {
   /** 밴 종료 시각 */
   endAt?: string;
   /**
@@ -2703,7 +2742,7 @@ export type BanUserBody = {
 /**
  * 관리자가 회원 밴 정보를 입력하기 위한 요청입니다.
  */
-export type UpdateBanBody = {
+export type PatchApiAdminUsersIdBanUpdateBody = {
   /** 밴 종료 시각 */
   endAt?: string;
   /**
@@ -2718,7 +2757,7 @@ export type UpdateBanBody = {
 /**
  * 관리자가 사용자에게 역할을 추가하기 위한 요청입니다.
  */
-export type AddRolesBody = {
+export type PatchApiAdminUsersIdRolesAddBody = {
   /**
    * 추가할 역할 이름 목록입니다. 예: ROLE_USER, ROLE_ADMIN
    * @minItems 1
@@ -2729,7 +2768,7 @@ export type AddRolesBody = {
 /**
  * 관리자가 사용자 역할을 제거하기 위한 요청입니다.
  */
-export type RemoveRolesBody = {
+export type PatchApiAdminUsersIdRolesRemoveBody = {
   /**
    * 제거할 역할 이름 목록입니다. 예: ROLE_USER, ROLE_ADMIN
    * @minItems 1
@@ -2740,7 +2779,7 @@ export type RemoveRolesBody = {
 /**
  * 회원 상태 값을 변경할 때 사용하는 요청입니다.
  */
-export type UpdateAdminUserStatusBody = {
+export type PatchApiAdminUsersIdStatusBody = {
   /**
    * 적용할 새 상태 값입니다.
    * @minLength 1
@@ -2748,7 +2787,7 @@ export type UpdateAdminUserStatusBody = {
   status?: string;
 };
 
-export type ChangePasswordBody = {
+export type PutApiAuthChangePasswordBody = {
   /** @minLength 1 */
   currentPassword?: string;
   /** @minLength 1 */
@@ -2758,7 +2797,7 @@ export type ChangePasswordBody = {
 /**
  * 이메일 주소만 전달할 때 사용하는 요청 객체입니다.
  */
-export type CheckEmailBody = {
+export type PostApiAuthCheckEmailBody = {
   /**
    * 사용자를 식별할 이메일 주소입니다.
    * @minLength 1
@@ -2769,7 +2808,7 @@ export type CheckEmailBody = {
 /**
  * 사용자명 중복 확인 요청
  */
-export type CheckUsernameBody = {
+export type PostApiAuthCheckUsernameBody = {
   /**
    * 중복 확인할 사용자명
    * @minLength 1
@@ -2780,7 +2819,7 @@ export type CheckUsernameBody = {
 /**
  * 회원가입용 이메일 인증 코드 발송 요청
  */
-export type SendResetCodeBody = {
+export type PostApiAuthEmailVerificationResetSendBody = {
   /**
    * 인증 코드를 받을 이메일 주소
    * @minLength 1
@@ -2788,12 +2827,14 @@ export type SendResetCodeBody = {
   email?: string;
 };
 
-export type SendResetCode200 = { [key: string]: string };
+export type PostApiAuthEmailVerificationResetSend200 = {
+  [key: string]: string;
+};
 
 /**
  * 회원가입용 이메일 인증 코드 검증 요청
  */
-export type VerifyResetCodeBody = {
+export type PostApiAuthEmailVerificationResetVerifyBody = {
   /**
    * 수신한 인증 코드
    * @minLength 1
@@ -2806,12 +2847,14 @@ export type VerifyResetCodeBody = {
   email?: string;
 };
 
-export type VerifyResetCode200 = { [key: string]: string };
+export type PostApiAuthEmailVerificationResetVerify200 = {
+  [key: string]: string;
+};
 
 /**
  * 회원가입용 이메일 인증 코드 발송 요청
  */
-export type SendCodeBody = {
+export type PostApiAuthEmailVerificationSendBody = {
   /**
    * 인증 코드를 받을 이메일 주소
    * @minLength 1
@@ -2819,12 +2862,12 @@ export type SendCodeBody = {
   email?: string;
 };
 
-export type SendCode200 = { [key: string]: string };
+export type PostApiAuthEmailVerificationSend200 = { [key: string]: string };
 
 /**
  * 회원가입용 이메일 인증 코드 검증 요청
  */
-export type VerifyCodeBody = {
+export type PostApiAuthEmailVerificationVerifyBody = {
   /**
    * 수신한 인증 코드
    * @minLength 1
@@ -2837,12 +2880,12 @@ export type VerifyCodeBody = {
   email?: string;
 };
 
-export type VerifyCode200 = { [key: string]: string };
+export type PostApiAuthEmailVerificationVerify200 = { [key: string]: string };
 
 /**
  * 사용자 인증에 사용하는 요청 본문입니다.
  */
-export type LoginBody = {
+export type PostApiAuthLoginBody = {
   /**
    * 사용자의 email 입니다.
    * @minLength 1
@@ -2858,7 +2901,7 @@ export type LoginBody = {
 /**
  * 소셜 OAuth 콜백 완료 후 1회용 ticket으로 로그인 결과를 조회하는 요청
  */
-export type CompleteSocialOAuthLoginBody = {
+export type PostApiAuthOauthCompleteBody = {
   /**
    * 소셜 OAuth 콜백 이후 프론트로 전달된 1회용 ticket
    * @minLength 1
@@ -2866,7 +2909,7 @@ export type CompleteSocialOAuthLoginBody = {
   ticket?: string;
 };
 
-export type SocialOAuthCallbackParams = {
+export type GetApiAuthOauthProviderCallbackParams = {
   code?: string;
   state?: string;
   error?: string;
@@ -2876,7 +2919,7 @@ export type SocialOAuthCallbackParams = {
 /**
  * 토큰 재발급을 위해 리프레시 토큰만 전달하는 요청입니다.
  */
-export type RefreshAuthTokenBody = {
+export type PostApiAuthRefreshBody = {
   /**
    * 액세스 토큰과 함께 발급된 리프레시 토큰 값입니다.
    * @minLength 1
@@ -2887,7 +2930,7 @@ export type RefreshAuthTokenBody = {
 /**
  * 이메일 주소만 전달할 때 사용하는 요청 객체입니다.
  */
-export type ResetPasswordBody = {
+export type PostApiAuthResetPasswordBody = {
   /**
    * 사용자를 식별할 이메일 주소입니다.
    * @minLength 1
@@ -2898,7 +2941,7 @@ export type ResetPasswordBody = {
 /**
  * 새 사용자 계정을 등록할 때 사용하는 요청 본문입니다.
  */
-export type SignupBody = {
+export type PostApiAuthSignupBody = {
   /** 선택 입력 항목인 사용자의 생년월일입니다. */
   birthDate?: string;
   /**
@@ -2949,7 +2992,7 @@ export type SignupBody = {
   username?: string;
 };
 
-export type ListBannersParams = {
+export type GetApiBannersParams = {
   /**
    * Zero-based page index (0..N)
    * @minimum 0
@@ -2966,24 +3009,7 @@ export type ListBannersParams = {
   sort?: string[];
 };
 
-export type CreateBannerBody = {
-  backgroundImg: Blob;
-  description?: string;
-  link?: string;
-  mainImg: Blob;
-  /** @minLength 1 */
-  title: string;
-};
-
-export type UpdateBannerBody = {
-  backgroundImg?: Blob;
-  description?: string;
-  link?: string;
-  mainImg?: Blob;
-  title?: string;
-};
-
-export type ListBoardsParams = {
+export type GetApiBoardsParams = {
   /**
    * Zero-based page index (0..N)
    * @minimum 0
@@ -3000,7 +3026,7 @@ export type ListBoardsParams = {
   sort?: string[];
 };
 
-export type BoardAnnouncementsParams = {
+export type GetApiBoardsAnnouncementsBoardBoardidParams = {
   /**
    * Zero-based page index (0..N)
    * @minimum 0
@@ -3017,7 +3043,7 @@ export type BoardAnnouncementsParams = {
   sort?: string[];
 };
 
-export type GlobalAnnouncementsParams = {
+export type GetApiBoardsAnnouncementsGlobalParams = {
   /**
    * Zero-based page index (0..N)
    * @minimum 0
@@ -3034,7 +3060,7 @@ export type GlobalAnnouncementsParams = {
   sort?: string[];
 };
 
-export type GetBoardAnnouncementsParams = {
+export type GetApiBoardsBoardidAnnouncementsParams = {
   /**
    * Zero-based page index (0..N)
    * @minimum 0
@@ -3051,7 +3077,7 @@ export type GetBoardAnnouncementsParams = {
   sort?: string[];
 };
 
-export type GetPostsParams = {
+export type GetApiBoardsBoardidPostsParams = {
   pageable: {
     /** @minimum 0 */
     page?: number;
@@ -3062,14 +3088,14 @@ export type GetPostsParams = {
   /**
    * 게시글 검색 시 사용할 수 있는 검색 구분값입니다.
    */
-  searchType?: GetPostsSearchType;
+  searchType?: GetApiBoardsBoardidPostsSearchType;
   keyword?: string;
 };
 
-export type GetPostsSearchType =
-  (typeof GetPostsSearchType)[keyof typeof GetPostsSearchType];
+export type GetApiBoardsBoardidPostsSearchType =
+  (typeof GetApiBoardsBoardidPostsSearchType)[keyof typeof GetApiBoardsBoardidPostsSearchType];
 
-export const GetPostsSearchType = {
+export const GetApiBoardsBoardidPostsSearchType = {
   TITLE: "TITLE",
   CONTENT: "CONTENT",
   AUTHOR: "AUTHOR",
@@ -3078,7 +3104,7 @@ export const GetPostsSearchType = {
 /**
  * 게시글을 작성할 때 사용하는 요청 본문입니다.
  */
-export type CreatePostBody = {
+export type PostApiBoardsBoardidPostsBody = {
   /**
    * 게시글 본문 내용입니다.
    * @minLength 1
@@ -3095,7 +3121,7 @@ export type CreatePostBody = {
 /**
  * 기존 게시글을 수정할 때 사용하는 요청 본문입니다.
  */
-export type UpdatePostBody = {
+export type PutApiBoardsBoardidPostsPostidBody = {
   /** 수정할 게시글 본문입니다. */
   content?: string;
   /**
@@ -3106,7 +3132,7 @@ export type UpdatePostBody = {
   title?: string;
 };
 
-export type ListBottlesParams = {
+export type GetApiBottlesParams = {
   filters: {
     abvFrom?: number;
     abvTo?: number;
@@ -3128,7 +3154,7 @@ export type ListBottlesParams = {
   };
 };
 
-export type ListMyApplicationsParams = {
+export type GetApiBottlesReservationsApplicationsMeParams = {
   /**
    * Zero-based page index (0..N)
    * @minimum 0
@@ -3145,13 +3171,13 @@ export type ListMyApplicationsParams = {
   sort?: string[];
 };
 
-export type UpdateApplicationBody = {
+export type PutApiBottlesReservationsApplicationsApplicationidBody = {
   /** @minimum 1 */
   quantity: number;
   userBusinessId: number;
 };
 
-export type ListReservationNoticesParams = {
+export type GetApiBottlesReservationsNoticesParams = {
   /**
    * Zero-based page index (0..N)
    * @minimum 0
@@ -3168,13 +3194,13 @@ export type ListReservationNoticesParams = {
   sort?: string[];
 };
 
-export type CreateApplicationBody = {
+export type PostApiBottlesReservationsNoticesNoticeidApplicationsBody = {
   /** @minimum 1 */
   quantity: number;
   userBusinessId: number;
 };
 
-export type ListOrdersParams = {
+export type GetApiOrdersParams = {
   /**
    * Zero-based page index (0..N)
    * @minimum 0
@@ -3195,10 +3221,10 @@ export type ListOrdersParams = {
 /**
  * 판매 유형
  */
-export type CreateOrderBodyOrderType =
-  (typeof CreateOrderBodyOrderType)[keyof typeof CreateOrderBodyOrderType];
+export type PostApiOrdersBodyOrderType =
+  (typeof PostApiOrdersBodyOrderType)[keyof typeof PostApiOrdersBodyOrderType];
 
-export const CreateOrderBodyOrderType = {
+export const PostApiOrdersBodyOrderType = {
   RESERVATION: "RESERVATION",
   PICKUP: "PICKUP",
   GENERAL: "GENERAL",
@@ -3207,10 +3233,10 @@ export const CreateOrderBodyOrderType = {
 /**
  * 판매 상품 유형
  */
-export type CreateOrderBodyProductType =
-  (typeof CreateOrderBodyProductType)[keyof typeof CreateOrderBodyProductType];
+export type PostApiOrdersBodyProductType =
+  (typeof PostApiOrdersBodyProductType)[keyof typeof PostApiOrdersBodyProductType];
 
-export const CreateOrderBodyProductType = {
+export const PostApiOrdersBodyProductType = {
   BOTTLE: "BOTTLE",
   MERCH: "MERCH",
 } as const;
@@ -3218,10 +3244,10 @@ export const CreateOrderBodyProductType = {
 /**
  * 판매 공고 유형
  */
-export type CreateOrderBodySaleType =
-  (typeof CreateOrderBodySaleType)[keyof typeof CreateOrderBodySaleType];
+export type PostApiOrdersBodySaleType =
+  (typeof PostApiOrdersBodySaleType)[keyof typeof PostApiOrdersBodySaleType];
 
-export const CreateOrderBodySaleType = {
+export const PostApiOrdersBodySaleType = {
   RESERVATION: "RESERVATION",
   PICKUP: "PICKUP",
   GENERAL: "GENERAL",
@@ -3230,7 +3256,7 @@ export const CreateOrderBodySaleType = {
 /**
  * 주문 생성 요청 정보
  */
-export type CreateOrderBody = {
+export type PostApiOrdersBody = {
   /** 사업장 ID */
   businessId?: number;
   /** 수입사 ID */
@@ -3244,11 +3270,11 @@ export type CreateOrderBody = {
    */
   orderNote?: string;
   /** 판매 유형 */
-  orderType?: CreateOrderBodyOrderType;
+  orderType?: PostApiOrdersBodyOrderType;
   /** 판매 상품 ID */
   productId?: number;
   /** 판매 상품 유형 */
-  productType?: CreateOrderBodyProductType;
+  productType?: PostApiOrdersBodyProductType;
   /** 요청 수량 */
   requestedQuantity: number;
   /** 판매 공고 ID */
@@ -3256,7 +3282,7 @@ export type CreateOrderBody = {
   /** 판매 공고 제목 */
   saleTitle?: string;
   /** 판매 공고 유형 */
-  saleType?: CreateOrderBodySaleType;
+  saleType?: PostApiOrdersBodySaleType;
   /** 단가 */
   unitPrice?: number;
   /** 주문자 사용자 ID */
@@ -3266,7 +3292,7 @@ export type CreateOrderBody = {
 /**
  * 주문 취소 요청
  */
-export type CancelOrderBody = {
+export type PatchApiOrdersOrderidCancelBody = {
   /**
    * 취소 사유
    * @minLength 0
@@ -3278,7 +3304,7 @@ export type CancelOrderBody = {
 /**
  * 예약 발송 취소 요청
  */
-export type CancelBody = {
+export type PostApiPpurioCancelBody = {
   /**
    * 뿌리오 계정
    * @minLength 1
@@ -3294,7 +3320,7 @@ export type CancelBody = {
 /**
  * 예약 발송 취소 요청
  */
-export type CancelKakaoBody = {
+export type PostApiPpurioCancelKakaoBody = {
   /**
    * 뿌리오 계정
    * @minLength 1
@@ -3310,7 +3336,7 @@ export type CancelKakaoBody = {
 /**
  * MMS 첨부 파일
  */
-export type SendKakaoBodyResendFilesItem = {
+export type PostApiPpurioKakaoBodyResendFilesItem = {
   /**
    * Base64 인코딩된 파일 데이터
    * @minLength 1
@@ -3328,14 +3354,14 @@ export type SendKakaoBodyResendFilesItem = {
 /**
  * 대체 문자 발송 정보
  */
-export type SendKakaoBodyResend = {
+export type PostApiPpurioKakaoBodyResend = {
   /**
    * 메시지 내용
    * @minLength 1
    */
   content?: string;
   /** 첨부 파일 목록 (MMS) */
-  files?: SendKakaoBodyResendFilesItem[];
+  files?: PostApiPpurioKakaoBodyResendFilesItem[];
   /**
    * 발신 번호
    * @minLength 1
@@ -3353,7 +3379,7 @@ export type SendKakaoBodyResend = {
 /**
  * 치환 문구
  */
-export type SendKakaoBodyTargetsItemChangeWord = {
+export type PostApiPpurioKakaoBodyTargetsItemChangeWord = {
   var1?: string;
   var2?: string;
   var3?: string;
@@ -3367,9 +3393,9 @@ export type SendKakaoBodyTargetsItemChangeWord = {
 /**
  * 수신자 정보
  */
-export type SendKakaoBodyTargetsItem = {
+export type PostApiPpurioKakaoBodyTargetsItem = {
   /** 치환 문구 */
-  changeWord?: SendKakaoBodyTargetsItemChangeWord;
+  changeWord?: PostApiPpurioKakaoBodyTargetsItemChangeWord;
   /** 이름 치환값 */
   name?: string;
   /**
@@ -3382,7 +3408,7 @@ export type SendKakaoBodyTargetsItem = {
 /**
  * 카카오 알림톡 발송 요청
  */
-export type SendKakaoBody = {
+export type PostApiPpurioKakaoBody = {
   /**
    * 뿌리오 계정
    * @minLength 1
@@ -3409,7 +3435,7 @@ export type SendKakaoBody = {
    */
   refKey?: string;
   /** 대체 문자 발송 정보 */
-  resend?: SendKakaoBodyResend;
+  resend?: PostApiPpurioKakaoBodyResend;
   /** 예약 발송 시간 (yyyy-MM-ddTHH:mm:ss) */
   sendTime?: string;
   /**
@@ -3423,7 +3449,7 @@ export type SendKakaoBody = {
    * 수신자 목록
    * @minItems 1
    */
-  targets?: SendKakaoBodyTargetsItem[];
+  targets?: PostApiPpurioKakaoBodyTargetsItem[];
   /**
    * 템플릿 코드
    * @minLength 1
@@ -3434,7 +3460,7 @@ export type SendKakaoBody = {
 /**
  * MMS 첨부 파일
  */
-export type SendMessageBodyFilesItem = {
+export type PostApiPpurioMessageBodyFilesItem = {
   /**
    * Base64 인코딩된 파일 데이터
    * @minLength 1
@@ -3452,7 +3478,7 @@ export type SendMessageBodyFilesItem = {
 /**
  * 치환 문구
  */
-export type SendMessageBodyTargetsItemChangeWord = {
+export type PostApiPpurioMessageBodyTargetsItemChangeWord = {
   var1?: string;
   var2?: string;
   var3?: string;
@@ -3466,9 +3492,9 @@ export type SendMessageBodyTargetsItemChangeWord = {
 /**
  * 수신자 정보
  */
-export type SendMessageBodyTargetsItem = {
+export type PostApiPpurioMessageBodyTargetsItem = {
   /** 치환 문구 */
-  changeWord?: SendMessageBodyTargetsItemChangeWord;
+  changeWord?: PostApiPpurioMessageBodyTargetsItemChangeWord;
   /** 이름 치환값 */
   name?: string;
   /**
@@ -3481,7 +3507,7 @@ export type SendMessageBodyTargetsItem = {
 /**
  * 문자 발송 요청
  */
-export type SendMessageBody = {
+export type PostApiPpurioMessageBody = {
   /**
    * 뿌리오 계정
    * @minLength 1
@@ -3498,7 +3524,7 @@ export type SendMessageBody = {
    */
   duplicateFlag?: string;
   /** 첨부 파일 목록 (MMS) */
-  files?: SendMessageBodyFilesItem[];
+  files?: PostApiPpurioMessageBodyFilesItem[];
   /**
    * 발신 번호
    * @minLength 1
@@ -3526,13 +3552,13 @@ export type SendMessageBody = {
    * 수신자 목록
    * @minItems 1
    */
-  targets?: SendMessageBodyTargetsItem[];
+  targets?: PostApiPpurioMessageBodyTargetsItem[];
 };
 
 /**
  * 사전 등록 신청 정보를 받기 위한 요청 본문입니다.
  */
-export type CreatePreRegisterBody = {
+export type PostApiPreRegisterBody = {
   /** 신청자의 생년월일입니다. */
   birthday?: string;
   /**
@@ -3561,18 +3587,18 @@ export type CreatePreRegisterBody = {
   phoneNumber?: string;
 };
 
-export type GetPresignedParams = {
+export type GetApiS3PresignedParams = {
   key: string;
   filename?: string;
 };
 
-export type UploadBody = {
+export type PostApiS3UploadBody = {
   file: Blob;
 };
 
-export type Upload200 = { [key: string]: string };
+export type PostApiS3Upload200 = { [key: string]: string };
 
-export type ListSalesParams = {
+export type GetApiSalesParams = {
   /**
    * Zero-based page index (0..N)
    * @minimum 0
@@ -3587,26 +3613,26 @@ export type ListSalesParams = {
    * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
    */
   sort?: string[];
-  saleStatus?: ListSalesSaleStatus;
+  saleStatus?: GetApiSalesSaleStatus;
 };
 
-export type ListSalesSaleStatus =
-  (typeof ListSalesSaleStatus)[keyof typeof ListSalesSaleStatus];
+export type GetApiSalesSaleStatus =
+  (typeof GetApiSalesSaleStatus)[keyof typeof GetApiSalesSaleStatus];
 
-export const ListSalesSaleStatus = {
+export const GetApiSalesSaleStatus = {
   DRAFT: "DRAFT",
   OPEN: "OPEN",
   CLOSED: "CLOSED",
   SOLD_OUT: "SOLD_OUT",
 } as const;
 
-export type DecodeResultParams = {
+export type PostApiUserNiceidResultParams = {
   token_version_id: string;
   enc_data: string;
   integrity_value: string;
 };
 
-export type PrepareBody = {
+export type PostApiUserNiceidSessionBody = {
   /** @minLength 1 */
   authType?: string;
   closeUiType?: string;
@@ -3616,19 +3642,18 @@ export type PrepareBody = {
   returnUrl?: string;
 };
 
-export type ApplyBusinessBodyRequest = {
-  businessName?: string;
-  businessRegistrationNumber?: string;
-  contact?: string;
-  pickupAddress?: string;
+export type PostApiUsersBusinessesApplicationsParams = {
+  businessName: string;
+  pickupAddress: string;
+  contact: string;
+  businessRegistrationNumber: string;
 };
 
-export type ApplyBusinessBody = {
+export type PostApiUsersBusinessesApplicationsBody = {
   document: Blob;
-  request: ApplyBusinessBodyRequest;
 };
 
-export type ListPickupLocationsParams = {
+export type GetApiUsersBusinessesPickupLocationsParams = {
   /**
    * Zero-based page index (0..N)
    * @minimum 0
@@ -3646,33 +3671,179 @@ export type ListPickupLocationsParams = {
 };
 
 /**
+ * 배경/메인 이미지를 업로드하고 랜딩 페이지에 노출할 배너를 생성합니다.
+ * @summary 배너 생성(관리자)
+ */
+export type postApiAdminBannersResponse200 = {
+  data: BannerResponse;
+  status: 200;
+};
+
+export type postApiAdminBannersResponseSuccess =
+  postApiAdminBannersResponse200 & {
+    headers: Headers;
+  };
+
+export type postApiAdminBannersResponse = postApiAdminBannersResponseSuccess;
+
+export const getPostApiAdminBannersUrl = (
+  params: PostApiAdminBannersParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) {
+          v.forEach((item) =>
+            normalizedParams.append(k, item == null ? "null" : String(item)),
+          );
+        } else {
+          normalizedParams.append(k, v === null ? "null" : String(v));
+        }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach((v) =>
+        normalizedParams.append(key, v == null ? "null" : String(v)),
+      );
+    } else {
+      normalizedParams.append(key, value === null ? "null" : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/admin/banners?${stringifiedParams}`
+    : `/api/admin/banners`;
+};
+
+export const postApiAdminBanners = async (
+  postApiAdminBannersBody: PostApiAdminBannersBody,
+  params: PostApiAdminBannersParams,
+  options?: RequestInit,
+): Promise<postApiAdminBannersResponse> => {
+  const formData = new FormData();
+  formData.append(`backgroundImg`, postApiAdminBannersBody.backgroundImg);
+  formData.append(`mainImg`, postApiAdminBannersBody.mainImg);
+
+  return customFetch<postApiAdminBannersResponse>(
+    getPostApiAdminBannersUrl(params),
+    {
+      ...options,
+      method: "POST",
+      body: formData,
+    },
+  );
+};
+
+/**
+ * 배너의 메타데이터를 수정하고 필요 시 업로드 이미지를 교체합니다.
+ * @summary 배너 수정(관리자)
+ */
+export type patchApiAdminBannersIdResponse200 = {
+  data: BannerResponse;
+  status: 200;
+};
+
+export type patchApiAdminBannersIdResponseSuccess =
+  patchApiAdminBannersIdResponse200 & {
+    headers: Headers;
+  };
+
+export type patchApiAdminBannersIdResponse =
+  patchApiAdminBannersIdResponseSuccess;
+
+export const getPatchApiAdminBannersIdUrl = (
+  id: number,
+  params?: PatchApiAdminBannersIdParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) {
+          v.forEach((item) =>
+            normalizedParams.append(k, item == null ? "null" : String(item)),
+          );
+        } else {
+          normalizedParams.append(k, v === null ? "null" : String(v));
+        }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach((v) =>
+        normalizedParams.append(key, v == null ? "null" : String(v)),
+      );
+    } else {
+      normalizedParams.append(key, value === null ? "null" : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/admin/banners/${id}?${stringifiedParams}`
+    : `/api/admin/banners/${id}`;
+};
+
+export const patchApiAdminBannersId = async (
+  id: number,
+  patchApiAdminBannersIdBody: PatchApiAdminBannersIdBody,
+  params?: PatchApiAdminBannersIdParams,
+  options?: RequestInit,
+): Promise<patchApiAdminBannersIdResponse> => {
+  const formData = new FormData();
+  if (patchApiAdminBannersIdBody.backgroundImg !== undefined) {
+    formData.append(`backgroundImg`, patchApiAdminBannersIdBody.backgroundImg);
+  }
+  if (patchApiAdminBannersIdBody.mainImg !== undefined) {
+    formData.append(`mainImg`, patchApiAdminBannersIdBody.mainImg);
+  }
+
+  return customFetch<patchApiAdminBannersIdResponse>(
+    getPatchApiAdminBannersIdUrl(id, params),
+    {
+      ...options,
+      method: "PATCH",
+      body: formData,
+    },
+  );
+};
+
+/**
  * 게시글과 공지사항을 담을 새 게시판을 생성합니다.
  * @summary 게시판 생성(관리자)
  */
-export type createBoardResponse200 = {
+export type postApiAdminBoardsResponse200 = {
   data: BoardResponse;
   status: 200;
 };
 
-export type createBoardResponseSuccess = createBoardResponse200 & {
-  headers: Headers;
-};
+export type postApiAdminBoardsResponseSuccess =
+  postApiAdminBoardsResponse200 & {
+    headers: Headers;
+  };
 
-export type createBoardResponse = createBoardResponseSuccess;
+export type postApiAdminBoardsResponse = postApiAdminBoardsResponseSuccess;
 
-export const getCreateBoardUrl = () => {
+export const getPostApiAdminBoardsUrl = () => {
   return `/api/admin/boards`;
 };
 
-export const createBoard = async (
-  createBoardBody: CreateBoardBody,
+export const postApiAdminBoards = async (
+  postApiAdminBoardsBody: PostApiAdminBoardsBody,
   options?: RequestInit,
-): Promise<createBoardResponse> => {
-  return customFetch<createBoardResponse>(getCreateBoardUrl(), {
+): Promise<postApiAdminBoardsResponse> => {
+  return customFetch<postApiAdminBoardsResponse>(getPostApiAdminBoardsUrl(), {
     ...options,
     method: "POST",
     headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(createBoardBody),
+    body: JSON.stringify(postApiAdminBoardsBody),
   });
 };
 
@@ -3680,60 +3851,69 @@ export const createBoard = async (
  * 전체 또는 특정 게시판에 노출될 공지사항을 등록합니다.
  * @summary 공지 등록(관리자)
  */
-export type createAnnouncementResponse200 = {
+export type postApiAdminBoardsAnnouncementsResponse200 = {
   data: AnnouncementResponse;
   status: 200;
 };
 
-export type createAnnouncementResponseSuccess =
-  createAnnouncementResponse200 & {
+export type postApiAdminBoardsAnnouncementsResponseSuccess =
+  postApiAdminBoardsAnnouncementsResponse200 & {
     headers: Headers;
   };
 
-export type createAnnouncementResponse = createAnnouncementResponseSuccess;
+export type postApiAdminBoardsAnnouncementsResponse =
+  postApiAdminBoardsAnnouncementsResponseSuccess;
 
-export const getCreateAnnouncementUrl = () => {
+export const getPostApiAdminBoardsAnnouncementsUrl = () => {
   return `/api/admin/boards/announcements`;
 };
 
-export const createAnnouncement = async (
-  createAnnouncementBody: CreateAnnouncementBody,
+export const postApiAdminBoardsAnnouncements = async (
+  postApiAdminBoardsAnnouncementsBody: PostApiAdminBoardsAnnouncementsBody,
   options?: RequestInit,
-): Promise<createAnnouncementResponse> => {
-  return customFetch<createAnnouncementResponse>(getCreateAnnouncementUrl(), {
-    ...options,
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(createAnnouncementBody),
-  });
+): Promise<postApiAdminBoardsAnnouncementsResponse> => {
+  return customFetch<postApiAdminBoardsAnnouncementsResponse>(
+    getPostApiAdminBoardsAnnouncementsUrl(),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(postApiAdminBoardsAnnouncementsBody),
+    },
+  );
 };
 
 /**
  * 관리자가 지정한 게시판의 모든 게시글을 삭제합니다.
  * @summary 관리자 게시글 삭제
  */
-export type deletePostAsAdminResponse200 = {
+export type deleteApiAdminBoardsBoardidPostsPostidResponse200 = {
   data: boolean;
   status: 200;
 };
 
-export type deletePostAsAdminResponseSuccess = deletePostAsAdminResponse200 & {
-  headers: Headers;
-};
+export type deleteApiAdminBoardsBoardidPostsPostidResponseSuccess =
+  deleteApiAdminBoardsBoardidPostsPostidResponse200 & {
+    headers: Headers;
+  };
 
-export type deletePostAsAdminResponse = deletePostAsAdminResponseSuccess;
+export type deleteApiAdminBoardsBoardidPostsPostidResponse =
+  deleteApiAdminBoardsBoardidPostsPostidResponseSuccess;
 
-export const getDeletePostAsAdminUrl = (boardId: number, postId: number) => {
+export const getDeleteApiAdminBoardsBoardidPostsPostidUrl = (
+  boardId: number,
+  postId: number,
+) => {
   return `/api/admin/boards/${boardId}/posts/${postId}`;
 };
 
-export const deletePostAsAdmin = async (
+export const deleteApiAdminBoardsBoardidPostsPostid = async (
   boardId: number,
   postId: number,
   options?: RequestInit,
-): Promise<deletePostAsAdminResponse> => {
-  return customFetch<deletePostAsAdminResponse>(
-    getDeletePostAsAdminUrl(boardId, postId),
+): Promise<deleteApiAdminBoardsBoardidPostsPostidResponse> => {
+  return customFetch<deleteApiAdminBoardsBoardidPostsPostidResponse>(
+    getDeleteApiAdminBoardsBoardidPostsPostidUrl(boardId, postId),
     {
       ...options,
       method: "DELETE",
@@ -3745,18 +3925,19 @@ export const deletePostAsAdmin = async (
  * 관리자가 병 목록을 조회합니다.
  * @summary 병 목록 조회(관리자)
  */
-export type listAdminBottlesResponse200 = {
+export type getApiAdminBottlesResponse200 = {
   data: PageBottleAdminResponse;
   status: 200;
 };
 
-export type listAdminBottlesResponseSuccess = listAdminBottlesResponse200 & {
-  headers: Headers;
-};
+export type getApiAdminBottlesResponseSuccess =
+  getApiAdminBottlesResponse200 & {
+    headers: Headers;
+  };
 
-export type listAdminBottlesResponse = listAdminBottlesResponseSuccess;
+export type getApiAdminBottlesResponse = getApiAdminBottlesResponseSuccess;
 
-export const getListAdminBottlesUrl = (params: ListAdminBottlesParams) => {
+export const getGetApiAdminBottlesUrl = (params: GetApiAdminBottlesParams) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -3788,126 +3969,139 @@ export const getListAdminBottlesUrl = (params: ListAdminBottlesParams) => {
     : `/api/admin/bottles`;
 };
 
-export const listAdminBottles = async (
-  params: ListAdminBottlesParams,
+export const getApiAdminBottles = async (
+  params: GetApiAdminBottlesParams,
   options?: RequestInit,
-): Promise<listAdminBottlesResponse> => {
-  return customFetch<listAdminBottlesResponse>(getListAdminBottlesUrl(params), {
-    ...options,
-    method: "GET",
-  });
+): Promise<getApiAdminBottlesResponse> => {
+  return customFetch<getApiAdminBottlesResponse>(
+    getGetApiAdminBottlesUrl(params),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
 };
 
 /**
  * 라벨 이미지를 업로드하고 병의 메타데이터를 저장합니다.
  * @summary 병 정보 등록(관리자)
  */
-export type createAdminBottleResponse200 = {
+export type postApiAdminBottlesResponse200 = {
   data: BottleAdminResponse;
   status: 200;
 };
 
-export type createAdminBottleResponseSuccess = createAdminBottleResponse200 & {
-  headers: Headers;
-};
+export type postApiAdminBottlesResponseSuccess =
+  postApiAdminBottlesResponse200 & {
+    headers: Headers;
+  };
 
-export type createAdminBottleResponse = createAdminBottleResponseSuccess;
+export type postApiAdminBottlesResponse = postApiAdminBottlesResponseSuccess;
 
-export const getCreateAdminBottleUrl = () => {
-  return `/api/admin/bottles`;
-};
+export const getPostApiAdminBottlesUrl = (
+  params: PostApiAdminBottlesParams,
+) => {
+  const normalizedParams = new URLSearchParams();
 
-export const createAdminBottle = async (
-  createAdminBottleBody: CreateAdminBottleBody,
-  options?: RequestInit,
-): Promise<createAdminBottleResponse> => {
-  const formData = new FormData();
-  if (createAdminBottleBody.abv !== undefined) {
-    formData.append(`abv`, createAdminBottleBody.abv.toString());
-  }
-  if (createAdminBottleBody.bottledDate !== undefined) {
-    formData.append(`bottledDate`, createAdminBottleBody.bottledDate);
-  }
-  if (createAdminBottleBody.brand !== undefined) {
-    formData.append(`brand`, createAdminBottleBody.brand);
-  }
-  if (createAdminBottleBody.capacity !== undefined) {
-    formData.append(`capacity`, createAdminBottleBody.capacity.toString());
-  }
-  if (createAdminBottleBody.caskNumber !== undefined) {
-    formData.append(`caskNumber`, createAdminBottleBody.caskNumber);
-  }
-  if (createAdminBottleBody.caskType !== undefined) {
-    formData.append(`caskType`, createAdminBottleBody.caskType);
-  }
-  if (createAdminBottleBody.company !== undefined) {
-    formData.append(`company`, createAdminBottleBody.company);
-  }
-  if (createAdminBottleBody.consumerPrice !== undefined) {
-    formData.append(
-      `consumerPrice`,
-      createAdminBottleBody.consumerPrice.toString(),
-    );
-  }
-  if (createAdminBottleBody.description !== undefined) {
-    formData.append(`description`, createAdminBottleBody.description);
-  }
-  if (createAdminBottleBody.distillationDate !== undefined) {
-    formData.append(`distillationDate`, createAdminBottleBody.distillationDate);
-  }
-  if (createAdminBottleBody.distillery !== undefined) {
-    formData.append(`distillery`, createAdminBottleBody.distillery);
-  }
-  formData.append(`labelImg`, createAdminBottleBody.labelImg);
-  if (createAdminBottleBody.maltType !== undefined) {
-    formData.append(`maltType`, createAdminBottleBody.maltType);
-  }
-  formData.append(`name`, createAdminBottleBody.name);
-  if (createAdminBottleBody.series !== undefined) {
-    formData.append(`series`, createAdminBottleBody.series);
-  }
-  if (createAdminBottleBody.stockQuantity !== undefined) {
-    formData.append(
-      `stockQuantity`,
-      createAdminBottleBody.stockQuantity.toString(),
-    );
-  }
-  if (createAdminBottleBody.supplyPrice !== undefined) {
-    formData.append(
-      `supplyPrice`,
-      createAdminBottleBody.supplyPrice.toString(),
-    );
-  }
-  if (createAdminBottleBody.visible !== undefined) {
-    formData.append(`visible`, createAdminBottleBody.visible.toString());
-  }
-
-  return customFetch<createAdminBottleResponse>(getCreateAdminBottleUrl(), {
-    ...options,
-    method: "POST",
-    body: formData,
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) {
+          v.forEach((item) =>
+            normalizedParams.append(k, item == null ? "null" : String(item)),
+          );
+        } else {
+          normalizedParams.append(k, v === null ? "null" : String(v));
+        }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach((v) =>
+        normalizedParams.append(key, v == null ? "null" : String(v)),
+      );
+    } else {
+      normalizedParams.append(key, value === null ? "null" : String(value));
+    }
   });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/admin/bottles?${stringifiedParams}`
+    : `/api/admin/bottles`;
+};
+
+export const postApiAdminBottles = async (
+  postApiAdminBottlesBody: PostApiAdminBottlesBody,
+  params: PostApiAdminBottlesParams,
+  options?: RequestInit,
+): Promise<postApiAdminBottlesResponse> => {
+  const formData = new FormData();
+  formData.append(`labelImg`, postApiAdminBottlesBody.labelImg);
+
+  return customFetch<postApiAdminBottlesResponse>(
+    getPostApiAdminBottlesUrl(params),
+    {
+      ...options,
+      method: "POST",
+      body: formData,
+    },
+  );
+};
+
+/**
+ * 관리자 병 생성/수정 화면에서 사용하는 옵션 목록을 조회합니다.
+ * @summary 병 생성/수정 옵션 조회(관리자)
+ */
+export type getApiAdminBottlesParametersResponse200 = {
+  data: BottleAdminParameterValues;
+  status: 200;
+};
+
+export type getApiAdminBottlesParametersResponseSuccess =
+  getApiAdminBottlesParametersResponse200 & {
+    headers: Headers;
+  };
+
+export type getApiAdminBottlesParametersResponse =
+  getApiAdminBottlesParametersResponseSuccess;
+
+export const getGetApiAdminBottlesParametersUrl = () => {
+  return `/api/admin/bottles/parameters`;
+};
+
+export const getApiAdminBottlesParameters = async (
+  options?: RequestInit,
+): Promise<getApiAdminBottlesParametersResponse> => {
+  return customFetch<getApiAdminBottlesParametersResponse>(
+    getGetApiAdminBottlesParametersUrl(),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
 };
 
 /**
  * 모든 신청 목록을 조회하며 사용자 혹은 공고 ID로 필터링합니다.
  * @summary 예약 신청 목록(관리자)
  */
-export type listAdminReservationApplicationsResponse200 = {
+export type getApiAdminBottlesReservationsApplicationsResponse200 = {
   data: PageBottleReservationApplicationResponse;
   status: 200;
 };
 
-export type listAdminReservationApplicationsResponseSuccess =
-  listAdminReservationApplicationsResponse200 & {
+export type getApiAdminBottlesReservationsApplicationsResponseSuccess =
+  getApiAdminBottlesReservationsApplicationsResponse200 & {
     headers: Headers;
   };
 
-export type listAdminReservationApplicationsResponse =
-  listAdminReservationApplicationsResponseSuccess;
+export type getApiAdminBottlesReservationsApplicationsResponse =
+  getApiAdminBottlesReservationsApplicationsResponseSuccess;
 
-export const getListAdminReservationApplicationsUrl = (
-  params?: ListAdminReservationApplicationsParams,
+export const getGetApiAdminBottlesReservationsApplicationsUrl = (
+  params?: GetApiAdminBottlesReservationsApplicationsParams,
 ) => {
   const normalizedParams = new URLSearchParams();
 
@@ -3940,12 +4134,12 @@ export const getListAdminReservationApplicationsUrl = (
     : `/api/admin/bottles/reservations/applications`;
 };
 
-export const listAdminReservationApplications = async (
-  params?: ListAdminReservationApplicationsParams,
+export const getApiAdminBottlesReservationsApplications = async (
+  params?: GetApiAdminBottlesReservationsApplicationsParams,
   options?: RequestInit,
-): Promise<listAdminReservationApplicationsResponse> => {
-  return customFetch<listAdminReservationApplicationsResponse>(
-    getListAdminReservationApplicationsUrl(params),
+): Promise<getApiAdminBottlesReservationsApplicationsResponse> => {
+  return customFetch<getApiAdminBottlesReservationsApplicationsResponse>(
+    getGetApiAdminBottlesReservationsApplicationsUrl(params),
     {
       ...options,
       method: "GET",
@@ -3957,29 +4151,34 @@ export const listAdminReservationApplications = async (
  * 관리자가 예약 신청 상세 정보를 조회합니다.
  * @summary 예약 신청 상세(관리자)
  */
-export type getAdminReservationApplicationResponse200 = {
-  data: BottleReservationApplicationResponse;
-  status: 200;
-};
+export type getApiAdminBottlesReservationsApplicationsApplicationidResponse200 =
+  {
+    data: BottleReservationApplicationResponse;
+    status: 200;
+  };
 
-export type getAdminReservationApplicationResponseSuccess =
-  getAdminReservationApplicationResponse200 & {
+export type getApiAdminBottlesReservationsApplicationsApplicationidResponseSuccess =
+  getApiAdminBottlesReservationsApplicationsApplicationidResponse200 & {
     headers: Headers;
   };
 
-export type getAdminReservationApplicationResponse =
-  getAdminReservationApplicationResponseSuccess;
+export type getApiAdminBottlesReservationsApplicationsApplicationidResponse =
+  getApiAdminBottlesReservationsApplicationsApplicationidResponseSuccess;
 
-export const getGetAdminReservationApplicationUrl = (applicationId: number) => {
+export const getGetApiAdminBottlesReservationsApplicationsApplicationidUrl = (
+  applicationId: number,
+) => {
   return `/api/admin/bottles/reservations/applications/${applicationId}`;
 };
 
-export const getAdminReservationApplication = async (
+export const getApiAdminBottlesReservationsApplicationsApplicationid = async (
   applicationId: number,
   options?: RequestInit,
-): Promise<getAdminReservationApplicationResponse> => {
-  return customFetch<getAdminReservationApplicationResponse>(
-    getGetAdminReservationApplicationUrl(applicationId),
+): Promise<getApiAdminBottlesReservationsApplicationsApplicationidResponse> => {
+  return customFetch<getApiAdminBottlesReservationsApplicationsApplicationidResponse>(
+    getGetApiAdminBottlesReservationsApplicationsApplicationidUrl(
+      applicationId,
+    ),
     {
       ...options,
       method: "GET",
@@ -3991,126 +4190,144 @@ export const getAdminReservationApplication = async (
  * 관리자가 신청을 취소 처리합니다.
  * @summary 예약 신청 취소
  */
-export type cancelAdminReservationApplicationResponse200 = {
-  data: BottleReservationApplicationResponse;
-  status: 200;
-};
+export type postApiAdminBottlesReservationsApplicationsApplicationidCancelResponse200 =
+  {
+    data: BottleReservationApplicationResponse;
+    status: 200;
+  };
 
-export type cancelAdminReservationApplicationResponseSuccess =
-  cancelAdminReservationApplicationResponse200 & {
+export type postApiAdminBottlesReservationsApplicationsApplicationidCancelResponseSuccess =
+  postApiAdminBottlesReservationsApplicationsApplicationidCancelResponse200 & {
     headers: Headers;
   };
 
-export type cancelAdminReservationApplicationResponse =
-  cancelAdminReservationApplicationResponseSuccess;
+export type postApiAdminBottlesReservationsApplicationsApplicationidCancelResponse =
+  postApiAdminBottlesReservationsApplicationsApplicationidCancelResponseSuccess;
 
-export const getCancelAdminReservationApplicationUrl = (
-  applicationId: number,
-) => {
-  return `/api/admin/bottles/reservations/applications/${applicationId}/cancel`;
-};
+export const getPostApiAdminBottlesReservationsApplicationsApplicationidCancelUrl =
+  (applicationId: number) => {
+    return `/api/admin/bottles/reservations/applications/${applicationId}/cancel`;
+  };
 
-export const cancelAdminReservationApplication = async (
-  applicationId: number,
-  options?: RequestInit,
-): Promise<cancelAdminReservationApplicationResponse> => {
-  return customFetch<cancelAdminReservationApplicationResponse>(
-    getCancelAdminReservationApplicationUrl(applicationId),
-    {
-      ...options,
-      method: "POST",
-    },
-  );
-};
+export const postApiAdminBottlesReservationsApplicationsApplicationidCancel =
+  async (
+    applicationId: number,
+    options?: RequestInit,
+  ): Promise<postApiAdminBottlesReservationsApplicationsApplicationidCancelResponse> => {
+    return customFetch<postApiAdminBottlesReservationsApplicationsApplicationidCancelResponse>(
+      getPostApiAdminBottlesReservationsApplicationsApplicationidCancelUrl(
+        applicationId,
+      ),
+      {
+        ...options,
+        method: "POST",
+      },
+    );
+  };
 
 /**
  * 관리자가 신청을 승인하고 최종 수량을 입력합니다.
  * @summary 예약 신청 확정
  */
-export type confirmApplicationResponse200 = {
-  data: BottleReservationApplicationResponse;
-  status: 200;
-};
+export type postApiAdminBottlesReservationsApplicationsApplicationidConfirmResponse200 =
+  {
+    data: BottleReservationApplicationResponse;
+    status: 200;
+  };
 
-export type confirmApplicationResponseSuccess =
-  confirmApplicationResponse200 & {
+export type postApiAdminBottlesReservationsApplicationsApplicationidConfirmResponseSuccess =
+  postApiAdminBottlesReservationsApplicationsApplicationidConfirmResponse200 & {
     headers: Headers;
   };
 
-export type confirmApplicationResponse = confirmApplicationResponseSuccess;
+export type postApiAdminBottlesReservationsApplicationsApplicationidConfirmResponse =
+  postApiAdminBottlesReservationsApplicationsApplicationidConfirmResponseSuccess;
 
-export const getConfirmApplicationUrl = (applicationId: number) => {
-  return `/api/admin/bottles/reservations/applications/${applicationId}/confirm`;
-};
+export const getPostApiAdminBottlesReservationsApplicationsApplicationidConfirmUrl =
+  (applicationId: number) => {
+    return `/api/admin/bottles/reservations/applications/${applicationId}/confirm`;
+  };
 
-export const confirmApplication = async (
-  applicationId: number,
-  confirmApplicationBody: ConfirmApplicationBody,
-  options?: RequestInit,
-): Promise<confirmApplicationResponse> => {
-  return customFetch<confirmApplicationResponse>(
-    getConfirmApplicationUrl(applicationId),
-    {
-      ...options,
-      method: "POST",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(confirmApplicationBody),
-    },
-  );
-};
+export const postApiAdminBottlesReservationsApplicationsApplicationidConfirm =
+  async (
+    applicationId: number,
+    postApiAdminBottlesReservationsApplicationsApplicationidConfirmBody: PostApiAdminBottlesReservationsApplicationsApplicationidConfirmBody,
+    options?: RequestInit,
+  ): Promise<postApiAdminBottlesReservationsApplicationsApplicationidConfirmResponse> => {
+    return customFetch<postApiAdminBottlesReservationsApplicationsApplicationidConfirmResponse>(
+      getPostApiAdminBottlesReservationsApplicationsApplicationidConfirmUrl(
+        applicationId,
+      ),
+      {
+        ...options,
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...options?.headers },
+        body: JSON.stringify(
+          postApiAdminBottlesReservationsApplicationsApplicationidConfirmBody,
+        ),
+      },
+    );
+  };
 
 /**
  * 관리자가 신청을 임의로 거절합니다.
  * @summary 예약 신청 거절
  */
-export type rejectAdminReservationApplicationResponse200 = {
-  data: BottleReservationApplicationResponse;
-  status: 200;
-};
+export type postApiAdminBottlesReservationsApplicationsApplicationidRejectResponse200 =
+  {
+    data: BottleReservationApplicationResponse;
+    status: 200;
+  };
 
-export type rejectAdminReservationApplicationResponseSuccess =
-  rejectAdminReservationApplicationResponse200 & {
+export type postApiAdminBottlesReservationsApplicationsApplicationidRejectResponseSuccess =
+  postApiAdminBottlesReservationsApplicationsApplicationidRejectResponse200 & {
     headers: Headers;
   };
 
-export type rejectAdminReservationApplicationResponse =
-  rejectAdminReservationApplicationResponseSuccess;
+export type postApiAdminBottlesReservationsApplicationsApplicationidRejectResponse =
+  postApiAdminBottlesReservationsApplicationsApplicationidRejectResponseSuccess;
 
-export const getRejectAdminReservationApplicationUrl = (
-  applicationId: number,
-) => {
-  return `/api/admin/bottles/reservations/applications/${applicationId}/reject`;
-};
+export const getPostApiAdminBottlesReservationsApplicationsApplicationidRejectUrl =
+  (applicationId: number) => {
+    return `/api/admin/bottles/reservations/applications/${applicationId}/reject`;
+  };
 
-export const rejectAdminReservationApplication = async (
-  applicationId: number,
-  options?: RequestInit,
-): Promise<rejectAdminReservationApplicationResponse> => {
-  return customFetch<rejectAdminReservationApplicationResponse>(
-    getRejectAdminReservationApplicationUrl(applicationId),
-    {
-      ...options,
-      method: "POST",
-    },
-  );
-};
+export const postApiAdminBottlesReservationsApplicationsApplicationidReject =
+  async (
+    applicationId: number,
+    options?: RequestInit,
+  ): Promise<postApiAdminBottlesReservationsApplicationsApplicationidRejectResponse> => {
+    return customFetch<postApiAdminBottlesReservationsApplicationsApplicationidRejectResponse>(
+      getPostApiAdminBottlesReservationsApplicationsApplicationidRejectUrl(
+        applicationId,
+      ),
+      {
+        ...options,
+        method: "POST",
+      },
+    );
+  };
 
 /**
  * 관리자가 예약 공고 목록을 조회합니다.
  * @summary 예약 공고 목록(관리자)
  */
-export type listNoticesResponse200 = {
+export type getApiAdminBottlesReservationsNoticesResponse200 = {
   data: PageBottleReservationNoticeResponse;
   status: 200;
 };
 
-export type listNoticesResponseSuccess = listNoticesResponse200 & {
-  headers: Headers;
-};
+export type getApiAdminBottlesReservationsNoticesResponseSuccess =
+  getApiAdminBottlesReservationsNoticesResponse200 & {
+    headers: Headers;
+  };
 
-export type listNoticesResponse = listNoticesResponseSuccess;
+export type getApiAdminBottlesReservationsNoticesResponse =
+  getApiAdminBottlesReservationsNoticesResponseSuccess;
 
-export const getListNoticesUrl = (params?: ListNoticesParams) => {
+export const getGetApiAdminBottlesReservationsNoticesUrl = (
+  params?: GetApiAdminBottlesReservationsNoticesParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -4142,278 +4359,290 @@ export const getListNoticesUrl = (params?: ListNoticesParams) => {
     : `/api/admin/bottles/reservations/notices`;
 };
 
-export const listNotices = async (
-  params?: ListNoticesParams,
+export const getApiAdminBottlesReservationsNotices = async (
+  params?: GetApiAdminBottlesReservationsNoticesParams,
   options?: RequestInit,
-): Promise<listNoticesResponse> => {
-  return customFetch<listNoticesResponse>(getListNoticesUrl(params), {
-    ...options,
-    method: "GET",
-  });
+): Promise<getApiAdminBottlesReservationsNoticesResponse> => {
+  return customFetch<getApiAdminBottlesReservationsNoticesResponse>(
+    getGetApiAdminBottlesReservationsNoticesUrl(params),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
 };
 
 /**
  * 예약 기간과 가격 정보를 입력해 특정 병 예약 공고를 등록합니다.
  * @summary 예약 공고 생성(관리자)
  */
-export type createNoticeResponse200 = {
+export type postApiAdminBottlesReservationsNoticesResponse200 = {
   data: BottleReservationNoticeResponse;
   status: 200;
 };
 
-export type createNoticeResponseSuccess = createNoticeResponse200 & {
-  headers: Headers;
-};
+export type postApiAdminBottlesReservationsNoticesResponseSuccess =
+  postApiAdminBottlesReservationsNoticesResponse200 & {
+    headers: Headers;
+  };
 
-export type createNoticeResponse = createNoticeResponseSuccess;
+export type postApiAdminBottlesReservationsNoticesResponse =
+  postApiAdminBottlesReservationsNoticesResponseSuccess;
 
-export const getCreateNoticeUrl = () => {
+export const getPostApiAdminBottlesReservationsNoticesUrl = () => {
   return `/api/admin/bottles/reservations/notices`;
 };
 
-export const createNotice = async (
-  createNoticeBody: CreateNoticeBody,
+export const postApiAdminBottlesReservationsNotices = async (
+  postApiAdminBottlesReservationsNoticesBody: PostApiAdminBottlesReservationsNoticesBody,
   options?: RequestInit,
-): Promise<createNoticeResponse> => {
-  return customFetch<createNoticeResponse>(getCreateNoticeUrl(), {
-    ...options,
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(createNoticeBody),
-  });
+): Promise<postApiAdminBottlesReservationsNoticesResponse> => {
+  return customFetch<postApiAdminBottlesReservationsNoticesResponse>(
+    getPostApiAdminBottlesReservationsNoticesUrl(),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(postApiAdminBottlesReservationsNoticesBody),
+    },
+  );
 };
 
 /**
  * 관리자가 예약 공고 상세 정보를 조회합니다.
  * @summary 예약 공고 상세(관리자)
  */
-export type getNoticeResponse200 = {
+export type getApiAdminBottlesReservationsNoticesNoticeidResponse200 = {
   data: BottleReservationNoticeResponse;
   status: 200;
 };
 
-export type getNoticeResponseSuccess = getNoticeResponse200 & {
-  headers: Headers;
-};
+export type getApiAdminBottlesReservationsNoticesNoticeidResponseSuccess =
+  getApiAdminBottlesReservationsNoticesNoticeidResponse200 & {
+    headers: Headers;
+  };
 
-export type getNoticeResponse = getNoticeResponseSuccess;
+export type getApiAdminBottlesReservationsNoticesNoticeidResponse =
+  getApiAdminBottlesReservationsNoticesNoticeidResponseSuccess;
 
-export const getGetNoticeUrl = (noticeId: number) => {
+export const getGetApiAdminBottlesReservationsNoticesNoticeidUrl = (
+  noticeId: number,
+) => {
   return `/api/admin/bottles/reservations/notices/${noticeId}`;
 };
 
-export const getNotice = async (
+export const getApiAdminBottlesReservationsNoticesNoticeid = async (
   noticeId: number,
   options?: RequestInit,
-): Promise<getNoticeResponse> => {
-  return customFetch<getNoticeResponse>(getGetNoticeUrl(noticeId), {
-    ...options,
-    method: "GET",
-  });
+): Promise<getApiAdminBottlesReservationsNoticesNoticeidResponse> => {
+  return customFetch<getApiAdminBottlesReservationsNoticesNoticeidResponse>(
+    getGetApiAdminBottlesReservationsNoticesNoticeidUrl(noticeId),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
 };
 
 /**
  * 등록된 예약 공고의 기간 및 가격 정보를 수정합니다.
  * @summary 예약 공고 수정(관리자)
  */
-export type updateNoticeResponse200 = {
+export type putApiAdminBottlesReservationsNoticesNoticeidResponse200 = {
   data: BottleReservationNoticeResponse;
   status: 200;
 };
 
-export type updateNoticeResponseSuccess = updateNoticeResponse200 & {
-  headers: Headers;
-};
+export type putApiAdminBottlesReservationsNoticesNoticeidResponseSuccess =
+  putApiAdminBottlesReservationsNoticesNoticeidResponse200 & {
+    headers: Headers;
+  };
 
-export type updateNoticeResponse = updateNoticeResponseSuccess;
+export type putApiAdminBottlesReservationsNoticesNoticeidResponse =
+  putApiAdminBottlesReservationsNoticesNoticeidResponseSuccess;
 
-export const getUpdateNoticeUrl = (noticeId: number) => {
+export const getPutApiAdminBottlesReservationsNoticesNoticeidUrl = (
+  noticeId: number,
+) => {
   return `/api/admin/bottles/reservations/notices/${noticeId}`;
 };
 
-export const updateNotice = async (
+export const putApiAdminBottlesReservationsNoticesNoticeid = async (
   noticeId: number,
-  updateNoticeBody: UpdateNoticeBody,
+  putApiAdminBottlesReservationsNoticesNoticeidBody: PutApiAdminBottlesReservationsNoticesNoticeidBody,
   options?: RequestInit,
-): Promise<updateNoticeResponse> => {
-  return customFetch<updateNoticeResponse>(getUpdateNoticeUrl(noticeId), {
-    ...options,
-    method: "PUT",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(updateNoticeBody),
-  });
+): Promise<putApiAdminBottlesReservationsNoticesNoticeidResponse> => {
+  return customFetch<putApiAdminBottlesReservationsNoticesNoticeidResponse>(
+    getPutApiAdminBottlesReservationsNoticesNoticeidUrl(noticeId),
+    {
+      ...options,
+      method: "PUT",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(putApiAdminBottlesReservationsNoticesNoticeidBody),
+    },
+  );
 };
 
 /**
  * 선택한 병 정보와 관련 메타데이터를 삭제합니다.
  * @summary 병 정보 삭제(관리자)
  */
-export type deleteAdminBottleResponse200 = {
+export type deleteApiAdminBottlesIdResponse200 = {
   data: boolean;
   status: 200;
 };
 
-export type deleteAdminBottleResponseSuccess = deleteAdminBottleResponse200 & {
-  headers: Headers;
-};
+export type deleteApiAdminBottlesIdResponseSuccess =
+  deleteApiAdminBottlesIdResponse200 & {
+    headers: Headers;
+  };
 
-export type deleteAdminBottleResponse = deleteAdminBottleResponseSuccess;
+export type deleteApiAdminBottlesIdResponse =
+  deleteApiAdminBottlesIdResponseSuccess;
 
-export const getDeleteAdminBottleUrl = (id: number) => {
+export const getDeleteApiAdminBottlesIdUrl = (id: number) => {
   return `/api/admin/bottles/${id}`;
 };
 
-export const deleteAdminBottle = async (
+export const deleteApiAdminBottlesId = async (
   id: number,
   options?: RequestInit,
-): Promise<deleteAdminBottleResponse> => {
-  return customFetch<deleteAdminBottleResponse>(getDeleteAdminBottleUrl(id), {
-    ...options,
-    method: "DELETE",
-  });
+): Promise<deleteApiAdminBottlesIdResponse> => {
+  return customFetch<deleteApiAdminBottlesIdResponse>(
+    getDeleteApiAdminBottlesIdUrl(id),
+    {
+      ...options,
+      method: "DELETE",
+    },
+  );
 };
 
 /**
  * 관리자가 병 상세 정보를 조회합니다.
  * @summary 병 상세 조회(관리자)
  */
-export type getAdminBottleResponse200 = {
+export type getApiAdminBottlesIdResponse200 = {
   data: BottleAdminResponse;
   status: 200;
 };
 
-export type getAdminBottleResponseSuccess = getAdminBottleResponse200 & {
-  headers: Headers;
-};
+export type getApiAdminBottlesIdResponseSuccess =
+  getApiAdminBottlesIdResponse200 & {
+    headers: Headers;
+  };
 
-export type getAdminBottleResponse = getAdminBottleResponseSuccess;
+export type getApiAdminBottlesIdResponse = getApiAdminBottlesIdResponseSuccess;
 
-export const getGetAdminBottleUrl = (id: number) => {
+export const getGetApiAdminBottlesIdUrl = (id: number) => {
   return `/api/admin/bottles/${id}`;
 };
 
-export const getAdminBottle = async (
+export const getApiAdminBottlesId = async (
   id: number,
   options?: RequestInit,
-): Promise<getAdminBottleResponse> => {
-  return customFetch<getAdminBottleResponse>(getGetAdminBottleUrl(id), {
-    ...options,
-    method: "GET",
-  });
+): Promise<getApiAdminBottlesIdResponse> => {
+  return customFetch<getApiAdminBottlesIdResponse>(
+    getGetApiAdminBottlesIdUrl(id),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
 };
 
 /**
  * 병의 메타데이터와 라벨 이미지를 수정합니다.
  * @summary 병 정보 수정(관리자)
  */
-export type updateAdminBottleResponse200 = {
+export type patchApiAdminBottlesIdResponse200 = {
   data: BottleAdminResponse;
   status: 200;
 };
 
-export type updateAdminBottleResponseSuccess = updateAdminBottleResponse200 & {
-  headers: Headers;
-};
+export type patchApiAdminBottlesIdResponseSuccess =
+  patchApiAdminBottlesIdResponse200 & {
+    headers: Headers;
+  };
 
-export type updateAdminBottleResponse = updateAdminBottleResponseSuccess;
+export type patchApiAdminBottlesIdResponse =
+  patchApiAdminBottlesIdResponseSuccess;
 
-export const getUpdateAdminBottleUrl = (id: number) => {
-  return `/api/admin/bottles/${id}`;
-};
-
-export const updateAdminBottle = async (
+export const getPatchApiAdminBottlesIdUrl = (
   id: number,
-  updateAdminBottleBody: UpdateAdminBottleBody,
+  params?: PatchApiAdminBottlesIdParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) {
+          v.forEach((item) =>
+            normalizedParams.append(k, item == null ? "null" : String(item)),
+          );
+        } else {
+          normalizedParams.append(k, v === null ? "null" : String(v));
+        }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach((v) =>
+        normalizedParams.append(key, v == null ? "null" : String(v)),
+      );
+    } else {
+      normalizedParams.append(key, value === null ? "null" : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/admin/bottles/${id}?${stringifiedParams}`
+    : `/api/admin/bottles/${id}`;
+};
+
+export const patchApiAdminBottlesId = async (
+  id: number,
+  patchApiAdminBottlesIdBody: PatchApiAdminBottlesIdBody,
+  params?: PatchApiAdminBottlesIdParams,
   options?: RequestInit,
-): Promise<updateAdminBottleResponse> => {
+): Promise<patchApiAdminBottlesIdResponse> => {
   const formData = new FormData();
-  if (updateAdminBottleBody.abv !== undefined) {
-    formData.append(`abv`, updateAdminBottleBody.abv.toString());
-  }
-  if (updateAdminBottleBody.bottledDate !== undefined) {
-    formData.append(`bottledDate`, updateAdminBottleBody.bottledDate);
-  }
-  if (updateAdminBottleBody.brand !== undefined) {
-    formData.append(`brand`, updateAdminBottleBody.brand);
-  }
-  if (updateAdminBottleBody.capacity !== undefined) {
-    formData.append(`capacity`, updateAdminBottleBody.capacity.toString());
-  }
-  if (updateAdminBottleBody.caskNumber !== undefined) {
-    formData.append(`caskNumber`, updateAdminBottleBody.caskNumber);
-  }
-  if (updateAdminBottleBody.caskType !== undefined) {
-    formData.append(`caskType`, updateAdminBottleBody.caskType);
-  }
-  if (updateAdminBottleBody.company !== undefined) {
-    formData.append(`company`, updateAdminBottleBody.company);
-  }
-  if (updateAdminBottleBody.consumerPrice !== undefined) {
-    formData.append(
-      `consumerPrice`,
-      updateAdminBottleBody.consumerPrice.toString(),
-    );
-  }
-  if (updateAdminBottleBody.description !== undefined) {
-    formData.append(`description`, updateAdminBottleBody.description);
-  }
-  if (updateAdminBottleBody.distillationDate !== undefined) {
-    formData.append(`distillationDate`, updateAdminBottleBody.distillationDate);
-  }
-  if (updateAdminBottleBody.distillery !== undefined) {
-    formData.append(`distillery`, updateAdminBottleBody.distillery);
-  }
-  if (updateAdminBottleBody.labelImg !== undefined) {
-    formData.append(`labelImg`, updateAdminBottleBody.labelImg);
-  }
-  if (updateAdminBottleBody.maltType !== undefined) {
-    formData.append(`maltType`, updateAdminBottleBody.maltType);
-  }
-  if (updateAdminBottleBody.name !== undefined) {
-    formData.append(`name`, updateAdminBottleBody.name);
-  }
-  if (updateAdminBottleBody.series !== undefined) {
-    formData.append(`series`, updateAdminBottleBody.series);
-  }
-  if (updateAdminBottleBody.stockQuantity !== undefined) {
-    formData.append(
-      `stockQuantity`,
-      updateAdminBottleBody.stockQuantity.toString(),
-    );
-  }
-  if (updateAdminBottleBody.supplyPrice !== undefined) {
-    formData.append(
-      `supplyPrice`,
-      updateAdminBottleBody.supplyPrice.toString(),
-    );
-  }
-  if (updateAdminBottleBody.visible !== undefined) {
-    formData.append(`visible`, updateAdminBottleBody.visible.toString());
+  if (patchApiAdminBottlesIdBody.labelImg !== undefined) {
+    formData.append(`labelImg`, patchApiAdminBottlesIdBody.labelImg);
   }
 
-  return customFetch<updateAdminBottleResponse>(getUpdateAdminBottleUrl(id), {
-    ...options,
-    method: "PATCH",
-    body: formData,
-  });
+  return customFetch<patchApiAdminBottlesIdResponse>(
+    getPatchApiAdminBottlesIdUrl(id, params),
+    {
+      ...options,
+      method: "PATCH",
+      body: formData,
+    },
+  );
 };
 
 /**
  * 관리자가 비즈니스 신청 목록을 페이지 단위로 조회합니다.
  * @summary 비즈니스 신청 목록 조회(관리자)
  */
-export type listApplicationsResponse200 = {
+export type getApiAdminBusinessesApplicationsResponse200 = {
   data: PageAdminBusinessApplicationResponse;
   status: 200;
 };
 
-export type listApplicationsResponseSuccess = listApplicationsResponse200 & {
-  headers: Headers;
-};
+export type getApiAdminBusinessesApplicationsResponseSuccess =
+  getApiAdminBusinessesApplicationsResponse200 & {
+    headers: Headers;
+  };
 
-export type listApplicationsResponse = listApplicationsResponseSuccess;
+export type getApiAdminBusinessesApplicationsResponse =
+  getApiAdminBusinessesApplicationsResponseSuccess;
 
-export const getListApplicationsUrl = (params?: ListApplicationsParams) => {
+export const getGetApiAdminBusinessesApplicationsUrl = (
+  params?: GetApiAdminBusinessesApplicationsParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -4445,41 +4674,48 @@ export const getListApplicationsUrl = (params?: ListApplicationsParams) => {
     : `/api/admin/businesses/applications`;
 };
 
-export const listApplications = async (
-  params?: ListApplicationsParams,
+export const getApiAdminBusinessesApplications = async (
+  params?: GetApiAdminBusinessesApplicationsParams,
   options?: RequestInit,
-): Promise<listApplicationsResponse> => {
-  return customFetch<listApplicationsResponse>(getListApplicationsUrl(params), {
-    ...options,
-    method: "GET",
-  });
+): Promise<getApiAdminBusinessesApplicationsResponse> => {
+  return customFetch<getApiAdminBusinessesApplicationsResponse>(
+    getGetApiAdminBusinessesApplicationsUrl(params),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
 };
 
 /**
  * 관리자가 비즈니스 신청 상세 정보를 조회합니다.
  * @summary 비즈니스 신청 상세 조회(관리자)
  */
-export type getApplicationResponse200 = {
+export type getApiAdminBusinessesApplicationsApplicationidResponse200 = {
   data: AdminBusinessApplicationResponse;
   status: 200;
 };
 
-export type getApplicationResponseSuccess = getApplicationResponse200 & {
-  headers: Headers;
-};
+export type getApiAdminBusinessesApplicationsApplicationidResponseSuccess =
+  getApiAdminBusinessesApplicationsApplicationidResponse200 & {
+    headers: Headers;
+  };
 
-export type getApplicationResponse = getApplicationResponseSuccess;
+export type getApiAdminBusinessesApplicationsApplicationidResponse =
+  getApiAdminBusinessesApplicationsApplicationidResponseSuccess;
 
-export const getGetApplicationUrl = (applicationId: number) => {
+export const getGetApiAdminBusinessesApplicationsApplicationidUrl = (
+  applicationId: number,
+) => {
   return `/api/admin/businesses/applications/${applicationId}`;
 };
 
-export const getApplication = async (
+export const getApiAdminBusinessesApplicationsApplicationid = async (
   applicationId: number,
   options?: RequestInit,
-): Promise<getApplicationResponse> => {
-  return customFetch<getApplicationResponse>(
-    getGetApplicationUrl(applicationId),
+): Promise<getApiAdminBusinessesApplicationsApplicationidResponse> => {
+  return customFetch<getApiAdminBusinessesApplicationsApplicationidResponse>(
+    getGetApiAdminBusinessesApplicationsApplicationidUrl(applicationId),
     {
       ...options,
       method: "GET",
@@ -4491,28 +4727,32 @@ export const getApplication = async (
  * 관리자가 신청을 승인하고 픽업 사업장으로 등록합니다.
  * @summary 비즈니스 신청 승인(관리자)
  */
-export type approveApplicationResponse200 = {
-  data: AdminBusinessApplicationResponse;
-  status: 200;
-};
+export type postApiAdminBusinessesApplicationsApplicationidApproveResponse200 =
+  {
+    data: AdminBusinessApplicationResponse;
+    status: 200;
+  };
 
-export type approveApplicationResponseSuccess =
-  approveApplicationResponse200 & {
+export type postApiAdminBusinessesApplicationsApplicationidApproveResponseSuccess =
+  postApiAdminBusinessesApplicationsApplicationidApproveResponse200 & {
     headers: Headers;
   };
 
-export type approveApplicationResponse = approveApplicationResponseSuccess;
+export type postApiAdminBusinessesApplicationsApplicationidApproveResponse =
+  postApiAdminBusinessesApplicationsApplicationidApproveResponseSuccess;
 
-export const getApproveApplicationUrl = (applicationId: number) => {
+export const getPostApiAdminBusinessesApplicationsApplicationidApproveUrl = (
+  applicationId: number,
+) => {
   return `/api/admin/businesses/applications/${applicationId}/approve`;
 };
 
-export const approveApplication = async (
+export const postApiAdminBusinessesApplicationsApplicationidApprove = async (
   applicationId: number,
   options?: RequestInit,
-): Promise<approveApplicationResponse> => {
-  return customFetch<approveApplicationResponse>(
-    getApproveApplicationUrl(applicationId),
+): Promise<postApiAdminBusinessesApplicationsApplicationidApproveResponse> => {
+  return customFetch<postApiAdminBusinessesApplicationsApplicationidApproveResponse>(
+    getPostApiAdminBusinessesApplicationsApplicationidApproveUrl(applicationId),
     {
       ...options,
       method: "POST",
@@ -4524,33 +4764,39 @@ export const approveApplication = async (
  * 관리자가 신청을 반려 처리하고 사유를 기록합니다.
  * @summary 비즈니스 신청 반려(관리자)
  */
-export type rejectApplicationResponse200 = {
+export type postApiAdminBusinessesApplicationsApplicationidRejectResponse200 = {
   data: AdminBusinessApplicationResponse;
   status: 200;
 };
 
-export type rejectApplicationResponseSuccess = rejectApplicationResponse200 & {
-  headers: Headers;
-};
+export type postApiAdminBusinessesApplicationsApplicationidRejectResponseSuccess =
+  postApiAdminBusinessesApplicationsApplicationidRejectResponse200 & {
+    headers: Headers;
+  };
 
-export type rejectApplicationResponse = rejectApplicationResponseSuccess;
+export type postApiAdminBusinessesApplicationsApplicationidRejectResponse =
+  postApiAdminBusinessesApplicationsApplicationidRejectResponseSuccess;
 
-export const getRejectApplicationUrl = (applicationId: number) => {
+export const getPostApiAdminBusinessesApplicationsApplicationidRejectUrl = (
+  applicationId: number,
+) => {
   return `/api/admin/businesses/applications/${applicationId}/reject`;
 };
 
-export const rejectApplication = async (
+export const postApiAdminBusinessesApplicationsApplicationidReject = async (
   applicationId: number,
-  rejectApplicationBody: RejectApplicationBody,
+  postApiAdminBusinessesApplicationsApplicationidRejectBody: PostApiAdminBusinessesApplicationsApplicationidRejectBody,
   options?: RequestInit,
-): Promise<rejectApplicationResponse> => {
-  return customFetch<rejectApplicationResponse>(
-    getRejectApplicationUrl(applicationId),
+): Promise<postApiAdminBusinessesApplicationsApplicationidRejectResponse> => {
+  return customFetch<postApiAdminBusinessesApplicationsApplicationidRejectResponse>(
+    getPostApiAdminBusinessesApplicationsApplicationidRejectUrl(applicationId),
     {
       ...options,
       method: "POST",
       headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(rejectApplicationBody),
+      body: JSON.stringify(
+        postApiAdminBusinessesApplicationsApplicationidRejectBody,
+      ),
     },
   );
 };
@@ -4559,18 +4805,22 @@ export const rejectApplication = async (
  * 비즈니스 등급 회원 목록을 조회합니다.
  * @summary 비즈니스 회원 목록 조회(관리자)
  */
-export type listBusinessUsersResponse200 = {
+export type getApiAdminBusinessesMembersResponse200 = {
   data: PageAdminBusinessUserResponse;
   status: 200;
 };
 
-export type listBusinessUsersResponseSuccess = listBusinessUsersResponse200 & {
-  headers: Headers;
-};
+export type getApiAdminBusinessesMembersResponseSuccess =
+  getApiAdminBusinessesMembersResponse200 & {
+    headers: Headers;
+  };
 
-export type listBusinessUsersResponse = listBusinessUsersResponseSuccess;
+export type getApiAdminBusinessesMembersResponse =
+  getApiAdminBusinessesMembersResponseSuccess;
 
-export const getListBusinessUsersUrl = (params?: ListBusinessUsersParams) => {
+export const getGetApiAdminBusinessesMembersUrl = (
+  params?: GetApiAdminBusinessesMembersParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -4602,12 +4852,12 @@ export const getListBusinessUsersUrl = (params?: ListBusinessUsersParams) => {
     : `/api/admin/businesses/members`;
 };
 
-export const listBusinessUsers = async (
-  params?: ListBusinessUsersParams,
+export const getApiAdminBusinessesMembers = async (
+  params?: GetApiAdminBusinessesMembersParams,
   options?: RequestInit,
-): Promise<listBusinessUsersResponse> => {
-  return customFetch<listBusinessUsersResponse>(
-    getListBusinessUsersUrl(params),
+): Promise<getApiAdminBusinessesMembersResponse> => {
+  return customFetch<getApiAdminBusinessesMembersResponse>(
+    getGetApiAdminBusinessesMembersUrl(params),
     {
       ...options,
       method: "GET",
@@ -4619,102 +4869,125 @@ export const listBusinessUsers = async (
  * 비즈니스 등급 회원에게 픽업 권한을 부여합니다.
  * @summary 픽업 권한 부여(관리자)
  */
-export type grantPickupRoleResponse200 = {
+export type postApiAdminBusinessesMembersUseridPickupGrantResponse200 = {
   data: AdminBusinessUserResponse;
   status: 200;
 };
 
-export type grantPickupRoleResponseSuccess = grantPickupRoleResponse200 & {
-  headers: Headers;
-};
+export type postApiAdminBusinessesMembersUseridPickupGrantResponseSuccess =
+  postApiAdminBusinessesMembersUseridPickupGrantResponse200 & {
+    headers: Headers;
+  };
 
-export type grantPickupRoleResponse = grantPickupRoleResponseSuccess;
+export type postApiAdminBusinessesMembersUseridPickupGrantResponse =
+  postApiAdminBusinessesMembersUseridPickupGrantResponseSuccess;
 
-export const getGrantPickupRoleUrl = (userId: number) => {
+export const getPostApiAdminBusinessesMembersUseridPickupGrantUrl = (
+  userId: number,
+) => {
   return `/api/admin/businesses/members/${userId}/pickup/grant`;
 };
 
-export const grantPickupRole = async (
+export const postApiAdminBusinessesMembersUseridPickupGrant = async (
   userId: number,
   options?: RequestInit,
-): Promise<grantPickupRoleResponse> => {
-  return customFetch<grantPickupRoleResponse>(getGrantPickupRoleUrl(userId), {
-    ...options,
-    method: "POST",
-  });
+): Promise<postApiAdminBusinessesMembersUseridPickupGrantResponse> => {
+  return customFetch<postApiAdminBusinessesMembersUseridPickupGrantResponse>(
+    getPostApiAdminBusinessesMembersUseridPickupGrantUrl(userId),
+    {
+      ...options,
+      method: "POST",
+    },
+  );
 };
 
 /**
  * 비즈니스 등급 회원에게서 픽업 권한을 박탈합니다.
  * @summary 픽업 권한 박탈(관리자)
  */
-export type revokePickupRoleResponse200 = {
+export type postApiAdminBusinessesMembersUseridPickupRevokeResponse200 = {
   data: AdminBusinessUserResponse;
   status: 200;
 };
 
-export type revokePickupRoleResponseSuccess = revokePickupRoleResponse200 & {
-  headers: Headers;
-};
+export type postApiAdminBusinessesMembersUseridPickupRevokeResponseSuccess =
+  postApiAdminBusinessesMembersUseridPickupRevokeResponse200 & {
+    headers: Headers;
+  };
 
-export type revokePickupRoleResponse = revokePickupRoleResponseSuccess;
+export type postApiAdminBusinessesMembersUseridPickupRevokeResponse =
+  postApiAdminBusinessesMembersUseridPickupRevokeResponseSuccess;
 
-export const getRevokePickupRoleUrl = (userId: number) => {
+export const getPostApiAdminBusinessesMembersUseridPickupRevokeUrl = (
+  userId: number,
+) => {
   return `/api/admin/businesses/members/${userId}/pickup/revoke`;
 };
 
-export const revokePickupRole = async (
+export const postApiAdminBusinessesMembersUseridPickupRevoke = async (
   userId: number,
   options?: RequestInit,
-): Promise<revokePickupRoleResponse> => {
-  return customFetch<revokePickupRoleResponse>(getRevokePickupRoleUrl(userId), {
-    ...options,
-    method: "POST",
-  });
+): Promise<postApiAdminBusinessesMembersUseridPickupRevokeResponse> => {
+  return customFetch<postApiAdminBusinessesMembersUseridPickupRevokeResponse>(
+    getPostApiAdminBusinessesMembersUseridPickupRevokeUrl(userId),
+    {
+      ...options,
+      method: "POST",
+    },
+  );
 };
 
-export type revokeTokenResponse200 = {
-  data: RevokeToken200;
+/**
+ * 관리자가 NICE 기관 액세스 토큰을 폐기합니다.
+ * @summary NICE 기관 토큰 폐기(관리자)
+ */
+export type postApiAdminNiceidRevokeResponse200 = {
+  data: PostApiAdminNiceidRevoke200;
   status: 200;
 };
 
-export type revokeTokenResponseSuccess = revokeTokenResponse200 & {
-  headers: Headers;
-};
+export type postApiAdminNiceidRevokeResponseSuccess =
+  postApiAdminNiceidRevokeResponse200 & {
+    headers: Headers;
+  };
 
-export type revokeTokenResponse = revokeTokenResponseSuccess;
+export type postApiAdminNiceidRevokeResponse =
+  postApiAdminNiceidRevokeResponseSuccess;
 
-export const getRevokeTokenUrl = () => {
+export const getPostApiAdminNiceidRevokeUrl = () => {
   return `/api/admin/niceid/revoke`;
 };
 
-export const revokeToken = async (
-  revokeTokenBody: RevokeTokenBody,
+export const postApiAdminNiceidRevoke = async (
+  postApiAdminNiceidRevokeBody: PostApiAdminNiceidRevokeBody,
   options?: RequestInit,
-): Promise<revokeTokenResponse> => {
-  return customFetch<revokeTokenResponse>(getRevokeTokenUrl(), {
-    ...options,
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(revokeTokenBody),
-  });
+): Promise<postApiAdminNiceidRevokeResponse> => {
+  return customFetch<postApiAdminNiceidRevokeResponse>(
+    getPostApiAdminNiceidRevokeUrl(),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(postApiAdminNiceidRevokeBody),
+    },
+  );
 };
 
 /**
  * @summary 관리자 주문 목록 조회
  */
-export type listAdminOrdersResponse200 = {
+export type getApiAdminOrdersResponse200 = {
   data: PageOrderResponse;
   status: 200;
 };
 
-export type listAdminOrdersResponseSuccess = listAdminOrdersResponse200 & {
+export type getApiAdminOrdersResponseSuccess = getApiAdminOrdersResponse200 & {
   headers: Headers;
 };
 
-export type listAdminOrdersResponse = listAdminOrdersResponseSuccess;
+export type getApiAdminOrdersResponse = getApiAdminOrdersResponseSuccess;
 
-export const getListAdminOrdersUrl = (params?: ListAdminOrdersParams) => {
+export const getGetApiAdminOrdersUrl = (params?: GetApiAdminOrdersParams) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -4746,33 +5019,38 @@ export const getListAdminOrdersUrl = (params?: ListAdminOrdersParams) => {
     : `/api/admin/orders`;
 };
 
-export const listAdminOrders = async (
-  params?: ListAdminOrdersParams,
+export const getApiAdminOrders = async (
+  params?: GetApiAdminOrdersParams,
   options?: RequestInit,
-): Promise<listAdminOrdersResponse> => {
-  return customFetch<listAdminOrdersResponse>(getListAdminOrdersUrl(params), {
-    ...options,
-    method: "GET",
-  });
+): Promise<getApiAdminOrdersResponse> => {
+  return customFetch<getApiAdminOrdersResponse>(
+    getGetApiAdminOrdersUrl(params),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
 };
 
 /**
  * @summary 관리자 사용자 주문 내역 및 주문 총액 조회
  */
-export type getUserOrdersResponse200 = {
+export type getApiAdminOrdersUsersUseridResponse200 = {
   data: AdminUserOrderSummaryResponse;
   status: 200;
 };
 
-export type getUserOrdersResponseSuccess = getUserOrdersResponse200 & {
-  headers: Headers;
-};
+export type getApiAdminOrdersUsersUseridResponseSuccess =
+  getApiAdminOrdersUsersUseridResponse200 & {
+    headers: Headers;
+  };
 
-export type getUserOrdersResponse = getUserOrdersResponseSuccess;
+export type getApiAdminOrdersUsersUseridResponse =
+  getApiAdminOrdersUsersUseridResponseSuccess;
 
-export const getGetUserOrdersUrl = (
+export const getGetApiAdminOrdersUsersUseridUrl = (
   userId: number,
-  params?: GetUserOrdersParams,
+  params?: GetApiAdminOrdersUsersUseridParams,
 ) => {
   const normalizedParams = new URLSearchParams();
 
@@ -4805,13 +5083,13 @@ export const getGetUserOrdersUrl = (
     : `/api/admin/orders/users/${userId}`;
 };
 
-export const getUserOrders = async (
+export const getApiAdminOrdersUsersUserid = async (
   userId: number,
-  params?: GetUserOrdersParams,
+  params?: GetApiAdminOrdersUsersUseridParams,
   options?: RequestInit,
-): Promise<getUserOrdersResponse> => {
-  return customFetch<getUserOrdersResponse>(
-    getGetUserOrdersUrl(userId, params),
+): Promise<getApiAdminOrdersUsersUseridResponse> => {
+  return customFetch<getApiAdminOrdersUsersUseridResponse>(
+    getGetApiAdminOrdersUsersUseridUrl(userId, params),
     {
       ...options,
       method: "GET",
@@ -4822,66 +5100,71 @@ export const getUserOrders = async (
 /**
  * @summary 관리자 주문 승인/수량 조정
  */
-export type approveOrderResponse200 = {
+export type patchApiAdminOrdersOrderidApproveResponse200 = {
   data: OrderResponse;
   status: 200;
 };
 
-export type approveOrderResponseSuccess = approveOrderResponse200 & {
-  headers: Headers;
-};
+export type patchApiAdminOrdersOrderidApproveResponseSuccess =
+  patchApiAdminOrdersOrderidApproveResponse200 & {
+    headers: Headers;
+  };
 
-export type approveOrderResponse = approveOrderResponseSuccess;
+export type patchApiAdminOrdersOrderidApproveResponse =
+  patchApiAdminOrdersOrderidApproveResponseSuccess;
 
-export const getApproveOrderUrl = (orderId: number) => {
+export const getPatchApiAdminOrdersOrderidApproveUrl = (orderId: number) => {
   return `/api/admin/orders/${orderId}/approve`;
 };
 
-export const approveOrder = async (
+export const patchApiAdminOrdersOrderidApprove = async (
   orderId: number,
-  approveOrderBody: ApproveOrderBody,
+  patchApiAdminOrdersOrderidApproveBody: PatchApiAdminOrdersOrderidApproveBody,
   options?: RequestInit,
-): Promise<approveOrderResponse> => {
-  return customFetch<approveOrderResponse>(getApproveOrderUrl(orderId), {
-    ...options,
-    method: "PATCH",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(approveOrderBody),
-  });
+): Promise<patchApiAdminOrdersOrderidApproveResponse> => {
+  return customFetch<patchApiAdminOrdersOrderidApproveResponse>(
+    getPatchApiAdminOrdersOrderidApproveUrl(orderId),
+    {
+      ...options,
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(patchApiAdminOrdersOrderidApproveBody),
+    },
+  );
 };
 
 /**
  * @summary 관리자 주문 상태 변경
  */
-export type updateAdminOrderStatusResponse200 = {
+export type patchApiAdminOrdersOrderidStatusResponse200 = {
   data: OrderResponse;
   status: 200;
 };
 
-export type updateAdminOrderStatusResponseSuccess =
-  updateAdminOrderStatusResponse200 & {
+export type patchApiAdminOrdersOrderidStatusResponseSuccess =
+  patchApiAdminOrdersOrderidStatusResponse200 & {
     headers: Headers;
   };
 
-export type updateAdminOrderStatusResponse =
-  updateAdminOrderStatusResponseSuccess;
+export type patchApiAdminOrdersOrderidStatusResponse =
+  patchApiAdminOrdersOrderidStatusResponseSuccess;
 
-export const getUpdateAdminOrderStatusUrl = (orderId: number) => {
+export const getPatchApiAdminOrdersOrderidStatusUrl = (orderId: number) => {
   return `/api/admin/orders/${orderId}/status`;
 };
 
-export const updateAdminOrderStatus = async (
+export const patchApiAdminOrdersOrderidStatus = async (
   orderId: number,
-  updateAdminOrderStatusBody: UpdateAdminOrderStatusBody,
+  patchApiAdminOrdersOrderidStatusBody: PatchApiAdminOrdersOrderidStatusBody,
   options?: RequestInit,
-): Promise<updateAdminOrderStatusResponse> => {
-  return customFetch<updateAdminOrderStatusResponse>(
-    getUpdateAdminOrderStatusUrl(orderId),
+): Promise<patchApiAdminOrdersOrderidStatusResponse> => {
+  return customFetch<patchApiAdminOrdersOrderidStatusResponse>(
+    getPatchApiAdminOrdersOrderidStatusUrl(orderId),
     {
       ...options,
       method: "PATCH",
       headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(updateAdminOrderStatusBody),
+      body: JSON.stringify(patchApiAdminOrdersOrderidStatusBody),
     },
   );
 };
@@ -4889,80 +5172,85 @@ export const updateAdminOrderStatus = async (
 /**
  * @summary 판매 공고 생성
  */
-export type createAdminSaleResponse200 = {
+export type postApiAdminSalesResponse200 = {
   data: SaleAnnouncementResponse;
   status: 200;
 };
 
-export type createAdminSaleResponseSuccess = createAdminSaleResponse200 & {
+export type postApiAdminSalesResponseSuccess = postApiAdminSalesResponse200 & {
   headers: Headers;
 };
 
-export type createAdminSaleResponse = createAdminSaleResponseSuccess;
+export type postApiAdminSalesResponse = postApiAdminSalesResponseSuccess;
 
-export const getCreateAdminSaleUrl = () => {
+export const getPostApiAdminSalesUrl = () => {
   return `/api/admin/sales`;
 };
 
-export const createAdminSale = async (
-  createAdminSaleBody: CreateAdminSaleBody,
+export const postApiAdminSales = async (
+  postApiAdminSalesBody: PostApiAdminSalesBody,
   options?: RequestInit,
-): Promise<createAdminSaleResponse> => {
-  return customFetch<createAdminSaleResponse>(getCreateAdminSaleUrl(), {
+): Promise<postApiAdminSalesResponse> => {
+  return customFetch<postApiAdminSalesResponse>(getPostApiAdminSalesUrl(), {
     ...options,
     method: "POST",
     headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(createAdminSaleBody),
+    body: JSON.stringify(postApiAdminSalesBody),
   });
 };
 
 /**
  * @summary 판매 공고 수정
  */
-export type updateAdminSaleResponse200 = {
+export type patchApiAdminSalesSaleidResponse200 = {
   data: SaleAnnouncementResponse;
   status: 200;
 };
 
-export type updateAdminSaleResponseSuccess = updateAdminSaleResponse200 & {
-  headers: Headers;
-};
+export type patchApiAdminSalesSaleidResponseSuccess =
+  patchApiAdminSalesSaleidResponse200 & {
+    headers: Headers;
+  };
 
-export type updateAdminSaleResponse = updateAdminSaleResponseSuccess;
+export type patchApiAdminSalesSaleidResponse =
+  patchApiAdminSalesSaleidResponseSuccess;
 
-export const getUpdateAdminSaleUrl = (saleId: number) => {
+export const getPatchApiAdminSalesSaleidUrl = (saleId: number) => {
   return `/api/admin/sales/${saleId}`;
 };
 
-export const updateAdminSale = async (
+export const patchApiAdminSalesSaleid = async (
   saleId: number,
-  updateAdminSaleBody: UpdateAdminSaleBody,
+  patchApiAdminSalesSaleidBody: PatchApiAdminSalesSaleidBody,
   options?: RequestInit,
-): Promise<updateAdminSaleResponse> => {
-  return customFetch<updateAdminSaleResponse>(getUpdateAdminSaleUrl(saleId), {
-    ...options,
-    method: "PATCH",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(updateAdminSaleBody),
-  });
+): Promise<patchApiAdminSalesSaleidResponse> => {
+  return customFetch<patchApiAdminSalesSaleidResponse>(
+    getPatchApiAdminSalesSaleidUrl(saleId),
+    {
+      ...options,
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(patchApiAdminSalesSaleidBody),
+    },
+  );
 };
 
 /**
  * 관리자가 검색 조건과 페이지 정보로 사용자 목록을 조회합니다.
  * @summary 사용자 목록 조회(관리자)
  */
-export type listUsersResponse200 = {
+export type getApiAdminUsersResponse200 = {
   data: PageAdminUserResponse;
   status: 200;
 };
 
-export type listUsersResponseSuccess = listUsersResponse200 & {
+export type getApiAdminUsersResponseSuccess = getApiAdminUsersResponse200 & {
   headers: Headers;
 };
 
-export type listUsersResponse = listUsersResponseSuccess;
+export type getApiAdminUsersResponse = getApiAdminUsersResponseSuccess;
 
-export const getListUsersUrl = (params: ListUsersParams) => {
+export const getGetApiAdminUsersUrl = (params: GetApiAdminUsersParams) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -4994,11 +5282,11 @@ export const getListUsersUrl = (params: ListUsersParams) => {
     : `/api/admin/users`;
 };
 
-export const listUsers = async (
-  params: ListUsersParams,
+export const getApiAdminUsers = async (
+  params: GetApiAdminUsersParams,
   options?: RequestInit,
-): Promise<listUsersResponse> => {
-  return customFetch<listUsersResponse>(getListUsersUrl(params), {
+): Promise<getApiAdminUsersResponse> => {
+  return customFetch<getApiAdminUsersResponse>(getGetApiAdminUsersUrl(params), {
     ...options,
     method: "GET",
   });
@@ -5008,55 +5296,61 @@ export const listUsers = async (
  * 계정을 바로 삭제하지 않고 상태만 DELETED 로 표시합니다.
  * @summary 사용자 소프트 삭제(관리자)
  */
-export type deleteUserResponse200 = {
+export type deleteApiAdminUsersIdResponse200 = {
   data: boolean;
   status: 200;
 };
 
-export type deleteUserResponseSuccess = deleteUserResponse200 & {
-  headers: Headers;
-};
+export type deleteApiAdminUsersIdResponseSuccess =
+  deleteApiAdminUsersIdResponse200 & {
+    headers: Headers;
+  };
 
-export type deleteUserResponse = deleteUserResponseSuccess;
+export type deleteApiAdminUsersIdResponse =
+  deleteApiAdminUsersIdResponseSuccess;
 
-export const getDeleteUserUrl = (id: number) => {
+export const getDeleteApiAdminUsersIdUrl = (id: number) => {
   return `/api/admin/users/${id}`;
 };
 
-export const deleteUser = async (
+export const deleteApiAdminUsersId = async (
   id: number,
   options?: RequestInit,
-): Promise<deleteUserResponse> => {
-  return customFetch<deleteUserResponse>(getDeleteUserUrl(id), {
-    ...options,
-    method: "DELETE",
-  });
+): Promise<deleteApiAdminUsersIdResponse> => {
+  return customFetch<deleteApiAdminUsersIdResponse>(
+    getDeleteApiAdminUsersIdUrl(id),
+    {
+      ...options,
+      method: "DELETE",
+    },
+  );
 };
 
 /**
  * 관리자가 지정 사용자의 상세 정보를 조회합니다.
  * @summary 사용자 상세 조회(관리자)
  */
-export type getUserResponse200 = {
+export type getApiAdminUsersIdResponse200 = {
   data: AdminUserResponse;
   status: 200;
 };
 
-export type getUserResponseSuccess = getUserResponse200 & {
-  headers: Headers;
-};
+export type getApiAdminUsersIdResponseSuccess =
+  getApiAdminUsersIdResponse200 & {
+    headers: Headers;
+  };
 
-export type getUserResponse = getUserResponseSuccess;
+export type getApiAdminUsersIdResponse = getApiAdminUsersIdResponseSuccess;
 
-export const getGetUserUrl = (id: number) => {
+export const getGetApiAdminUsersIdUrl = (id: number) => {
   return `/api/admin/users/${id}`;
 };
 
-export const getUser = async (
+export const getApiAdminUsersId = async (
   id: number,
   options?: RequestInit,
-): Promise<getUserResponse> => {
-  return customFetch<getUserResponse>(getGetUserUrl(id), {
+): Promise<getApiAdminUsersIdResponse> => {
+  return customFetch<getApiAdminUsersIdResponse>(getGetApiAdminUsersIdUrl(id), {
     ...options,
     method: "GET",
   });
@@ -5066,163 +5360,183 @@ export const getUser = async (
  * 관리자가 사유와 기간을 입력해 사용자를 밴 처리합니다.
  * @summary 사용자 밴 처리(관리자)
  */
-export type banUserResponse200 = {
+export type patchApiAdminUsersIdBanResponse200 = {
   data: AdminUserResponse;
   status: 200;
 };
 
-export type banUserResponseSuccess = banUserResponse200 & {
-  headers: Headers;
-};
+export type patchApiAdminUsersIdBanResponseSuccess =
+  patchApiAdminUsersIdBanResponse200 & {
+    headers: Headers;
+  };
 
-export type banUserResponse = banUserResponseSuccess;
+export type patchApiAdminUsersIdBanResponse =
+  patchApiAdminUsersIdBanResponseSuccess;
 
-export const getBanUserUrl = (id: number) => {
+export const getPatchApiAdminUsersIdBanUrl = (id: number) => {
   return `/api/admin/users/${id}/ban`;
 };
 
-export const banUser = async (
+export const patchApiAdminUsersIdBan = async (
   id: number,
-  banUserBody: BanUserBody,
+  patchApiAdminUsersIdBanBody: PatchApiAdminUsersIdBanBody,
   options?: RequestInit,
-): Promise<banUserResponse> => {
-  return customFetch<banUserResponse>(getBanUserUrl(id), {
-    ...options,
-    method: "PATCH",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(banUserBody),
-  });
+): Promise<patchApiAdminUsersIdBanResponse> => {
+  return customFetch<patchApiAdminUsersIdBanResponse>(
+    getPatchApiAdminUsersIdBanUrl(id),
+    {
+      ...options,
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(patchApiAdminUsersIdBanBody),
+    },
+  );
 };
 
 /**
  * 관리자가 밴 사유를 추가하고 기간을 수정합니다.
  * @summary 사용자 밴 수정(관리자)
  */
-export type updateBanResponse200 = {
+export type patchApiAdminUsersIdBanUpdateResponse200 = {
   data: AdminUserResponse;
   status: 200;
 };
 
-export type updateBanResponseSuccess = updateBanResponse200 & {
-  headers: Headers;
-};
+export type patchApiAdminUsersIdBanUpdateResponseSuccess =
+  patchApiAdminUsersIdBanUpdateResponse200 & {
+    headers: Headers;
+  };
 
-export type updateBanResponse = updateBanResponseSuccess;
+export type patchApiAdminUsersIdBanUpdateResponse =
+  patchApiAdminUsersIdBanUpdateResponseSuccess;
 
-export const getUpdateBanUrl = (id: number) => {
+export const getPatchApiAdminUsersIdBanUpdateUrl = (id: number) => {
   return `/api/admin/users/${id}/ban/update`;
 };
 
-export const updateBan = async (
+export const patchApiAdminUsersIdBanUpdate = async (
   id: number,
-  updateBanBody: UpdateBanBody,
+  patchApiAdminUsersIdBanUpdateBody: PatchApiAdminUsersIdBanUpdateBody,
   options?: RequestInit,
-): Promise<updateBanResponse> => {
-  return customFetch<updateBanResponse>(getUpdateBanUrl(id), {
-    ...options,
-    method: "PATCH",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(updateBanBody),
-  });
+): Promise<patchApiAdminUsersIdBanUpdateResponse> => {
+  return customFetch<patchApiAdminUsersIdBanUpdateResponse>(
+    getPatchApiAdminUsersIdBanUpdateUrl(id),
+    {
+      ...options,
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(patchApiAdminUsersIdBanUpdateBody),
+    },
+  );
 };
 
 /**
  * 관리자가 사용자에게 역할을 추가합니다.
  * @summary 사용자 역할 추가(관리자)
  */
-export type addRolesResponse200 = {
+export type patchApiAdminUsersIdRolesAddResponse200 = {
   data: AdminUserResponse;
   status: 200;
 };
 
-export type addRolesResponseSuccess = addRolesResponse200 & {
-  headers: Headers;
-};
+export type patchApiAdminUsersIdRolesAddResponseSuccess =
+  patchApiAdminUsersIdRolesAddResponse200 & {
+    headers: Headers;
+  };
 
-export type addRolesResponse = addRolesResponseSuccess;
+export type patchApiAdminUsersIdRolesAddResponse =
+  patchApiAdminUsersIdRolesAddResponseSuccess;
 
-export const getAddRolesUrl = (id: number) => {
+export const getPatchApiAdminUsersIdRolesAddUrl = (id: number) => {
   return `/api/admin/users/${id}/roles/add`;
 };
 
-export const addRoles = async (
+export const patchApiAdminUsersIdRolesAdd = async (
   id: number,
-  addRolesBody: AddRolesBody,
+  patchApiAdminUsersIdRolesAddBody: PatchApiAdminUsersIdRolesAddBody,
   options?: RequestInit,
-): Promise<addRolesResponse> => {
-  return customFetch<addRolesResponse>(getAddRolesUrl(id), {
-    ...options,
-    method: "PATCH",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(addRolesBody),
-  });
+): Promise<patchApiAdminUsersIdRolesAddResponse> => {
+  return customFetch<patchApiAdminUsersIdRolesAddResponse>(
+    getPatchApiAdminUsersIdRolesAddUrl(id),
+    {
+      ...options,
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(patchApiAdminUsersIdRolesAddBody),
+    },
+  );
 };
 
 /**
  * 관리자가 사용자에게서 특정 역할을 제거합니다.
  * @summary 사용자 역할 제거(관리자)
  */
-export type removeRolesResponse200 = {
+export type patchApiAdminUsersIdRolesRemoveResponse200 = {
   data: AdminUserResponse;
   status: 200;
 };
 
-export type removeRolesResponseSuccess = removeRolesResponse200 & {
-  headers: Headers;
-};
+export type patchApiAdminUsersIdRolesRemoveResponseSuccess =
+  patchApiAdminUsersIdRolesRemoveResponse200 & {
+    headers: Headers;
+  };
 
-export type removeRolesResponse = removeRolesResponseSuccess;
+export type patchApiAdminUsersIdRolesRemoveResponse =
+  patchApiAdminUsersIdRolesRemoveResponseSuccess;
 
-export const getRemoveRolesUrl = (id: number) => {
+export const getPatchApiAdminUsersIdRolesRemoveUrl = (id: number) => {
   return `/api/admin/users/${id}/roles/remove`;
 };
 
-export const removeRoles = async (
+export const patchApiAdminUsersIdRolesRemove = async (
   id: number,
-  removeRolesBody: RemoveRolesBody,
+  patchApiAdminUsersIdRolesRemoveBody: PatchApiAdminUsersIdRolesRemoveBody,
   options?: RequestInit,
-): Promise<removeRolesResponse> => {
-  return customFetch<removeRolesResponse>(getRemoveRolesUrl(id), {
-    ...options,
-    method: "PATCH",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(removeRolesBody),
-  });
+): Promise<patchApiAdminUsersIdRolesRemoveResponse> => {
+  return customFetch<patchApiAdminUsersIdRolesRemoveResponse>(
+    getPatchApiAdminUsersIdRolesRemoveUrl(id),
+    {
+      ...options,
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(patchApiAdminUsersIdRolesRemoveBody),
+    },
+  );
 };
 
 /**
  * 관리자가 사용자의 상태 값을 수정합니다.
  * @summary 사용자 상태 변경(관리자)
  */
-export type updateAdminUserStatusResponse200 = {
+export type patchApiAdminUsersIdStatusResponse200 = {
   data: AdminUserResponse;
   status: 200;
 };
 
-export type updateAdminUserStatusResponseSuccess =
-  updateAdminUserStatusResponse200 & {
+export type patchApiAdminUsersIdStatusResponseSuccess =
+  patchApiAdminUsersIdStatusResponse200 & {
     headers: Headers;
   };
 
-export type updateAdminUserStatusResponse =
-  updateAdminUserStatusResponseSuccess;
+export type patchApiAdminUsersIdStatusResponse =
+  patchApiAdminUsersIdStatusResponseSuccess;
 
-export const getUpdateAdminUserStatusUrl = (id: number) => {
+export const getPatchApiAdminUsersIdStatusUrl = (id: number) => {
   return `/api/admin/users/${id}/status`;
 };
 
-export const updateAdminUserStatus = async (
+export const patchApiAdminUsersIdStatus = async (
   id: number,
-  updateAdminUserStatusBody: UpdateAdminUserStatusBody,
+  patchApiAdminUsersIdStatusBody: PatchApiAdminUsersIdStatusBody,
   options?: RequestInit,
-): Promise<updateAdminUserStatusResponse> => {
-  return customFetch<updateAdminUserStatusResponse>(
-    getUpdateAdminUserStatusUrl(id),
+): Promise<patchApiAdminUsersIdStatusResponse> => {
+  return customFetch<patchApiAdminUsersIdStatusResponse>(
+    getPatchApiAdminUsersIdStatusUrl(id),
     {
       ...options,
       method: "PATCH",
       headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(updateAdminUserStatusBody),
+      body: JSON.stringify(patchApiAdminUsersIdStatusBody),
     },
   );
 };
@@ -5231,247 +5545,282 @@ export const updateAdminUserStatus = async (
  * 로그인 사용자 비밀번호를 변경합니다.
  * @summary 비밀번호 변경
  */
-export type changePasswordResponse200 = {
+export type putApiAuthChangePasswordResponse200 = {
   data: boolean;
   status: 200;
 };
 
-export type changePasswordResponseSuccess = changePasswordResponse200 & {
-  headers: Headers;
-};
+export type putApiAuthChangePasswordResponseSuccess =
+  putApiAuthChangePasswordResponse200 & {
+    headers: Headers;
+  };
 
-export type changePasswordResponse = changePasswordResponseSuccess;
+export type putApiAuthChangePasswordResponse =
+  putApiAuthChangePasswordResponseSuccess;
 
-export const getChangePasswordUrl = () => {
+export const getPutApiAuthChangePasswordUrl = () => {
   return `/api/auth/change-password`;
 };
 
-export const changePassword = async (
-  changePasswordBody: ChangePasswordBody,
+export const putApiAuthChangePassword = async (
+  putApiAuthChangePasswordBody: PutApiAuthChangePasswordBody,
   options?: RequestInit,
-): Promise<changePasswordResponse> => {
-  return customFetch<changePasswordResponse>(getChangePasswordUrl(), {
-    ...options,
-    method: "PUT",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(changePasswordBody),
-  });
+): Promise<putApiAuthChangePasswordResponse> => {
+  return customFetch<putApiAuthChangePasswordResponse>(
+    getPutApiAuthChangePasswordUrl(),
+    {
+      ...options,
+      method: "PUT",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(putApiAuthChangePasswordBody),
+    },
+  );
 };
 
 /**
  * 회원가입 전에 이메일 중복 여부를 확인합니다.
  * @summary 이메일 중복 확인
  */
-export type checkEmailResponse200 = {
+export type postApiAuthCheckEmailResponse200 = {
   data: EmailAvailabilityResponse;
   status: 200;
 };
 
-export type checkEmailResponseSuccess = checkEmailResponse200 & {
-  headers: Headers;
-};
+export type postApiAuthCheckEmailResponseSuccess =
+  postApiAuthCheckEmailResponse200 & {
+    headers: Headers;
+  };
 
-export type checkEmailResponse = checkEmailResponseSuccess;
+export type postApiAuthCheckEmailResponse =
+  postApiAuthCheckEmailResponseSuccess;
 
-export const getCheckEmailUrl = () => {
+export const getPostApiAuthCheckEmailUrl = () => {
   return `/api/auth/check-email`;
 };
 
-export const checkEmail = async (
-  checkEmailBody: CheckEmailBody,
+export const postApiAuthCheckEmail = async (
+  postApiAuthCheckEmailBody: PostApiAuthCheckEmailBody,
   options?: RequestInit,
-): Promise<checkEmailResponse> => {
-  return customFetch<checkEmailResponse>(getCheckEmailUrl(), {
-    ...options,
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(checkEmailBody),
-  });
+): Promise<postApiAuthCheckEmailResponse> => {
+  return customFetch<postApiAuthCheckEmailResponse>(
+    getPostApiAuthCheckEmailUrl(),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(postApiAuthCheckEmailBody),
+    },
+  );
 };
 
 /**
  * 회원가입 전에 사용자명 중복 여부를 확인합니다.
  * @summary 사용자명 중복 확인
  */
-export type checkUsernameResponse200 = {
+export type postApiAuthCheckUsernameResponse200 = {
   data: UsernameAvailabilityResponse;
   status: 200;
 };
 
-export type checkUsernameResponseSuccess = checkUsernameResponse200 & {
-  headers: Headers;
-};
+export type postApiAuthCheckUsernameResponseSuccess =
+  postApiAuthCheckUsernameResponse200 & {
+    headers: Headers;
+  };
 
-export type checkUsernameResponse = checkUsernameResponseSuccess;
+export type postApiAuthCheckUsernameResponse =
+  postApiAuthCheckUsernameResponseSuccess;
 
-export const getCheckUsernameUrl = () => {
+export const getPostApiAuthCheckUsernameUrl = () => {
   return `/api/auth/check-username`;
 };
 
-export const checkUsername = async (
-  checkUsernameBody: CheckUsernameBody,
+export const postApiAuthCheckUsername = async (
+  postApiAuthCheckUsernameBody: PostApiAuthCheckUsernameBody,
   options?: RequestInit,
-): Promise<checkUsernameResponse> => {
-  return customFetch<checkUsernameResponse>(getCheckUsernameUrl(), {
-    ...options,
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(checkUsernameBody),
-  });
+): Promise<postApiAuthCheckUsernameResponse> => {
+  return customFetch<postApiAuthCheckUsernameResponse>(
+    getPostApiAuthCheckUsernameUrl(),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(postApiAuthCheckUsernameBody),
+    },
+  );
 };
 
 /**
  * 비밀번호 재설정 전에 이메일로 인증 코드를 발송합니다.
  * @summary 비밀번호 재설정용 이메일 인증 코드 발송
  */
-export type sendResetCodeResponse200 = {
-  data: SendResetCode200;
+export type postApiAuthEmailVerificationResetSendResponse200 = {
+  data: PostApiAuthEmailVerificationResetSend200;
   status: 200;
 };
 
-export type sendResetCodeResponseSuccess = sendResetCodeResponse200 & {
-  headers: Headers;
-};
+export type postApiAuthEmailVerificationResetSendResponseSuccess =
+  postApiAuthEmailVerificationResetSendResponse200 & {
+    headers: Headers;
+  };
 
-export type sendResetCodeResponse = sendResetCodeResponseSuccess;
+export type postApiAuthEmailVerificationResetSendResponse =
+  postApiAuthEmailVerificationResetSendResponseSuccess;
 
-export const getSendResetCodeUrl = () => {
+export const getPostApiAuthEmailVerificationResetSendUrl = () => {
   return `/api/auth/email-verification/reset/send`;
 };
 
-export const sendResetCode = async (
-  sendResetCodeBody: SendResetCodeBody,
+export const postApiAuthEmailVerificationResetSend = async (
+  postApiAuthEmailVerificationResetSendBody: PostApiAuthEmailVerificationResetSendBody,
   options?: RequestInit,
-): Promise<sendResetCodeResponse> => {
-  return customFetch<sendResetCodeResponse>(getSendResetCodeUrl(), {
-    ...options,
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(sendResetCodeBody),
-  });
+): Promise<postApiAuthEmailVerificationResetSendResponse> => {
+  return customFetch<postApiAuthEmailVerificationResetSendResponse>(
+    getPostApiAuthEmailVerificationResetSendUrl(),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(postApiAuthEmailVerificationResetSendBody),
+    },
+  );
 };
 
 /**
  * 이메일로 받은 인증 코드를 검증합니다.
  * @summary 비밀번호 재설정용 이메일 인증 코드 검증
  */
-export type verifyResetCodeResponse200 = {
-  data: VerifyResetCode200;
+export type postApiAuthEmailVerificationResetVerifyResponse200 = {
+  data: PostApiAuthEmailVerificationResetVerify200;
   status: 200;
 };
 
-export type verifyResetCodeResponseSuccess = verifyResetCodeResponse200 & {
-  headers: Headers;
-};
+export type postApiAuthEmailVerificationResetVerifyResponseSuccess =
+  postApiAuthEmailVerificationResetVerifyResponse200 & {
+    headers: Headers;
+  };
 
-export type verifyResetCodeResponse = verifyResetCodeResponseSuccess;
+export type postApiAuthEmailVerificationResetVerifyResponse =
+  postApiAuthEmailVerificationResetVerifyResponseSuccess;
 
-export const getVerifyResetCodeUrl = () => {
+export const getPostApiAuthEmailVerificationResetVerifyUrl = () => {
   return `/api/auth/email-verification/reset/verify`;
 };
 
-export const verifyResetCode = async (
-  verifyResetCodeBody: VerifyResetCodeBody,
+export const postApiAuthEmailVerificationResetVerify = async (
+  postApiAuthEmailVerificationResetVerifyBody: PostApiAuthEmailVerificationResetVerifyBody,
   options?: RequestInit,
-): Promise<verifyResetCodeResponse> => {
-  return customFetch<verifyResetCodeResponse>(getVerifyResetCodeUrl(), {
-    ...options,
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(verifyResetCodeBody),
-  });
+): Promise<postApiAuthEmailVerificationResetVerifyResponse> => {
+  return customFetch<postApiAuthEmailVerificationResetVerifyResponse>(
+    getPostApiAuthEmailVerificationResetVerifyUrl(),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(postApiAuthEmailVerificationResetVerifyBody),
+    },
+  );
 };
 
 /**
  * 회원가입 전에 이메일로 인증 코드를 발송합니다.
  * @summary 회원가입 이메일 인증 코드 발송
  */
-export type sendCodeResponse200 = {
-  data: SendCode200;
+export type postApiAuthEmailVerificationSendResponse200 = {
+  data: PostApiAuthEmailVerificationSend200;
   status: 200;
 };
 
-export type sendCodeResponseSuccess = sendCodeResponse200 & {
-  headers: Headers;
-};
+export type postApiAuthEmailVerificationSendResponseSuccess =
+  postApiAuthEmailVerificationSendResponse200 & {
+    headers: Headers;
+  };
 
-export type sendCodeResponse = sendCodeResponseSuccess;
+export type postApiAuthEmailVerificationSendResponse =
+  postApiAuthEmailVerificationSendResponseSuccess;
 
-export const getSendCodeUrl = () => {
+export const getPostApiAuthEmailVerificationSendUrl = () => {
   return `/api/auth/email-verification/send`;
 };
 
-export const sendCode = async (
-  sendCodeBody: SendCodeBody,
+export const postApiAuthEmailVerificationSend = async (
+  postApiAuthEmailVerificationSendBody: PostApiAuthEmailVerificationSendBody,
   options?: RequestInit,
-): Promise<sendCodeResponse> => {
-  return customFetch<sendCodeResponse>(getSendCodeUrl(), {
-    ...options,
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(sendCodeBody),
-  });
+): Promise<postApiAuthEmailVerificationSendResponse> => {
+  return customFetch<postApiAuthEmailVerificationSendResponse>(
+    getPostApiAuthEmailVerificationSendUrl(),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(postApiAuthEmailVerificationSendBody),
+    },
+  );
 };
 
 /**
  * 이메일로 받은 인증 코드를 검증합니다.
  * @summary 회원가입 이메일 인증 코드 검증
  */
-export type verifyCodeResponse200 = {
-  data: VerifyCode200;
+export type postApiAuthEmailVerificationVerifyResponse200 = {
+  data: PostApiAuthEmailVerificationVerify200;
   status: 200;
 };
 
-export type verifyCodeResponseSuccess = verifyCodeResponse200 & {
-  headers: Headers;
-};
+export type postApiAuthEmailVerificationVerifyResponseSuccess =
+  postApiAuthEmailVerificationVerifyResponse200 & {
+    headers: Headers;
+  };
 
-export type verifyCodeResponse = verifyCodeResponseSuccess;
+export type postApiAuthEmailVerificationVerifyResponse =
+  postApiAuthEmailVerificationVerifyResponseSuccess;
 
-export const getVerifyCodeUrl = () => {
+export const getPostApiAuthEmailVerificationVerifyUrl = () => {
   return `/api/auth/email-verification/verify`;
 };
 
-export const verifyCode = async (
-  verifyCodeBody: VerifyCodeBody,
+export const postApiAuthEmailVerificationVerify = async (
+  postApiAuthEmailVerificationVerifyBody: PostApiAuthEmailVerificationVerifyBody,
   options?: RequestInit,
-): Promise<verifyCodeResponse> => {
-  return customFetch<verifyCodeResponse>(getVerifyCodeUrl(), {
-    ...options,
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(verifyCodeBody),
-  });
+): Promise<postApiAuthEmailVerificationVerifyResponse> => {
+  return customFetch<postApiAuthEmailVerificationVerifyResponse>(
+    getPostApiAuthEmailVerificationVerifyUrl(),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(postApiAuthEmailVerificationVerifyBody),
+    },
+  );
 };
 
 /**
  * 이메일/비밀번호를 검증하고 토큰 정보를 반환합니다.
  * @summary 로그인
  */
-export type loginResponse200 = {
+export type postApiAuthLoginResponse200 = {
   data: AuthResponse;
   status: 200;
 };
 
-export type loginResponseSuccess = loginResponse200 & {
+export type postApiAuthLoginResponseSuccess = postApiAuthLoginResponse200 & {
   headers: Headers;
 };
 
-export type loginResponse = loginResponseSuccess;
+export type postApiAuthLoginResponse = postApiAuthLoginResponseSuccess;
 
-export const getLoginUrl = () => {
+export const getPostApiAuthLoginUrl = () => {
   return `/api/auth/login`;
 };
 
-export const login = async (
-  loginBody: LoginBody,
+export const postApiAuthLogin = async (
+  postApiAuthLoginBody: PostApiAuthLoginBody,
   options?: RequestInit,
-): Promise<loginResponse> => {
-  return customFetch<loginResponse>(getLoginUrl(), {
+): Promise<postApiAuthLoginResponse> => {
+  return customFetch<postApiAuthLoginResponse>(getPostApiAuthLoginUrl(), {
     ...options,
     method: "POST",
     headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(loginBody),
+    body: JSON.stringify(postApiAuthLoginBody),
   });
 };
 
@@ -5479,34 +5828,34 @@ export const login = async (
  * 프론트가 전달한 1회용 ticket으로 JWT 응답을 조회합니다.
  * @summary 소셜 OAuth 로그인 완료
  */
-export type completeSocialOAuthLoginResponse200 = {
+export type postApiAuthOauthCompleteResponse200 = {
   data: AuthResponse;
   status: 200;
 };
 
-export type completeSocialOAuthLoginResponseSuccess =
-  completeSocialOAuthLoginResponse200 & {
+export type postApiAuthOauthCompleteResponseSuccess =
+  postApiAuthOauthCompleteResponse200 & {
     headers: Headers;
   };
 
-export type completeSocialOAuthLoginResponse =
-  completeSocialOAuthLoginResponseSuccess;
+export type postApiAuthOauthCompleteResponse =
+  postApiAuthOauthCompleteResponseSuccess;
 
-export const getCompleteSocialOAuthLoginUrl = () => {
+export const getPostApiAuthOauthCompleteUrl = () => {
   return `/api/auth/oauth/complete`;
 };
 
-export const completeSocialOAuthLogin = async (
-  completeSocialOAuthLoginBody: CompleteSocialOAuthLoginBody,
+export const postApiAuthOauthComplete = async (
+  postApiAuthOauthCompleteBody: PostApiAuthOauthCompleteBody,
   options?: RequestInit,
-): Promise<completeSocialOAuthLoginResponse> => {
-  return customFetch<completeSocialOAuthLoginResponse>(
-    getCompleteSocialOAuthLoginUrl(),
+): Promise<postApiAuthOauthCompleteResponse> => {
+  return customFetch<postApiAuthOauthCompleteResponse>(
+    getPostApiAuthOauthCompleteUrl(),
     {
       ...options,
       method: "POST",
       headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(completeSocialOAuthLoginBody),
+      body: JSON.stringify(postApiAuthOauthCompleteBody),
     },
   );
 };
@@ -5515,21 +5864,22 @@ export const completeSocialOAuthLogin = async (
  * 제공자 콜백에서 code/state를 처리하고 프론트로 리다이렉트합니다.
  * @summary 소셜 OAuth 콜백
  */
-export type socialOAuthCallbackResponse200 = {
+export type getApiAuthOauthProviderCallbackResponse200 = {
   data: void;
   status: 200;
 };
 
-export type socialOAuthCallbackResponseSuccess =
-  socialOAuthCallbackResponse200 & {
+export type getApiAuthOauthProviderCallbackResponseSuccess =
+  getApiAuthOauthProviderCallbackResponse200 & {
     headers: Headers;
   };
 
-export type socialOAuthCallbackResponse = socialOAuthCallbackResponseSuccess;
+export type getApiAuthOauthProviderCallbackResponse =
+  getApiAuthOauthProviderCallbackResponseSuccess;
 
-export const getSocialOAuthCallbackUrl = (
+export const getGetApiAuthOauthProviderCallbackUrl = (
   provider: string,
-  params?: SocialOAuthCallbackParams,
+  params?: GetApiAuthOauthProviderCallbackParams,
 ) => {
   const normalizedParams = new URLSearchParams();
 
@@ -5562,13 +5912,13 @@ export const getSocialOAuthCallbackUrl = (
     : `/api/auth/oauth/${provider}/callback`;
 };
 
-export const socialOAuthCallback = async (
+export const getApiAuthOauthProviderCallback = async (
   provider: string,
-  params?: SocialOAuthCallbackParams,
+  params?: GetApiAuthOauthProviderCallbackParams,
   options?: RequestInit,
-): Promise<socialOAuthCallbackResponse> => {
-  return customFetch<socialOAuthCallbackResponse>(
-    getSocialOAuthCallbackUrl(provider, params),
+): Promise<getApiAuthOauthProviderCallbackResponse> => {
+  return customFetch<getApiAuthOauthProviderCallbackResponse>(
+    getGetApiAuthOauthProviderCallbackUrl(provider, params),
     {
       ...options,
       method: "GET",
@@ -5580,29 +5930,29 @@ export const socialOAuthCallback = async (
  * 로그인 사용자 기준 백엔드 콜백 기반 소셜 연동 인가 URL을 생성합니다.
  * @summary 소셜 연동 OAuth 시작 URL 조회
  */
-export type getSocialLinkAuthorizeUrlResponse200 = {
+export type getApiAuthOauthProviderLinkResponse200 = {
   data: SocialAuthorizeResponse;
   status: 200;
 };
 
-export type getSocialLinkAuthorizeUrlResponseSuccess =
-  getSocialLinkAuthorizeUrlResponse200 & {
+export type getApiAuthOauthProviderLinkResponseSuccess =
+  getApiAuthOauthProviderLinkResponse200 & {
     headers: Headers;
   };
 
-export type getSocialLinkAuthorizeUrlResponse =
-  getSocialLinkAuthorizeUrlResponseSuccess;
+export type getApiAuthOauthProviderLinkResponse =
+  getApiAuthOauthProviderLinkResponseSuccess;
 
-export const getGetSocialLinkAuthorizeUrlUrl = (provider: string) => {
+export const getGetApiAuthOauthProviderLinkUrl = (provider: string) => {
   return `/api/auth/oauth/${provider}/link`;
 };
 
-export const getSocialLinkAuthorizeUrl = async (
+export const getApiAuthOauthProviderLink = async (
   provider: string,
   options?: RequestInit,
-): Promise<getSocialLinkAuthorizeUrlResponse> => {
-  return customFetch<getSocialLinkAuthorizeUrlResponse>(
-    getGetSocialLinkAuthorizeUrlUrl(provider),
+): Promise<getApiAuthOauthProviderLinkResponse> => {
+  return customFetch<getApiAuthOauthProviderLinkResponse>(
+    getGetApiAuthOauthProviderLinkUrl(provider),
     {
       ...options,
       method: "GET",
@@ -5614,29 +5964,29 @@ export const getSocialLinkAuthorizeUrl = async (
  * 백엔드 콜백 기반 소셜 로그인 인가 URL을 생성합니다.
  * @summary 소셜 로그인 OAuth 시작 URL 조회
  */
-export type getSocialLoginAuthorizeUrlResponse200 = {
+export type getApiAuthOauthProviderLoginResponse200 = {
   data: SocialAuthorizeResponse;
   status: 200;
 };
 
-export type getSocialLoginAuthorizeUrlResponseSuccess =
-  getSocialLoginAuthorizeUrlResponse200 & {
+export type getApiAuthOauthProviderLoginResponseSuccess =
+  getApiAuthOauthProviderLoginResponse200 & {
     headers: Headers;
   };
 
-export type getSocialLoginAuthorizeUrlResponse =
-  getSocialLoginAuthorizeUrlResponseSuccess;
+export type getApiAuthOauthProviderLoginResponse =
+  getApiAuthOauthProviderLoginResponseSuccess;
 
-export const getGetSocialLoginAuthorizeUrlUrl = (provider: string) => {
+export const getGetApiAuthOauthProviderLoginUrl = (provider: string) => {
   return `/api/auth/oauth/${provider}/login`;
 };
 
-export const getSocialLoginAuthorizeUrl = async (
+export const getApiAuthOauthProviderLogin = async (
   provider: string,
   options?: RequestInit,
-): Promise<getSocialLoginAuthorizeUrlResponse> => {
-  return customFetch<getSocialLoginAuthorizeUrlResponse>(
-    getGetSocialLoginAuthorizeUrlUrl(provider),
+): Promise<getApiAuthOauthProviderLoginResponse> => {
+  return customFetch<getApiAuthOauthProviderLoginResponse>(
+    getGetApiAuthOauthProviderLoginUrl(provider),
     {
       ...options,
       method: "GET",
@@ -5648,30 +5998,31 @@ export const getSocialLoginAuthorizeUrl = async (
  * 리프레시 토큰으로 액세스 토큰을 재발급합니다.
  * @summary 토큰 재발급
  */
-export type refreshAuthTokenResponse200 = {
+export type postApiAuthRefreshResponse200 = {
   data: AuthResponse;
   status: 200;
 };
 
-export type refreshAuthTokenResponseSuccess = refreshAuthTokenResponse200 & {
-  headers: Headers;
-};
+export type postApiAuthRefreshResponseSuccess =
+  postApiAuthRefreshResponse200 & {
+    headers: Headers;
+  };
 
-export type refreshAuthTokenResponse = refreshAuthTokenResponseSuccess;
+export type postApiAuthRefreshResponse = postApiAuthRefreshResponseSuccess;
 
-export const getRefreshAuthTokenUrl = () => {
+export const getPostApiAuthRefreshUrl = () => {
   return `/api/auth/refresh`;
 };
 
-export const refreshAuthToken = async (
-  refreshAuthTokenBody: RefreshAuthTokenBody,
+export const postApiAuthRefresh = async (
+  postApiAuthRefreshBody: PostApiAuthRefreshBody,
   options?: RequestInit,
-): Promise<refreshAuthTokenResponse> => {
-  return customFetch<refreshAuthTokenResponse>(getRefreshAuthTokenUrl(), {
+): Promise<postApiAuthRefreshResponse> => {
+  return customFetch<postApiAuthRefreshResponse>(getPostApiAuthRefreshUrl(), {
     ...options,
     method: "POST",
     headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(refreshAuthTokenBody),
+    body: JSON.stringify(postApiAuthRefreshBody),
   });
 };
 
@@ -5679,61 +6030,66 @@ export const refreshAuthToken = async (
  * 이메일 인증 후 임시 비밀번호를 메일로 전송합니다.
  * @summary 임시 비밀번호 발급
  */
-export type resetPasswordResponse200 = {
+export type postApiAuthResetPasswordResponse200 = {
   data: ResetPasswordResponse;
   status: 200;
 };
 
-export type resetPasswordResponseSuccess = resetPasswordResponse200 & {
-  headers: Headers;
-};
+export type postApiAuthResetPasswordResponseSuccess =
+  postApiAuthResetPasswordResponse200 & {
+    headers: Headers;
+  };
 
-export type resetPasswordResponse = resetPasswordResponseSuccess;
+export type postApiAuthResetPasswordResponse =
+  postApiAuthResetPasswordResponseSuccess;
 
-export const getResetPasswordUrl = () => {
+export const getPostApiAuthResetPasswordUrl = () => {
   return `/api/auth/reset-password`;
 };
 
-export const resetPassword = async (
-  resetPasswordBody: ResetPasswordBody,
+export const postApiAuthResetPassword = async (
+  postApiAuthResetPasswordBody: PostApiAuthResetPasswordBody,
   options?: RequestInit,
-): Promise<resetPasswordResponse> => {
-  return customFetch<resetPasswordResponse>(getResetPasswordUrl(), {
-    ...options,
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(resetPasswordBody),
-  });
+): Promise<postApiAuthResetPasswordResponse> => {
+  return customFetch<postApiAuthResetPasswordResponse>(
+    getPostApiAuthResetPasswordUrl(),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(postApiAuthResetPasswordBody),
+    },
+  );
 };
 
 /**
  * 로컬 계정을 생성하고 토큰 정보를 반환합니다.
  * @summary 회원 가입
  */
-export type signupResponse200 = {
+export type postApiAuthSignupResponse200 = {
   data: AuthResponse;
   status: 200;
 };
 
-export type signupResponseSuccess = signupResponse200 & {
+export type postApiAuthSignupResponseSuccess = postApiAuthSignupResponse200 & {
   headers: Headers;
 };
 
-export type signupResponse = signupResponseSuccess;
+export type postApiAuthSignupResponse = postApiAuthSignupResponseSuccess;
 
-export const getSignupUrl = () => {
+export const getPostApiAuthSignupUrl = () => {
   return `/api/auth/signup`;
 };
 
-export const signup = async (
-  signupBody: SignupBody,
+export const postApiAuthSignup = async (
+  postApiAuthSignupBody: PostApiAuthSignupBody,
   options?: RequestInit,
-): Promise<signupResponse> => {
-  return customFetch<signupResponse>(getSignupUrl(), {
+): Promise<postApiAuthSignupResponse> => {
+  return customFetch<postApiAuthSignupResponse>(getPostApiAuthSignupUrl(), {
     ...options,
     method: "POST",
     headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(signupBody),
+    body: JSON.stringify(postApiAuthSignupBody),
   });
 };
 
@@ -5741,18 +6097,18 @@ export const signup = async (
  * 시스템에 등록된 모든 배너 정보를 반환합니다.
  * @summary 배너 목록 조회
  */
-export type listBannersResponse200 = {
+export type getApiBannersResponse200 = {
   data: PageBannerResponse;
   status: 200;
 };
 
-export type listBannersResponseSuccess = listBannersResponse200 & {
+export type getApiBannersResponseSuccess = getApiBannersResponse200 & {
   headers: Headers;
 };
 
-export type listBannersResponse = listBannersResponseSuccess;
+export type getApiBannersResponse = getApiBannersResponseSuccess;
 
-export const getListBannersUrl = (params?: ListBannersParams) => {
+export const getGetApiBannersUrl = (params?: GetApiBannersParams) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -5784,54 +6140,13 @@ export const getListBannersUrl = (params?: ListBannersParams) => {
     : `/api/banners`;
 };
 
-export const listBanners = async (
-  params?: ListBannersParams,
+export const getApiBanners = async (
+  params?: GetApiBannersParams,
   options?: RequestInit,
-): Promise<listBannersResponse> => {
-  return customFetch<listBannersResponse>(getListBannersUrl(params), {
+): Promise<getApiBannersResponse> => {
+  return customFetch<getApiBannersResponse>(getGetApiBannersUrl(params), {
     ...options,
     method: "GET",
-  });
-};
-
-/**
- * 배경/메인 이미지를 업로드하고 랜딩 페이지에 노출할 배너를 생성합니다.
- * @summary 배너 생성
- */
-export type createBannerResponse200 = {
-  data: BannerResponse;
-  status: 200;
-};
-
-export type createBannerResponseSuccess = createBannerResponse200 & {
-  headers: Headers;
-};
-
-export type createBannerResponse = createBannerResponseSuccess;
-
-export const getCreateBannerUrl = () => {
-  return `/api/banners`;
-};
-
-export const createBanner = async (
-  createBannerBody: CreateBannerBody,
-  options?: RequestInit,
-): Promise<createBannerResponse> => {
-  const formData = new FormData();
-  formData.append(`backgroundImg`, createBannerBody.backgroundImg);
-  if (createBannerBody.description !== undefined) {
-    formData.append(`description`, createBannerBody.description);
-  }
-  if (createBannerBody.link !== undefined) {
-    formData.append(`link`, createBannerBody.link);
-  }
-  formData.append(`mainImg`, createBannerBody.mainImg);
-  formData.append(`title`, createBannerBody.title);
-
-  return customFetch<createBannerResponse>(getCreateBannerUrl(), {
-    ...options,
-    method: "POST",
-    body: formData,
   });
 };
 
@@ -5839,76 +6154,28 @@ export const createBanner = async (
  * 식별자로 지정한 배너의 상세 정보를 조회합니다.
  * @summary 배너 상세 조회
  */
-export type getBannerResponse200 = {
+export type getApiBannersIdResponse200 = {
   data: BannerResponse;
   status: 200;
 };
 
-export type getBannerResponseSuccess = getBannerResponse200 & {
+export type getApiBannersIdResponseSuccess = getApiBannersIdResponse200 & {
   headers: Headers;
 };
 
-export type getBannerResponse = getBannerResponseSuccess;
+export type getApiBannersIdResponse = getApiBannersIdResponseSuccess;
 
-export const getGetBannerUrl = (id: number) => {
+export const getGetApiBannersIdUrl = (id: number) => {
   return `/api/banners/${id}`;
 };
 
-export const getBanner = async (
+export const getApiBannersId = async (
   id: number,
   options?: RequestInit,
-): Promise<getBannerResponse> => {
-  return customFetch<getBannerResponse>(getGetBannerUrl(id), {
+): Promise<getApiBannersIdResponse> => {
+  return customFetch<getApiBannersIdResponse>(getGetApiBannersIdUrl(id), {
     ...options,
     method: "GET",
-  });
-};
-
-/**
- * 배너의 메타데이터를 수정하고 필요 시 업로드 이미지를 교체합니다.
- * @summary 배너 수정
- */
-export type updateBannerResponse200 = {
-  data: BannerResponse;
-  status: 200;
-};
-
-export type updateBannerResponseSuccess = updateBannerResponse200 & {
-  headers: Headers;
-};
-
-export type updateBannerResponse = updateBannerResponseSuccess;
-
-export const getUpdateBannerUrl = (id: number) => {
-  return `/api/banners/${id}`;
-};
-
-export const updateBanner = async (
-  id: number,
-  updateBannerBody: UpdateBannerBody,
-  options?: RequestInit,
-): Promise<updateBannerResponse> => {
-  const formData = new FormData();
-  if (updateBannerBody.backgroundImg !== undefined) {
-    formData.append(`backgroundImg`, updateBannerBody.backgroundImg);
-  }
-  if (updateBannerBody.description !== undefined) {
-    formData.append(`description`, updateBannerBody.description);
-  }
-  if (updateBannerBody.link !== undefined) {
-    formData.append(`link`, updateBannerBody.link);
-  }
-  if (updateBannerBody.mainImg !== undefined) {
-    formData.append(`mainImg`, updateBannerBody.mainImg);
-  }
-  if (updateBannerBody.title !== undefined) {
-    formData.append(`title`, updateBannerBody.title);
-  }
-
-  return customFetch<updateBannerResponse>(getUpdateBannerUrl(id), {
-    ...options,
-    method: "PATCH",
-    body: formData,
   });
 };
 
@@ -5916,18 +6183,18 @@ export const updateBanner = async (
  * 작성 및 열람이 가능한 전체 게시판을 조회합니다.
  * @summary 게시판 목록 조회
  */
-export type listBoardsResponse200 = {
+export type getApiBoardsResponse200 = {
   data: PageBoardResponse;
   status: 200;
 };
 
-export type listBoardsResponseSuccess = listBoardsResponse200 & {
+export type getApiBoardsResponseSuccess = getApiBoardsResponse200 & {
   headers: Headers;
 };
 
-export type listBoardsResponse = listBoardsResponseSuccess;
+export type getApiBoardsResponse = getApiBoardsResponseSuccess;
 
-export const getListBoardsUrl = (params?: ListBoardsParams) => {
+export const getGetApiBoardsUrl = (params?: GetApiBoardsParams) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -5959,11 +6226,11 @@ export const getListBoardsUrl = (params?: ListBoardsParams) => {
     : `/api/boards`;
 };
 
-export const listBoards = async (
-  params?: ListBoardsParams,
+export const getApiBoards = async (
+  params?: GetApiBoardsParams,
   options?: RequestInit,
-): Promise<listBoardsResponse> => {
-  return customFetch<listBoardsResponse>(getListBoardsUrl(params), {
+): Promise<getApiBoardsResponse> => {
+  return customFetch<getApiBoardsResponse>(getGetApiBoardsUrl(params), {
     ...options,
     method: "GET",
   });
@@ -5973,21 +6240,22 @@ export const listBoards = async (
  * 지정한 게시판에만 적용되는 공지사항을 조회합니다.
  * @summary 게시판별 공지 조회
  */
-export type boardAnnouncementsResponse200 = {
+export type getApiBoardsAnnouncementsBoardBoardidResponse200 = {
   data: PageAnnouncementResponse;
   status: 200;
 };
 
-export type boardAnnouncementsResponseSuccess =
-  boardAnnouncementsResponse200 & {
+export type getApiBoardsAnnouncementsBoardBoardidResponseSuccess =
+  getApiBoardsAnnouncementsBoardBoardidResponse200 & {
     headers: Headers;
   };
 
-export type boardAnnouncementsResponse = boardAnnouncementsResponseSuccess;
+export type getApiBoardsAnnouncementsBoardBoardidResponse =
+  getApiBoardsAnnouncementsBoardBoardidResponseSuccess;
 
-export const getBoardAnnouncementsUrl = (
+export const getGetApiBoardsAnnouncementsBoardBoardidUrl = (
   boardId: number,
-  params?: BoardAnnouncementsParams,
+  params?: GetApiBoardsAnnouncementsBoardBoardidParams,
 ) => {
   const normalizedParams = new URLSearchParams();
 
@@ -6020,13 +6288,13 @@ export const getBoardAnnouncementsUrl = (
     : `/api/boards/announcements/board/${boardId}`;
 };
 
-export const boardAnnouncements = async (
+export const getApiBoardsAnnouncementsBoardBoardid = async (
   boardId: number,
-  params?: BoardAnnouncementsParams,
+  params?: GetApiBoardsAnnouncementsBoardBoardidParams,
   options?: RequestInit,
-): Promise<boardAnnouncementsResponse> => {
-  return customFetch<boardAnnouncementsResponse>(
-    getBoardAnnouncementsUrl(boardId, params),
+): Promise<getApiBoardsAnnouncementsBoardBoardidResponse> => {
+  return customFetch<getApiBoardsAnnouncementsBoardBoardidResponse>(
+    getGetApiBoardsAnnouncementsBoardBoardidUrl(boardId, params),
     {
       ...options,
       method: "GET",
@@ -6038,20 +6306,21 @@ export const boardAnnouncements = async (
  * 모든 사용자와 게시판에 공통으로 적용되는 공지 목록을 조회합니다.
  * @summary 전체 공지 조회
  */
-export type globalAnnouncementsResponse200 = {
+export type getApiBoardsAnnouncementsGlobalResponse200 = {
   data: PageAnnouncementResponse;
   status: 200;
 };
 
-export type globalAnnouncementsResponseSuccess =
-  globalAnnouncementsResponse200 & {
+export type getApiBoardsAnnouncementsGlobalResponseSuccess =
+  getApiBoardsAnnouncementsGlobalResponse200 & {
     headers: Headers;
   };
 
-export type globalAnnouncementsResponse = globalAnnouncementsResponseSuccess;
+export type getApiBoardsAnnouncementsGlobalResponse =
+  getApiBoardsAnnouncementsGlobalResponseSuccess;
 
-export const getGlobalAnnouncementsUrl = (
-  params?: GlobalAnnouncementsParams,
+export const getGetApiBoardsAnnouncementsGlobalUrl = (
+  params?: GetApiBoardsAnnouncementsGlobalParams,
 ) => {
   const normalizedParams = new URLSearchParams();
 
@@ -6084,12 +6353,12 @@ export const getGlobalAnnouncementsUrl = (
     : `/api/boards/announcements/global`;
 };
 
-export const globalAnnouncements = async (
-  params?: GlobalAnnouncementsParams,
+export const getApiBoardsAnnouncementsGlobal = async (
+  params?: GetApiBoardsAnnouncementsGlobalParams,
   options?: RequestInit,
-): Promise<globalAnnouncementsResponse> => {
-  return customFetch<globalAnnouncementsResponse>(
-    getGlobalAnnouncementsUrl(params),
+): Promise<getApiBoardsAnnouncementsGlobalResponse> => {
+  return customFetch<getApiBoardsAnnouncementsGlobalResponse>(
+    getGetApiBoardsAnnouncementsGlobalUrl(params),
     {
       ...options,
       method: "GET",
@@ -6101,22 +6370,22 @@ export const globalAnnouncements = async (
  * 해당 게시판에만 적용되는 공지사항 목록을 반환합니다.
  * @summary 게시판 공지 조회
  */
-export type getBoardAnnouncementsResponse200 = {
+export type getApiBoardsBoardidAnnouncementsResponse200 = {
   data: PageAnnouncementResponse;
   status: 200;
 };
 
-export type getBoardAnnouncementsResponseSuccess =
-  getBoardAnnouncementsResponse200 & {
+export type getApiBoardsBoardidAnnouncementsResponseSuccess =
+  getApiBoardsBoardidAnnouncementsResponse200 & {
     headers: Headers;
   };
 
-export type getBoardAnnouncementsResponse =
-  getBoardAnnouncementsResponseSuccess;
+export type getApiBoardsBoardidAnnouncementsResponse =
+  getApiBoardsBoardidAnnouncementsResponseSuccess;
 
-export const getGetBoardAnnouncementsUrl = (
+export const getGetApiBoardsBoardidAnnouncementsUrl = (
   boardId: number,
-  params?: GetBoardAnnouncementsParams,
+  params?: GetApiBoardsBoardidAnnouncementsParams,
 ) => {
   const normalizedParams = new URLSearchParams();
 
@@ -6149,13 +6418,13 @@ export const getGetBoardAnnouncementsUrl = (
     : `/api/boards/${boardId}/announcements`;
 };
 
-export const getBoardAnnouncements = async (
+export const getApiBoardsBoardidAnnouncements = async (
   boardId: number,
-  params?: GetBoardAnnouncementsParams,
+  params?: GetApiBoardsBoardidAnnouncementsParams,
   options?: RequestInit,
-): Promise<getBoardAnnouncementsResponse> => {
-  return customFetch<getBoardAnnouncementsResponse>(
-    getGetBoardAnnouncementsUrl(boardId, params),
+): Promise<getApiBoardsBoardidAnnouncementsResponse> => {
+  return customFetch<getApiBoardsBoardidAnnouncementsResponse>(
+    getGetApiBoardsBoardidAnnouncementsUrl(boardId, params),
     {
       ...options,
       method: "GET",
@@ -6167,18 +6436,23 @@ export const getBoardAnnouncements = async (
  * 선택한 게시판의 게시글을 페이지 단위로 조회하며 검색 조건을 적용할 수 있습니다.
  * @summary 게시글 목록 조회
  */
-export type getPostsResponse200 = {
+export type getApiBoardsBoardidPostsResponse200 = {
   data: PagePostResponse;
   status: 200;
 };
 
-export type getPostsResponseSuccess = getPostsResponse200 & {
-  headers: Headers;
-};
+export type getApiBoardsBoardidPostsResponseSuccess =
+  getApiBoardsBoardidPostsResponse200 & {
+    headers: Headers;
+  };
 
-export type getPostsResponse = getPostsResponseSuccess;
+export type getApiBoardsBoardidPostsResponse =
+  getApiBoardsBoardidPostsResponseSuccess;
 
-export const getGetPostsUrl = (boardId: number, params: GetPostsParams) => {
+export const getGetApiBoardsBoardidPostsUrl = (
+  boardId: number,
+  params: GetApiBoardsBoardidPostsParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -6210,128 +6484,152 @@ export const getGetPostsUrl = (boardId: number, params: GetPostsParams) => {
     : `/api/boards/${boardId}/posts`;
 };
 
-export const getPosts = async (
+export const getApiBoardsBoardidPosts = async (
   boardId: number,
-  params: GetPostsParams,
+  params: GetApiBoardsBoardidPostsParams,
   options?: RequestInit,
-): Promise<getPostsResponse> => {
-  return customFetch<getPostsResponse>(getGetPostsUrl(boardId, params), {
-    ...options,
-    method: "GET",
-  });
+): Promise<getApiBoardsBoardidPostsResponse> => {
+  return customFetch<getApiBoardsBoardidPostsResponse>(
+    getGetApiBoardsBoardidPostsUrl(boardId, params),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
 };
 
 /**
  * 선택한 게시판에 새 글을 등록합니다.
  * @summary 게시글 작성
  */
-export type createPostResponse200 = {
+export type postApiBoardsBoardidPostsResponse200 = {
   data: PostResponse;
   status: 200;
 };
 
-export type createPostResponseSuccess = createPostResponse200 & {
-  headers: Headers;
-};
+export type postApiBoardsBoardidPostsResponseSuccess =
+  postApiBoardsBoardidPostsResponse200 & {
+    headers: Headers;
+  };
 
-export type createPostResponse = createPostResponseSuccess;
+export type postApiBoardsBoardidPostsResponse =
+  postApiBoardsBoardidPostsResponseSuccess;
 
-export const getCreatePostUrl = (boardId: number) => {
+export const getPostApiBoardsBoardidPostsUrl = (boardId: number) => {
   return `/api/boards/${boardId}/posts`;
 };
 
-export const createPost = async (
+export const postApiBoardsBoardidPosts = async (
   boardId: number,
-  createPostBody: CreatePostBody,
+  postApiBoardsBoardidPostsBody: PostApiBoardsBoardidPostsBody,
   options?: RequestInit,
-): Promise<createPostResponse> => {
-  return customFetch<createPostResponse>(getCreatePostUrl(boardId), {
-    ...options,
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(createPostBody),
-  });
+): Promise<postApiBoardsBoardidPostsResponse> => {
+  return customFetch<postApiBoardsBoardidPostsResponse>(
+    getPostApiBoardsBoardidPostsUrl(boardId),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(postApiBoardsBoardidPostsBody),
+    },
+  );
 };
 
 /**
  * 본인이 작성한 게시글을 삭제합니다.
  * @summary 게시글 삭제
  */
-export type deletePostResponse200 = {
+export type deleteApiBoardsBoardidPostsPostidResponse200 = {
   data: boolean;
   status: 200;
 };
 
-export type deletePostResponseSuccess = deletePostResponse200 & {
-  headers: Headers;
-};
+export type deleteApiBoardsBoardidPostsPostidResponseSuccess =
+  deleteApiBoardsBoardidPostsPostidResponse200 & {
+    headers: Headers;
+  };
 
-export type deletePostResponse = deletePostResponseSuccess;
+export type deleteApiBoardsBoardidPostsPostidResponse =
+  deleteApiBoardsBoardidPostsPostidResponseSuccess;
 
-export const getDeletePostUrl = (boardId: number, postId: number) => {
+export const getDeleteApiBoardsBoardidPostsPostidUrl = (
+  boardId: number,
+  postId: number,
+) => {
   return `/api/boards/${boardId}/posts/${postId}`;
 };
 
-export const deletePost = async (
+export const deleteApiBoardsBoardidPostsPostid = async (
   boardId: number,
   postId: number,
   options?: RequestInit,
-): Promise<deletePostResponse> => {
-  return customFetch<deletePostResponse>(getDeletePostUrl(boardId, postId), {
-    ...options,
-    method: "DELETE",
-  });
+): Promise<deleteApiBoardsBoardidPostsPostidResponse> => {
+  return customFetch<deleteApiBoardsBoardidPostsPostidResponse>(
+    getDeleteApiBoardsBoardidPostsPostidUrl(boardId, postId),
+    {
+      ...options,
+      method: "DELETE",
+    },
+  );
 };
 
 /**
  * 본인이 작성한 게시글의 제목과 내용을 수정합니다.
  * @summary 게시글 수정
  */
-export type updatePostResponse200 = {
+export type putApiBoardsBoardidPostsPostidResponse200 = {
   data: PostResponse;
   status: 200;
 };
 
-export type updatePostResponseSuccess = updatePostResponse200 & {
-  headers: Headers;
-};
+export type putApiBoardsBoardidPostsPostidResponseSuccess =
+  putApiBoardsBoardidPostsPostidResponse200 & {
+    headers: Headers;
+  };
 
-export type updatePostResponse = updatePostResponseSuccess;
+export type putApiBoardsBoardidPostsPostidResponse =
+  putApiBoardsBoardidPostsPostidResponseSuccess;
 
-export const getUpdatePostUrl = (boardId: number, postId: number) => {
+export const getPutApiBoardsBoardidPostsPostidUrl = (
+  boardId: number,
+  postId: number,
+) => {
   return `/api/boards/${boardId}/posts/${postId}`;
 };
 
-export const updatePost = async (
+export const putApiBoardsBoardidPostsPostid = async (
   boardId: number,
   postId: number,
-  updatePostBody: UpdatePostBody,
+  putApiBoardsBoardidPostsPostidBody: PutApiBoardsBoardidPostsPostidBody,
   options?: RequestInit,
-): Promise<updatePostResponse> => {
-  return customFetch<updatePostResponse>(getUpdatePostUrl(boardId, postId), {
-    ...options,
-    method: "PUT",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(updatePostBody),
-  });
+): Promise<putApiBoardsBoardidPostsPostidResponse> => {
+  return customFetch<putApiBoardsBoardidPostsPostidResponse>(
+    getPutApiBoardsBoardidPostsPostidUrl(boardId, postId),
+    {
+      ...options,
+      method: "PUT",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(putApiBoardsBoardidPostsPostidBody),
+    },
+  );
 };
 
 /**
  * 사용자에게 노출 가능한 전체 보틀 리스트를 반환합니다.
  * @summary 보틀 목록 조회
  */
-export type listBottlesResponse200 = {
+export type getApiBottlesResponse200 = {
   data: PageBottleResponse;
   status: 200;
 };
 
-export type listBottlesResponseSuccess = listBottlesResponse200 & {
+export type getApiBottlesResponseSuccess = getApiBottlesResponse200 & {
   headers: Headers;
 };
 
-export type listBottlesResponse = listBottlesResponseSuccess;
+export type getApiBottlesResponse = getApiBottlesResponseSuccess;
 
-export const getListBottlesUrl = (params: ListBottlesParams) => {
+export const getGetApiBottlesUrl = (params: GetApiBottlesParams) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -6363,11 +6661,11 @@ export const getListBottlesUrl = (params: ListBottlesParams) => {
     : `/api/bottles`;
 };
 
-export const listBottles = async (
-  params: ListBottlesParams,
+export const getApiBottles = async (
+  params: GetApiBottlesParams,
   options?: RequestInit,
-): Promise<listBottlesResponse> => {
-  return customFetch<listBottlesResponse>(getListBottlesUrl(params), {
+): Promise<getApiBottlesResponse> => {
+  return customFetch<getApiBottlesResponse>(getGetApiBottlesUrl(params), {
     ...options,
     method: "GET",
   });
@@ -6377,47 +6675,55 @@ export const listBottles = async (
  * GET /api/bottles 노출 시 사용할 검색 파라미터 정보를 반환합니다.
  * @summary 보틀 검색 파라미터 조회
  */
-export type parametersResponse200 = {
+export type getApiBottlesParametersResponse200 = {
   data: BottleSearchParameterValues;
   status: 200;
 };
 
-export type parametersResponseSuccess = parametersResponse200 & {
-  headers: Headers;
-};
+export type getApiBottlesParametersResponseSuccess =
+  getApiBottlesParametersResponse200 & {
+    headers: Headers;
+  };
 
-export type parametersResponse = parametersResponseSuccess;
+export type getApiBottlesParametersResponse =
+  getApiBottlesParametersResponseSuccess;
 
-export const getParametersUrl = () => {
+export const getGetApiBottlesParametersUrl = () => {
   return `/api/bottles/parameters`;
 };
 
-export const parameters = async (
+export const getApiBottlesParameters = async (
   options?: RequestInit,
-): Promise<parametersResponse> => {
-  return customFetch<parametersResponse>(getParametersUrl(), {
-    ...options,
-    method: "GET",
-  });
+): Promise<getApiBottlesParametersResponse> => {
+  return customFetch<getApiBottlesParametersResponse>(
+    getGetApiBottlesParametersUrl(),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
 };
 
 /**
  * 사용자가 자신의 예약 신청 내역을 페이지 단위로 조회합니다.
  * @summary 내 예약 신청 목록
  */
-export type listMyApplicationsResponse200 = {
+export type getApiBottlesReservationsApplicationsMeResponse200 = {
   data: PageBottleReservationApplicationPublicResponse;
   status: 200;
 };
 
-export type listMyApplicationsResponseSuccess =
-  listMyApplicationsResponse200 & {
+export type getApiBottlesReservationsApplicationsMeResponseSuccess =
+  getApiBottlesReservationsApplicationsMeResponse200 & {
     headers: Headers;
   };
 
-export type listMyApplicationsResponse = listMyApplicationsResponseSuccess;
+export type getApiBottlesReservationsApplicationsMeResponse =
+  getApiBottlesReservationsApplicationsMeResponseSuccess;
 
-export const getListMyApplicationsUrl = (params?: ListMyApplicationsParams) => {
+export const getGetApiBottlesReservationsApplicationsMeUrl = (
+  params?: GetApiBottlesReservationsApplicationsMeParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -6449,12 +6755,12 @@ export const getListMyApplicationsUrl = (params?: ListMyApplicationsParams) => {
     : `/api/bottles/reservations/applications/me`;
 };
 
-export const listMyApplications = async (
-  params?: ListMyApplicationsParams,
+export const getApiBottlesReservationsApplicationsMe = async (
+  params?: GetApiBottlesReservationsApplicationsMeParams,
   options?: RequestInit,
-): Promise<listMyApplicationsResponse> => {
-  return customFetch<listMyApplicationsResponse>(
-    getListMyApplicationsUrl(params),
+): Promise<getApiBottlesReservationsApplicationsMeResponse> => {
+  return customFetch<getApiBottlesReservationsApplicationsMeResponse>(
+    getGetApiBottlesReservationsApplicationsMeUrl(params),
     {
       ...options,
       method: "GET",
@@ -6466,27 +6772,31 @@ export const listMyApplications = async (
  * 예약 기간 동안 본인의 신청을 취소합니다. 취소 후 재신청은 불가합니다.
  * @summary 예약 신청 취소
  */
-export type cancelApplicationResponse200 = {
+export type deleteApiBottlesReservationsApplicationsApplicationidResponse200 = {
   data: boolean;
   status: 200;
 };
 
-export type cancelApplicationResponseSuccess = cancelApplicationResponse200 & {
-  headers: Headers;
-};
+export type deleteApiBottlesReservationsApplicationsApplicationidResponseSuccess =
+  deleteApiBottlesReservationsApplicationsApplicationidResponse200 & {
+    headers: Headers;
+  };
 
-export type cancelApplicationResponse = cancelApplicationResponseSuccess;
+export type deleteApiBottlesReservationsApplicationsApplicationidResponse =
+  deleteApiBottlesReservationsApplicationsApplicationidResponseSuccess;
 
-export const getCancelApplicationUrl = (applicationId: number) => {
+export const getDeleteApiBottlesReservationsApplicationsApplicationidUrl = (
+  applicationId: number,
+) => {
   return `/api/bottles/reservations/applications/${applicationId}`;
 };
 
-export const cancelApplication = async (
+export const deleteApiBottlesReservationsApplicationsApplicationid = async (
   applicationId: number,
   options?: RequestInit,
-): Promise<cancelApplicationResponse> => {
-  return customFetch<cancelApplicationResponse>(
-    getCancelApplicationUrl(applicationId),
+): Promise<deleteApiBottlesReservationsApplicationsApplicationidResponse> => {
+  return customFetch<deleteApiBottlesReservationsApplicationsApplicationidResponse>(
+    getDeleteApiBottlesReservationsApplicationsApplicationidUrl(applicationId),
     {
       ...options,
       method: "DELETE",
@@ -6498,33 +6808,39 @@ export const cancelApplication = async (
  * 예약 기간 동안 본인의 신청 정보를 수정합니다.
  * @summary 예약 신청 수정
  */
-export type updateApplicationResponse200 = {
+export type putApiBottlesReservationsApplicationsApplicationidResponse200 = {
   data: BottleReservationApplicationPublicResponse;
   status: 200;
 };
 
-export type updateApplicationResponseSuccess = updateApplicationResponse200 & {
-  headers: Headers;
-};
+export type putApiBottlesReservationsApplicationsApplicationidResponseSuccess =
+  putApiBottlesReservationsApplicationsApplicationidResponse200 & {
+    headers: Headers;
+  };
 
-export type updateApplicationResponse = updateApplicationResponseSuccess;
+export type putApiBottlesReservationsApplicationsApplicationidResponse =
+  putApiBottlesReservationsApplicationsApplicationidResponseSuccess;
 
-export const getUpdateApplicationUrl = (applicationId: number) => {
+export const getPutApiBottlesReservationsApplicationsApplicationidUrl = (
+  applicationId: number,
+) => {
   return `/api/bottles/reservations/applications/${applicationId}`;
 };
 
-export const updateApplication = async (
+export const putApiBottlesReservationsApplicationsApplicationid = async (
   applicationId: number,
-  updateApplicationBody: UpdateApplicationBody,
+  putApiBottlesReservationsApplicationsApplicationidBody: PutApiBottlesReservationsApplicationsApplicationidBody,
   options?: RequestInit,
-): Promise<updateApplicationResponse> => {
-  return customFetch<updateApplicationResponse>(
-    getUpdateApplicationUrl(applicationId),
+): Promise<putApiBottlesReservationsApplicationsApplicationidResponse> => {
+  return customFetch<putApiBottlesReservationsApplicationsApplicationidResponse>(
+    getPutApiBottlesReservationsApplicationsApplicationidUrl(applicationId),
     {
       ...options,
       method: "PUT",
       headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(updateApplicationBody),
+      body: JSON.stringify(
+        putApiBottlesReservationsApplicationsApplicationidBody,
+      ),
     },
   );
 };
@@ -6533,21 +6849,21 @@ export const updateApplication = async (
  * 예약이 가능한 공고 목록을 페이지 단위로 조회합니다.
  * @summary 예약 공고 목록
  */
-export type listReservationNoticesResponse200 = {
+export type getApiBottlesReservationsNoticesResponse200 = {
   data: PageBottleReservationNoticePublicResponse;
   status: 200;
 };
 
-export type listReservationNoticesResponseSuccess =
-  listReservationNoticesResponse200 & {
+export type getApiBottlesReservationsNoticesResponseSuccess =
+  getApiBottlesReservationsNoticesResponse200 & {
     headers: Headers;
   };
 
-export type listReservationNoticesResponse =
-  listReservationNoticesResponseSuccess;
+export type getApiBottlesReservationsNoticesResponse =
+  getApiBottlesReservationsNoticesResponseSuccess;
 
-export const getListReservationNoticesUrl = (
-  params?: ListReservationNoticesParams,
+export const getGetApiBottlesReservationsNoticesUrl = (
+  params?: GetApiBottlesReservationsNoticesParams,
 ) => {
   const normalizedParams = new URLSearchParams();
 
@@ -6580,12 +6896,12 @@ export const getListReservationNoticesUrl = (
     : `/api/bottles/reservations/notices`;
 };
 
-export const listReservationNotices = async (
-  params?: ListReservationNoticesParams,
+export const getApiBottlesReservationsNotices = async (
+  params?: GetApiBottlesReservationsNoticesParams,
   options?: RequestInit,
-): Promise<listReservationNoticesResponse> => {
-  return customFetch<listReservationNoticesResponse>(
-    getListReservationNoticesUrl(params),
+): Promise<getApiBottlesReservationsNoticesResponse> => {
+  return customFetch<getApiBottlesReservationsNoticesResponse>(
+    getGetApiBottlesReservationsNoticesUrl(params),
     {
       ...options,
       method: "GET",
@@ -6597,28 +6913,28 @@ export const listReservationNotices = async (
  * 종료되지 않은 예약 공고 중 가장 최근에 생성된 공고를 조회합니다.
  * @summary 최근 생성된 종료되지 않은 예약 공고
  */
-export type getLatestActiveNoticeResponse200 = {
+export type getApiBottlesReservationsNoticesLatestActiveResponse200 = {
   data: BottleReservationNoticePublicResponse;
   status: 200;
 };
 
-export type getLatestActiveNoticeResponseSuccess =
-  getLatestActiveNoticeResponse200 & {
+export type getApiBottlesReservationsNoticesLatestActiveResponseSuccess =
+  getApiBottlesReservationsNoticesLatestActiveResponse200 & {
     headers: Headers;
   };
 
-export type getLatestActiveNoticeResponse =
-  getLatestActiveNoticeResponseSuccess;
+export type getApiBottlesReservationsNoticesLatestActiveResponse =
+  getApiBottlesReservationsNoticesLatestActiveResponseSuccess;
 
-export const getGetLatestActiveNoticeUrl = () => {
+export const getGetApiBottlesReservationsNoticesLatestActiveUrl = () => {
   return `/api/bottles/reservations/notices/latest-active`;
 };
 
-export const getLatestActiveNotice = async (
+export const getApiBottlesReservationsNoticesLatestActive = async (
   options?: RequestInit,
-): Promise<getLatestActiveNoticeResponse> => {
-  return customFetch<getLatestActiveNoticeResponse>(
-    getGetLatestActiveNoticeUrl(),
+): Promise<getApiBottlesReservationsNoticesLatestActiveResponse> => {
+  return customFetch<getApiBottlesReservationsNoticesLatestActiveResponse>(
+    getGetApiBottlesReservationsNoticesLatestActiveUrl(),
     {
       ...options,
       method: "GET",
@@ -6630,28 +6946,28 @@ export const getLatestActiveNotice = async (
  * 최근 종료된 예약 공고 10건을 조회합니다.
  * @summary 최근 종료된 예약 공고 10건
  */
-export type listRecentEndedNoticesResponse200 = {
+export type getApiBottlesReservationsNoticesRecentEndedResponse200 = {
   data: BottleReservationNoticePublicResponse[];
   status: 200;
 };
 
-export type listRecentEndedNoticesResponseSuccess =
-  listRecentEndedNoticesResponse200 & {
+export type getApiBottlesReservationsNoticesRecentEndedResponseSuccess =
+  getApiBottlesReservationsNoticesRecentEndedResponse200 & {
     headers: Headers;
   };
 
-export type listRecentEndedNoticesResponse =
-  listRecentEndedNoticesResponseSuccess;
+export type getApiBottlesReservationsNoticesRecentEndedResponse =
+  getApiBottlesReservationsNoticesRecentEndedResponseSuccess;
 
-export const getListRecentEndedNoticesUrl = () => {
+export const getGetApiBottlesReservationsNoticesRecentEndedUrl = () => {
   return `/api/bottles/reservations/notices/recent-ended`;
 };
 
-export const listRecentEndedNotices = async (
+export const getApiBottlesReservationsNoticesRecentEnded = async (
   options?: RequestInit,
-): Promise<listRecentEndedNoticesResponse> => {
-  return customFetch<listRecentEndedNoticesResponse>(
-    getListRecentEndedNoticesUrl(),
+): Promise<getApiBottlesReservationsNoticesRecentEndedResponse> => {
+  return customFetch<getApiBottlesReservationsNoticesRecentEndedResponse>(
+    getGetApiBottlesReservationsNoticesRecentEndedUrl(),
     {
       ...options,
       method: "GET",
@@ -6663,28 +6979,31 @@ export const listRecentEndedNotices = async (
  * 예약 공고의 상세 정보를 조회합니다.
  * @summary 예약 공고 상세
  */
-export type getReservationNoticeResponse200 = {
+export type getApiBottlesReservationsNoticesNoticeidResponse200 = {
   data: BottleReservationNoticePublicResponse;
   status: 200;
 };
 
-export type getReservationNoticeResponseSuccess =
-  getReservationNoticeResponse200 & {
+export type getApiBottlesReservationsNoticesNoticeidResponseSuccess =
+  getApiBottlesReservationsNoticesNoticeidResponse200 & {
     headers: Headers;
   };
 
-export type getReservationNoticeResponse = getReservationNoticeResponseSuccess;
+export type getApiBottlesReservationsNoticesNoticeidResponse =
+  getApiBottlesReservationsNoticesNoticeidResponseSuccess;
 
-export const getGetReservationNoticeUrl = (noticeId: number) => {
+export const getGetApiBottlesReservationsNoticesNoticeidUrl = (
+  noticeId: number,
+) => {
   return `/api/bottles/reservations/notices/${noticeId}`;
 };
 
-export const getReservationNotice = async (
+export const getApiBottlesReservationsNoticesNoticeid = async (
   noticeId: number,
   options?: RequestInit,
-): Promise<getReservationNoticeResponse> => {
-  return customFetch<getReservationNoticeResponse>(
-    getGetReservationNoticeUrl(noticeId),
+): Promise<getApiBottlesReservationsNoticesNoticeidResponse> => {
+  return customFetch<getApiBottlesReservationsNoticesNoticeidResponse>(
+    getGetApiBottlesReservationsNoticesNoticeidUrl(noticeId),
     {
       ...options,
       method: "GET",
@@ -6696,33 +7015,39 @@ export const getReservationNotice = async (
  * 예약 기간 동안 수량과 수령지 정보를 입력해 신청합니다.
  * @summary 예약 신청
  */
-export type createApplicationResponse200 = {
+export type postApiBottlesReservationsNoticesNoticeidApplicationsResponse200 = {
   data: BottleReservationApplicationPublicResponse;
   status: 200;
 };
 
-export type createApplicationResponseSuccess = createApplicationResponse200 & {
-  headers: Headers;
-};
+export type postApiBottlesReservationsNoticesNoticeidApplicationsResponseSuccess =
+  postApiBottlesReservationsNoticesNoticeidApplicationsResponse200 & {
+    headers: Headers;
+  };
 
-export type createApplicationResponse = createApplicationResponseSuccess;
+export type postApiBottlesReservationsNoticesNoticeidApplicationsResponse =
+  postApiBottlesReservationsNoticesNoticeidApplicationsResponseSuccess;
 
-export const getCreateApplicationUrl = (noticeId: number) => {
+export const getPostApiBottlesReservationsNoticesNoticeidApplicationsUrl = (
+  noticeId: number,
+) => {
   return `/api/bottles/reservations/notices/${noticeId}/applications`;
 };
 
-export const createApplication = async (
+export const postApiBottlesReservationsNoticesNoticeidApplications = async (
   noticeId: number,
-  createApplicationBody: CreateApplicationBody,
+  postApiBottlesReservationsNoticesNoticeidApplicationsBody: PostApiBottlesReservationsNoticesNoticeidApplicationsBody,
   options?: RequestInit,
-): Promise<createApplicationResponse> => {
-  return customFetch<createApplicationResponse>(
-    getCreateApplicationUrl(noticeId),
+): Promise<postApiBottlesReservationsNoticesNoticeidApplicationsResponse> => {
+  return customFetch<postApiBottlesReservationsNoticesNoticeidApplicationsResponse>(
+    getPostApiBottlesReservationsNoticesNoticeidApplicationsUrl(noticeId),
     {
       ...options,
       method: "POST",
       headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(createApplicationBody),
+      body: JSON.stringify(
+        postApiBottlesReservationsNoticesNoticeidApplicationsBody,
+      ),
     },
   );
 };
@@ -6731,26 +7056,26 @@ export const createApplication = async (
  * 식별자를 기준으로 보틀 상세 정보를 조회합니다.
  * @summary 보틀 상세 조회
  */
-export type getBottleResponse200 = {
+export type getApiBottlesIdResponse200 = {
   data: BottleResponse;
   status: 200;
 };
 
-export type getBottleResponseSuccess = getBottleResponse200 & {
+export type getApiBottlesIdResponseSuccess = getApiBottlesIdResponse200 & {
   headers: Headers;
 };
 
-export type getBottleResponse = getBottleResponseSuccess;
+export type getApiBottlesIdResponse = getApiBottlesIdResponseSuccess;
 
-export const getGetBottleUrl = (id: number) => {
+export const getGetApiBottlesIdUrl = (id: number) => {
   return `/api/bottles/${id}`;
 };
 
-export const getBottle = async (
+export const getApiBottlesId = async (
   id: number,
   options?: RequestInit,
-): Promise<getBottleResponse> => {
-  return customFetch<getBottleResponse>(getGetBottleUrl(id), {
+): Promise<getApiBottlesIdResponse> => {
+  return customFetch<getApiBottlesIdResponse>(getGetApiBottlesIdUrl(id), {
     ...options,
     method: "GET",
   });
@@ -6759,18 +7084,18 @@ export const getBottle = async (
 /**
  * @summary 주문 목록 조회
  */
-export type listOrdersResponse200 = {
+export type getApiOrdersResponse200 = {
   data: PageOrderResponse;
   status: 200;
 };
 
-export type listOrdersResponseSuccess = listOrdersResponse200 & {
+export type getApiOrdersResponseSuccess = getApiOrdersResponse200 & {
   headers: Headers;
 };
 
-export type listOrdersResponse = listOrdersResponseSuccess;
+export type getApiOrdersResponse = getApiOrdersResponseSuccess;
 
-export const getListOrdersUrl = (params?: ListOrdersParams) => {
+export const getGetApiOrdersUrl = (params?: GetApiOrdersParams) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -6802,11 +7127,11 @@ export const getListOrdersUrl = (params?: ListOrdersParams) => {
     : `/api/orders`;
 };
 
-export const listOrders = async (
-  params?: ListOrdersParams,
+export const getApiOrders = async (
+  params?: GetApiOrdersParams,
   options?: RequestInit,
-): Promise<listOrdersResponse> => {
-  return customFetch<listOrdersResponse>(getListOrdersUrl(params), {
+): Promise<getApiOrdersResponse> => {
+  return customFetch<getApiOrdersResponse>(getGetApiOrdersUrl(params), {
     ...options,
     method: "GET",
   });
@@ -6815,120 +7140,130 @@ export const listOrders = async (
 /**
  * @summary 주문 생성
  */
-export type createOrderResponse200 = {
+export type postApiOrdersResponse200 = {
   data: OrderResponse;
   status: 200;
 };
 
-export type createOrderResponseSuccess = createOrderResponse200 & {
+export type postApiOrdersResponseSuccess = postApiOrdersResponse200 & {
   headers: Headers;
 };
 
-export type createOrderResponse = createOrderResponseSuccess;
+export type postApiOrdersResponse = postApiOrdersResponseSuccess;
 
-export const getCreateOrderUrl = () => {
+export const getPostApiOrdersUrl = () => {
   return `/api/orders`;
 };
 
-export const createOrder = async (
-  createOrderBody: CreateOrderBody,
+export const postApiOrders = async (
+  postApiOrdersBody: PostApiOrdersBody,
   options?: RequestInit,
-): Promise<createOrderResponse> => {
-  return customFetch<createOrderResponse>(getCreateOrderUrl(), {
+): Promise<postApiOrdersResponse> => {
+  return customFetch<postApiOrdersResponse>(getPostApiOrdersUrl(), {
     ...options,
     method: "POST",
     headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(createOrderBody),
+    body: JSON.stringify(postApiOrdersBody),
   });
 };
 
 /**
  * @summary 주문 단건 조회
  */
-export type getOrderResponse200 = {
+export type getApiOrdersOrderidResponse200 = {
   data: OrderResponse;
   status: 200;
 };
 
-export type getOrderResponseSuccess = getOrderResponse200 & {
-  headers: Headers;
-};
+export type getApiOrdersOrderidResponseSuccess =
+  getApiOrdersOrderidResponse200 & {
+    headers: Headers;
+  };
 
-export type getOrderResponse = getOrderResponseSuccess;
+export type getApiOrdersOrderidResponse = getApiOrdersOrderidResponseSuccess;
 
-export const getGetOrderUrl = (orderId: number) => {
+export const getGetApiOrdersOrderidUrl = (orderId: number) => {
   return `/api/orders/${orderId}`;
 };
 
-export const getOrder = async (
+export const getApiOrdersOrderid = async (
   orderId: number,
   options?: RequestInit,
-): Promise<getOrderResponse> => {
-  return customFetch<getOrderResponse>(getGetOrderUrl(orderId), {
-    ...options,
-    method: "GET",
-  });
+): Promise<getApiOrdersOrderidResponse> => {
+  return customFetch<getApiOrdersOrderidResponse>(
+    getGetApiOrdersOrderidUrl(orderId),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
 };
 
 /**
  * @summary 주문 취소 요청
  */
-export type cancelOrderResponse200 = {
+export type patchApiOrdersOrderidCancelResponse200 = {
   data: OrderResponse;
   status: 200;
 };
 
-export type cancelOrderResponseSuccess = cancelOrderResponse200 & {
-  headers: Headers;
-};
+export type patchApiOrdersOrderidCancelResponseSuccess =
+  patchApiOrdersOrderidCancelResponse200 & {
+    headers: Headers;
+  };
 
-export type cancelOrderResponse = cancelOrderResponseSuccess;
+export type patchApiOrdersOrderidCancelResponse =
+  patchApiOrdersOrderidCancelResponseSuccess;
 
-export const getCancelOrderUrl = (orderId: number) => {
+export const getPatchApiOrdersOrderidCancelUrl = (orderId: number) => {
   return `/api/orders/${orderId}/cancel`;
 };
 
-export const cancelOrder = async (
+export const patchApiOrdersOrderidCancel = async (
   orderId: number,
-  cancelOrderBody: CancelOrderBody,
+  patchApiOrdersOrderidCancelBody: PatchApiOrdersOrderidCancelBody,
   options?: RequestInit,
-): Promise<cancelOrderResponse> => {
-  return customFetch<cancelOrderResponse>(getCancelOrderUrl(orderId), {
-    ...options,
-    method: "PATCH",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(cancelOrderBody),
-  });
+): Promise<patchApiOrdersOrderidCancelResponse> => {
+  return customFetch<patchApiOrdersOrderidCancelResponse>(
+    getPatchApiOrdersOrderidCancelUrl(orderId),
+    {
+      ...options,
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(patchApiOrdersOrderidCancelBody),
+    },
+  );
 };
 
 /**
  * 예약된 문자 발송을 취소합니다.
  * @summary 문자 예약 취소
  */
-export type cancelResponse200 = {
+export type postApiPpurioCancelResponse200 = {
   data: PpurioResponse;
   status: 200;
 };
 
-export type cancelResponseSuccess = cancelResponse200 & {
-  headers: Headers;
-};
+export type postApiPpurioCancelResponseSuccess =
+  postApiPpurioCancelResponse200 & {
+    headers: Headers;
+  };
 
-export type cancelResponse = cancelResponseSuccess;
+export type postApiPpurioCancelResponse = postApiPpurioCancelResponseSuccess;
 
-export const getCancelUrl = () => {
+export const getPostApiPpurioCancelUrl = () => {
   return `/api/ppurio/cancel`;
 };
 
-export const cancel = async (
-  cancelBody: CancelBody,
+export const postApiPpurioCancel = async (
+  postApiPpurioCancelBody: PostApiPpurioCancelBody,
   options?: RequestInit,
-): Promise<cancelResponse> => {
-  return customFetch<cancelResponse>(getCancelUrl(), {
+): Promise<postApiPpurioCancelResponse> => {
+  return customFetch<postApiPpurioCancelResponse>(getPostApiPpurioCancelUrl(), {
     ...options,
     method: "POST",
     headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(cancelBody),
+    body: JSON.stringify(postApiPpurioCancelBody),
   });
 };
 
@@ -6936,61 +7271,67 @@ export const cancel = async (
  * 예약된 카카오 알림톡 발송을 취소합니다.
  * @summary 카카오 예약 취소
  */
-export type cancelKakaoResponse200 = {
+export type postApiPpurioCancelKakaoResponse200 = {
   data: PpurioResponse;
   status: 200;
 };
 
-export type cancelKakaoResponseSuccess = cancelKakaoResponse200 & {
-  headers: Headers;
-};
+export type postApiPpurioCancelKakaoResponseSuccess =
+  postApiPpurioCancelKakaoResponse200 & {
+    headers: Headers;
+  };
 
-export type cancelKakaoResponse = cancelKakaoResponseSuccess;
+export type postApiPpurioCancelKakaoResponse =
+  postApiPpurioCancelKakaoResponseSuccess;
 
-export const getCancelKakaoUrl = () => {
+export const getPostApiPpurioCancelKakaoUrl = () => {
   return `/api/ppurio/cancel/kakao`;
 };
 
-export const cancelKakao = async (
-  cancelKakaoBody: CancelKakaoBody,
+export const postApiPpurioCancelKakao = async (
+  postApiPpurioCancelKakaoBody: PostApiPpurioCancelKakaoBody,
   options?: RequestInit,
-): Promise<cancelKakaoResponse> => {
-  return customFetch<cancelKakaoResponse>(getCancelKakaoUrl(), {
-    ...options,
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(cancelKakaoBody),
-  });
+): Promise<postApiPpurioCancelKakaoResponse> => {
+  return customFetch<postApiPpurioCancelKakaoResponse>(
+    getPostApiPpurioCancelKakaoUrl(),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(postApiPpurioCancelKakaoBody),
+    },
+  );
 };
 
 /**
  * 템플릿을 이용해 카카오 알림톡을 발송합니다.
  * @summary 카카오 알림톡 발송
  */
-export type sendKakaoResponse200 = {
+export type postApiPpurioKakaoResponse200 = {
   data: PpurioResponse;
   status: 200;
 };
 
-export type sendKakaoResponseSuccess = sendKakaoResponse200 & {
-  headers: Headers;
-};
+export type postApiPpurioKakaoResponseSuccess =
+  postApiPpurioKakaoResponse200 & {
+    headers: Headers;
+  };
 
-export type sendKakaoResponse = sendKakaoResponseSuccess;
+export type postApiPpurioKakaoResponse = postApiPpurioKakaoResponseSuccess;
 
-export const getSendKakaoUrl = () => {
+export const getPostApiPpurioKakaoUrl = () => {
   return `/api/ppurio/kakao`;
 };
 
-export const sendKakao = async (
-  sendKakaoBody: SendKakaoBody,
+export const postApiPpurioKakao = async (
+  postApiPpurioKakaoBody: PostApiPpurioKakaoBody,
   options?: RequestInit,
-): Promise<sendKakaoResponse> => {
-  return customFetch<sendKakaoResponse>(getSendKakaoUrl(), {
+): Promise<postApiPpurioKakaoResponse> => {
+  return customFetch<postApiPpurioKakaoResponse>(getPostApiPpurioKakaoUrl(), {
     ...options,
     method: "POST",
     headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(sendKakaoBody),
+    body: JSON.stringify(postApiPpurioKakaoBody),
   });
 };
 
@@ -6998,56 +7339,61 @@ export const sendKakao = async (
  * SMS/LMS/MMS 발송을 위해 뿌리오 메시지 API를 호출합니다.
  * @summary 문자 발송
  */
-export type sendMessageResponse200 = {
+export type postApiPpurioMessageResponse200 = {
   data: PpurioResponse;
   status: 200;
 };
 
-export type sendMessageResponseSuccess = sendMessageResponse200 & {
-  headers: Headers;
-};
+export type postApiPpurioMessageResponseSuccess =
+  postApiPpurioMessageResponse200 & {
+    headers: Headers;
+  };
 
-export type sendMessageResponse = sendMessageResponseSuccess;
+export type postApiPpurioMessageResponse = postApiPpurioMessageResponseSuccess;
 
-export const getSendMessageUrl = () => {
+export const getPostApiPpurioMessageUrl = () => {
   return `/api/ppurio/message`;
 };
 
-export const sendMessage = async (
-  sendMessageBody: SendMessageBody,
+export const postApiPpurioMessage = async (
+  postApiPpurioMessageBody: PostApiPpurioMessageBody,
   options?: RequestInit,
-): Promise<sendMessageResponse> => {
-  return customFetch<sendMessageResponse>(getSendMessageUrl(), {
-    ...options,
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(sendMessageBody),
-  });
+): Promise<postApiPpurioMessageResponse> => {
+  return customFetch<postApiPpurioMessageResponse>(
+    getPostApiPpurioMessageUrl(),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(postApiPpurioMessageBody),
+    },
+  );
 };
 
 /**
  * 메시지 발송 전 필요한 엑세스 토큰을 발급합니다.
  * @summary 뿌리오 토큰 갱신
  */
-export type refreshTokenResponse200 = {
+export type postApiPpurioTokenResponse200 = {
   data: PpurioTokenResponse;
   status: 200;
 };
 
-export type refreshTokenResponseSuccess = refreshTokenResponse200 & {
-  headers: Headers;
-};
+export type postApiPpurioTokenResponseSuccess =
+  postApiPpurioTokenResponse200 & {
+    headers: Headers;
+  };
 
-export type refreshTokenResponse = refreshTokenResponseSuccess;
+export type postApiPpurioTokenResponse = postApiPpurioTokenResponseSuccess;
 
-export const getRefreshTokenUrl = () => {
+export const getPostApiPpurioTokenUrl = () => {
   return `/api/ppurio/token`;
 };
 
-export const refreshToken = async (
+export const postApiPpurioToken = async (
   options?: RequestInit,
-): Promise<refreshTokenResponse> => {
-  return customFetch<refreshTokenResponse>(getRefreshTokenUrl(), {
+): Promise<postApiPpurioTokenResponse> => {
+  return customFetch<postApiPpurioTokenResponse>(getPostApiPpurioTokenUrl(), {
     ...options,
     method: "POST",
   });
@@ -7057,30 +7403,31 @@ export const refreshToken = async (
  * 출시 알림을 위해 사용자의 연락처 정보를 저장합니다.
  * @summary 사전 등록 접수
  */
-export type createPreRegisterResponse200 = {
+export type postApiPreRegisterResponse200 = {
   data: PreRegisterResponse;
   status: 200;
 };
 
-export type createPreRegisterResponseSuccess = createPreRegisterResponse200 & {
-  headers: Headers;
-};
+export type postApiPreRegisterResponseSuccess =
+  postApiPreRegisterResponse200 & {
+    headers: Headers;
+  };
 
-export type createPreRegisterResponse = createPreRegisterResponseSuccess;
+export type postApiPreRegisterResponse = postApiPreRegisterResponseSuccess;
 
-export const getCreatePreRegisterUrl = () => {
+export const getPostApiPreRegisterUrl = () => {
   return `/api/pre-register`;
 };
 
-export const createPreRegister = async (
-  createPreRegisterBody: CreatePreRegisterBody,
+export const postApiPreRegister = async (
+  postApiPreRegisterBody: PostApiPreRegisterBody,
   options?: RequestInit,
-): Promise<createPreRegisterResponse> => {
-  return customFetch<createPreRegisterResponse>(getCreatePreRegisterUrl(), {
+): Promise<postApiPreRegisterResponse> => {
+  return customFetch<postApiPreRegisterResponse>(getPostApiPreRegisterUrl(), {
     ...options,
     method: "POST",
     headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(createPreRegisterBody),
+    body: JSON.stringify(postApiPreRegisterBody),
   });
 };
 
@@ -7088,18 +7435,18 @@ export const createPreRegister = async (
  * 클라이언트가 S3 객체를 다운로드할 수 있도록 단시간 유효한 프리사인드 URL을 생성합니다.
  * @summary 프리사인드 URL 발급
  */
-export type getPresignedResponse200 = {
+export type getApiS3PresignedResponse200 = {
   data: PresignUrlResponse;
   status: 200;
 };
 
-export type getPresignedResponseSuccess = getPresignedResponse200 & {
+export type getApiS3PresignedResponseSuccess = getApiS3PresignedResponse200 & {
   headers: Headers;
 };
 
-export type getPresignedResponse = getPresignedResponseSuccess;
+export type getApiS3PresignedResponse = getApiS3PresignedResponseSuccess;
 
-export const getGetPresignedUrl = (params: GetPresignedParams) => {
+export const getGetApiS3PresignedUrl = (params: GetApiS3PresignedParams) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -7131,43 +7478,46 @@ export const getGetPresignedUrl = (params: GetPresignedParams) => {
     : `/api/s3/presigned`;
 };
 
-export const getPresigned = async (
-  params: GetPresignedParams,
+export const getApiS3Presigned = async (
+  params: GetApiS3PresignedParams,
   options?: RequestInit,
-): Promise<getPresignedResponse> => {
-  return customFetch<getPresignedResponse>(getGetPresignedUrl(params), {
-    ...options,
-    method: "GET",
-  });
+): Promise<getApiS3PresignedResponse> => {
+  return customFetch<getApiS3PresignedResponse>(
+    getGetApiS3PresignedUrl(params),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
 };
 
 /**
  * 서버를 통해 바이너리 파일을 받아 지정된 S3 버킷으로 업로드합니다.
  * @summary 파일 업로드
  */
-export type uploadResponse200 = {
-  data: Upload200;
+export type postApiS3UploadResponse200 = {
+  data: PostApiS3Upload200;
   status: 200;
 };
 
-export type uploadResponseSuccess = uploadResponse200 & {
+export type postApiS3UploadResponseSuccess = postApiS3UploadResponse200 & {
   headers: Headers;
 };
 
-export type uploadResponse = uploadResponseSuccess;
+export type postApiS3UploadResponse = postApiS3UploadResponseSuccess;
 
-export const getUploadUrl = () => {
+export const getPostApiS3UploadUrl = () => {
   return `/api/s3/upload`;
 };
 
-export const upload = async (
-  uploadBody: UploadBody,
+export const postApiS3Upload = async (
+  postApiS3UploadBody: PostApiS3UploadBody,
   options?: RequestInit,
-): Promise<uploadResponse> => {
+): Promise<postApiS3UploadResponse> => {
   const formData = new FormData();
-  formData.append(`file`, uploadBody.file);
+  formData.append(`file`, postApiS3UploadBody.file);
 
-  return customFetch<uploadResponse>(getUploadUrl(), {
+  return customFetch<postApiS3UploadResponse>(getPostApiS3UploadUrl(), {
     ...options,
     method: "POST",
     body: formData,
@@ -7177,18 +7527,18 @@ export const upload = async (
 /**
  * @summary 판매 공고 목록 조회
  */
-export type listSalesResponse200 = {
+export type getApiSalesResponse200 = {
   data: PageSaleAnnouncementResponse;
   status: 200;
 };
 
-export type listSalesResponseSuccess = listSalesResponse200 & {
+export type getApiSalesResponseSuccess = getApiSalesResponse200 & {
   headers: Headers;
 };
 
-export type listSalesResponse = listSalesResponseSuccess;
+export type getApiSalesResponse = getApiSalesResponseSuccess;
 
-export const getListSalesUrl = (params?: ListSalesParams) => {
+export const getGetApiSalesUrl = (params?: GetApiSalesParams) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -7220,11 +7570,11 @@ export const getListSalesUrl = (params?: ListSalesParams) => {
     : `/api/sales`;
 };
 
-export const listSales = async (
-  params?: ListSalesParams,
+export const getApiSales = async (
+  params?: GetApiSalesParams,
   options?: RequestInit,
-): Promise<listSalesResponse> => {
-  return customFetch<listSalesResponse>(getListSalesUrl(params), {
+): Promise<getApiSalesResponse> => {
+  return customFetch<getApiSalesResponse>(getGetApiSalesUrl(params), {
     ...options,
     method: "GET",
   });
@@ -7233,43 +7583,54 @@ export const listSales = async (
 /**
  * @summary 판매 공고 단건 조회
  */
-export type getSaleResponse200 = {
+export type getApiSalesSaleidResponse200 = {
   data: SaleAnnouncementResponse;
   status: 200;
 };
 
-export type getSaleResponseSuccess = getSaleResponse200 & {
+export type getApiSalesSaleidResponseSuccess = getApiSalesSaleidResponse200 & {
   headers: Headers;
 };
 
-export type getSaleResponse = getSaleResponseSuccess;
+export type getApiSalesSaleidResponse = getApiSalesSaleidResponseSuccess;
 
-export const getGetSaleUrl = (saleId: number) => {
+export const getGetApiSalesSaleidUrl = (saleId: number) => {
   return `/api/sales/${saleId}`;
 };
 
-export const getSale = async (
+export const getApiSalesSaleid = async (
   saleId: number,
   options?: RequestInit,
-): Promise<getSaleResponse> => {
-  return customFetch<getSaleResponse>(getGetSaleUrl(saleId), {
-    ...options,
-    method: "GET",
-  });
+): Promise<getApiSalesSaleidResponse> => {
+  return customFetch<getApiSalesSaleidResponse>(
+    getGetApiSalesSaleidUrl(saleId),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
 };
 
-export type decodeResultResponse200 = {
+/**
+ * NICE 표준창 결과 파라미터를 복호화해 인증 결과를 반환합니다.
+ * @summary NICE 본인인증 결과 복호화
+ */
+export type postApiUserNiceidResultResponse200 = {
   data: NiceIdVerificationResultResponse;
   status: 200;
 };
 
-export type decodeResultResponseSuccess = decodeResultResponse200 & {
-  headers: Headers;
-};
+export type postApiUserNiceidResultResponseSuccess =
+  postApiUserNiceidResultResponse200 & {
+    headers: Headers;
+  };
 
-export type decodeResultResponse = decodeResultResponseSuccess;
+export type postApiUserNiceidResultResponse =
+  postApiUserNiceidResultResponseSuccess;
 
-export const getDecodeResultUrl = (params: DecodeResultParams) => {
+export const getPostApiUserNiceidResultUrl = (
+  params: PostApiUserNiceidResultParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -7301,95 +7662,143 @@ export const getDecodeResultUrl = (params: DecodeResultParams) => {
     : `/api/user/niceid/result`;
 };
 
-export const decodeResult = async (
-  params: DecodeResultParams,
+export const postApiUserNiceidResult = async (
+  params: PostApiUserNiceidResultParams,
   options?: RequestInit,
-): Promise<decodeResultResponse> => {
-  return customFetch<decodeResultResponse>(getDecodeResultUrl(params), {
-    ...options,
-    method: "POST",
-  });
+): Promise<postApiUserNiceidResultResponse> => {
+  return customFetch<postApiUserNiceidResultResponse>(
+    getPostApiUserNiceidResultUrl(params),
+    {
+      ...options,
+      method: "POST",
+    },
+  );
 };
 
-export type prepareResponse200 = {
+/**
+ * 표준창 호출을 위한 암호화 세션 데이터를 생성합니다.
+ * @summary NICE 본인인증 세션 생성
+ */
+export type postApiUserNiceidSessionResponse200 = {
   data: NiceIdVerificationStartResponse;
   status: 200;
 };
 
-export type prepareResponseSuccess = prepareResponse200 & {
-  headers: Headers;
-};
+export type postApiUserNiceidSessionResponseSuccess =
+  postApiUserNiceidSessionResponse200 & {
+    headers: Headers;
+  };
 
-export type prepareResponse = prepareResponseSuccess;
+export type postApiUserNiceidSessionResponse =
+  postApiUserNiceidSessionResponseSuccess;
 
-export const getPrepareUrl = () => {
+export const getPostApiUserNiceidSessionUrl = () => {
   return `/api/user/niceid/session`;
 };
 
-export const prepare = async (
-  prepareBody: PrepareBody,
+export const postApiUserNiceidSession = async (
+  postApiUserNiceidSessionBody: PostApiUserNiceidSessionBody,
   options?: RequestInit,
-): Promise<prepareResponse> => {
-  return customFetch<prepareResponse>(getPrepareUrl(), {
-    ...options,
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(prepareBody),
-  });
+): Promise<postApiUserNiceidSessionResponse> => {
+  return customFetch<postApiUserNiceidSessionResponse>(
+    getPostApiUserNiceidSessionUrl(),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(postApiUserNiceidSessionBody),
+    },
+  );
 };
 
 /**
  * 사용자가 사업장 정보와 신청 서류를 함께 업로드하여 승인을 요청합니다.
  * @summary 비즈니스 등록 신청
  */
-export type applyBusinessResponse200 = {
+export type postApiUsersBusinessesApplicationsResponse200 = {
   data: UserBusinessApplicationSubmitResponse;
   status: 200;
 };
 
-export type applyBusinessResponseSuccess = applyBusinessResponse200 & {
-  headers: Headers;
-};
+export type postApiUsersBusinessesApplicationsResponseSuccess =
+  postApiUsersBusinessesApplicationsResponse200 & {
+    headers: Headers;
+  };
 
-export type applyBusinessResponse = applyBusinessResponseSuccess;
+export type postApiUsersBusinessesApplicationsResponse =
+  postApiUsersBusinessesApplicationsResponseSuccess;
 
-export const getApplyBusinessUrl = () => {
-  return `/api/users/businesses/applications`;
-};
+export const getPostApiUsersBusinessesApplicationsUrl = (
+  params: PostApiUsersBusinessesApplicationsParams,
+) => {
+  const normalizedParams = new URLSearchParams();
 
-export const applyBusiness = async (
-  applyBusinessBody: ApplyBusinessBody,
-  options?: RequestInit,
-): Promise<applyBusinessResponse> => {
-  const formData = new FormData();
-  formData.append(`document`, applyBusinessBody.document);
-  formData.append(`request`, JSON.stringify(applyBusinessBody.request));
-
-  return customFetch<applyBusinessResponse>(getApplyBusinessUrl(), {
-    ...options,
-    method: "POST",
-    body: formData,
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) {
+          v.forEach((item) =>
+            normalizedParams.append(k, item == null ? "null" : String(item)),
+          );
+        } else {
+          normalizedParams.append(k, v === null ? "null" : String(v));
+        }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach((v) =>
+        normalizedParams.append(key, v == null ? "null" : String(v)),
+      );
+    } else {
+      normalizedParams.append(key, value === null ? "null" : String(value));
+    }
   });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/users/businesses/applications?${stringifiedParams}`
+    : `/api/users/businesses/applications`;
+};
+
+export const postApiUsersBusinessesApplications = async (
+  postApiUsersBusinessesApplicationsBody: PostApiUsersBusinessesApplicationsBody,
+  params: PostApiUsersBusinessesApplicationsParams,
+  options?: RequestInit,
+): Promise<postApiUsersBusinessesApplicationsResponse> => {
+  const formData = new FormData();
+  formData.append(`document`, postApiUsersBusinessesApplicationsBody.document);
+
+  return customFetch<postApiUsersBusinessesApplicationsResponse>(
+    getPostApiUsersBusinessesApplicationsUrl(params),
+    {
+      ...options,
+      method: "POST",
+      body: formData,
+    },
+  );
 };
 
 /**
  * ROLE_PICK_UP_BUSINESS 권한을 가진 유저의 사업장 정보를 반환합니다.
  * @summary 픽업 가능 사업장 목록
  */
-export type listPickupLocationsResponse200 = {
+export type getApiUsersBusinessesPickupLocationsResponse200 = {
   data: PagePickupLocationResponse;
   status: 200;
 };
 
-export type listPickupLocationsResponseSuccess =
-  listPickupLocationsResponse200 & {
+export type getApiUsersBusinessesPickupLocationsResponseSuccess =
+  getApiUsersBusinessesPickupLocationsResponse200 & {
     headers: Headers;
   };
 
-export type listPickupLocationsResponse = listPickupLocationsResponseSuccess;
+export type getApiUsersBusinessesPickupLocationsResponse =
+  getApiUsersBusinessesPickupLocationsResponseSuccess;
 
-export const getListPickupLocationsUrl = (
-  params?: ListPickupLocationsParams,
+export const getGetApiUsersBusinessesPickupLocationsUrl = (
+  params?: GetApiUsersBusinessesPickupLocationsParams,
 ) => {
   const normalizedParams = new URLSearchParams();
 
@@ -7422,12 +7831,12 @@ export const getListPickupLocationsUrl = (
     : `/api/users/businesses/pickup-locations`;
 };
 
-export const listPickupLocations = async (
-  params?: ListPickupLocationsParams,
+export const getApiUsersBusinessesPickupLocations = async (
+  params?: GetApiUsersBusinessesPickupLocationsParams,
   options?: RequestInit,
-): Promise<listPickupLocationsResponse> => {
-  return customFetch<listPickupLocationsResponse>(
-    getListPickupLocationsUrl(params),
+): Promise<getApiUsersBusinessesPickupLocationsResponse> => {
+  return customFetch<getApiUsersBusinessesPickupLocationsResponse>(
+    getGetApiUsersBusinessesPickupLocationsUrl(params),
     {
       ...options,
       method: "GET",
@@ -7439,23 +7848,25 @@ export const listPickupLocations = async (
  * 로그인한 사용자의 프로필과 멤버십 상태를 반환합니다.
  * @summary 내 프로필 조회
  */
-export type meResponse200 = {
+export type getApiUsersMeResponse200 = {
   data: UserSelfResponse;
   status: 200;
 };
 
-export type meResponseSuccess = meResponse200 & {
+export type getApiUsersMeResponseSuccess = getApiUsersMeResponse200 & {
   headers: Headers;
 };
 
-export type meResponse = meResponseSuccess;
+export type getApiUsersMeResponse = getApiUsersMeResponseSuccess;
 
-export const getMeUrl = () => {
+export const getGetApiUsersMeUrl = () => {
   return `/api/users/me`;
 };
 
-export const me = async (options?: RequestInit): Promise<meResponse> => {
-  return customFetch<meResponse>(getMeUrl(), {
+export const getApiUsersMe = async (
+  options?: RequestInit,
+): Promise<getApiUsersMeResponse> => {
+  return customFetch<getApiUsersMeResponse>(getGetApiUsersMeUrl(), {
     ...options,
     method: "GET",
   });
@@ -7465,56 +7876,62 @@ export const me = async (options?: RequestInit): Promise<meResponse> => {
  * 인증된 사용자 계정에 연동된 소셜 계정 목록을 조회합니다.
  * @summary 소셜 계정 연동 목록 조회
  */
-export type getSocialLinksResponse200 = {
+export type getApiUsersMeSocialLinksResponse200 = {
   data: SocialLinkResponse[];
   status: 200;
 };
 
-export type getSocialLinksResponseSuccess = getSocialLinksResponse200 & {
-  headers: Headers;
-};
+export type getApiUsersMeSocialLinksResponseSuccess =
+  getApiUsersMeSocialLinksResponse200 & {
+    headers: Headers;
+  };
 
-export type getSocialLinksResponse = getSocialLinksResponseSuccess;
+export type getApiUsersMeSocialLinksResponse =
+  getApiUsersMeSocialLinksResponseSuccess;
 
-export const getGetSocialLinksUrl = () => {
+export const getGetApiUsersMeSocialLinksUrl = () => {
   return `/api/users/me/social-links`;
 };
 
-export const getSocialLinks = async (
+export const getApiUsersMeSocialLinks = async (
   options?: RequestInit,
-): Promise<getSocialLinksResponse> => {
-  return customFetch<getSocialLinksResponse>(getGetSocialLinksUrl(), {
-    ...options,
-    method: "GET",
-  });
+): Promise<getApiUsersMeSocialLinksResponse> => {
+  return customFetch<getApiUsersMeSocialLinksResponse>(
+    getGetApiUsersMeSocialLinksUrl(),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
 };
 
 /**
  * 인증된 사용자 계정에서 소셜 계정 연동을 해제합니다.
  * @summary 소셜 계정 연동 해제
  */
-export type unlinkSocialAccountResponse200 = {
+export type deleteApiUsersMeSocialLinksProviderResponse200 = {
   data: boolean;
   status: 200;
 };
 
-export type unlinkSocialAccountResponseSuccess =
-  unlinkSocialAccountResponse200 & {
+export type deleteApiUsersMeSocialLinksProviderResponseSuccess =
+  deleteApiUsersMeSocialLinksProviderResponse200 & {
     headers: Headers;
   };
 
-export type unlinkSocialAccountResponse = unlinkSocialAccountResponseSuccess;
+export type deleteApiUsersMeSocialLinksProviderResponse =
+  deleteApiUsersMeSocialLinksProviderResponseSuccess;
 
-export const getUnlinkSocialAccountUrl = (provider: string) => {
+export const getDeleteApiUsersMeSocialLinksProviderUrl = (provider: string) => {
   return `/api/users/me/social-links/${provider}`;
 };
 
-export const unlinkSocialAccount = async (
+export const deleteApiUsersMeSocialLinksProvider = async (
   provider: string,
   options?: RequestInit,
-): Promise<unlinkSocialAccountResponse> => {
-  return customFetch<unlinkSocialAccountResponse>(
-    getUnlinkSocialAccountUrl(provider),
+): Promise<deleteApiUsersMeSocialLinksProviderResponse> => {
+  return customFetch<deleteApiUsersMeSocialLinksProviderResponse>(
+    getDeleteApiUsersMeSocialLinksProviderUrl(provider),
     {
       ...options,
       method: "DELETE",

@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "biome check",
     "format": "biome format --write",
-    "gen:api": "orval && tsx ./src/scripts/patch-generated-api.ts",
+    "gen:api": "orval && tsx ./src/scripts/patch-generated-api.ts && biome format --write src/apis/generated/api.ts",
     "gen:icons": "tsx ./src/scripts/gen-icons.ts",
     "postinstall": "pnpm gen:icons"
   },
