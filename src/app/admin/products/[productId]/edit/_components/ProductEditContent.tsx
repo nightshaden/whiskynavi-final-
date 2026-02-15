@@ -1,0 +1,77 @@
+"use client";
+
+import type { BottleAdminResponse } from "@/apis/generated/api";
+import { ArrowLeft, Save, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useActionState } from "react";
+import AdminHeader from "../../../../_components/AdminHeader";
+import { useSidebar } from "../../../../_components/AdminLayoutClient";
+import AdminProductDetailEdit from "../../../../components/AdminProductDetailEdit";
+import { updateBottleFormAction } from "../../../actions";
+
+interface ProductEditContentProps {
+  product: BottleAdminResponse;
+}
+
+export default function ProductEditContent({
+  product,
+}: ProductEditContentProps) {
+  const { toggle } = useSidebar();
+  const router = useRouter();
+
+  const updateAction = updateBottleFormAction.bind(null, product.id as number);
+  const [formState, formAction, isPending] = useActionState(updateAction, {
+    success: false,
+  });
+
+  return (
+    <>
+      <AdminHeader
+        title="제품 편집"
+        onToggleSidebar={toggle}
+        showSearch={false}
+      />
+
+      <form action={formAction} className="p-8">
+        <div className="flex items-center justify-between mb-6">
+          <button
+            type="button"
+            onClick={() => router.push(`/admin/products/${product.id}`)}
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 cursor-pointer"
+          >
+            <ArrowLeft size={20} />
+            제품 상세로 돌아가기
+          </button>
+
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              disabled={isPending}
+              className="px-4 py-2 bg-amber-600 text-white cursor-pointer rounded-lg hover:bg-amber-700 transition-colors flex items-center gap-2 disabled:opacity-50"
+            >
+              <Save size={16} />
+              {isPending ? "저장 중..." : "저장"}
+            </button>
+            <button
+              type="button"
+              onClick={() => router.push(`/admin/products/${product.id}`)}
+              disabled={isPending}
+              className="px-4 py-2 bg-gray-200 text-gray-700 cursor-pointer rounded-lg hover:bg-gray-300 transition-colors flex items-center gap-2 disabled:opacity-50"
+            >
+              <X size={16} />
+              취소
+            </button>
+          </div>
+        </div>
+
+        {formState.error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm">
+            {formState.error}
+          </div>
+        )}
+
+        <AdminProductDetailEdit defaultValues={product} />
+      </form>
+    </>
+  );
+}

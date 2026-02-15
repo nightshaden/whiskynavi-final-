@@ -192,15 +192,11 @@ export const AdminProductTable: React.FC<AdminProductTableProps> = ({
               </td>
               <td className="px-2 py-1.5 whitespace-nowrap">
                 <Image
-                  src={
-                    product.imgUrl ||
-                    "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=100"
-                  }
+                  src={product.imgUrl || "/default-bottle-v2.png"}
                   alt={product.name}
                   className="w-10 h-10 object-cover rounded"
                   onError={(e) => {
-                    e.currentTarget.src =
-                      "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=100";
+                    e.currentTarget.src = "/default-bottle-v2.png";
                   }}
                 />
               </td>

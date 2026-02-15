@@ -1,13 +1,14 @@
 "use client";
 
-import type { BottleAdminResponse } from "@/apis/generated/api";
+import { Plus } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+import type { BottleAdminResponse } from "@/apis/generated/api";
 import AdminHeader from "../../_components/AdminHeader";
 import { useSidebar } from "../../_components/AdminLayoutClient";
 import FilterHeader from "../../_components/FilterHeader";
 import Pagination from "../../_components/Pagination";
 import { useTableFilter } from "../../_components/useTableFilter";
-import Image from "next/image";
 
 interface ProductsContentProps {
   searchParams: {
@@ -84,10 +85,23 @@ export default function ProductsContent({
       />
 
       <div className="p-8">
+        <div className="flex justify-end mb-4">
+          <button
+            type="button"
+            onClick={() => router.push("/admin/products/new")}
+            className="px-4 py-2 bg-amber-600 text-white cursor-pointer rounded-lg hover:bg-amber-700 transition-colors flex items-center gap-2"
+          >
+            <Plus size={16} />
+            제품 등록
+          </button>
+        </div>
         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead ref={filterRef} className="bg-gray-50 border-b border-gray-200">
+              <thead
+                ref={filterRef}
+                className="bg-gray-50 border-b border-gray-200"
+              >
                 <tr>
                   <th className="px-2 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase whitespace-nowrap">
                     ID
@@ -161,15 +175,11 @@ export default function ProductsContent({
                       <Image
                         width={40}
                         height={40}
-                        src={
-                          product.imgUrl ||
-                          "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=100"
-                        }
+                        src={product.imgUrl || "/default-bottle-v2.png"}
                         alt={product.name ?? ""}
                         className="w-10 h-10 object-cover rounded"
                         onError={(e) => {
-                          e.currentTarget.src =
-                            "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=100";
+                          e.currentTarget.src = "/default-bottle-v2.png";
                         }}
                       />
                     </td>
@@ -224,7 +234,7 @@ export default function ProductsContent({
                     <td className="px-2 py-1.5 text-xs whitespace-nowrap">
                       <button
                         type="button"
-                        onClick={() => handleProductClick(product.id!)}
+                        onClick={() => handleProductClick(product.id as number)}
                         className="text-amber-600 hover:text-amber-700 cursor-pointer font-medium"
                       >
                         상세

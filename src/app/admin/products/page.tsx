@@ -1,6 +1,6 @@
 import {
-  listAdminBottles,
-  parameters,
+  getApiAdminBottles,
+  getApiAdminBottlesParameters,
 } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
@@ -23,7 +23,7 @@ export default async function ProductsPage({
   const token = await getAuthToken();
 
   const [bottlesRes, bottleParamsRes] = await Promise.all([
-    listAdminBottles(
+    getApiAdminBottles(
       {
         filters: {
           pageNumber: params.page ? Number(params.page) - 1 : 0,
@@ -35,7 +35,7 @@ export default async function ProductsPage({
       },
       withToken(token),
     ),
-    parameters(),
+    getApiAdminBottlesParameters(withToken(token)),
   ]);
 
   return (

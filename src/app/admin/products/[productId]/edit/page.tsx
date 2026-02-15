@@ -2,15 +2,15 @@ import { notFound } from "next/navigation";
 import { type BottleAdminResponse, getApiAdminBottlesId } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
-import ProductDetailContent from "./_components/ProductDetailContent";
+import ProductEditContent from "./_components/ProductEditContent";
 
-interface ProductDetailPageProps {
+interface ProductEditPageProps {
   params: Promise<{ productId: string }>;
 }
 
-export default async function ProductDetailPage({
+export default async function ProductEditPage({
   params,
-}: ProductDetailPageProps) {
+}: ProductEditPageProps) {
   const { productId } = await params;
   const token = await getAuthToken();
 
@@ -22,5 +22,5 @@ export default async function ProductDetailPage({
     notFound();
   }
 
-  return <ProductDetailContent product={product} />;
+  return <ProductEditContent product={product} />;
 }

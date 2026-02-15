@@ -1,5 +1,11 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "10mb", // 기본값: 1mb
+    },
+  },
   // ✅ S3 이미지 호스트 허용
   images: {
     remotePatterns: [
@@ -66,4 +72,4 @@ const nextConfig = {
   // },
 };
 
-module.exports = nextConfig;
+export default nextConfig;
