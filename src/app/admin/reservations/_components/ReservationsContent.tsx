@@ -1,83 +1,50 @@
 "use client";
 
-import { Filter } from "lucide-react";
+import { Eye, Pencil, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import type { BottleReservationNoticeResponse } from "@/apis/generated/api";
 import AdminHeader from "../../_components/AdminHeader";
 import { useSidebar } from "../../_components/AdminLayoutClient";
 import Pagination from "../../_components/Pagination";
-import { generateReservations } from "../../_data/mockData";
+
+const formatDate = (dateStr?: string): string => {
+  if (!dateStr) return "-";
+  const date = new Date(dateStr);
+  return date
+    .toLocaleDateString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    })
+    .replace(/\. /g, ".")
+    .replace(/\.$/, "");
+};
+
+const formatPeriod = (start?: string, end?: string): string => {
+  return `${formatDate(start)} ~ ${formatDate(end)}`;
+};
 
 interface ReservationsContentProps {
   searchParams: {
     page?: string;
     limit?: string;
     q?: string;
-    brand?: string;
   };
+  notices: BottleReservationNoticeResponse[];
+  totalElements: number;
 }
 
 export default function ReservationsContent({
   searchParams,
+  notices,
+  totalElements,
 }: ReservationsContentProps) {
   const { toggle } = useSidebar();
   const router = useRouter();
 
-  // searchParams에서 상태 읽기
   const currentPage = Number(searchParams.page) || 1;
   const itemsPerPage = Number(searchParams.limit) || 20;
   const searchQuery = searchParams.q || "";
-  const brandFilter = searchParams.brand || "all";
-
-  // 필터 드롭다운 상태
-  const [showBrandFilter, setShowBrandFilter] = useState(false);
-
-  const reservations = useMemo(() => generateReservations(), []);
-
-  // 브랜드 목록 추출
-  const brands = useMemo(
-    () => [...new Set(reservations.map((r) => r.brand))],
-    [reservations],
-  );
-
-  // 필터링 및 정렬
-  const filteredReservations = useMemo(() => {
-    return reservations.filter((reservation) => {
-      const searchLower = searchQuery.toLowerCase();
-      const matchesSearch =
-        reservation.productName.toLowerCase().includes(searchLower) ||
-        reservation.username.toLowerCase().includes(searchLower) ||
-        reservation.brand.toLowerCase().includes(searchLower);
-      const matchesBrand =
-        brandFilter === "all" || reservation.brand === brandFilter;
-
-      return matchesSearch && matchesBrand;
-    });
-  }, [reservations, searchQuery, brandFilter]);
-
-  // 페이지네이션
-  const paginatedReservations = useMemo(() => {
-    const start = (currentPage - 1) * itemsPerPage;
-    return filteredReservations.slice(start, start + itemsPerPage);
-  }, [filteredReservations, currentPage, itemsPerPage]);
-
-  const updateFilter = (key: string, value: string) => {
-    const params = new URLSearchParams();
-    Object.entries(searchParams).forEach(([k, v]) => {
-      if (v) params.set(k, v);
-    });
-    if (value === "all") {
-      params.delete(key);
-    } else {
-      params.set(key, value);
-    }
-    params.set("page", "1");
-    router.push(`/admin/reservations?${params.toString()}`);
-  };
-
-  const handleReservationClick = (reservationId: number) => {
-    router.push(`/admin/reservations/${reservationId}`);
-  };
 
   const handleSearch = (value: string) => {
     const params = new URLSearchParams();
@@ -96,13 +63,27 @@ export default function ReservationsContent({
   return (
     <>
       <AdminHeader
-        title="예약 관리"
+        title="예약 공고 관리"
         onToggleSidebar={toggle}
         searchQuery={searchQuery}
         onSearch={handleSearch}
       />
 
       <div className="p-8">
+        <div className="flex items-center justify-between mb-4">
+          <p className="text-sm text-gray-600">
+            총 {totalElements}건
+          </p>
+          <button
+            type="button"
+            onClick={() => router.push("/admin/reservations/new")}
+            className="flex items-center gap-1.5 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors text-sm font-medium cursor-pointer"
+          >
+            <Plus size={16} />
+            예약 공고 등록
+          </button>
+        </div>
+
         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -114,51 +95,20 @@ export default function ReservationsContent({
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
                     제품명
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase relative">
-                    <button
-                      type="button"
-                      onClick={() => setShowBrandFilter(!showBrandFilter)}
-                      className="flex items-center gap-1 hover:text-amber-600 cursor-pointer"
-                    >
-                      브랜드
-                      <Filter size={12} />
-                    </button>
-                    {showBrandFilter && (
-                      <div className="absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-20 w-40 max-h-60 overflow-y-auto">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            updateFilter("brand", "all");
-                            setShowBrandFilter(false);
-                          }}
-                          className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 cursor-pointer ${brandFilter === "all" ? "bg-amber-50 text-amber-700" : ""}`}
-                        >
-                          전체
-                        </button>
-                        {brands.map((brand) => (
-                          <button
-                            type="button"
-                            key={brand}
-                            onClick={() => {
-                              updateFilter("brand", brand);
-                              setShowBrandFilter(false);
-                            }}
-                            className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 cursor-pointer ${brandFilter === brand ? "bg-amber-50 text-amber-700" : ""}`}
-                          >
-                            {brand}
-                          </button>
-                        ))}
-                      </div>
-                    )}
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                    브랜드
+                  </th>
+                  <th className="px-4 py-3 text-right text-xs font-semibold text-gray-700 uppercase">
+                    가격
+                  </th>
+                  <th className="px-4 py-3 text-center text-xs font-semibold text-gray-700 uppercase">
+                    신청/가용
+                  </th>
+                  <th className="px-4 py-3 text-center text-xs font-semibold text-gray-700 uppercase">
+                    승인
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
-                    예약자
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
-                    수량
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
-                    예약일
+                    예약기간
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
                     관리
@@ -166,46 +116,83 @@ export default function ReservationsContent({
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {paginatedReservations.map((reservation) => (
-                  <tr
-                    key={reservation.id}
-                    className="hover:bg-gray-50 transition-colors"
-                  >
-                    <td className="px-4 py-3 text-sm text-gray-900">
-                      {reservation.id}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-900 font-medium max-w-[200px] truncate">
-                      {reservation.productName}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-600">
-                      {reservation.brand}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-600">
-                      {reservation.username}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-600">
-                      {reservation.quantity}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-600">
-                      {reservation.reservationDate}
-                    </td>
-                    <td className="px-4 py-3 text-sm">
-                      <button
-                        type="button"
-                        onClick={() => handleReservationClick(reservation.id)}
-                        className="text-amber-600 hover:text-amber-700 cursor-pointer font-medium"
-                      >
-                        상세
-                      </button>
+                {notices.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={8}
+                      className="px-4 py-8 text-center text-gray-500"
+                    >
+                      예약 공고가 없습니다.
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  notices.map((notice) => (
+                    <tr
+                      key={notice.id}
+                      className="hover:bg-gray-50 transition-colors cursor-pointer"
+                      onClick={() => router.push(`/admin/reservations/${notice.id}`)}
+                    >
+                      <td className="px-4 py-3 text-sm text-gray-900">
+                        {notice.id}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-900 font-medium max-w-[200px] truncate">
+                        {notice.bottleName}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-600">
+                        {notice.bottleBrand ?? "-"}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-900 text-right">
+                        {notice.price?.toLocaleString()}원
+                      </td>
+                      <td className="px-4 py-3 text-sm text-center">
+                        <span className="text-blue-600 font-medium">
+                          {notice.appliedQuantity ?? 0}
+                        </span>
+                        <span className="text-gray-400 mx-1">/</span>
+                        <span className="text-gray-600">
+                          {notice.availableQuantity ?? 0}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-sm text-center">
+                        <span className="text-green-600 font-medium">
+                          {notice.approvedQuantity ?? 0}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">
+                        {formatPeriod(notice.reservationStartAt, notice.reservationEndAt)}
+                      </td>
+                      <td className="px-4 py-3 text-sm">
+                        <div
+                          className="flex items-center gap-1"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <button
+                            type="button"
+                            onClick={() => router.push(`/admin/reservations/${notice.id}`)}
+                            className="p-1.5 text-gray-500 hover:text-amber-600 hover:bg-amber-50 rounded-md transition-colors cursor-pointer"
+                            title="상세"
+                          >
+                            <Eye size={16} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => router.push(`/admin/reservations/${notice.id}/edit`)}
+                            className="p-1.5 text-gray-500 hover:text-amber-600 hover:bg-amber-50 rounded-md transition-colors cursor-pointer"
+                            title="수정"
+                          >
+                            <Pencil size={16} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
 
           <Pagination
-            totalItems={filteredReservations.length}
+            totalItems={totalElements}
             itemsPerPage={itemsPerPage}
             currentPage={currentPage}
             searchParams={searchParams}
