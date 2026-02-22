@@ -4,6 +4,10 @@ import { ArrowLeft, Award, Check, Edit2, Save, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import AdminHeader from "../../_components/AdminHeader";
 import { useSidebar } from "../../_components/AdminLayoutClient";
 
@@ -45,6 +49,12 @@ const DEFAULT_BENEFITS: MembershipBenefitsData = {
     },
   },
 };
+
+const BOOLEAN_BENEFIT_FIELDS = [
+  { key: "freeShipping" as const, label: "무료 배송" },
+  { key: "exclusiveProducts" as const, label: "독점 제품 액세스" },
+  { key: "prioritySupport" as const, label: "우선 고객 지원" },
+];
 
 export default function MembershipBenefitsContent() {
   const { toggle } = useSidebar();
@@ -116,32 +126,20 @@ export default function MembershipBenefitsContent() {
           <div className="flex gap-2">
             {isEditMode ? (
               <>
-                <button
-                  type="button"
-                  onClick={handleSave}
-                  className="px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors flex items-center gap-2 cursor-pointer"
-                >
+                <Button onClick={handleSave}>
                   <Save size={16} />
                   저장
-                </button>
-                <button
-                  type="button"
-                  onClick={handleCancel}
-                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors flex items-center gap-2 cursor-pointer"
-                >
+                </Button>
+                <Button variant="outline" onClick={handleCancel}>
                   <X size={16} />
                   취소
-                </button>
+                </Button>
               </>
             ) : (
-              <button
-                type="button"
-                onClick={handleEdit}
-                className="px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors flex items-center gap-2 cursor-pointer"
-              >
+              <Button onClick={handleEdit}>
                 <Edit2 size={16} />
                 편집
-              </button>
+              </Button>
             )}
           </div>
         </div>
@@ -165,23 +163,23 @@ export default function MembershipBenefitsContent() {
                   {isEditMode ? (
                     <>
                       <div>
-                        <label className="block text-xs text-gray-600 mb-1">
+                        <Label className="text-xs text-gray-600">
                           할인율 (%)
-                        </label>
-                        <input
+                        </Label>
+                        <Input
                           type="number"
                           value={brandBenefits.discount}
                           onChange={(e) =>
                             updateBenefit(key, "discount", Number(e.target.value))
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                          className="mt-1"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs text-gray-600 mb-1">
+                        <Label className="text-xs text-gray-600">
                           조기 접근 (일)
-                        </label>
-                        <input
+                        </Label>
+                        <Input
                           type="number"
                           value={brandBenefits.earlyAccess}
                           onChange={(e) =>
@@ -191,67 +189,25 @@ export default function MembershipBenefitsContent() {
                               Number(e.target.value),
                             )
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                          className="mt-1"
                         />
                       </div>
-                      <div className="flex items-center justify-between py-2">
-                        <span className="text-sm text-gray-700">무료 배송</span>
-                        <label className="relative inline-flex items-center cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={brandBenefits.freeShipping}
-                            onChange={(e) =>
-                              updateBenefit(
-                                key,
-                                "freeShipping",
-                                e.target.checked,
-                              )
+                      {BOOLEAN_BENEFIT_FIELDS.map(({ key: field, label: fieldLabel }) => (
+                        <div
+                          key={field}
+                          className="flex items-center justify-between py-2"
+                        >
+                          <Label className="text-sm text-gray-700">
+                            {fieldLabel}
+                          </Label>
+                          <Switch
+                            checked={brandBenefits[field]}
+                            onCheckedChange={(checked) =>
+                              updateBenefit(key, field, checked)
                             }
-                            className="sr-only peer"
                           />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-amber-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-600" />
-                        </label>
-                      </div>
-                      <div className="flex items-center justify-between py-2">
-                        <span className="text-sm text-gray-700">
-                          독점 제품 액세스
-                        </span>
-                        <label className="relative inline-flex items-center cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={brandBenefits.exclusiveProducts}
-                            onChange={(e) =>
-                              updateBenefit(
-                                key,
-                                "exclusiveProducts",
-                                e.target.checked,
-                              )
-                            }
-                            className="sr-only peer"
-                          />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-amber-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-600" />
-                        </label>
-                      </div>
-                      <div className="flex items-center justify-between py-2">
-                        <span className="text-sm text-gray-700">
-                          우선 고객 지원
-                        </span>
-                        <label className="relative inline-flex items-center cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={brandBenefits.prioritySupport}
-                            onChange={(e) =>
-                              updateBenefit(
-                                key,
-                                "prioritySupport",
-                                e.target.checked,
-                              )
-                            }
-                            className="sr-only peer"
-                          />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-amber-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-600" />
-                        </label>
-                      </div>
+                        </div>
+                      ))}
                     </>
                   ) : (
                     <>
@@ -267,30 +223,21 @@ export default function MembershipBenefitsContent() {
                           {brandBenefits.earlyAccess}일
                         </span>
                       </div>
-                      <div className="flex justify-between py-2 border-b border-gray-100">
-                        <span className="text-sm text-gray-600">무료 배송</span>
-                        {brandBenefits.freeShipping ? (
-                          <Check className="text-green-600" size={20} />
-                        ) : (
-                          <X className="text-gray-400" size={20} />
-                        )}
-                      </div>
-                      <div className="flex justify-between py-2 border-b border-gray-100">
-                        <span className="text-sm text-gray-600">독점 제품</span>
-                        {brandBenefits.exclusiveProducts ? (
-                          <Check className="text-green-600" size={20} />
-                        ) : (
-                          <X className="text-gray-400" size={20} />
-                        )}
-                      </div>
-                      <div className="flex justify-between py-2">
-                        <span className="text-sm text-gray-600">우선 지원</span>
-                        {brandBenefits.prioritySupport ? (
-                          <Check className="text-green-600" size={20} />
-                        ) : (
-                          <X className="text-gray-400" size={20} />
-                        )}
-                      </div>
+                      {BOOLEAN_BENEFIT_FIELDS.map(({ key: field, label: fieldLabel }) => (
+                        <div
+                          key={field}
+                          className={`flex justify-between py-2 ${field !== "prioritySupport" ? "border-b border-gray-100" : ""}`}
+                        >
+                          <span className="text-sm text-gray-600">
+                            {fieldLabel}
+                          </span>
+                          {brandBenefits[field] ? (
+                            <Check className="text-green-600" size={20} />
+                          ) : (
+                            <X className="text-gray-400" size={20} />
+                          )}
+                        </div>
+                      ))}
                     </>
                   )}
                 </div>

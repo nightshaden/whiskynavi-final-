@@ -1,11 +1,25 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 
-import { adminApi } from "@/apis/apis";
+import {
+  patchApiAdminUsersIdRolesAdd,
+  patchApiAdminUsersIdRolesRemove,
+} from "@/apis/generated/api";
+import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
 
-type MembershipBrand = "navi" | "tales";
+const brandSchema = z.enum(["navi", "tales"], {
+  message: "유효하지 않은 브랜드입니다.",
+});
+
+const membershipActionSchema = z.object({
+  userId: z.number().positive("유효하지 않은 사용자입니다."),
+  brand: brandSchema,
+});
+
+type MembershipBrand = z.infer<typeof brandSchema>;
 
 const BRAND_ROLE_MAP = {
   navi: "ROLE_WHISKYNAVI_MEMBER",
@@ -22,10 +36,19 @@ export async function addMembershipAction(
     return { success: false, error: "인증이 필요합니다." };
   }
 
-  const role = BRAND_ROLE_MAP[brand];
+  const parsed = membershipActionSchema.safeParse({ userId, brand });
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues[0].message };
+  }
+
+  const role = BRAND_ROLE_MAP[parsed.data.brand];
 
   try {
-    await adminApi.addUserRoles(userId, [role], { token });
+    await patchApiAdminUsersIdRolesAdd(
+      parsed.data.userId,
+      { roles: [role] },
+      withToken(token),
+    );
     revalidatePath("/admin/membership");
     return { success: true };
   } catch (error) {
@@ -47,10 +70,19 @@ export async function removeMembershipAction(
     return { success: false, error: "인증이 필요합니다." };
   }
 
-  const role = BRAND_ROLE_MAP[brand];
+  const parsed = membershipActionSchema.safeParse({ userId, brand });
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues[0].message };
+  }
+
+  const role = BRAND_ROLE_MAP[parsed.data.brand];
 
   try {
-    await adminApi.removeUserRoles(userId, [role], { token });
+    await patchApiAdminUsersIdRolesRemove(
+      parsed.data.userId,
+      { roles: [role] },
+      withToken(token),
+    );
     revalidatePath("/admin/membership");
     return { success: true };
   } catch (error) {

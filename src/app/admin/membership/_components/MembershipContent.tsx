@@ -3,6 +3,8 @@
 import { UserMinus, UserPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { overlay } from "overlay-kit";
+import { useTransition } from "react";
+import { toast } from "sonner";
 
 import type { AdminUserResponse, UserRole } from "@/apis/apis";
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 import AdminHeader from "../../_components/AdminHeader";
 import { useSidebar } from "../../_components/AdminLayoutClient";
 import Pagination from "../../_components/Pagination";
@@ -73,6 +76,7 @@ export default function MembershipContent({
 }: MembershipContentProps) {
   const { toggle } = useSidebar();
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const currentPage = Number(searchParams.page) || 1;
   const itemsPerPage = Number(searchParams.limit) || 20;
@@ -117,12 +121,14 @@ export default function MembershipContent({
         close={close}
         userName={user.name}
         username={user.username}
-        onConfirm={async () => {
-          const result = await removeMembershipAction(user.id, brand);
-          if (!result.success) {
-            alert(result.error);
-          }
-          router.refresh();
+        onConfirm={() => {
+          startTransition(async () => {
+            const result = await removeMembershipAction(user.id, brand);
+            if (!result.success) {
+              toast.error(result.error);
+            }
+            router.refresh();
+          });
         }}
       />
     ));
@@ -209,7 +215,7 @@ export default function MembershipContent({
         </div>
 
         {/* 멤버십 회원 목록 테이블 */}
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <div className={`bg-white rounded-lg border border-gray-200 overflow-hidden transition-opacity ${isPending ? "opacity-60 pointer-events-none" : ""}`}>
           <table className="w-full table-fixed">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
@@ -240,7 +246,7 @@ export default function MembershipContent({
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {users.length === 0 ? (
+              {users.length === 0 && !isPending ? (
                 <tr>
                   <td
                     colSpan={8}
@@ -249,6 +255,16 @@ export default function MembershipContent({
                     멤버십 회원이 없습니다.
                   </td>
                 </tr>
+              ) : users.length === 0 && isPending ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <tr key={`skeleton-${i}`}>
+                    {Array.from({ length: 8 }).map((_, j) => (
+                      <td key={`skeleton-${i}-${j}`} className="px-3 py-2">
+                        <Skeleton className="h-4 w-full" />
+                      </td>
+                    ))}
+                  </tr>
+                ))
               ) : (
                 users.map((user) => {
                   const memberType = getMemberType(user.roles);

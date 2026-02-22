@@ -1,4 +1,6 @@
-import { adminApi } from "@/apis/apis";
+import type { AdminUserResponse } from "@/apis/apis";
+import { getApiAdminUsers } from "@/apis/generated/api";
+import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
 import MembershipContent from "./_components/MembershipContent";
 
@@ -26,23 +28,25 @@ export default async function MembershipPage({
     | "navi"
     | "tales";
 
-  const users = await adminApi.getUsers(
+  const res = await getApiAdminUsers(
     {
-      pageNumber: params.page ? Number(params.page) - 1 : 0,
-      pageSize: params.limit ? Number(params.limit) : 20,
-      role: BRAND_ROLE_MAP[brand],
-      sortBy: params.sortBy || "createdAt",
-      sortDirection: params.sortDirection || "desc",
+      filters: {
+        pageNumber: params.page ? Number(params.page) - 1 : 0,
+        pageSize: params.limit ? Number(params.limit) : 20,
+        role: BRAND_ROLE_MAP[brand],
+        sortBy: params.sortBy || "createdAt",
+        sortDirection: params.sortDirection || "desc",
+      },
     },
-    { token },
+    withToken(token),
   );
 
   return (
     <MembershipContent
       searchParams={params}
       brand={brand}
-      users={users.content}
-      totalElements={users.totalElements}
+      users={(res.data.content ?? []) as AdminUserResponse[]}
+      totalElements={res.data.totalElements ?? 0}
     />
   );
 }
