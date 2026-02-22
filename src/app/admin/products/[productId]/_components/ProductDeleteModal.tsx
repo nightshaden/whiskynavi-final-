@@ -3,6 +3,7 @@
 import { AlertTriangle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type FC, useTransition } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -30,7 +31,7 @@ const ProductDeleteModal: FC<Props> = ({ isOpen, close, id }) => {
         close();
         router.push("/admin/products");
       } else {
-        alert(result.error || "제품 삭제에 실패했습니다.");
+        toast.error(result.error || "제품 삭제에 실패했습니다.");
       }
     });
   };
