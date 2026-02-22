@@ -1,3 +1,6 @@
+import { AuthError } from "./errors";
+import { handleAuthError } from "./handle-auth-error";
+
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://api.whiskynavi.com";
 
@@ -11,6 +14,11 @@ export const customFetch = async <T>(
     ...options,
     cache: "no-store",
   });
+
+  if (res.status === 403) {
+    await handleAuthError();
+    throw new AuthError();
+  }
 
   if (!res.ok) {
     let detail = "";

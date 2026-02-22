@@ -1,4 +1,5 @@
 import qs from "qs";
+import { AuthError } from "./errors";
 
 /** 직렬화 가능한 JSON 값 */
 export type JsonValue =
@@ -148,6 +149,9 @@ export async function http<
     ...rest,
   });
 
+  if (res.status === 403) {
+    throw new AuthError();
+  }
   if (!res.ok) {
     // 에러 본문을 최대한 읽어서 메시지에 담아주기
     let detail = "";

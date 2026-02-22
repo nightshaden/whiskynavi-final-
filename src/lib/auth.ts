@@ -1,9 +1,33 @@
 import type { NextAuthOptions } from "next-auth";
+import type { JWT } from "next-auth/jwt";
 import { getServerSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import KakaoProvider from "next-auth/providers/kakao";
 import { api } from "@/apis/apis";
+
+/** access token 선제 리프레시 간격 (25분) */
+const TOKEN_REFRESH_INTERVAL = 25 * 60 * 1000;
+
+async function refreshAccessToken(token: JWT): Promise<JWT> {
+  try {
+    const res = await api.refreshToken(token.refreshToken!);
+    return {
+      ...token,
+      accessToken: res.accessToken,
+      refreshToken: res.refreshToken,
+      tokenIssuedAt: Date.now(),
+      error: undefined,
+    };
+  } catch {
+    return {
+      ...token,
+      accessToken: undefined,
+      refreshToken: undefined,
+      error: "RefreshTokenError",
+    };
+  }
+}
 
 // Naver 커스텀 Provider
 const NaverProvider = {
@@ -106,13 +130,22 @@ export const authOptions: NextAuthOptions = {
         token.roles = user.roles;
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
+        token.tokenIssuedAt = Date.now();
 
         // 소셜 로그인의 경우 provider 정보 저장
         if (account) {
           token.provider = account.provider;
           token.providerAccountId = account.providerAccountId;
         }
+        return token;
       }
+
+      // 이후 호출: 토큰 리프레시 필요 여부 확인
+      const elapsed = Date.now() - (token.tokenIssuedAt ?? 0);
+      if (token.refreshToken && elapsed > TOKEN_REFRESH_INTERVAL) {
+        return refreshAccessToken(token);
+      }
+
       return token;
     },
 
