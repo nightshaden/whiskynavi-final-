@@ -1,7 +1,5 @@
-import { UserRole } from "@/apis/apis";
-
 // Role → 한글 라벨 매핑
-export const ROLE_LABEL_MAP: Record<UserRole, string> = {
+export const ROLE_LABEL_MAP: Record<string, string> = {
     ROLE_GUEST: "게스트",
     ROLE_USER: "일반 회원",
     ROLE_ADMIN: "관리자",
@@ -17,7 +15,7 @@ export const ROLE_LABEL_MAP: Record<UserRole, string> = {
   };
   
   // Role별 Badge 색상
-  export const ROLE_COLOR_MAP: Record<UserRole, string> = {
+  export const ROLE_COLOR_MAP: Record<string, string> = {
     ROLE_SUPER_ADMIN: "bg-red-100 text-red-700",
     ROLE_ADMIN: "bg-red-100 text-red-700",
     ROLE_BUSINESS: "bg-purple-100 text-purple-700",
@@ -65,6 +63,7 @@ export const RESERVATION_STATUS_LABEL: Record<string, string> = {
   APPLIED: "신청완료",
   CONFIRMED: "확정",
   CANCELLED: "취소",
+  REJECTED: "거절",
   WAITING_PICKUP: "픽업대기",
   RECEIVED: "수령완료",
 };
@@ -73,12 +72,13 @@ export const RESERVATION_STATUS_COLOR: Record<string, string> = {
   APPLIED: "bg-blue-100 text-blue-700",
   CONFIRMED: "bg-green-100 text-green-700",
   CANCELLED: "bg-gray-200 text-gray-700",
+  REJECTED: "bg-red-100 text-red-700",
   WAITING_PICKUP: "bg-amber-100 text-amber-700",
   RECEIVED: "bg-emerald-100 text-emerald-700",
 };
 
 // 권한 추가 드롭다운에 표시할 역할 (GUEST 제외)
-export const ASSIGNABLE_ROLES: UserRole[] = [
+export const ASSIGNABLE_ROLES: string[] = [
   "ROLE_USER",
   "ROLE_ADMIN",
   "ROLE_SUPER_ADMIN",

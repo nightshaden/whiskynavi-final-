@@ -505,6 +505,18 @@ export interface BottleAdminParameterValues {
 export type BottleAdminResponseExtraInfos = { [key: string]: string };
 
 /**
+ * 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값
+ */
+export type BottleAdminResponseReservationStatus =
+  (typeof BottleAdminResponseReservationStatus)[keyof typeof BottleAdminResponseReservationStatus];
+
+export const BottleAdminResponseReservationStatus = {
+  NO_RESERVATION: "NO_RESERVATION",
+  RESERVATION_ONGOING: "RESERVATION_ONGOING",
+  RESERVATION_COMPLETED: "RESERVATION_COMPLETED",
+} as const;
+
+/**
  * Admin response for bottle details.
  */
 export interface BottleAdminResponse {
@@ -542,6 +554,8 @@ export interface BottleAdminResponse {
   maltType?: string;
   /** Bottle display name. */
   name?: string;
+  /** 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값 */
+  reservationStatus?: BottleAdminResponseReservationStatus;
   /** Series name. */
   series?: string;
   /** Stock quantity (admin only). */
@@ -800,6 +814,18 @@ export interface BottleSearchParameterValues {
   series?: string[];
 }
 
+/**
+ * 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값
+ */
+export type BottleSearchRequestReservationStatus =
+  (typeof BottleSearchRequestReservationStatus)[keyof typeof BottleSearchRequestReservationStatus];
+
+export const BottleSearchRequestReservationStatus = {
+  NO_RESERVATION: "NO_RESERVATION",
+  RESERVATION_ONGOING: "RESERVATION_ONGOING",
+  RESERVATION_COMPLETED: "RESERVATION_COMPLETED",
+} as const;
+
 export interface BottleSearchRequest {
   abvFrom?: number;
   abvTo?: number;
@@ -815,6 +841,8 @@ export interface BottleSearchRequest {
   name?: string;
   pageNumber?: number;
   pageSize?: number;
+  /** 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값 */
+  reservationStatus?: BottleSearchRequestReservationStatus;
   series?: string;
   vintageFrom?: number;
   vintageTo?: number;
@@ -2252,11 +2280,25 @@ export type GetApiAdminBottlesParams = {
     name?: string;
     pageNumber?: number;
     pageSize?: number;
+    /** 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값 */
+    reservationStatus?: GetApiAdminBottlesFiltersReservationStatus;
     series?: string;
     vintageFrom?: number;
     vintageTo?: number;
   };
 };
+
+/**
+ * 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값
+ */
+export type GetApiAdminBottlesFiltersReservationStatus =
+  (typeof GetApiAdminBottlesFiltersReservationStatus)[keyof typeof GetApiAdminBottlesFiltersReservationStatus];
+
+export const GetApiAdminBottlesFiltersReservationStatus = {
+  NO_RESERVATION: "NO_RESERVATION",
+  RESERVATION_ONGOING: "RESERVATION_ONGOING",
+  RESERVATION_COMPLETED: "RESERVATION_COMPLETED",
+} as const;
 
 export type PostApiAdminBottlesParams = {
   name: string;
@@ -3148,11 +3190,25 @@ export type GetApiBottlesParams = {
     name?: string;
     pageNumber?: number;
     pageSize?: number;
+    /** 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값 */
+    reservationStatus?: GetApiBottlesFiltersReservationStatus;
     series?: string;
     vintageFrom?: number;
     vintageTo?: number;
   };
 };
+
+/**
+ * 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값
+ */
+export type GetApiBottlesFiltersReservationStatus =
+  (typeof GetApiBottlesFiltersReservationStatus)[keyof typeof GetApiBottlesFiltersReservationStatus];
+
+export const GetApiBottlesFiltersReservationStatus = {
+  NO_RESERVATION: "NO_RESERVATION",
+  RESERVATION_ONGOING: "RESERVATION_ONGOING",
+  RESERVATION_COMPLETED: "RESERVATION_COMPLETED",
+} as const;
 
 export type GetApiBottlesReservationsApplicationsMeParams = {
   /**
