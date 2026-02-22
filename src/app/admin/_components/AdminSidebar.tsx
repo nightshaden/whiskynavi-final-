@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Users, Package, Calendar, Award, Ban, Home } from "lucide-react";
-import { stats } from "../_data/mockData";
+import type { SidebarStats } from "../layout";
 
 const menuItems = [
   { id: "users", label: "회원 관리", icon: Users, href: "/admin/users" },
@@ -30,9 +30,12 @@ const menuItems = [
 
 interface AdminSidebarProps {
   isOpen: boolean;
+  stats: SidebarStats;
 }
 
-export default function AdminSidebar({ isOpen }: AdminSidebarProps) {
+const fmt = (v: number | null) => (v !== null ? v.toLocaleString() : "-");
+
+export default function AdminSidebar({ isOpen, stats }: AdminSidebarProps) {
   const pathname = usePathname();
 
   const isActive = (href: string) => {
@@ -92,36 +95,38 @@ export default function AdminSidebar({ isOpen }: AdminSidebarProps) {
           <div>
             <p className="text-xs text-gray-500">전체 회원</p>
             <p className="text-lg font-bold text-gray-900">
-              {stats.totalUsers.toLocaleString()}
+              {fmt(stats.totalUsers)}
             </p>
           </div>
           <div>
             <p className="text-xs text-gray-500">총 주문</p>
             <p className="text-lg font-bold text-gray-900">
-              {stats.totalOrders.toLocaleString()}
+              {fmt(stats.totalOrders)}
             </p>
           </div>
           <div>
-            <p className="text-xs text-gray-500">총 매출</p>
-            <p className="text-lg font-bold text-amber-600">
-              {(stats.totalRevenue / 100000000).toFixed(1)}억
-            </p>
-          </div>
-          <div>
-            <p className="text-xs text-gray-500">월 매출</p>
-            <p className="text-lg font-bold text-purple-600">
-              {(stats.monthlyRevenue / 100000000).toFixed(1)}억
-            </p>
-          </div>
-          <div>
-            <p className="text-xs text-gray-500">판매 제품</p>
+            <p className="text-xs text-gray-500">등록 제품</p>
             <p className="text-lg font-bold text-green-600">
-              {stats.activeProducts}
+              {fmt(stats.totalBottles)}
             </p>
           </div>
           <div>
-            <p className="text-xs text-gray-500">재고 부족</p>
-            <p className="text-lg font-bold text-red-600">{stats.lowStock}</p>
+            <p className="text-xs text-gray-500">예약 공고</p>
+            <p className="text-lg font-bold text-amber-600">
+              {fmt(stats.totalNotices)}
+            </p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-500">예약 신청</p>
+            <p className="text-lg font-bold text-purple-600">
+              {fmt(stats.totalApplications)}
+            </p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-500">사업자 회원</p>
+            <p className="text-lg font-bold text-blue-600">
+              {fmt(stats.totalBusinessMembers)}
+            </p>
           </div>
         </div>
       </div>

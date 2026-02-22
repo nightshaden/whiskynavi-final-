@@ -2,12 +2,11 @@
 
 import { useSidebar } from "./_components/AdminLayoutClient";
 import AdminHeader from "./_components/AdminHeader";
-import { stats } from "./_data/mockData";
-import { Users, Package, Calendar, Award, Ban, TrendingUp } from "lucide-react";
+import { Users, Package, Calendar, Award, Ban, Briefcase } from "lucide-react";
 import Link from "next/link";
 
 export default function AdminDashboardPage() {
-  const { toggle } = useSidebar();
+  const { toggle, stats } = useSidebar();
 
   const quickLinks = [
     {
@@ -61,77 +60,61 @@ export default function AdminDashboardPage() {
           <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-medium text-gray-500">전체 회원</h3>
-              <Users size={20} className="text-blue-500" />
+              <Users size={20} className="text-gray-700" />
             </div>
             <p className="text-3xl font-bold text-gray-900">
-              {stats.totalUsers.toLocaleString()}
-            </p>
-            <p className="text-sm text-green-600 mt-2 flex items-center gap-1">
-              <TrendingUp size={14} />
-              +12% 지난 달 대비
+              {stats.totalUsers?.toLocaleString() ?? "-"}
             </p>
           </div>
 
           <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-medium text-gray-500">총 주문</h3>
-              <Package size={20} className="text-green-500" />
+              <Package size={20} className="text-gray-700" />
             </div>
             <p className="text-3xl font-bold text-gray-900">
-              {stats.totalOrders.toLocaleString()}
-            </p>
-            <p className="text-sm text-green-600 mt-2 flex items-center gap-1">
-              <TrendingUp size={14} />
-              +8% 지난 달 대비
+              {stats.totalOrders?.toLocaleString() ?? "-"}
             </p>
           </div>
 
           <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-medium text-gray-500">총 매출</h3>
-              <Calendar size={20} className="text-amber-500" />
-            </div>
-            <p className="text-3xl font-bold text-amber-600">
-              {(stats.totalRevenue / 100000000).toFixed(1)}억
-            </p>
-            <p className="text-sm text-green-600 mt-2 flex items-center gap-1">
-              <TrendingUp size={14} />
-              +15% 지난 달 대비
-            </p>
-          </div>
-
-          <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-medium text-gray-500">월 매출</h3>
-              <Award size={20} className="text-purple-500" />
-            </div>
-            <p className="text-3xl font-bold text-purple-600">
-              {(stats.monthlyRevenue / 100000000).toFixed(1)}억
-            </p>
-            <p className="text-sm text-green-600 mt-2 flex items-center gap-1">
-              <TrendingUp size={14} />
-              +5% 지난 달 대비
-            </p>
-          </div>
-
-          <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-medium text-gray-500">판매 제품</h3>
+              <h3 className="text-sm font-medium text-gray-500">등록 제품</h3>
               <Package size={20} className="text-green-500" />
             </div>
             <p className="text-3xl font-bold text-green-600">
-              {stats.activeProducts}
+              {stats.totalBottles?.toLocaleString() ?? "-"}
             </p>
-            <p className="text-sm text-gray-500 mt-2">현재 판매 중</p>
           </div>
 
           <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-medium text-gray-500">재고 부족</h3>
-              <Ban size={20} className="text-red-500" />
+              <h3 className="text-sm font-medium text-gray-500">예약 공고</h3>
+              <Calendar size={20} className="text-amber-500" />
             </div>
-            <p className="text-3xl font-bold text-red-600">{stats.lowStock}</p>
-            <p className="text-sm text-red-500 mt-2">즉시 확인 필요</p>
+            <p className="text-3xl font-bold text-amber-600">
+              {stats.totalNotices?.toLocaleString() ?? "-"}
+            </p>
+          </div>
+
+          <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-medium text-gray-500">예약 신청</h3>
+              <Award size={20} className="text-purple-500" />
+            </div>
+            <p className="text-3xl font-bold text-purple-600">
+              {stats.totalApplications?.toLocaleString() ?? "-"}
+            </p>
+          </div>
+
+          <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-medium text-gray-500">사업자 회원</h3>
+              <Briefcase size={20} className="text-blue-500" />
+            </div>
+            <p className="text-3xl font-bold text-blue-600">
+              {stats.totalBusinessMembers?.toLocaleString() ?? "-"}
+            </p>
           </div>
         </div>
 

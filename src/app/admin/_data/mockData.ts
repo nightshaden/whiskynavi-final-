@@ -648,12 +648,3 @@ export const initialMembershipBenefits: MembershipBenefits = {
   },
 };
 
-// 통계 데이터
-export const stats = {
-  totalUsers: 1250,
-  totalOrders: 3456,
-  totalRevenue: 890000000,
-  monthlyRevenue: 125000000,
-  activeProducts: 45,
-  lowStock: 8,
-};
