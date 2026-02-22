@@ -3,7 +3,8 @@
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
-import type { AdminUserResponse } from "@/apis/apis";
+import { toast } from "sonner";
+import type { AdminUserResponse } from "@/apis/generated/api";
 import AdminHeader from "../../../../_components/AdminHeader";
 import { useSidebar } from "../../../../_components/AdminLayoutClient";
 import AdminUserDetailSection from "../../../../components/AdminUserDetailSection";
@@ -12,7 +13,7 @@ import {
   addUserRolesAction,
   removeUserRolesAction,
   replaceUserRoleAction,
-} from "../../actions";
+} from "../../../actions";
 
 interface UserEditContentProps {
   user: AdminUserResponse;
@@ -25,9 +26,9 @@ export default function UserEditContent({ user }: UserEditContentProps) {
 
   const handleStatusToggle = (newStatus: string) => {
     startTransition(async () => {
-      const result = await updateUserStatusAction(user.id, { ...user, status: newStatus });
+      const result = await updateUserStatusAction(user.id!, newStatus);
       if (!result.success) {
-        alert(result.error);
+        toast.error(result.error);
         return;
       }
       router.refresh();
@@ -36,9 +37,9 @@ export default function UserEditContent({ user }: UserEditContentProps) {
 
   const handleAddRole = (role: string) => {
     startTransition(async () => {
-      const result = await addUserRolesAction(user.id, [role]);
+      const result = await addUserRolesAction(user.id!, [role]);
       if (!result.success) {
-        alert(result.error);
+        toast.error(result.error);
         return;
       }
       router.refresh();
@@ -47,9 +48,9 @@ export default function UserEditContent({ user }: UserEditContentProps) {
 
   const handleRemoveRole = (role: string) => {
     startTransition(async () => {
-      const result = await removeUserRolesAction(user.id, [role]);
+      const result = await removeUserRolesAction(user.id!, [role]);
       if (!result.success) {
-        alert(result.error);
+        toast.error(result.error);
         return;
       }
       router.refresh();
@@ -58,9 +59,9 @@ export default function UserEditContent({ user }: UserEditContentProps) {
 
   const handleReplaceRole = (oldRole: string, newRole: string) => {
     startTransition(async () => {
-      const result = await replaceUserRoleAction(user.id, oldRole, newRole);
+      const result = await replaceUserRoleAction(user.id!, oldRole, newRole);
       if (!result.success) {
-        alert(result.error);
+        toast.error(result.error);
         return;
       }
       router.refresh();

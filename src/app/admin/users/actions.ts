@@ -1,11 +1,16 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import type { AdminUserResponse } from "@/apis/apis";
-import { adminApi } from "@/apis/apis";
+import {
+  deleteApiAdminUsersId,
+  patchApiAdminUsersIdStatus,
+  patchApiAdminUsersIdRolesAdd,
+  patchApiAdminUsersIdRolesRemove,
+} from "@/apis/generated/api";
 import { getAuthToken } from "@/lib/auth";
+import { withToken } from "@/apis/mutator";
 
-export async function updateUserStatusAction(userId: number, user: AdminUserResponse) {
+export async function deleteUserAction(userId: number) {
   const token = await getAuthToken();
 
   if (!token) {
@@ -13,7 +18,25 @@ export async function updateUserStatusAction(userId: number, user: AdminUserResp
   }
 
   try {
-    await adminApi.updateUserStatus(userId, user, { token });
+    await deleteApiAdminUsersId(userId, withToken(token));
+    revalidatePath("/admin/users");
+    return { success: true };
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "회원 삭제에 실패했습니다.";
+    return { success: false, error: message };
+  }
+}
+
+export async function updateUserStatusAction(userId: number, status: string) {
+  const token = await getAuthToken();
+
+  if (!token) {
+    return { success: false, error: "인증이 필요합니다." };
+  }
+
+  try {
+    await patchApiAdminUsersIdStatus(userId, { status }, withToken(token));
     revalidatePath(`/admin/users/${userId}`);
     return { success: true };
   } catch (error) {
@@ -31,7 +54,7 @@ export async function addUserRolesAction(userId: number, roles: string[]) {
   }
 
   try {
-    await adminApi.addUserRoles(userId, roles, { token });
+    await patchApiAdminUsersIdRolesAdd(userId, { roles }, withToken(token));
     revalidatePath(`/admin/users/${userId}`);
     return { success: true };
   } catch (error) {
@@ -49,7 +72,7 @@ export async function removeUserRolesAction(userId: number, roles: string[]) {
   }
 
   try {
-    await adminApi.removeUserRoles(userId, roles, { token });
+    await patchApiAdminUsersIdRolesRemove(userId, { roles }, withToken(token));
     revalidatePath(`/admin/users/${userId}`);
     return { success: true };
   } catch (error) {
@@ -71,8 +94,8 @@ export async function replaceUserRoleAction(
   }
 
   try {
-    await adminApi.removeUserRoles(userId, [oldRole], { token });
-    await adminApi.addUserRoles(userId, [newRole], { token });
+    await patchApiAdminUsersIdRolesRemove(userId, { roles: [oldRole] }, withToken(token));
+    await patchApiAdminUsersIdRolesAdd(userId, { roles: [newRole] }, withToken(token));
     revalidatePath(`/admin/users/${userId}`);
     return { success: true };
   } catch (error) {

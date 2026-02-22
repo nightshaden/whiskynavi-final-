@@ -15,6 +15,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { overlay } from "overlay-kit";
 import { Label } from "@/components/ui/label";
 import {
@@ -29,8 +30,7 @@ import { IconGoogle, IconKakao, IconNaver } from "@/icons";
 import type {
   AdminUserResponse,
   AdminUserOrderSummaryResponse,
-  UserRole,
-} from "@/apis/apis";
+} from "@/apis/generated/api";
 import { ROLE_LABEL_MAP, ROLE_COLOR_MAP, ORDER_STATUS_COLOR, ORDER_STATUS_LABEL, ASSIGNABLE_ROLES } from "../constants";
 import AdminConfirmModal from "./modals/AdminConfirmModal";
 import RoleConflictModal from "./modals/RoleConflictModal";
@@ -45,7 +45,7 @@ const ORDER_TYPE_LABEL: Record<string, string> = {
 
 // ─── 유틸 ─────────────────────────────────────────────────────
 // 같은 그룹 내 역할은 하나만 가질 수 있음 (추가 시 교체 확인)
-const ROLE_CONFLICT_GROUPS: { name: string; roles: UserRole[] }[] = [
+const ROLE_CONFLICT_GROUPS: { name: string; roles: string[] }[] = [
   { name: "관리자", roles: ["ROLE_ADMIN", "ROLE_SUPER_ADMIN"] },
   { name: "업장", roles: ["ROLE_BUSINESS", "ROLE_TRAILNTALE_BUSINESS", "ROLE_COMMUNITY_BUSINESS", "ROLE_PICK_UP_BUSINESS"] },
 ];
@@ -94,16 +94,16 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
 
   // 권한 편집
   const [isEditingRoles, setIsEditingRoles] = useState(false);
-  const [newRole, setNewRole] = useState<UserRole | "">("");
+  const [newRole, setNewRole] = useState("");
 
   // ── 권한 충돌 체크 ───────────────────────────────────
-  const checkRoleConflict = (roleToAdd: UserRole) => {
+  const checkRoleConflict = (roleToAdd: string) => {
     const group = ROLE_CONFLICT_GROUPS.find((g) =>
       g.roles.includes(roleToAdd),
     );
     if (!group) return { hasConflict: false, message: "", conflictingRole: null };
 
-    const conflictingRole = userDetails.roles.find(
+    const conflictingRole = (userDetails.roles ?? []).find(
       (role) => group.roles.includes(role) && role !== roleToAdd,
     ) ?? null;
 
@@ -119,15 +119,15 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
   };
 
   // ── 관리자 권한 여부 ──────────────────────────────────
-  const isAdminRole = (role: UserRole) =>
+  const isAdminRole = (role: string) =>
     role === "ROLE_ADMIN" || role === "ROLE_SUPER_ADMIN";
 
   // ── 권한 추가 핸들러 ──────────────────────────────────
   const handleAddRole = () => {
     if (!newRole || !onAddRole) return;
 
-    if (userDetails.roles.includes(newRole)) {
-      alert("이미 보유한 권한입니다.");
+    if ((userDetails.roles ?? []).includes(newRole)) {
+      toast.error("이미 보유한 권한입니다.");
       return;
     }
 
@@ -138,8 +138,8 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
         <AdminConfirmModal
           isOpen={isOpen}
           close={close}
-          userName={userDetails.name}
-          username={userDetails.username}
+          userName={userDetails.name ?? ""}
+          username={userDetails.username ?? ""}
           onConfirm={() => {
             if (conflict.hasConflict && conflict.conflictingRole) {
               onReplaceRole?.(conflict.conflictingRole, newRole);
@@ -419,14 +419,14 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                       <div className="mt-3 flex gap-2">
                         <Select
                           value={newRole}
-                          onValueChange={(value) => setNewRole(value as UserRole)}
+                          onValueChange={(value) => setNewRole(value)}
                         >
                           <SelectTrigger className="flex-1 text-sm">
                             <SelectValue placeholder="권한 선택" />
                           </SelectTrigger>
                           <SelectContent>
                             {ASSIGNABLE_ROLES.filter(
-                              (role) => !userDetails.roles.includes(role),
+                              (role) => !(userDetails.roles ?? []).includes(role),
                             ).map((role) => (
                               <SelectItem key={role} value={role}>
                                 {ROLE_LABEL_MAP[role]}
@@ -503,7 +503,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                       <div>
                         <p className="text-amber-100 text-sm font-medium">총 구매 금액</p>
                         <p className="text-white text-2xl font-bold mt-1">
-                          {orderSummary.totalAmount.toLocaleString()}원
+                          {(orderSummary.totalAmount ?? 0).toLocaleString()}원
                         </p>
                       </div>
                       <div className="text-right">
@@ -516,7 +516,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                   </div>
 
                   {/* 주문 테이블 */}
-                  {orderSummary.orders.length > 0 ? (
+                  {(orderSummary.orders ?? []).length > 0 ? (
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
                         <thead>
@@ -532,7 +532,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                           </tr>
                         </thead>
                         <tbody>
-                          {orderSummary.orders.map((order) => (
+                          {(orderSummary.orders ?? []).map((order) => (
                             <tr
                               key={order.id}
                               className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
@@ -544,7 +544,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                                 {order.orderNumber}
                               </td>
                               <td className="py-3 px-3 text-gray-600">
-                                {ORDER_TYPE_LABEL[order.orderType] ?? order.orderType}
+                                {ORDER_TYPE_LABEL[order.orderType ?? ""] ?? order.orderType}
                               </td>
                               <td className="py-3 px-3 text-right text-gray-900 font-medium">
                                 {order.requestedQuantity}병
@@ -553,10 +553,10 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                                 {order.approvedQuantity != null ? `${order.approvedQuantity}병` : "-"}
                               </td>
                               <td className="py-3 px-3 text-right text-gray-900 font-medium">
-                                {order.totalPrice.toLocaleString()}원
+                                {(order.totalPrice ?? 0).toLocaleString()}원
                               </td>
                               <td className="py-3 px-3 text-gray-600">
-                                {new Date(order.createdAt)
+                                {new Date(order.createdAt ?? "")
                                   .toLocaleDateString("ko-KR", {
                                     year: "numeric",
                                     month: "2-digit",
@@ -568,11 +568,11 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                               <td className="py-3 px-3">
                                 <span
                                   className={`px-2 py-1 rounded text-xs font-medium ${
-                                    ORDER_STATUS_COLOR[order.orderStatus] ??
+                                    ORDER_STATUS_COLOR[order.orderStatus ?? ""] ??
                                     "bg-gray-100 text-gray-700"
                                   }`}
                                 >
-                                  {ORDER_STATUS_LABEL[order.orderStatus] ??
+                                  {ORDER_STATUS_LABEL[order.orderStatus ?? ""] ??
                                     order.orderStatus}
                                 </span>
                               </td>

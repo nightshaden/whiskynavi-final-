@@ -1,5 +1,10 @@
-import { adminApi } from "@/apis/apis";
+import { notFound } from "next/navigation";
+import {
+  getApiAdminUsersId,
+  getApiAdminOrdersUsersUserid,
+} from "@/apis/generated/api";
 import { getAuthToken } from "@/lib/auth";
+import { withToken } from "@/apis/mutator";
 import UserDetailContent from "./_components/UserDetailContent";
 
 interface UserDetailPageProps {
@@ -10,10 +15,20 @@ export default async function UserDetailPage({ params }: UserDetailPageProps) {
   const { userId } = await params;
   const token = await getAuthToken();
 
-  const [user, orderSummary] = await Promise.all([
-    adminApi.getUser(Number(userId), { token }),
-    adminApi.getUserOrders(Number(userId), { page: 0, size: 20 }, { token }),
-  ]);
-  
-  return <UserDetailContent user={user} orderSummary={orderSummary} />;
+  try {
+    const [userRes, orderRes] = await Promise.all([
+      getApiAdminUsersId(Number(userId), withToken(token)),
+      getApiAdminOrdersUsersUserid(
+        Number(userId),
+        { page: 0, size: 20 },
+        withToken(token),
+      ),
+    ]);
+
+    return (
+      <UserDetailContent user={userRes.data} orderSummary={orderRes.data} />
+    );
+  } catch {
+    notFound();
+  }
 }

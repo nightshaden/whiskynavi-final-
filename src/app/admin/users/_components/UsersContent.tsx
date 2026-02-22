@@ -1,24 +1,26 @@
 "use client";
 
-import { Eye, Pencil } from "lucide-react";
+import { Eye, Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { overlay } from "overlay-kit";
 import { Badge } from "@/components/ui/badge";
-import type { AdminUserResponse, UserRole } from "@/apis/apis";
+import type { AdminUserResponse } from "@/apis/generated/api";
 import AdminHeader from "../../_components/AdminHeader";
 import { useSidebar } from "../../_components/AdminLayoutClient";
 import FilterHeader from "../../_components/FilterHeader";
 import Pagination from "../../_components/Pagination";
 import { useTableFilter } from "../../_components/useTableFilter";
 import { ROLE_COLOR_MAP, ROLE_LABEL_MAP } from "../../constants";
+import UserDeleteModal from "../[userId]/_components/UserDeleteModal";
 
 
 // 헬퍼 함수: 회원 유형 (SUPER_ADMIN > ADMIN > 나머지 일반 roles)
-const MEMBER_TYPE_ROLES: UserRole[] = [
+const MEMBER_TYPE_ROLES: string[] = [
   "ROLE_SUPER_ADMIN",
   "ROLE_ADMIN",
 ];
 
-const getMemberType = (roles: UserRole[]): { label: string; color: string } | null => {
+const getMemberType = (roles: string[]): { label: string; color: string } | null => {
   for (const role of MEMBER_TYPE_ROLES) {
     if (roles.includes(role)) {
       return { label: ROLE_LABEL_MAP[role], color: ROLE_COLOR_MAP[role] };
@@ -31,20 +33,20 @@ const getMemberType = (roles: UserRole[]): { label: string; color: string } | nu
 };
 
 // 헬퍼 함수: 비즈니스 roles 추출
-const BUSINESS_ROLES: UserRole[] = [
+const BUSINESS_ROLES: string[] = [
   "ROLE_BUSINESS",
   "ROLE_TRAILNTALE_BUSINESS",
   "ROLE_COMMUNITY_BUSINESS",
   "ROLE_PICK_UP_BUSINESS",
 ];
 
-const SUB_BUSINESS_ROLES: UserRole[] = [
+const SUB_BUSINESS_ROLES: string[] = [
   "ROLE_TRAILNTALE_BUSINESS",
   "ROLE_COMMUNITY_BUSINESS",
   "ROLE_PICK_UP_BUSINESS",
 ];
 
-const getBusinessRoles = (roles: UserRole[]): { label: string; color: string }[] => {
+const getBusinessRoles = (roles: string[]): { label: string; color: string }[] => {
   const hasSub = SUB_BUSINESS_ROLES.some((role) => roles.includes(role));
   return BUSINESS_ROLES
     .filter((role) => roles.includes(role) && !(hasSub && role === "ROLE_BUSINESS"))
@@ -253,7 +255,7 @@ export default function UsersContent({
                   </tr>
                 ) : (
                   users.map((user) => {
-                    const memberType = getMemberType(user.roles);
+                    const memberType = getMemberType(user.roles ?? []);
                     return (
                     <tr
                       key={user.id}
@@ -281,7 +283,7 @@ export default function UsersContent({
                         )}
                       </td>
                       <td className="px-4 py-3 text-sm">
-                        {user.roles.includes("ROLE_WHISKYNAVI_MEMBER") ? (
+                        {user.roles?.includes("ROLE_WHISKYNAVI_MEMBER") ? (
                           <Badge className="bg-amber-100 text-amber-700">
                           내비
                           </Badge>
@@ -290,7 +292,7 @@ export default function UsersContent({
                         )}
                       </td>
                       <td className="px-4 py-3 text-sm">
-                        {user.roles.includes("ROLE_WHISKYTALES_MEMBER") ? (
+                        {user.roles?.includes("ROLE_WHISKYTALES_MEMBER") ? (
                           <Badge className="bg-blue-100 text-blue-700">
                             테일즈
                           </Badge>
@@ -299,9 +301,9 @@ export default function UsersContent({
                         )}
                       </td>
                       <td className="px-4 py-3 text-sm">
-                        {getBusinessRoles(user.roles).length > 0 ? (
+                        {getBusinessRoles(user.roles ?? []).length > 0 ? (
                           <div className="flex flex-wrap gap-1">
-                            {getBusinessRoles(user.roles).map((role) => (
+                            {getBusinessRoles(user.roles ?? []).map((role) => (
                               <Badge key={role.label} className={role.color}>
                                 {role.label}
                               </Badge>
@@ -323,7 +325,7 @@ export default function UsersContent({
                         </Badge>
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-600">
-                        {formatJoinDate(user.createdAt)}
+                        {formatJoinDate(user.createdAt ?? "")}
                       </td>
                       <td className="px-4 py-3 text-sm">
                         <div className="flex items-center gap-1">
@@ -342,6 +344,18 @@ export default function UsersContent({
                             title="수정"
                           >
                             <Pencil size={16} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              overlay.open((props) => (
+                                <UserDeleteModal {...props} id={user.id!} />
+                              ))
+                            }
+                            className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors cursor-pointer"
+                            title="삭제"
+                          >
+                            <Trash2 size={16} />
                           </button>
                         </div>
                       </td>

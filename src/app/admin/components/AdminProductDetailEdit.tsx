@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 import type { BottleAdminResponse } from "@/apis/generated/api";
 import { Label } from "@/components/ui/label";
+import CurrencyInput from "../_components/CurrencyInput";
 
 interface AdminProductDetailEditProps {
   defaultValues?: BottleAdminResponse;
@@ -214,22 +215,20 @@ export default function AdminProductDetailEdit({
           </div>
 
           <div className="flex gap-3">
-            <Label className="w-32 text-sm text-gray-700">공급가 (원)</Label>
-            <input
-              type="number"
+            <Label className="w-32 text-sm text-gray-700">공급가</Label>
+            <CurrencyInput
               name="supplyPrice"
               defaultValue={defaultValues?.supplyPrice}
-              className="flex-1 px-2 py-1 border border-gray-300 rounded text-sm"
+              className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
             />
           </div>
 
           <div className="flex gap-3">
-            <Label className="w-32 text-sm text-gray-700">소비자가 (원)</Label>
-            <input
-              type="number"
+            <Label className="w-32 text-sm text-gray-700">소비자가</Label>
+            <CurrencyInput
               name="consumerPrice"
               defaultValue={defaultValues?.consumerPrice}
-              className="flex-1 px-2 py-1 border border-gray-300 rounded text-sm"
+              className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
             />
           </div>
 
