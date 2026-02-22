@@ -4,9 +4,12 @@ import { Edit2, Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { overlay } from "overlay-kit";
 import { useMemo, useTransition } from "react";
+import { toast } from "sonner";
 
 import type { AdminUserResponse } from "@/apis/apis";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Tooltip,
   TooltipContent,
@@ -84,7 +87,7 @@ export default function BlacklistContent({
               close();
               router.refresh();
             } else {
-              alert(result.error);
+              toast.error(result.error);
             }
           });
         }}
@@ -116,7 +119,7 @@ export default function BlacklistContent({
               close();
               router.refresh();
             } else {
-              alert(result.error);
+              toast.error(result.error);
             }
           });
         }}
@@ -136,7 +139,7 @@ export default function BlacklistContent({
               close();
               router.refresh();
             } else {
-              alert(result.error);
+              toast.error(result.error);
             }
           });
         }}
@@ -186,7 +189,7 @@ export default function BlacklistContent({
           </Button>
         </div>
 
-        <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+        <div className={`overflow-hidden rounded-lg border border-gray-200 bg-white transition-opacity ${isPending ? "opacity-60 pointer-events-none" : ""}`}>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="border-b border-gray-200 bg-gray-50">
@@ -215,7 +218,7 @@ export default function BlacklistContent({
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {paginatedBlacklist.length === 0 ? (
+                {paginatedBlacklist.length === 0 && !isPending ? (
                   <tr>
                     <td
                       colSpan={7}
@@ -224,6 +227,16 @@ export default function BlacklistContent({
                       블랙리스트가 없습니다.
                     </td>
                   </tr>
+                ) : paginatedBlacklist.length === 0 && isPending ? (
+                  Array.from({ length: 5 }).map((_, i) => (
+                    <tr key={`skeleton-${i}`}>
+                      {Array.from({ length: 7 }).map((_, j) => (
+                        <td key={`skeleton-${i}-${j}`} className="px-4 py-3">
+                          <Skeleton className="h-4 w-full" />
+                        </td>
+                      ))}
+                    </tr>
+                  ))
                 ) : (
                   paginatedBlacklist.map((item) => (
                     <tr
@@ -263,17 +276,11 @@ export default function BlacklistContent({
                         {formatDate(item.userExt?.banStartDate)}
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-600">
-                        <span
-                          className={
-                            isPermanentBan(item.userExt?.banEndDate)
-                              ? "font-semibold text-red-600"
-                              : ""
-                          }
-                        >
-                          {isPermanentBan(item.userExt?.banEndDate)
-                            ? "영구"
-                            : formatDate(item.userExt?.banEndDate)}
-                        </span>
+                        {isPermanentBan(item.userExt?.banEndDate) ? (
+                          <Badge variant="destructive">영구</Badge>
+                        ) : (
+                          formatDate(item.userExt?.banEndDate)
+                        )}
                       </td>
                       <td className="px-4 py-3 text-sm">
                         <div className="flex items-center gap-2">

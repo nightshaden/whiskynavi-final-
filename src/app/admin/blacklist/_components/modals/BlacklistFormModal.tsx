@@ -1,13 +1,7 @@
 "use client";
 
-import { format } from "date-fns";
-import { ko } from "date-fns/locale";
-import { CalendarIcon } from "lucide-react";
-
 import type { BlacklistRequest } from "@/apis/apis";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -16,13 +10,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
+import DateTimePicker from "../../../_components/DateTimePicker";
 import { useBlacklistForm } from "../hooks/useBlacklistForm";
 import UserSearchInput from "../UserSearchInput";
 
@@ -101,84 +91,40 @@ export default function BlacklistFormModal({
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <Label>시작일</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <button
-                    type="button"
-                    className={cn(
-                      "flex w-full items-center justify-between rounded-lg border border-gray-300 px-3 py-2 text-left focus:outline-none focus:ring-2 focus:ring-red-500",
-                      !formState.startAt && "text-gray-400",
-                    )}
-                  >
-                    {formState.startAt
-                      ? format(formState.startAt, "yyyy년 MM월 dd일", {
-                          locale: ko,
-                        })
-                      : "날짜 선택"}
-                    <CalendarIcon className="h-4 w-4 text-gray-400" />
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={formState.startAt}
-                    onSelect={(date) =>
-                      dispatch({ type: "SET_START_DATE", payload: date })
-                    }
-                    locale={ko}
-                  />
-                </PopoverContent>
-              </Popover>
+              <DateTimePicker
+                value={formState.startAt}
+                onChange={(iso) =>
+                  dispatch({ type: "SET_START_DATE", payload: iso })
+                }
+                placeholder="시작일 선택"
+              />
             </div>
             <div className="space-y-1.5">
               <Label>종료일</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <button
-                    type="button"
-                    disabled={formState.isPermanent}
-                    className={cn(
-                      "flex w-full items-center justify-between rounded-lg border border-gray-300 px-3 py-2 text-left focus:outline-none focus:ring-2 focus:ring-red-500 disabled:cursor-not-allowed disabled:bg-gray-100",
-                      !formState.endAt &&
-                        !formState.isPermanent &&
-                        "text-gray-400",
-                    )}
-                  >
-                    {formState.isPermanent
-                      ? "영구 제재"
-                      : formState.endAt
-                        ? format(formState.endAt, "yyyy년 MM월 dd일", {
-                            locale: ko,
-                          })
-                        : "날짜 선택"}
-                    <CalendarIcon className="h-4 w-4 text-gray-400" />
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={formState.endAt ?? undefined}
-                    onSelect={(date) =>
-                      dispatch({ type: "SET_END_DATE", payload: date ?? null })
-                    }
-                    locale={ko}
-                    disabled={(date) =>
-                      formState.startAt ? date < formState.startAt : false
-                    }
-                  />
-                </PopoverContent>
-              </Popover>
+              {formState.isPermanent ? (
+                <div className="flex h-9 w-full items-center rounded-md border bg-gray-100 px-3 py-2 text-sm text-gray-500">
+                  영구 제재
+                </div>
+              ) : (
+                <DateTimePicker
+                  value={formState.endAt ?? undefined}
+                  onChange={(iso) =>
+                    dispatch({ type: "SET_END_DATE", payload: iso })
+                  }
+                  placeholder="종료일 선택"
+                />
+              )}
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <Checkbox
+            <Switch
               id="permanent"
               checked={formState.isPermanent}
               onCheckedChange={(checked) =>
                 dispatch({
                   type: "TOGGLE_PERMANENT",
-                  payload: checked === true,
+                  payload: checked,
                 })
               }
             />

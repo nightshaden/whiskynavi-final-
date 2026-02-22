@@ -1,10 +1,10 @@
 "use client";
 
 import { useReducer, useTransition } from "react";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import type { BlacklistRequest } from "@/apis/apis";
-import { format } from "date-fns";
 
 type BlacklistFormData = BlacklistRequest & {
   userId: number;
@@ -15,8 +15,8 @@ export type FormState = {
   userId: string;
   name: string;
   reason: string;
-  startAt: Date | undefined;
-  endAt: Date | null;
+  startAt: string | undefined;
+  endAt: string | null;
   isPermanent: boolean;
 };
 
@@ -24,8 +24,8 @@ type FormAction =
   | { type: "SET_USER"; payload: { userId: string; name: string } }
   | { type: "CLEAR_USER" }
   | { type: "SET_REASON"; payload: string }
-  | { type: "SET_START_DATE"; payload: Date | undefined }
-  | { type: "SET_END_DATE"; payload: Date | null }
+  | { type: "SET_START_DATE"; payload: string | undefined }
+  | { type: "SET_END_DATE"; payload: string | null }
   | { type: "TOGGLE_PERMANENT"; payload: boolean }
   | { type: "RESET"; payload: FormState };
 
@@ -52,26 +52,21 @@ function formReducer(state: FormState, action: FormAction): FormState {
   }
 }
 
-function parseDate(dateStr?: string): Date | undefined {
-  if (!dateStr) return undefined;
-  const date = new Date(dateStr);
-  return Number.isNaN(date.getTime()) ? undefined : date;
-}
-
-function formatDateString(date: Date | undefined, isEndDate = false): string {
-  if (!date) return "";
-  const time = isEndDate ? "T23:59:59" : "T00:00:00";
-  return format(date, "yyyy-MM-dd") + time;
+function isPermanentBanDate(endAt?: string | null): boolean {
+  if (!endAt) return true;
+  const year = new Date(endAt).getFullYear();
+  return year >= 3000;
 }
 
 function getInitialState(initialData?: BlacklistFormData): FormState {
+  const isPermanent = isPermanentBanDate(initialData?.endAt);
   return {
     userId: initialData?.userId?.toString() ?? "",
     name: initialData?.name ?? "",
     reason: initialData?.reason ?? "",
-    startAt: parseDate(initialData?.startAt),
-    endAt: initialData?.endAt ? (parseDate(initialData.endAt) ?? null) : null,
-    isPermanent: !initialData?.endAt,
+    startAt: initialData?.startAt || undefined,
+    endAt: isPermanent ? null : (initialData?.endAt || null),
+    isPermanent,
   };
 }
 
@@ -106,7 +101,7 @@ export function useBlacklistForm({
 
     if (!result.success) {
       const firstError = result.error.issues[0];
-      alert(firstError.message);
+      toast.error(firstError.message);
       return;
     }
 
@@ -115,10 +110,8 @@ export function useBlacklistForm({
         userId: Number(formState.userId),
         name: formState.name,
         reason: formState.reason,
-        startAt: formatDateString(formState.startAt),
-        endAt: formState.isPermanent
-          ? null
-          : formatDateString(formState.endAt ?? undefined, true),
+        startAt: formState.startAt ?? "",
+        endAt: formState.isPermanent ? null : (formState.endAt ?? null),
       });
     });
   };
