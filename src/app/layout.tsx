@@ -6,6 +6,7 @@ import { siteConfig } from "@/config/site";
 import { AuthProvider } from "@/providers/AuthProvider";
 import { pretendard } from "@/styles/fonts";
 import { OverlayProvider } from "overlay-kit";
+import { Toaster } from "@/components/ui/sonner";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL || "https://www.whiskynavi.com";
@@ -113,6 +114,7 @@ export default function RootLayout({
             {children}
             {/* </main> */}
             <Footer />
+            <Toaster richColors position="top-center" />
           </OverlayProvider>
         </AuthProvider>
       </body>
