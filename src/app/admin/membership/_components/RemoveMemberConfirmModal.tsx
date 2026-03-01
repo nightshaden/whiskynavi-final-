@@ -1,6 +1,5 @@
 "use client";
 
-import { AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,6 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { AlertTriangle } from "lucide-react";
 
 interface RemoveMemberConfirmModalProps {
   isOpen: boolean;
@@ -34,13 +34,11 @@ export default function RemoveMemberConfirmModal({
     <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+          <div className="mb-3 flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
               <AlertTriangle size={24} className="text-red-600" />
             </div>
-            <DialogTitle className="text-xl font-bold">
-              멤버십 해제
-            </DialogTitle>
+            <DialogTitle className="text-xl font-bold">멤버십 해제</DialogTitle>
           </div>
           <p className="text-gray-700">
             <span className="font-bold text-gray-900">
@@ -49,7 +47,7 @@ export default function RemoveMemberConfirmModal({
             회원의 멤버십을 정말로{" "}
             <span className="font-bold text-red-600">해제</span>하시겠습니까?
           </p>
-          <p className="text-sm text-gray-500 mt-2">
+          <p className="mt-2 text-sm text-gray-500">
             해제된 멤버십은 다시 추가할 수 있습니다.
           </p>
         </DialogHeader>

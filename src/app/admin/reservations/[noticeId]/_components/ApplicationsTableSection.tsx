@@ -1,18 +1,18 @@
 "use client";
 
-import { Check, X, Ban } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { overlay } from "overlay-kit";
 import type { BottleReservationApplicationResponse } from "@/apis/generated/api";
 import { Badge } from "@/components/ui/badge";
+import { Ban, Check, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { overlay } from "overlay-kit";
 import Pagination from "../../../_components/Pagination";
 import {
-  RESERVATION_STATUS_LABEL,
   RESERVATION_STATUS_COLOR,
+  RESERVATION_STATUS_LABEL,
 } from "../../../constants";
+import ApplicationCancelModal from "./ApplicationCancelModal";
 import ApplicationConfirmModal from "./ApplicationConfirmModal";
 import ApplicationRejectModal from "./ApplicationRejectModal";
-import ApplicationCancelModal from "./ApplicationCancelModal";
 
 const formatDate = (dateStr?: string): string => {
   if (!dateStr) return "-";
@@ -81,8 +81,8 @@ export default function ApplicationsTableSection({
     status === "CONFIRMED" || status === "WAITING_PICKUP";
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-      <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
+      <div className="border-b border-gray-200 bg-gray-50 px-6 py-4">
         <h3 className="font-bold text-gray-900">
           신청 목록{" "}
           <span className="text-sm font-normal text-gray-500">
@@ -93,7 +93,7 @@ export default function ApplicationsTableSection({
 
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gray-50 border-b border-gray-200">
+          <thead className="border-b border-gray-200 bg-gray-50">
             <tr>
               <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
                 ID
@@ -127,35 +127,27 @@ export default function ApplicationsTableSection({
           <tbody className="divide-y divide-gray-100">
             {applications.length === 0 ? (
               <tr>
-                <td
-                  colSpan={9}
-                  className="px-4 py-8 text-center text-gray-500"
-                >
+                <td colSpan={9} className="px-4 py-8 text-center text-gray-500">
                   신청 내역이 없습니다.
                 </td>
               </tr>
             ) : (
               applications.map((app) => (
-                <tr
-                  key={app.id}
-                  className="hover:bg-gray-50 transition-colors"
-                >
-                  <td className="px-4 py-3 text-sm text-gray-900">
-                    {app.id}
-                  </td>
-                  <td className="px-4 py-3 text-sm text-gray-900 font-medium">
+                <tr key={app.id} className="transition-colors hover:bg-gray-50">
+                  <td className="px-4 py-3 text-sm text-gray-900">{app.id}</td>
+                  <td className="px-4 py-3 text-sm font-medium text-gray-900">
                     {app.applicantUser?.name ?? "-"}
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-600">
                     {app.applicantUser?.phone ?? "-"}
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-600 max-w-[160px] truncate">
+                  <td className="max-w-[160px] truncate px-4 py-3 text-sm text-gray-600">
                     {app.pickupBusiness?.businessName ?? "-"}
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-900 text-center">
+                  <td className="px-4 py-3 text-center text-sm text-gray-900">
                     {app.quantity}
                   </td>
-                  <td className="px-4 py-3 text-sm text-center font-medium text-amber-600">
+                  <td className="px-4 py-3 text-center text-sm font-medium text-amber-600">
                     {app.confirmedQuantity ?? "-"}
                   </td>
                   <td className="px-4 py-3 text-sm">
@@ -177,7 +169,7 @@ export default function ApplicationsTableSection({
                         <button
                           type="button"
                           onClick={() => handleConfirm(app)}
-                          className="p-1.5 text-green-600 hover:bg-green-50 rounded-md transition-colors cursor-pointer"
+                          className="cursor-pointer rounded-md p-1.5 text-green-600 transition-colors hover:bg-green-50"
                           title="확정"
                         >
                           <Check size={16} />
@@ -187,7 +179,7 @@ export default function ApplicationsTableSection({
                         <button
                           type="button"
                           onClick={() => handleReject(app)}
-                          className="p-1.5 text-red-600 hover:bg-red-50 rounded-md transition-colors cursor-pointer"
+                          className="cursor-pointer rounded-md p-1.5 text-red-600 transition-colors hover:bg-red-50"
                           title="거절"
                         >
                           <X size={16} />
@@ -197,7 +189,7 @@ export default function ApplicationsTableSection({
                         <button
                           type="button"
                           onClick={() => handleCancel(app)}
-                          className="p-1.5 text-gray-500 hover:bg-gray-100 rounded-md transition-colors cursor-pointer"
+                          className="cursor-pointer rounded-md p-1.5 text-gray-500 transition-colors hover:bg-gray-100"
                           title="취소"
                         >
                           <Ban size={16} />

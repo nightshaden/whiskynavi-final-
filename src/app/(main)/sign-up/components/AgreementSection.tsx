@@ -1,9 +1,9 @@
 "use client";
 
-import { Check } from "lucide-react";
-import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
+import { Check } from "lucide-react";
+import { useState } from "react";
 
 interface AgreementItem {
   id: string;
@@ -66,21 +66,21 @@ export function AgreementSection() {
   return (
     <div className="w-full">
       {/* All Agree */}
-      <div className="flex items-start gap-3 mb-4">
+      <div className="mb-4 flex items-start gap-3">
         <Checkbox
           id="all-agree"
           checked={allAgreed}
           onCheckedChange={(checked) => handleAllAgree(checked === true)}
-          className="mt-0.5 size-5 rounded border-gray-200 data-[state=checked]:bg-transparent data-[state=checked]:border-gray-200"
+          className="mt-0.5 size-5 rounded border-gray-200 data-[state=checked]:border-gray-200 data-[state=checked]:bg-transparent"
         />
         <div>
           <label
             htmlFor="all-agree"
-            className="text-black typo-bold-16 cursor-pointer"
+            className="typo-bold-16 cursor-pointer text-black"
           >
             모두 동의합니다
           </label>
-          <p className="text-gray-500 typo-regular-12 mt-1">
+          <p className="typo-regular-12 mt-1 text-gray-500">
             선택 동의 항목 포함
           </p>
         </div>
@@ -93,7 +93,7 @@ export function AgreementSection() {
             <div className="flex items-center gap-3">
               <div
                 className={cn(
-                  "size-5 flex items-center justify-center",
+                  "flex size-5 items-center justify-center",
                   agreements[item.id] ? "text-gray-600" : "text-gray-200",
                 )}
               >
@@ -105,7 +105,7 @@ export function AgreementSection() {
                   handleAgreementChange(item.id, !agreements[item.id])
                 }
                 className={cn(
-                  "text-left typo-regular-14",
+                  "typo-regular-14 text-left",
                   agreements[item.id] ? "text-black" : "text-gray-500",
                 )}
               >
@@ -114,7 +114,7 @@ export function AgreementSection() {
             </div>
             <button
               type="button"
-              className="text-gray-400 typo-regular-12 underline hover:text-gray-600"
+              className="typo-regular-12 text-gray-400 underline hover:text-gray-600"
             >
               {item.hasExpand ? "펼치기" : "내용 보기"}
             </button>

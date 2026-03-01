@@ -1,9 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
-import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Carousel,
@@ -12,6 +8,10 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import type { LineupItem } from "@/types/brand";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function LineupCarousel({ slides }: { slides: LineupItem[] }) {
   const [api, setApi] = useState<CarouselApi>();
@@ -77,16 +77,16 @@ export default function LineupCarousel({ slides }: { slides: LineupItem[] }) {
       }}
       className="relative w-full"
     >
-      <div className="absolute top-5 left-1/2 -translate-x-1/2 z-40 flex gap-5">
+      <div className="absolute top-5 left-1/2 z-40 flex -translate-x-1/2 gap-5">
         {slides.map((item, index) => (
           <button
             key={item.id}
             type="button"
             onClick={() => api?.scrollTo(index)}
-            className={`transition-all duration-300 rounded-full cursor-pointer ${
+            className={`cursor-pointer rounded-full transition-all duration-300 ${
               current === index
-                ? "w-6.25 h-2.5 bg-white"
-                : "w-2.5 h-2.5 bg-[#D9D9D9]"
+                ? "h-2.5 w-6.25 bg-white"
+                : "h-2.5 w-2.5 bg-[#D9D9D9]"
             }`}
             aria-label={`Go to slide ${index + 1}`}
           />
@@ -96,7 +96,7 @@ export default function LineupCarousel({ slides }: { slides: LineupItem[] }) {
         className={`relative w-full ${slides[0].size === "short" ? "h-[540px]" : "h-[580px]"} flex items-center justify-center`}
       >
         {/* 모든 이미지를 한 번에 렌더링 */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+        <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
           {slides.map((item, imgIdx) => {
             const distance = getDistance(imgIdx, current, slides.length);
             const size = getImageSize(distance);
@@ -149,7 +149,7 @@ export default function LineupCarousel({ slides }: { slides: LineupItem[] }) {
                     {/* 거리 1일 때 오버레이 */}
                     {distance === 1 && (
                       <motion.div
-                        className="absolute inset-0 rounded-[10px] pointer-events-none"
+                        className="pointer-events-none absolute inset-0 rounded-[10px]"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.3 }}
@@ -163,7 +163,7 @@ export default function LineupCarousel({ slides }: { slides: LineupItem[] }) {
                     {/* 거리 2 이상일 때 오버레이 */}
                     {distance >= 2 && (
                       <motion.div
-                        className="absolute inset-0 rounded-[10px] pointer-events-none"
+                        className="pointer-events-none absolute inset-0 rounded-[10px]"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.3 }}
@@ -178,13 +178,13 @@ export default function LineupCarousel({ slides }: { slides: LineupItem[] }) {
                 </motion.div>
                 {imgIdx === current && (
                   <div
-                    className={`absolute bottom-[-100px] left-0 right-0 p-10 pointer-events-auto`}
+                    className={`pointer-events-auto absolute right-0 bottom-[-100px] left-0 p-10`}
                   >
-                    <p className="mt-6 typo-bold-24">{item.caption}</p>
+                    <p className="typo-bold-24 mt-6">{item.caption}</p>
                     <Button
                       variant="outline"
                       size="lg"
-                      className="mt-7 cursor-pointer bg-transparent border-white text-white rounded-none"
+                      className="mt-7 cursor-pointer rounded-none border-white bg-transparent text-white"
                     >
                       <Link href={`/archive?brand=${item.id}`}>
                         자세히 보기
@@ -197,7 +197,7 @@ export default function LineupCarousel({ slides }: { slides: LineupItem[] }) {
           })}
         </div>
         {/* Carousel API를 위한 숨겨진 슬라이드 (드래그 비활성화) */}
-        <CarouselContent className="invisible absolute pointer-events-none">
+        <CarouselContent className="pointer-events-none invisible absolute">
           {slides.map((item) => (
             <CarouselItem key={item.id} className="basis-full">
               <div />

@@ -1,9 +1,9 @@
 "use client";
 
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link, { type LinkProps } from "next/link";
 import { usePathname } from "next/navigation";
-import { signOut, useSession } from "next-auth/react";
 import { type FC, useEffect, useState } from "react";
 
 const Header = () => {
@@ -29,11 +29,11 @@ const Header = () => {
 
   return (
     <header
-      className={`hidden lg:block fixed top-0 w-full py-3.5 px-10 z-50 transition-all duration-300 ${
+      className={`fixed top-0 z-50 hidden w-full px-10 py-3.5 transition-all duration-300 lg:block ${
         isScrolled ? "backdrop-blur-md" : "bg-transparent"
       }`}
     >
-      <div className="flex justify-between items-center max-w-screen-xl mx-auto w-full px-20">
+      <div className="mx-auto flex w-full max-w-screen-xl items-center justify-between px-20">
         <Link href="/">
           <Image src="/logo.png" alt="logo" width={186} height={40} />
         </Link>
@@ -51,29 +51,29 @@ const Header = () => {
           </ul>
           <div className="flex items-center gap-7">
             {status === "loading" ? (
-              <span className="text-white typo-bold-20 opacity-50">...</span>
+              <span className="typo-bold-20 text-white opacity-50">...</span>
             ) : session ? (
               <button
                 type="button"
                 onClick={() => signOut({ callbackUrl: "/" })}
-                className="cursor-pointer text-white typo-bold-20"
+                className="typo-bold-20 cursor-pointer text-white"
               >
                 Logout
               </button>
             ) : (
               <Link
                 href="/sign-in"
-                className="cursor-pointer text-white typo-bold-20"
+                className="typo-bold-20 cursor-pointer text-white"
               >
-                <p className="text-white typo-bold-20">Login</p>
+                <p className="typo-bold-20 text-white">Login</p>
               </Link>
             )}
             {session?.user.roles?.includes("ROLE_ADMIN") && (
               <Link
                 href="/admin"
-                className="cursor-pointer text-white typo-bold-20"
+                className="typo-bold-20 cursor-pointer text-white"
               >
-                <p className="text-white typo-bold-20">Admin</p>
+                <p className="typo-bold-20 text-white">Admin</p>
               </Link>
             )}
           </div>
@@ -91,7 +91,7 @@ interface FooterLinkProps extends LinkProps {
 
 const NavLink: FC<FooterLinkProps> = ({ children, ...props }) => {
   return (
-    <Link className="block typo-bold-20 text-white py-3 px-2 hover" {...props}>
+    <Link className="typo-bold-20 hover block px-2 py-3 text-white" {...props}>
       {children}
     </Link>
   );

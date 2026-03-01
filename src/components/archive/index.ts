@@ -2,8 +2,8 @@
 export { ArchiveSidebar } from "./ArchiveSidebar";
 
 // Types
-export type { FilterState } from "./types";
 export { FILTER_DEFAULTS, INITIAL_FILTER_STATE } from "./types";
+export type { FilterState } from "./types";
 
 // Hooks
 export { useFilters } from "./useFilters";

@@ -1,70 +1,58 @@
-"use client";
+import Link from "next/link";
 
-import Image from "next/image";
-import Link, { type LinkProps } from "next/link";
-import { usePathname } from "next/navigation";
-import type { FC } from "react";
-import { IconInstagram, IconYoutube } from "@/icons";
-
-const Footer = () => {
-  const pathname = usePathname();
-
-  // /admin 경로에서는 Footer를 렌더링하지 않음
-  if (pathname.startsWith("/admin")) {
-    return null;
-  }
-
+export default function Footer() {
   return (
-    <footer className="hidden lg:block px-10 pt-6 pb-12">
-      <div className="flex flex-col gap-12 align-center justify-center">
-        <div className="flex justify-between items-center">
-          <Image src="/footer-logo.png" alt="logo" width={158} height={33} />
-          <ul className="flex gap-4 mx-4">
-            <li>
-              <FooterLink href="/notice">Notice</FooterLink>
-            </li>
-            <li>
-              <FooterLink href="/faq">FAQ</FooterLink>
-            </li>
-            <li>
-              <FooterLink href="/qna">Q&A</FooterLink>
-            </li>
-            <li>
-              <FooterLink href="/terms-of-service">사이트이용약관</FooterLink>
-            </li>
-            <li>
-              <FooterLink href="/privacy-policy">개인정보처리방침</FooterLink>
-            </li>
-          </ul>
-          <div className="flex gap-4 mr-10">
-            <IconYoutube size={24} fill="white" />
-            <IconInstagram size={24} fill="white" />
+    <footer className="mt-6 border-t border-white/10 bg-[#1d2429] py-6 md:mt-12 md:py-8">
+      <div className="mx-auto max-w-[1440px] px-4 lg:px-10">
+        <div className="mb-4 flex flex-col justify-between gap-4 border-b border-white/10 pb-4 md:mb-6 md:gap-6 md:pb-6 lg:flex-row">
+          <div>
+            <p className="mb-1 text-base text-white md:mb-2 md:text-xl">
+              WHISKYNAVI
+            </p>
+            <p className="text-[10px] text-gray-400 md:text-xs">
+              독립병입의 새로운 기준
+            </p>
+          </div>
+          <nav className="flex flex-wrap gap-3 text-xs text-gray-400 md:gap-4 md:text-sm">
+            <Link href="/brand" className="transition-colors hover:text-white">
+              브랜드
+            </Link>
+            <Link
+              href="/archive"
+              className="transition-colors hover:text-white"
+            >
+              아카이브
+            </Link>
+          </nav>
+        </div>
+
+        {/* Desktop: 2 rows - Company info on left, CS on right */}
+        <div className="hidden space-y-2 text-xs text-gray-500 md:block">
+          <div className="flex items-center justify-between">
+            <span>사업자등록번호: 472-81-02973 | 대표자: 천관호</span>
+            <span>고객센터: 0000-0000-0000</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span>주소: 경기도 성남시 중원구 둔촌대로 537, 에이동 208호</span>
+            <span className="absolute left-1/2 -translate-x-1/2">
+              © 2025 WHISKYNAVI. All rights reserved.
+            </span>
+            <span>이메일: contact@whiskynavi.com</span>
           </div>
         </div>
-        <div className="flex flex-col items-center justify-center typo-regular-14 text-white">
-          <p>
-            사업자등록번호: 472-81-02973 사업자정보확인 | 대표자: 천관호 |
-            법인등록번호: 131111-0725358 | 주소: 경기도 성남시 중원구 둔촌대로
-            537, 에이동 208호(상대원동, 쌍용타용IT트윈타워 A동) |
-            고객센터: 0000-0000-0000 | 이메일: contact@whiskynavi.com
+
+        {/* Mobile: Compact with | separator */}
+        <div className="text-[10px] text-gray-500 md:hidden">
+          <p className="mb-1">사업자등록번호: 472-81-02973 | 대표자: 천관호</p>
+          <p className="mb-1">
+            주소: 경기도 성남시 중원구 둔촌대로 537, 에이동 208호
           </p>
-          <p>whiskynavi @ 2025. All rights reserved.</p>
+          <p className="mb-1">
+            고객센터: 0000-0000-0000 | 이메일: contact@whiskynavi.com
+          </p>
+          <p>© 2025 WHISKYNAVI. All rights reserved.</p>
         </div>
       </div>
     </footer>
   );
-};
-
-export default Footer;
-
-interface FooterLinkProps extends LinkProps {
-  children: React.ReactNode;
 }
-
-const FooterLink: FC<FooterLinkProps> = ({ children, ...props }) => {
-  return (
-    <Link className="block typo-medium-16 text-white py-3 px-2" {...props}>
-      {children}
-    </Link>
-  );
-};

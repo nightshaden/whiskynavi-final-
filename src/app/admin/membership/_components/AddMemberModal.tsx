@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
 
 import type { AdminUserResponse } from "@/apis/apis";
 import { Button } from "@/components/ui/button";
@@ -60,7 +60,7 @@ export default function AddMemberModal({
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">멤버십 추가</DialogTitle>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="mt-1 text-sm text-gray-500">
             사용자를 검색하여 멤버십을 추가합니다.
           </p>
         </DialogHeader>
@@ -73,7 +73,7 @@ export default function AddMemberModal({
               <button
                 type="button"
                 onClick={() => setSelectedBrand("navi")}
-                className={`flex-1 px-4 py-2.5 rounded-lg font-medium text-sm transition-colors cursor-pointer ${
+                className={`flex-1 cursor-pointer rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${
                   selectedBrand === "navi"
                     ? "bg-amber-600 text-white"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -84,7 +84,7 @@ export default function AddMemberModal({
               <button
                 type="button"
                 onClick={() => setSelectedBrand("tales")}
-                className={`flex-1 px-4 py-2.5 rounded-lg font-medium text-sm transition-colors cursor-pointer ${
+                className={`flex-1 cursor-pointer rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${
                   selectedBrand === "tales"
                     ? "bg-amber-600 text-white"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -106,7 +106,7 @@ export default function AddMemberModal({
 
           {/* 선택된 사용자 정보 요약 */}
           {selectedUser && (
-            <div className="rounded-lg bg-gray-50 border border-gray-200 p-4 space-y-2">
+            <div className="space-y-2 rounded-lg border border-gray-200 bg-gray-50 p-4">
               <p className="text-sm font-medium text-gray-900">선택된 사용자</p>
               <div className="grid grid-cols-2 gap-2 text-sm">
                 <div>
@@ -131,9 +131,7 @@ export default function AddMemberModal({
             </div>
           )}
 
-          {error && (
-            <p className="text-sm text-red-600">{error}</p>
-          )}
+          {error && <p className="text-sm text-red-600">{error}</p>}
         </div>
 
         <DialogFooter className="gap-2 sm:gap-2">

@@ -1,18 +1,18 @@
 "use client";
 
+import type { AdminUserResponse } from "@/apis/generated/api";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { toast } from "sonner";
-import type { AdminUserResponse } from "@/apis/generated/api";
 import AdminHeader from "../../../../_components/AdminHeader";
 import { useSidebar } from "../../../../_components/AdminLayoutClient";
 import AdminUserDetailSection from "../../../../components/AdminUserDetailSection";
 import {
-  updateUserStatusAction,
   addUserRolesAction,
   removeUserRolesAction,
   replaceUserRoleAction,
+  updateUserStatusAction,
 } from "../../../actions";
 
 interface UserEditContentProps {
@@ -80,7 +80,7 @@ export default function UserEditContent({ user }: UserEditContentProps) {
         <button
           type="button"
           onClick={() => router.push(`/admin/users/${user.id}`)}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 cursor-pointer"
+          className="mb-6 flex cursor-pointer items-center gap-2 text-gray-600 hover:text-gray-900"
         >
           <ArrowLeft size={20} />
           회원 상세로 돌아가기

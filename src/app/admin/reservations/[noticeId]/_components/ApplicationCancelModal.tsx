@@ -1,9 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { AlertTriangle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -12,7 +9,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { AlertTriangle } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
+import { toast } from "sonner";
 import { cancelApplicationAction } from "../../actions";
 
 interface ApplicationCancelModalProps {
@@ -48,7 +48,7 @@ export default function ApplicationCancelModal({
       <DialogContent>
         <DialogHeader>
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
               <AlertTriangle size={24} className="text-gray-600" />
             </div>
             <DialogTitle>신청 취소</DialogTitle>

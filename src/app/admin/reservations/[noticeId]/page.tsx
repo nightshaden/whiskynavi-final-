@@ -1,11 +1,11 @@
-import { notFound } from "next/navigation";
 import {
   type BottleReservationNoticeResponse,
-  getApiAdminBottlesReservationsNoticesNoticeid,
   getApiAdminBottlesReservationsApplications,
+  getApiAdminBottlesReservationsNoticesNoticeid,
 } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
+import { notFound } from "next/navigation";
 import NoticeDetailContent from "./_components/NoticeDetailContent";
 
 interface NoticeDetailPageProps {
@@ -50,10 +50,7 @@ export default async function NoticeDetailPage({
       />
     );
   } catch (error) {
-    if (
-      error instanceof Error &&
-      error.message.startsWith("[404]")
-    ) {
+    if (error instanceof Error && error.message.startsWith("[404]")) {
       notFound();
     }
     throw error;

@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { Plus, X } from "lucide-react";
 import type {
   BottleAdminResponse,
   BottleReservationNoticeResponse,
@@ -13,6 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Plus, X } from "lucide-react";
+import { useState } from "react";
 import CurrencyInput from "../../../_components/CurrencyInput";
 import DateTimePicker from "../../../_components/DateTimePicker";
 import { ROLE_LABEL_MAP } from "../../../constants";
@@ -62,7 +62,7 @@ export default function NoticeFormFields({
   };
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-6">
+    <div className="rounded-lg border border-gray-200 bg-white p-6">
       <input
         type="hidden"
         name="gradeConditions"
@@ -80,9 +80,9 @@ export default function NoticeFormFields({
         }
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="mb-1 block text-sm font-medium text-gray-700">
             제품 <span className="text-red-500">*</span>
           </label>
           <Select
@@ -99,10 +99,7 @@ export default function NoticeFormFields({
             </SelectTrigger>
             <SelectContent>
               {bottles.map((bottle) => (
-                <SelectItem
-                  key={bottle.id}
-                  value={String(bottle.id)}
-                >
+                <SelectItem key={bottle.id} value={String(bottle.id)}>
                   {bottle.name} (ID: {bottle.id})
                 </SelectItem>
               ))}
@@ -111,20 +108,20 @@ export default function NoticeFormFields({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="mb-1 block text-sm font-medium text-gray-700">
             가격 <span className="text-red-500">*</span>
           </label>
           <CurrencyInput
             name="price"
             defaultValue={defaultValues?.price}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none"
             placeholder="가격을 입력하세요"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="mb-1 block text-sm font-medium text-gray-700">
             예약 시작일 <span className="text-red-500">*</span>
           </label>
           <DateTimePicker
@@ -135,7 +132,7 @@ export default function NoticeFormFields({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="mb-1 block text-sm font-medium text-gray-700">
             예약 종료일 <span className="text-red-500">*</span>
           </label>
           <DateTimePicker
@@ -147,15 +144,15 @@ export default function NoticeFormFields({
       </div>
 
       {/* 등급 조건 */}
-      <div className="mt-6 pt-6 border-t border-gray-200">
-        <div className="flex items-center justify-between mb-3">
+      <div className="mt-6 border-t border-gray-200 pt-6">
+        <div className="mb-3 flex items-center justify-between">
           <label className="text-sm font-medium text-gray-700">
             등급 조건 (선택)
           </label>
           <button
             type="button"
             onClick={addCondition}
-            className="flex items-center gap-1 px-3 py-1.5 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors text-xs font-medium cursor-pointer"
+            className="flex cursor-pointer items-center gap-1 rounded-lg bg-amber-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-amber-700"
           >
             <Plus size={14} />
             조건 추가
@@ -170,10 +167,10 @@ export default function NoticeFormFields({
           {gradeConditions.map((cond, idx) => (
             <div
               key={idx}
-              className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
+              className="flex items-center gap-3 rounded-lg bg-gray-50 p-3"
             >
               <div className="flex-1">
-                <label className="block text-xs text-gray-500 mb-1">역할</label>
+                <label className="mb-1 block text-xs text-gray-500">역할</label>
                 <Select
                   value={cond.requiredRole || undefined}
                   onValueChange={(val) =>
@@ -194,7 +191,7 @@ export default function NoticeFormFields({
               </div>
 
               <div className="flex-1">
-                <label className="block text-xs text-gray-500 mb-1">
+                <label className="mb-1 block text-xs text-gray-500">
                   적용 시작일
                 </label>
                 <DateTimePicker
@@ -208,7 +205,7 @@ export default function NoticeFormFields({
               <button
                 type="button"
                 onClick={() => removeCondition(idx)}
-                className="mt-5 p-1.5 text-red-600 hover:bg-red-50 rounded-md transition-colors cursor-pointer"
+                className="mt-5 cursor-pointer rounded-md p-1.5 text-red-600 transition-colors hover:bg-red-50"
               >
                 <X size={16} />
               </button>

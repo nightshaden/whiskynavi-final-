@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useState, createContext, useContext } from "react";
+import { createContext, type ReactNode, useContext, useState } from "react";
 import AdminSidebar from "./AdminSidebar";
 
 interface AdminLayoutClientProps {
@@ -15,7 +15,7 @@ export default function AdminLayoutClient({
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   return (
-    <div className="flex min-h-screen bg-gray-50 justify-center">
+    <div className="flex min-h-screen justify-center bg-gray-50">
       <div className="flex w-full max-w-[1440px]">
         <AdminSidebar isOpen={isSidebarOpen} statsSlot={statsSlot} />
         <div className="flex-1 overflow-auto">

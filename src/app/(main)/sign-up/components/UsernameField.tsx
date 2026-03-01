@@ -1,18 +1,21 @@
 "use client";
 
-import { useCallback, useRef, useState, useTransition } from "react";
+import { api } from "@/apis/apis";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { api } from "@/apis/apis";
-import { emailSchema } from "../schemas";
+import { useCallback, useRef, useState, useTransition } from "react";
+import { usernameSchema } from "../schemas";
 
-interface EmailFieldProps {
+interface UsernameFieldProps {
   onValidationChange: (verified: boolean) => void;
   error?: string;
 }
 
-export function EmailField({ onValidationChange, error }: EmailFieldProps) {
+export function UsernameField({
+  onValidationChange,
+  error,
+}: UsernameFieldProps) {
   const [value, setValue] = useState("");
   const [localError, setLocalError] = useState<string | null>(null);
   const [isVerified, setIsVerified] = useState(false);
@@ -35,8 +38,8 @@ export function EmailField({ onValidationChange, error }: EmailFieldProps) {
   );
 
   const handleVerify = useCallback(() => {
-    // Zod 이메일 형식 검사
-    const result = emailSchema.safeParse(value);
+    // Zod 닉네임 유효성 검사
+    const result = usernameSchema.safeParse(value);
     if (!result.success) {
       setLocalError(result.error.issues[0].message);
       return;
@@ -44,7 +47,7 @@ export function EmailField({ onValidationChange, error }: EmailFieldProps) {
 
     startTransition(async () => {
       try {
-        const result = await api.checkEmail(value);
+        const result = await api.checkUsername(value);
 
         if (result.available) {
           setIsVerified(true);
@@ -54,10 +57,10 @@ export function EmailField({ onValidationChange, error }: EmailFieldProps) {
         } else {
           setIsVerified(false);
           onValidationChange(false);
-          setLocalError("이미 등록된 이메일입니다.");
+          setLocalError("해당 닉네임은 사용할 수 없습니다.");
         }
       } catch {
-        setLocalError("이메일 확인 중 오류가 발생했습니다.");
+        setLocalError("닉네임 확인 중 오류가 발생했습니다.");
         setIsVerified(false);
         onValidationChange(false);
       }
@@ -69,42 +72,41 @@ export function EmailField({ onValidationChange, error }: EmailFieldProps) {
   return (
     <div className="w-full">
       <Label
-        htmlFor="email"
-        className="text-black font-semibold typo-medium-14 block"
+        htmlFor="username"
+        className="typo-medium-14 block font-semibold text-black"
       >
-        이메일
+        닉네임
       </Label>
       <div className="flex items-end gap-3">
         <div className="flex-1">
           <Input
-            id="email"
-            name="email"
-            type="email"
+            id="username"
+            name="username"
+            type="text"
             value={value}
             onChange={handleChange}
-            placeholder="ex) whiskynavi@whiskynavi.com"
-            className="bg-transparent border-0 border-b border-gray-200 rounded-none px-0 py-3 text-black placeholder:text-gray-400 typo-regular-14 focus-visible:ring-0 focus-visible:border-black"
+            className="typo-regular-14 rounded-none border-0 border-b border-gray-200 bg-transparent px-0 py-3 text-black placeholder:text-gray-400 focus-visible:border-black focus-visible:ring-0"
           />
         </div>
         <Button
           type="button"
           onClick={handleVerify}
           disabled={isPending || !value || isVerified}
-          className="px-5 py-2.5 h-auto bg-[#1E2A38] text-white typo-medium-14 rounded-[10px] hover:bg-[#2a3a4d] mb-px disabled:opacity-50"
+          className="typo-medium-14 mb-px h-auto rounded-[10px] bg-[#1E2A38] px-5 py-2.5 text-white hover:bg-[#2a3a4d] disabled:opacity-50"
         >
-          {isPending ? "확인 중..." : isVerified ? "확인완료" : "인증하기"}
+          {isPending ? "확인 중..." : isVerified ? "확인완료" : "중복확인"}
         </Button>
       </div>
       {displayError && (
-        <p className="mt-2 text-red-500 typo-regular-12">* {displayError}</p>
+        <p className="typo-regular-12 mt-2 text-red-500">* {displayError}</p>
       )}
       {isVerified && !displayError && (
-        <p className="mt-2 text-green-600 typo-regular-12">
-          ✓ 사용 가능한 이메일입니다.
+        <p className="typo-regular-12 mt-2 text-green-600">
+          ✓ 사용 가능한 닉네임입니다.
         </p>
       )}
       {/* Hidden input for form submission */}
-      <input type="hidden" name="emailVerified" value={String(isVerified)} />
+      <input type="hidden" name="usernameVerified" value={String(isVerified)} />
     </div>
   );
 }

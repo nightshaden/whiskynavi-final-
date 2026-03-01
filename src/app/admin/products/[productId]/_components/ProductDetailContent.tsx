@@ -1,9 +1,9 @@
 "use client";
 
+import type { BottleAdminResponse } from "@/apis/generated/api";
 import { ArrowLeft, Edit2, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { overlay } from "overlay-kit";
-import type { BottleAdminResponse } from "@/apis/generated/api";
 import AdminHeader from "../../../_components/AdminHeader";
 import { useSidebar } from "../../../_components/AdminLayoutClient";
 import AdminProductDetailView from "../../../components/AdminProductDetailView";
@@ -27,11 +27,11 @@ export default function ProductDetailContent({
         showSearch={false}
       />
       <div className="p-8">
-        <div className="flex items-center justify-between mb-6">
+        <div className="mb-6 flex items-center justify-between">
           <button
             type="button"
             onClick={() => router.push("/admin/products")}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 cursor-pointer"
+            className="flex cursor-pointer items-center gap-2 text-gray-600 hover:text-gray-900"
           >
             <ArrowLeft size={20} />
             제품 목록으로 돌아가기
@@ -41,7 +41,7 @@ export default function ProductDetailContent({
             <button
               type="button"
               onClick={() => router.push(`/admin/products/${product.id}/edit`)}
-              className="px-4 py-2 bg-amber-600 text-white cursor-pointer rounded-lg hover:bg-amber-700 transition-colors flex items-center gap-2"
+              className="flex cursor-pointer items-center gap-2 rounded-lg bg-amber-600 px-4 py-2 text-white transition-colors hover:bg-amber-700"
             >
               <Edit2 size={16} />
               편집
@@ -53,7 +53,7 @@ export default function ProductDetailContent({
                   <ProductDeleteModal {...props} id={product.id!} />
                 ))
               }
-              className="px-4 py-2 bg-red-600 text-white cursor-pointer rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2"
+              className="flex cursor-pointer items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-white transition-colors hover:bg-red-700"
             >
               <Trash2 size={16} />
               삭제

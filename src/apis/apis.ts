@@ -99,19 +99,18 @@ export type ResetPasswordResponse = {
 // ============================================================================
 
 export type UserRole =
-"ROLE_GUEST"| // 비회원
-"ROLE_USER"| // 일반 회원
-"ROLE_ADMIN"| // 관리자
-"ROLE_SUPER_ADMIN"| // 총괄 관리자
-"ROLE_CONSUMER"| // 소비자
-"ROLE_WHISKYNAVI_MEMBER"| // 위스키내비 멤버
-"ROLE_WHISKYTALES_MEMBER"| // 위스키테일즈 멤버
-"ROLE_BLIND_MEMBER"| // 블라인드 테이스팅 멤버
-"ROLE_BUSINESS"| // 업장
-"ROLE_TRAILNTALE_BUSINESS"| // 트레일 테일 업장
-"ROLE_COMMUNITY_BUSINESS"| // 커뮤니티 업장
-"ROLE_PICK_UP_BUSINESS" // 픽업 업장
-
+  | "ROLE_GUEST" // 비회원
+  | "ROLE_USER" // 일반 회원
+  | "ROLE_ADMIN" // 관리자
+  | "ROLE_SUPER_ADMIN" // 총괄 관리자
+  | "ROLE_CONSUMER" // 소비자
+  | "ROLE_WHISKYNAVI_MEMBER" // 위스키내비 멤버
+  | "ROLE_WHISKYTALES_MEMBER" // 위스키테일즈 멤버
+  | "ROLE_BLIND_MEMBER" // 블라인드 테이스팅 멤버
+  | "ROLE_BUSINESS" // 업장
+  | "ROLE_TRAILNTALE_BUSINESS" // 트레일 테일 업장
+  | "ROLE_COMMUNITY_BUSINESS" // 커뮤니티 업장
+  | "ROLE_PICK_UP_BUSINESS"; // 픽업 업장
 
 export type UserSelfResponse = {
   id: number;
@@ -1137,10 +1136,10 @@ export const adminApi = {
     params?: { page?: number; size?: number; sort?: string[] },
     opts?: AuthOptions,
   ) =>
-    http<AdminUserOrderSummaryResponse>(
-      `/api/admin/orders/users/${userId}`,
-      { params, token: opts?.token },
-    ),
+    http<AdminUserOrderSummaryResponse>(`/api/admin/orders/users/${userId}`, {
+      params,
+      token: opts?.token,
+    }),
 
   // ==========================================================================
   // Sales (Admin)

@@ -1,10 +1,10 @@
+import { api } from "@/apis/apis";
 import type { NextAuthOptions } from "next-auth";
-import type { JWT } from "next-auth/jwt";
 import { getServerSession } from "next-auth";
+import type { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import KakaoProvider from "next-auth/providers/kakao";
-import { api } from "@/apis/apis";
 
 /** access token 선제 리프레시 간격 (25분) */
 const TOKEN_REFRESH_INTERVAL = 25 * 60 * 1000;

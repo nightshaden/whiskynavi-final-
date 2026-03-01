@@ -189,30 +189,32 @@ export default function BlacklistContent({
           </Button>
         </div>
 
-        <div className={`overflow-hidden rounded-lg border border-gray-200 bg-white transition-opacity ${isPending ? "opacity-60 pointer-events-none" : ""}`}>
+        <div
+          className={`overflow-hidden rounded-lg border border-gray-200 bg-white transition-opacity ${isPending ? "pointer-events-none opacity-60" : ""}`}
+        >
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="border-b border-gray-200 bg-gray-50">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-gray-700">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
                     ID
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-gray-700">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
                     이름
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-gray-700">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
                     이메일
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-gray-700">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
                     사유
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-gray-700">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
                     제재 시작일
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-gray-700">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
                     제재 종료일
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-gray-700">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
                     관리
                   </th>
                 </tr>

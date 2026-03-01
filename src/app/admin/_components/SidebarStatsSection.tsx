@@ -6,8 +6,8 @@ export default async function SidebarStatsSection() {
   const stats = await getStats();
 
   return (
-    <div className="p-6 mt-6 border-t border-gray-200">
-      <h3 className="text-sm font-semibold text-gray-700 mb-3">빠른 통계</h3>
+    <div className="mt-6 border-t border-gray-200 p-6">
+      <h3 className="mb-3 text-sm font-semibold text-gray-700">빠른 통계</h3>
       <div className="space-y-3">
         <div>
           <p className="text-xs text-gray-500">전체 회원</p>

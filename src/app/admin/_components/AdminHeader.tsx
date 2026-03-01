@@ -31,14 +31,14 @@ export default function AdminHeader({
   };
 
   return (
-    <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
+    <div className="sticky top-0 z-10 border-b border-gray-200 bg-white">
       <div className="px-8 py-6">
-        <div className="flex items-center justify-between mb-4">
+        <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
               type="button"
               onClick={onToggleSidebar}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+              className="cursor-pointer rounded-lg p-2 transition-colors hover:bg-gray-100"
             >
               <Menu size={24} className="text-gray-600" />
             </button>
@@ -48,9 +48,9 @@ export default function AdminHeader({
 
         {showSearch && (
           <div className="flex gap-4">
-            <div className="flex-1 relative">
+            <div className="relative flex-1">
               <Search
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+                className="absolute top-1/2 left-4 -translate-y-1/2 transform text-gray-400"
                 size={20}
               />
               <input
@@ -58,11 +58,11 @@ export default function AdminHeader({
                 placeholder="이름으로 검색..."
                 value={searchValue}
                 onChange={(e) => handleSearch(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                className="w-full rounded-lg border border-gray-300 py-3 pr-4 pl-12 focus:border-transparent focus:ring-2 focus:ring-amber-500 focus:outline-none"
               />
               {isPending && (
-                <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-amber-600"></div>
+                <div className="absolute top-1/2 right-4 -translate-y-1/2 transform">
+                  <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-amber-600"></div>
                 </div>
               )}
             </div>

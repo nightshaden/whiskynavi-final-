@@ -1,13 +1,5 @@
 "use client";
 
-import { Check } from "lucide-react";
-import {
-  forwardRef,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
 import {
   Command,
   CommandEmpty,
@@ -22,6 +14,14 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { Check } from "lucide-react";
+import {
+  forwardRef,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 // export interface SearchableDropdownItem {
 //   value: string;
@@ -118,7 +118,7 @@ const SearchableDropdown = forwardRef<
             <PopoverContent
               sideOffset={0}
               className={cn(
-                "w-[239.5px] b-none p-0 translate-x-[-12px] rounded-t-none border-t-0",
+                "b-none w-[239.5px] translate-x-[-12px] rounded-t-none border-t-0 p-0",
                 popoverClassName,
               )}
               onOpenAutoFocus={(e) => {

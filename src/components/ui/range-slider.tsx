@@ -60,7 +60,7 @@ export function RangeSlider({
 
   return (
     <div className="pb-4">
-      <div className="flex items-center gap-2 mb-3">
+      <div className="mb-3 flex items-center gap-2">
         <Input
           type="number"
           value={localValue[0]}
@@ -71,9 +71,9 @@ export function RangeSlider({
             ];
             handleChange(newValue);
           }}
-          className="w-20 bg-white/10 border-white/20 text-white text-center typo-regular-14"
+          className="typo-regular-14 w-20 border-white/20 bg-white/10 text-center text-white"
         />
-        <span className="text-white/60 typo-regular-14">{unit}</span>
+        <span className="typo-regular-14 text-white/60">{unit}</span>
         <span className="text-white/60">–</span>
         <Input
           type="number"
@@ -85,9 +85,9 @@ export function RangeSlider({
             ];
             handleChange(newValue);
           }}
-          className="w-20 bg-white/10 border-white/20 text-white text-center typo-regular-14"
+          className="typo-regular-14 w-20 border-white/20 bg-white/10 text-center text-white"
         />
-        <span className="text-white/60 typo-regular-14">{unit}</span>
+        <span className="typo-regular-14 text-white/60">{unit}</span>
       </div>
       <Slider
         value={localValue}

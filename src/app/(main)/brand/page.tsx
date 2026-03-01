@@ -1,7 +1,7 @@
-import Image from "next/image";
 import BrandItem from "@/components/brand/BrandItem";
 import LineupCarousel from "@/components/brand/LineupCarousel";
 import type { Brand, LineupItem } from "@/types/brand";
+import Image from "next/image";
 
 const NAVI_SLIDES: LineupItem[] = [
   {
@@ -166,10 +166,10 @@ const BRANDS: Brand[] = [NAVI, TAILS, TRAIL_AND_TAIL, TOGETHER_IN_SPIRIT];
 const Page = () => {
   return (
     <main>
-      <section className="mt-50 w-full max-w-screen-lg mx-auto">
+      <section className="mx-auto mt-50 w-full max-w-screen-lg">
         <h1 className="typo-bold-40 text-center text-white">브랜드</h1>
 
-        <div className="flex gap-7 mx-auto justify-center mt-11">
+        <div className="mx-auto mt-11 flex justify-center gap-7">
           {BRANDS.map((item) => (
             <BrandItem key={item.name} item={item} />
           ))}
@@ -178,23 +178,14 @@ const Page = () => {
       {BRANDS.map((brand) => (
         <section
           key={brand.name}
-          className="relative w-full mt-70 mx-auto bg-[#1d2329] overflow-hidden"
+          className="relative mx-auto mt-70 w-full overflow-hidden bg-[#1d2329]"
         >
           <div
-            className="
-              absolute inset-0
-              bg-cover bg-center
-              pointer-events-none
-              after:absolute after:inset-0 after:content-['']
-              after:bg-linear-to-b
-              after:from-[#1d2329] 
-              after:via-[#1d2329]/20
-              after:to-[#1d2329]
-    "
+            className="pointer-events-none absolute inset-0 bg-cover bg-center after:absolute after:inset-0 after:bg-linear-to-b after:from-[#1d2329] after:via-[#1d2329]/20 after:to-[#1d2329] after:content-['']"
             style={{ backgroundImage: `url(${brand.bgImage})` }}
           />
 
-          <div className="relative py-52 z-10 flex flex-col items-center justify-center text-center text-white">
+          <div className="relative z-10 flex flex-col items-center justify-center py-52 text-center text-white">
             <div className="flex flex-col items-center justify-center">
               <h2 className="typo-bold-40">{brand.name}</h2>
               <Image
@@ -204,12 +195,12 @@ const Page = () => {
                 height={brand.iconSize.height}
                 className="mt-[22px]"
               />
-              <p className="mt-7 typo-bold-20">{brand.subname}</p>
-              <p className="mt-5 leading-loose typo-medium-18 whitespace-pre-line">
+              <p className="typo-bold-20 mt-7">{brand.subname}</p>
+              <p className="typo-medium-18 mt-5 leading-loose whitespace-pre-line">
                 {brand.description}
               </p>
             </div>
-            <h2 className="mt-9 typo-bold-30">LINE UP</h2>
+            <h2 className="typo-bold-30 mt-9">LINE UP</h2>
             <LineupCarousel slides={brand.slides} />
           </div>
         </section>

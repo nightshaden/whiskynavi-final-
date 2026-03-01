@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 type Gender = "male" | "female" | "";
 
@@ -11,8 +11,8 @@ export function GenderSelector() {
   const [gender, setGender] = useState<Gender>("");
 
   return (
-    <fieldset className="self-stretch w-full md:w-auto flex flex-col justify-between">
-      <legend className="text-black font-semibold typo-medium-14">성별</legend>
+    <fieldset className="flex w-full flex-col justify-between self-stretch md:w-auto">
+      <legend className="typo-medium-14 font-semibold text-black">성별</legend>
       <ButtonGroup
         role="radiogroup"
         aria-label="성별 선택"
@@ -25,9 +25,9 @@ export function GenderSelector() {
           aria-checked={gender === "male"}
           onClick={() => setGender("male")}
           className={cn(
-            "h-7 typo-medium-14 transition-colors border-gray-200",
+            "typo-medium-14 h-7 border-gray-200 transition-colors",
             gender === "male"
-              ? "bg-[#1E2A38] text-white border-[#1E2A38] hover:bg-[#1E2A38] hover:text-white"
+              ? "border-[#1E2A38] bg-[#1E2A38] text-white hover:bg-[#1E2A38] hover:text-white"
               : "bg-white text-black hover:bg-gray-50",
           )}
         >
@@ -40,9 +40,9 @@ export function GenderSelector() {
           aria-checked={gender === "female"}
           onClick={() => setGender("female")}
           className={cn(
-            "h-7 typo-medium-14 transition-colors border-gray-200",
+            "typo-medium-14 h-7 border-gray-200 transition-colors",
             gender === "female"
-              ? "bg-[#1E2A38] text-white border-[#1E2A38] hover:bg-[#1E2A38] hover:text-white"
+              ? "border-[#1E2A38] bg-[#1E2A38] text-white hover:bg-[#1E2A38] hover:text-white"
               : "bg-white text-black hover:bg-gray-50",
           )}
         >

@@ -1,10 +1,10 @@
 "use client";
 
+import type { BottleAdminResponse } from "@/apis/generated/api";
+import { Label } from "@/components/ui/label";
 import { CalendarDays, Plus, Upload, X } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState } from "react";
-import type { BottleAdminResponse } from "@/apis/generated/api";
-import { Label } from "@/components/ui/label";
 import CurrencyInput from "../_components/CurrencyInput";
 
 interface AdminProductDetailEditProps {
@@ -59,7 +59,7 @@ export default function AdminProductDetailEdit({
   };
 
   return (
-    <div className="bg-white rounded-lg p-4">
+    <div className="rounded-lg bg-white p-4">
       <input
         type="hidden"
         name="extraInfos"
@@ -75,7 +75,7 @@ export default function AdminProductDetailEdit({
               type="text"
               name="name"
               defaultValue={defaultValues?.name}
-              className="flex-1 px-2 py-1 border border-gray-300 rounded text-sm"
+              className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
           </div>
 
@@ -85,7 +85,7 @@ export default function AdminProductDetailEdit({
               type="text"
               name="brand"
               defaultValue={defaultValues?.brand}
-              className="flex-1 px-2 py-1 border border-gray-300 rounded text-sm"
+              className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
           </div>
 
@@ -95,7 +95,7 @@ export default function AdminProductDetailEdit({
               type="text"
               name="series"
               defaultValue={defaultValues?.series}
-              className="flex-1 px-2 py-1 border border-gray-300 rounded text-sm"
+              className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
           </div>
 
@@ -105,7 +105,7 @@ export default function AdminProductDetailEdit({
               type="text"
               name="company"
               defaultValue={defaultValues?.company}
-              className="flex-1 px-2 py-1 border border-gray-300 rounded text-sm"
+              className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
           </div>
 
@@ -115,7 +115,7 @@ export default function AdminProductDetailEdit({
               type="text"
               name="distillery"
               defaultValue={defaultValues?.distillery}
-              className="flex-1 px-2 py-1 border border-gray-300 rounded text-sm"
+              className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
           </div>
 
@@ -125,7 +125,7 @@ export default function AdminProductDetailEdit({
               type="text"
               name="maltType"
               defaultValue={defaultValues?.maltType}
-              className="flex-1 px-2 py-1 border border-gray-300 rounded text-sm"
+              className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
           </div>
 
@@ -135,7 +135,7 @@ export default function AdminProductDetailEdit({
               type="text"
               name="caskType"
               defaultValue={defaultValues?.caskType}
-              className="flex-1 px-2 py-1 border border-gray-300 rounded text-sm"
+              className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
           </div>
 
@@ -145,7 +145,7 @@ export default function AdminProductDetailEdit({
               type="text"
               name="caskNumber"
               defaultValue={defaultValues?.caskNumber}
-              className="flex-1 px-2 py-1 border border-gray-300 rounded text-sm"
+              className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
           </div>
 
@@ -158,7 +158,7 @@ export default function AdminProductDetailEdit({
               name="abv"
               step="0.1"
               defaultValue={defaultValues?.abv}
-              className="flex-1 px-2 py-1 border border-gray-300 rounded text-sm"
+              className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
           </div>
 
@@ -168,37 +168,37 @@ export default function AdminProductDetailEdit({
               type="number"
               name="capacity"
               defaultValue={defaultValues?.capacity}
-              className="flex-1 px-2 py-1 border border-gray-300 rounded text-sm"
+              className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
           </div>
 
-          <div className="flex gap-3 items-center">
+          <div className="flex items-center gap-3">
             <Label className="w-32 text-sm text-gray-700">증류 날짜</Label>
             <div className="relative flex-1">
               <input
                 type="date"
                 name="distillationDate"
                 defaultValue={defaultValues?.distillationDate}
-                className="w-full pl-8 pr-2 py-1 border border-gray-300 rounded text-sm"
+                className="w-full rounded border border-gray-300 py-1 pr-2 pl-8 text-sm"
               />
               <CalendarDays
-                className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                className="pointer-events-none absolute top-1/2 left-2 -translate-y-1/2 text-gray-400"
                 size={14}
               />
             </div>
           </div>
 
-          <div className="flex gap-3 items-center">
+          <div className="flex items-center gap-3">
             <Label className="w-32 text-sm text-gray-700">병입 날짜</Label>
             <div className="relative flex-1">
               <input
                 type="date"
                 name="bottledDate"
                 defaultValue={defaultValues?.bottledDate}
-                className="w-full pl-8 pr-2 py-1 border border-gray-300 rounded text-sm"
+                className="w-full rounded border border-gray-300 py-1 pr-2 pl-8 text-sm"
               />
               <CalendarDays
-                className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                className="pointer-events-none absolute top-1/2 left-2 -translate-y-1/2 text-gray-400"
                 size={14}
               />
             </div>
@@ -210,7 +210,7 @@ export default function AdminProductDetailEdit({
               type="number"
               name="stockQuantity"
               defaultValue={defaultValues?.stockQuantity}
-              className="flex-1 px-2 py-1 border border-gray-300 rounded text-sm"
+              className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
           </div>
 
@@ -219,7 +219,7 @@ export default function AdminProductDetailEdit({
             <CurrencyInput
               name="supplyPrice"
               defaultValue={defaultValues?.supplyPrice}
-              className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+              className="w-full rounded border border-gray-300 px-2 py-1 text-sm"
             />
           </div>
 
@@ -228,13 +228,13 @@ export default function AdminProductDetailEdit({
             <CurrencyInput
               name="consumerPrice"
               defaultValue={defaultValues?.consumerPrice}
-              className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+              className="w-full rounded border border-gray-300 px-2 py-1 text-sm"
             />
           </div>
 
           {/* 추가 정보 */}
-          <div className="pt-2 border-t">
-            <Label className="text-sm text-gray-700 font-semibold block mb-2">
+          <div className="border-t pt-2">
+            <Label className="mb-2 block text-sm font-semibold text-gray-700">
               추가 정보
             </Label>
             <div className="space-y-2">
@@ -252,7 +252,7 @@ export default function AdminProductDetailEdit({
                         return next;
                       });
                     }}
-                    className="w-32 px-2 py-1 border border-gray-300 rounded text-sm"
+                    className="w-32 rounded border border-gray-300 px-2 py-1 text-sm"
                     placeholder="키"
                   />
                   <input
@@ -264,13 +264,13 @@ export default function AdminProductDetailEdit({
                         [key]: e.target.value,
                       }));
                     }}
-                    className="flex-1 px-2 py-1 border border-gray-300 rounded text-sm"
+                    className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
                     placeholder="값"
                   />
                   <button
                     type="button"
                     onClick={() => handleRemoveExtraInfo(key)}
-                    className="px-2 py-1 text-red-600 hover:text-red-700 cursor-pointer"
+                    className="cursor-pointer px-2 py-1 text-red-600 hover:text-red-700"
                   >
                     <X size={18} />
                   </button>
@@ -282,19 +282,19 @@ export default function AdminProductDetailEdit({
                 <input
                   type="text"
                   ref={newExtraInfoKeyRef}
-                  className="w-32 px-2 py-1 border border-gray-300 rounded text-sm"
+                  className="w-32 rounded border border-gray-300 px-2 py-1 text-sm"
                   placeholder="새 키"
                 />
                 <input
                   type="text"
                   ref={newExtraInfoValueRef}
-                  className="flex-1 px-2 py-1 border border-gray-300 rounded text-sm"
+                  className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
                   placeholder="새 값"
                 />
                 <button
                   type="button"
                   onClick={handleAddExtraInfo}
-                  className="px-2 py-1 bg-amber-600 text-white rounded hover:bg-amber-700 transition-colors cursor-pointer"
+                  className="cursor-pointer rounded bg-amber-600 px-2 py-1 text-white transition-colors hover:bg-amber-700"
                 >
                   <Plus size={18} />
                 </button>
@@ -305,30 +305,30 @@ export default function AdminProductDetailEdit({
 
         {/* 중간: 설명 */}
         <div className="flex-1 px-6">
-          <div className="text-sm text-gray-600 mb-1">설명</div>
+          <div className="mb-1 text-sm text-gray-600">설명</div>
           <textarea
             name="description"
             defaultValue={defaultValues?.description}
             rows={12}
             placeholder="설명을 입력하세요."
-            className="w-full text-sm text-gray-900 px-2 py-1 border border-gray-300 rounded resize-y"
+            className="w-full resize-y rounded border border-gray-300 px-2 py-1 text-sm text-gray-900"
           />
         </div>
 
         {/* 오른쪽: 이미지 */}
-        <div className="flex-1 flex flex-col pl-6">
+        <div className="flex flex-1 flex-col pl-6">
           {/* 큰 이미지 */}
-          <div className="relative mb-4 group">
+          <div className="group relative mb-4">
             <Image
               src={currentImage}
               width={320}
               height={320}
               alt={defaultValues?.name ?? ""}
-              className="w-full h-80 object-cover rounded border border-gray-200"
+              className="h-80 w-full rounded border border-gray-200 object-cover"
               unoptimized={currentImage.startsWith("blob:")}
             />
-            <div className="absolute inset-0 bg-black bg-opacity-50 rounded flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-              <Label className="cursor-pointer px-4 py-2 bg-white text-gray-900 rounded hover:bg-gray-100 transition-colors font-semibold text-sm flex items-center gap-2">
+            <div className="bg-opacity-50 absolute inset-0 flex items-center justify-center rounded bg-black opacity-0 transition-opacity group-hover:opacity-100">
+              <Label className="flex cursor-pointer items-center gap-2 rounded bg-white px-4 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-100">
                 <Upload size={18} />
                 이미지 추가
                 <input
@@ -349,19 +349,19 @@ export default function AdminProductDetailEdit({
           {/* 썸네일 리스트 */}
           {previewUrl && (
             <div className="flex flex-wrap gap-2">
-              <div className="relative group/thumb">
+              <div className="group/thumb relative">
                 <Image
                   src={previewUrl}
                   width={64}
                   height={64}
                   alt="Product thumbnail"
                   unoptimized={previewUrl.startsWith("blob:")}
-                  className="w-16 h-16 object-cover rounded border-2 border-amber-600 ring-2 ring-amber-300"
+                  className="h-16 w-16 rounded border-2 border-amber-600 object-cover ring-2 ring-amber-300"
                 />
                 <button
                   type="button"
                   onClick={handleRemoveImage}
-                  className="absolute -top-1 -right-1 w-5 h-5 bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover/thumb:opacity-100 transition-opacity cursor-pointer"
+                  className="absolute -top-1 -right-1 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full bg-red-600 text-white opacity-0 transition-opacity group-hover/thumb:opacity-100"
                 >
                   <X size={12} />
                 </button>

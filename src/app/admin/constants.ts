@@ -1,36 +1,36 @@
 // Role → 한글 라벨 매핑
 export const ROLE_LABEL_MAP: Record<string, string> = {
-    ROLE_GUEST: "게스트",
-    ROLE_USER: "일반 회원",
-    ROLE_ADMIN: "관리자",
-    ROLE_SUPER_ADMIN: "총괄 관리자",
-    ROLE_CONSUMER: "소비자",
-    ROLE_WHISKYNAVI_MEMBER: "내비",
-    ROLE_WHISKYTALES_MEMBER: "테일즈",
-    ROLE_BLIND_MEMBER: "블라인드 멤버",
-    ROLE_BUSINESS: "업장",
-    ROLE_TRAILNTALE_BUSINESS: "트레일테일 업장",
-    ROLE_COMMUNITY_BUSINESS: "커뮤니티 업장",
-    ROLE_PICK_UP_BUSINESS: "픽업 업장",
-  };
-  
-  // Role별 Badge 색상
-  export const ROLE_COLOR_MAP: Record<string, string> = {
-    ROLE_SUPER_ADMIN: "bg-red-100 text-red-700",
-    ROLE_ADMIN: "bg-red-100 text-red-700",
-    ROLE_BUSINESS: "bg-purple-100 text-purple-700",
-    ROLE_TRAILNTALE_BUSINESS: "bg-purple-100 text-purple-700",
-    ROLE_COMMUNITY_BUSINESS: "bg-purple-100 text-purple-700",
-    ROLE_PICK_UP_BUSINESS: "bg-purple-100 text-purple-700",
-    ROLE_WHISKYNAVI_MEMBER: "bg-amber-100 text-amber-700",
-    ROLE_WHISKYTALES_MEMBER: "bg-blue-100 text-blue-700",
-    ROLE_BLIND_MEMBER: "bg-indigo-100 text-indigo-700",
-    ROLE_CONSUMER: "bg-gray-100 text-gray-700",
-    ROLE_USER: "bg-gray-100 text-gray-700",
-    ROLE_GUEST: "bg-gray-100 text-gray-500",
-  };
+  ROLE_GUEST: "게스트",
+  ROLE_USER: "일반 회원",
+  ROLE_ADMIN: "관리자",
+  ROLE_SUPER_ADMIN: "총괄 관리자",
+  ROLE_CONSUMER: "소비자",
+  ROLE_WHISKYNAVI_MEMBER: "내비",
+  ROLE_WHISKYTALES_MEMBER: "테일즈",
+  ROLE_BLIND_MEMBER: "블라인드 멤버",
+  ROLE_BUSINESS: "업장",
+  ROLE_TRAILNTALE_BUSINESS: "트레일테일 업장",
+  ROLE_COMMUNITY_BUSINESS: "커뮤니티 업장",
+  ROLE_PICK_UP_BUSINESS: "픽업 업장",
+};
 
-  // ─── 주문 상태 매핑 ──────────────────────────────────────────
+// Role별 Badge 색상
+export const ROLE_COLOR_MAP: Record<string, string> = {
+  ROLE_SUPER_ADMIN: "bg-red-100 text-red-700",
+  ROLE_ADMIN: "bg-red-100 text-red-700",
+  ROLE_BUSINESS: "bg-purple-100 text-purple-700",
+  ROLE_TRAILNTALE_BUSINESS: "bg-purple-100 text-purple-700",
+  ROLE_COMMUNITY_BUSINESS: "bg-purple-100 text-purple-700",
+  ROLE_PICK_UP_BUSINESS: "bg-purple-100 text-purple-700",
+  ROLE_WHISKYNAVI_MEMBER: "bg-amber-100 text-amber-700",
+  ROLE_WHISKYTALES_MEMBER: "bg-blue-100 text-blue-700",
+  ROLE_BLIND_MEMBER: "bg-indigo-100 text-indigo-700",
+  ROLE_CONSUMER: "bg-gray-100 text-gray-700",
+  ROLE_USER: "bg-gray-100 text-gray-700",
+  ROLE_GUEST: "bg-gray-100 text-gray-500",
+};
+
+// ─── 주문 상태 매핑 ──────────────────────────────────────────
 export const ORDER_STATUS_LABEL: Record<string, string> = {
   ORDER_REQUESTED: "주문 요청",
   PAYMENT_PENDING: "결제 대기",
@@ -56,7 +56,6 @@ export const ORDER_STATUS_COLOR: Record<string, string> = {
   REFUND_REQUESTED: "bg-red-100 text-red-700",
   REFUND_COMPLETED: "bg-red-100 text-red-700",
 };
-
 
 // ─── 예약 신청 상태 매핑 ──────────────────────────────────────
 export const RESERVATION_STATUS_LABEL: Record<string, string> = {

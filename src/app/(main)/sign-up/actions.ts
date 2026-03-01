@@ -1,7 +1,7 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { api, type SignupRequest } from "@/apis/apis";
+import { redirect } from "next/navigation";
 import { signUpSchema } from "./schemas";
 
 export type SignUpState = {

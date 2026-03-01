@@ -1,10 +1,10 @@
 "use client";
 
+import type { AdminUserResponse } from "@/apis/generated/api";
+import { Badge } from "@/components/ui/badge";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { overlay } from "overlay-kit";
-import { Badge } from "@/components/ui/badge";
-import type { AdminUserResponse } from "@/apis/generated/api";
 import AdminHeader from "../../_components/AdminHeader";
 import { useSidebar } from "../../_components/AdminLayoutClient";
 import FilterHeader from "../../_components/FilterHeader";
@@ -13,14 +13,12 @@ import { useTableFilter } from "../../_components/useTableFilter";
 import { ROLE_COLOR_MAP, ROLE_LABEL_MAP } from "../../constants";
 import UserDeleteModal from "../[userId]/_components/UserDeleteModal";
 
-
 // 헬퍼 함수: 회원 유형 (SUPER_ADMIN > ADMIN > 나머지 일반 roles)
-const MEMBER_TYPE_ROLES: string[] = [
-  "ROLE_SUPER_ADMIN",
-  "ROLE_ADMIN",
-];
+const MEMBER_TYPE_ROLES: string[] = ["ROLE_SUPER_ADMIN", "ROLE_ADMIN"];
 
-const getMemberType = (roles: string[]): { label: string; color: string } | null => {
+const getMemberType = (
+  roles: string[],
+): { label: string; color: string } | null => {
   for (const role of MEMBER_TYPE_ROLES) {
     if (roles.includes(role)) {
       return { label: ROLE_LABEL_MAP[role], color: ROLE_COLOR_MAP[role] };
@@ -46,11 +44,16 @@ const SUB_BUSINESS_ROLES: string[] = [
   "ROLE_PICK_UP_BUSINESS",
 ];
 
-const getBusinessRoles = (roles: string[]): { label: string; color: string }[] => {
+const getBusinessRoles = (
+  roles: string[],
+): { label: string; color: string }[] => {
   const hasSub = SUB_BUSINESS_ROLES.some((role) => roles.includes(role));
-  return BUSINESS_ROLES
-    .filter((role) => roles.includes(role) && !(hasSub && role === "ROLE_BUSINESS"))
-    .map((role) => ({ label: ROLE_LABEL_MAP[role], color: ROLE_COLOR_MAP[role] }));
+  return BUSINESS_ROLES.filter(
+    (role) => roles.includes(role) && !(hasSub && role === "ROLE_BUSINESS"),
+  ).map((role) => ({
+    label: ROLE_LABEL_MAP[role],
+    color: ROLE_COLOR_MAP[role],
+  }));
 };
 
 // 헬퍼 함수: createdAt을 가입일 형식으로 변환
@@ -160,10 +163,15 @@ export default function UsersContent({
       />
 
       <div className="p-8">
-        <div className={`bg-white rounded-lg border border-gray-200 ${openFilter ? "" : "overflow-hidden"}`}>
+        <div
+          className={`rounded-lg border border-gray-200 bg-white ${openFilter ? "" : "overflow-hidden"}`}
+        >
           <div className={openFilter ? "" : "overflow-x-auto"}>
             <table className="w-full">
-              <thead ref={filterRef} className="bg-gray-50 border-b border-gray-200 relative">
+              <thead
+                ref={filterRef}
+                className="relative border-b border-gray-200 bg-gray-50"
+              >
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
                     ID
@@ -257,109 +265,118 @@ export default function UsersContent({
                   users.map((user) => {
                     const memberType = getMemberType(user.roles ?? []);
                     return (
-                    <tr
-                      key={user.id}
-                      className="hover:bg-gray-50 transition-colors"
-                    >
-                      <td className="px-4 py-3 text-sm text-gray-900">
-                        {user.id}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-900 font-medium">
-                        {user.name}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-600">
-                        @{user.username}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-600">
-                        {user.email}
-                      </td>
-                      <td className="px-4 py-3 text-sm">
-                        {memberType ? (
-                          <Badge className={memberType.color}>
-                            {memberType.label}
-                          </Badge>
-                        ) : (
-                          <span className="text-gray-400">-</span>
-                        )}
-                      </td>
-                      <td className="px-4 py-3 text-sm">
-                        {user.roles?.includes("ROLE_WHISKYNAVI_MEMBER") ? (
-                          <Badge className="bg-amber-100 text-amber-700">
-                          내비
-                          </Badge>
-                        ) : (
-                          <span className="text-gray-400">-</span>
-                        )}
-                      </td>
-                      <td className="px-4 py-3 text-sm">
-                        {user.roles?.includes("ROLE_WHISKYTALES_MEMBER") ? (
-                          <Badge className="bg-blue-100 text-blue-700">
-                            테일즈
-                          </Badge>
-                        ) : (
-                          <span className="text-gray-400">-</span>
-                        )}
-                      </td>
-                      <td className="px-4 py-3 text-sm">
-                        {getBusinessRoles(user.roles ?? []).length > 0 ? (
-                          <div className="flex flex-wrap gap-1">
-                            {getBusinessRoles(user.roles ?? []).map((role) => (
-                              <Badge key={role.label} className={role.color}>
-                                {role.label}
-                              </Badge>
-                            ))}
-                          </div>
-                        ) : (
-                          <span className="text-gray-400">-</span>
-                        )}
-                      </td>
-                      <td className="px-4 py-3 text-sm">
-                        <Badge
-                          className={
-                            user.status === "ACTIVE"
-                              ? "bg-green-100 text-green-700"
-                              : "bg-red-100 text-red-700"
-                          }
-                        >
-                          {user.status === "ACTIVE" ? "활성" : "비활성"}
-                        </Badge>
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-600">
-                        {formatJoinDate(user.createdAt ?? "")}
-                      </td>
-                      <td className="px-4 py-3 text-sm">
-                        <div className="flex items-center gap-1">
-                          <button
-                            type="button"
-                            onClick={() => router.push(`/admin/users/${user.id}`)}
-                            className="p-1.5 text-gray-500 hover:text-amber-600 hover:bg-amber-50 rounded-md transition-colors cursor-pointer"
-                            title="상세"
-                          >
-                            <Eye size={16} />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => router.push(`/admin/users/${user.id}/edit`)}
-                            className="p-1.5 text-gray-500 hover:text-amber-600 hover:bg-amber-50 rounded-md transition-colors cursor-pointer"
-                            title="수정"
-                          >
-                            <Pencil size={16} />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() =>
-                              overlay.open((props) => (
-                                <UserDeleteModal {...props} id={user.id!} />
-                              ))
+                      <tr
+                        key={user.id}
+                        className="transition-colors hover:bg-gray-50"
+                      >
+                        <td className="px-4 py-3 text-sm text-gray-900">
+                          {user.id}
+                        </td>
+                        <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                          {user.name}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-600">
+                          @{user.username}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-600">
+                          {user.email}
+                        </td>
+                        <td className="px-4 py-3 text-sm">
+                          {memberType ? (
+                            <Badge className={memberType.color}>
+                              {memberType.label}
+                            </Badge>
+                          ) : (
+                            <span className="text-gray-400">-</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-sm">
+                          {user.roles?.includes("ROLE_WHISKYNAVI_MEMBER") ? (
+                            <Badge className="bg-amber-100 text-amber-700">
+                              내비
+                            </Badge>
+                          ) : (
+                            <span className="text-gray-400">-</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-sm">
+                          {user.roles?.includes("ROLE_WHISKYTALES_MEMBER") ? (
+                            <Badge className="bg-blue-100 text-blue-700">
+                              테일즈
+                            </Badge>
+                          ) : (
+                            <span className="text-gray-400">-</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-sm">
+                          {getBusinessRoles(user.roles ?? []).length > 0 ? (
+                            <div className="flex flex-wrap gap-1">
+                              {getBusinessRoles(user.roles ?? []).map(
+                                (role) => (
+                                  <Badge
+                                    key={role.label}
+                                    className={role.color}
+                                  >
+                                    {role.label}
+                                  </Badge>
+                                ),
+                              )}
+                            </div>
+                          ) : (
+                            <span className="text-gray-400">-</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-sm">
+                          <Badge
+                            className={
+                              user.status === "ACTIVE"
+                                ? "bg-green-100 text-green-700"
+                                : "bg-red-100 text-red-700"
                             }
-                            className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors cursor-pointer"
-                            title="삭제"
                           >
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
+                            {user.status === "ACTIVE" ? "활성" : "비활성"}
+                          </Badge>
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-600">
+                          {formatJoinDate(user.createdAt ?? "")}
+                        </td>
+                        <td className="px-4 py-3 text-sm">
+                          <div className="flex items-center gap-1">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                router.push(`/admin/users/${user.id}`)
+                              }
+                              className="cursor-pointer rounded-md p-1.5 text-gray-500 transition-colors hover:bg-amber-50 hover:text-amber-600"
+                              title="상세"
+                            >
+                              <Eye size={16} />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                router.push(`/admin/users/${user.id}/edit`)
+                              }
+                              className="cursor-pointer rounded-md p-1.5 text-gray-500 transition-colors hover:bg-amber-50 hover:text-amber-600"
+                              title="수정"
+                            >
+                              <Pencil size={16} />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                overlay.open((props) => (
+                                  <UserDeleteModal {...props} id={user.id!} />
+                                ))
+                              }
+                              className="cursor-pointer rounded-md p-1.5 text-gray-500 transition-colors hover:bg-red-50 hover:text-red-600"
+                              title="삭제"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
                     );
                   })
                 )}

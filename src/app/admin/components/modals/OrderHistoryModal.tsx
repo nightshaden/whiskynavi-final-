@@ -1,15 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { Search } from "lucide-react";
 import type { AdminUserResponse, OrderResponse } from "@/apis/apis";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { Search } from "lucide-react";
+import { useState } from "react";
 
 const ORDER_STATUS_LABEL: Record<string, string> = {
   ORDER_REQUESTED: "주문 요청",
@@ -65,10 +65,10 @@ export default function OrderHistoryModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
-      <DialogContent className="sm:max-w-5xl max-h-[90vh] flex flex-col">
+      <DialogContent className="flex max-h-[90vh] flex-col sm:max-w-5xl">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">주문 내역</DialogTitle>
-          <p className="text-sm text-gray-600 mt-1">
+          <p className="mt-1 text-sm text-gray-600">
             {user.name} ({user.username}) - 총 {orders.length}건 / 총 금액{" "}
             {totalAmount.toLocaleString()}원
           </p>
@@ -77,7 +77,7 @@ export default function OrderHistoryModal({
         <div className="border-t border-gray-200 pt-4">
           <div className="relative">
             <Search
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+              className="absolute top-1/2 left-4 -translate-y-1/2 transform text-gray-400"
               size={20}
             />
             <input
@@ -85,7 +85,7 @@ export default function OrderHistoryModal({
               placeholder="상품명, 주문번호로 검색..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+              className="w-full rounded-lg border border-gray-300 py-3 pr-4 pl-12 focus:ring-2 focus:ring-amber-500 focus:outline-none"
             />
           </div>
         </div>
@@ -96,16 +96,16 @@ export default function OrderHistoryModal({
               {filteredOrders.map((order) => (
                 <div
                   key={order.id}
-                  className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors"
+                  className="rounded-lg bg-gray-50 p-4 transition-colors hover:bg-gray-100"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
+                      <div className="mb-2 flex items-center gap-3">
                         <h4 className="font-bold text-gray-900">
                           {order.itemName}
                         </h4>
                         <span
-                          className={`px-2 py-1 rounded text-xs font-medium ${
+                          className={`rounded px-2 py-1 text-xs font-medium ${
                             ORDER_STATUS_COLOR[order.orderStatus] ??
                             "bg-gray-100 text-gray-700"
                           }`}
@@ -117,13 +117,13 @@ export default function OrderHistoryModal({
                       <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
                         <p className="text-gray-600">
                           주문번호:{" "}
-                          <span className="text-gray-900 font-medium">
+                          <span className="font-medium text-gray-900">
                             {order.orderNumber}
                           </span>
                         </p>
                         <p className="text-gray-600">
                           주문일:{" "}
-                          <span className="text-gray-900 font-medium">
+                          <span className="font-medium text-gray-900">
                             {new Date(order.createdAt)
                               .toLocaleDateString("ko-KR", {
                                 year: "numeric",
@@ -136,27 +136,27 @@ export default function OrderHistoryModal({
                         </p>
                         <p className="text-gray-600">
                           신청:{" "}
-                          <span className="text-gray-900 font-bold">
+                          <span className="font-bold text-gray-900">
                             {order.requestedQuantity}병
                           </span>
                         </p>
                         {order.approvedQuantity != null && (
                           <p className="text-gray-600">
                             배정:{" "}
-                            <span className="text-amber-700 font-bold">
+                            <span className="font-bold text-amber-700">
                               {order.approvedQuantity}병
                             </span>
                           </p>
                         )}
                         <p className="text-gray-600">
                           단가:{" "}
-                          <span className="text-gray-900 font-medium">
+                          <span className="font-medium text-gray-900">
                             {order.unitPrice.toLocaleString()}원
                           </span>
                         </p>
                         <p className="text-gray-600">
                           총 금액:{" "}
-                          <span className="text-gray-900 font-bold">
+                          <span className="font-bold text-gray-900">
                             {order.totalPrice.toLocaleString()}원
                           </span>
                         </p>
@@ -167,20 +167,14 @@ export default function OrderHistoryModal({
               ))}
             </div>
           ) : (
-            <div className="text-center py-12 text-gray-500">
-              {searchQuery
-                ? "검색 결과가 없습니다."
-                : "주문 내역이 없습니다."}
+            <div className="py-12 text-center text-gray-500">
+              {searchQuery ? "검색 결과가 없습니다." : "주문 내역이 없습니다."}
             </div>
           )}
         </div>
 
         <div className="border-t border-gray-200 pt-4">
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={close}
-          >
+          <Button variant="outline" className="w-full" onClick={close}>
             닫기
           </Button>
         </div>

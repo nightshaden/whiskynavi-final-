@@ -1,7 +1,10 @@
-import { notFound } from "next/navigation";
-import { type BottleAdminResponse, getApiAdminBottlesId } from "@/apis/generated/api";
+import {
+  type BottleAdminResponse,
+  getApiAdminBottlesId,
+} from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
+import { notFound } from "next/navigation";
 import ProductDetailContent from "./_components/ProductDetailContent";
 
 interface ProductDetailPageProps {

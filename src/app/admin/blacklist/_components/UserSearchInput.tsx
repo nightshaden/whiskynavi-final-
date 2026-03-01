@@ -3,8 +3,8 @@
 import { Loader2 } from "lucide-react";
 
 import type { AdminUserResponse } from "@/apis/apis";
-import { SearchInput } from "@/components/ui/search-input";
 import { Label } from "@/components/ui/label";
+import { SearchInput } from "@/components/ui/search-input";
 import { useUserSearch } from "./hooks/useUserSearch";
 
 type UserSearchInputProps = {
@@ -68,7 +68,7 @@ export default function UserSearchInput({
             className="w-full"
           />
           {isSearching && (
-            <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-gray-400" />
+            <Loader2 className="absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 animate-spin text-gray-400" />
           )}
           {showDropdown && searchResults.length > 0 && (
             <div className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-lg border border-gray-200 bg-white shadow-lg">
@@ -85,9 +85,7 @@ export default function UserSearchInput({
                       {user.email}
                     </span>
                   </div>
-                  <span className="text-xs text-gray-400">
-                    ID: {user.id}
-                  </span>
+                  <span className="text-xs text-gray-400">ID: {user.id}</span>
                 </button>
               ))}
             </div>

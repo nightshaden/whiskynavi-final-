@@ -1,6 +1,6 @@
 import { getApiAdminUsers } from "@/apis/generated/api";
-import { getAuthToken } from "@/lib/auth";
 import { withToken } from "@/apis/mutator";
+import { getAuthToken } from "@/lib/auth";
 import UsersContent from "./_components/UsersContent";
 
 interface UsersPageProps {

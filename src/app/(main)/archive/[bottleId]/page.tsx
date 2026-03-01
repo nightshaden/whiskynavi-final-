@@ -20,8 +20,8 @@ const Page = async ({ params }: { params: Promise<{ bottleId: string }> }) => {
         <div>
           <h2 className="typo-bold-32 text-white">{bottle.name}</h2>
           {/* 보틀 스펙 */}
-          <div className="flex gap-10 mt-10">
-            <div className="flex flex-col gap-5 w-25">
+          <div className="mt-10 flex gap-10">
+            <div className="flex w-25 flex-col gap-5">
               {[
                 "브랜드",
                 "제품 종류",
@@ -33,7 +33,7 @@ const Page = async ({ params }: { params: Promise<{ bottleId: string }> }) => {
                 "도수",
                 "용량",
               ].map((item) => (
-                <p key={item} className="text-white typo-bold-20">
+                <p key={item} className="typo-bold-20 text-white">
                   {item}
                 </p>
               ))}
@@ -52,7 +52,7 @@ const Page = async ({ params }: { params: Promise<{ bottleId: string }> }) => {
               ].map((item, index) => (
                 <p
                   key={`${item}-${index}`}
-                  className="text-gray-200 typo-medium-20"
+                  className="typo-medium-20 text-gray-200"
                 >
                   {item}
                 </p>
@@ -61,8 +61,8 @@ const Page = async ({ params }: { params: Promise<{ bottleId: string }> }) => {
           </div>
         </div>
       </div>
-      <div className="mt-10 mb-80 ">
-        <p className="text-[#BCBCBC] typo-medium-18 whitespace-pre-line leading-loose">
+      <div className="mt-10 mb-80">
+        <p className="typo-medium-18 leading-loose whitespace-pre-line text-[#BCBCBC]">
           {bottle?.description || "-"}
         </p>
       </div>

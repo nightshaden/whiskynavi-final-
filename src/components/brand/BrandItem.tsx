@@ -1,10 +1,10 @@
 /** biome-ignore-all lint/a11y/noStaticElementInteractions: <explanation> */
 "use client";
 
+import type { Brand } from "@/types/brand";
 import { motion, type Transition, type Variants } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import type { Brand } from "@/types/brand";
 import { Button } from "../ui/button";
 
 const commonTransition: Transition = {
@@ -48,15 +48,15 @@ const BrandItem = ({ item }: { item: Brand }) => {
   return (
     <motion.div
       key={item.name}
-      className="cursor-pointer p-0 border-none bg-transparent"
+      className="cursor-pointer border-none bg-transparent p-0"
       initial="rest"
       animate="rest"
       whileHover="hover"
     >
-      <div className="relative w-[280px] h-[280px] rounded-[10px] overflow-hidden">
+      <div className="relative h-[280px] w-[280px] overflow-hidden rounded-[10px]">
         {/* ✅ 공통 background image + blur + dark overlay */}
         <div
-          className="absolute -inset-px bg-cover bg-center scale-110 blur-[11px]"
+          className="absolute -inset-px scale-110 bg-cover bg-center blur-[11px]"
           style={{ backgroundImage: `url(${item.bgImage})` }}
           aria-hidden="true"
         />
@@ -81,8 +81,8 @@ const BrandItem = ({ item }: { item: Brand }) => {
           variants={textCardVariants}
           className="absolute inset-0 flex flex-col items-center justify-between p-5 backdrop-blur-[11px]"
         >
-          <div className="h-full flex-1 flex items-center justify-center">
-            <p className="typo-regular-14 text-white text-center leading-loose line-clamp-5 flex-1">
+          <div className="flex h-full flex-1 items-center justify-center">
+            <p className="typo-regular-14 line-clamp-5 flex-1 text-center leading-loose text-white">
               {item.shortDescription}
             </p>
           </div>
@@ -90,14 +90,14 @@ const BrandItem = ({ item }: { item: Brand }) => {
           <Button
             variant="outline"
             size="lg"
-            className="cursor-pointer bg-transparent border-white text-white rounded-none mb-4"
+            className="mb-4 cursor-pointer rounded-none border-white bg-transparent text-white"
           >
             <Link href={`/archive?brand=${item.name}`}>자세히 보기</Link>
           </Button>
         </motion.div>
       </div>
 
-      <p className="typo-bold-20 text-center text-white mt-5">{item.name}</p>
+      <p className="typo-bold-20 mt-5 text-center text-white">{item.name}</p>
     </motion.div>
   );
 };

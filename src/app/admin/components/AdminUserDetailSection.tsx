@@ -1,5 +1,19 @@
 "use client";
 
+import type {
+  AdminUserOrderSummaryResponse,
+  AdminUserResponse,
+} from "@/apis/generated/api";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { IconGoogle, IconKakao, IconNaver } from "@/icons";
 import {
   Ban,
   Calendar,
@@ -14,28 +28,18 @@ import {
   X,
   XCircle,
 } from "lucide-react";
+import { overlay } from "overlay-kit";
 import { useState } from "react";
 import { toast } from "sonner";
-import { overlay } from "overlay-kit";
-import { Label } from "@/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { IconGoogle, IconKakao, IconNaver } from "@/icons";
-import type {
-  AdminUserResponse,
-  AdminUserOrderSummaryResponse,
-} from "@/apis/generated/api";
-import { ROLE_LABEL_MAP, ROLE_COLOR_MAP, ORDER_STATUS_COLOR, ORDER_STATUS_LABEL, ASSIGNABLE_ROLES } from "../constants";
+  ASSIGNABLE_ROLES,
+  ORDER_STATUS_COLOR,
+  ORDER_STATUS_LABEL,
+  ROLE_COLOR_MAP,
+  ROLE_LABEL_MAP,
+} from "../constants";
 import AdminConfirmModal from "./modals/AdminConfirmModal";
 import RoleConflictModal from "./modals/RoleConflictModal";
-
-
 
 const ORDER_TYPE_LABEL: Record<string, string> = {
   RESERVATION: "예약",
@@ -47,7 +51,15 @@ const ORDER_TYPE_LABEL: Record<string, string> = {
 // 같은 그룹 내 역할은 하나만 가질 수 있음 (추가 시 교체 확인)
 const ROLE_CONFLICT_GROUPS: { name: string; roles: string[] }[] = [
   { name: "관리자", roles: ["ROLE_ADMIN", "ROLE_SUPER_ADMIN"] },
-  { name: "업장", roles: ["ROLE_BUSINESS", "ROLE_TRAILNTALE_BUSINESS", "ROLE_COMMUNITY_BUSINESS", "ROLE_PICK_UP_BUSINESS"] },
+  {
+    name: "업장",
+    roles: [
+      "ROLE_BUSINESS",
+      "ROLE_TRAILNTALE_BUSINESS",
+      "ROLE_COMMUNITY_BUSINESS",
+      "ROLE_PICK_UP_BUSINESS",
+    ],
+  },
 ];
 
 // ─── Props ─────────────────────────────────────────────────────
@@ -77,12 +89,7 @@ type UserDetailProps = UserDetailViewProps | UserDetailEditProps;
 
 // ─── 컴포넌트 ────────────────────────────────────────────────────
 export default function AdminUserDetailSection(props: UserDetailProps) {
-  const {
-    isEditMode,
-    userDetails,
-    orderSummary,
-    onStatusToggle,
-  } = props;
+  const { isEditMode, userDetails, orderSummary, onStatusToggle } = props;
 
   const onAddRole = isEditMode ? props.onAddRole : undefined;
   const onRemoveRole = isEditMode ? props.onRemoveRole : undefined;
@@ -98,14 +105,14 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
 
   // ── 권한 충돌 체크 ───────────────────────────────────
   const checkRoleConflict = (roleToAdd: string) => {
-    const group = ROLE_CONFLICT_GROUPS.find((g) =>
-      g.roles.includes(roleToAdd),
-    );
-    if (!group) return { hasConflict: false, message: "", conflictingRole: null };
+    const group = ROLE_CONFLICT_GROUPS.find((g) => g.roles.includes(roleToAdd));
+    if (!group)
+      return { hasConflict: false, message: "", conflictingRole: null };
 
-    const conflictingRole = (userDetails.roles ?? []).find(
-      (role) => group.roles.includes(role) && role !== roleToAdd,
-    ) ?? null;
+    const conflictingRole =
+      (userDetails.roles ?? []).find(
+        (role) => group.roles.includes(role) && role !== roleToAdd,
+      ) ?? null;
 
     if (conflictingRole) {
       return {
@@ -179,8 +186,8 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
   return (
     <div className="space-y-6">
       {/* 기본 정보 섹션 */}
-      <div className="bg-white rounded-xl p-6 border border-gray-200">
-        <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+      <div className="rounded-xl border border-gray-200 bg-white p-6">
+        <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-gray-900">
           <User size={20} className="text-amber-600" />
           기본 정보
         </h3>
@@ -188,7 +195,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
           <div>
             <Label
               htmlFor="name"
-              className="block text-sm font-semibold text-gray-700 mb-2"
+              className="mb-2 block text-sm font-semibold text-gray-700"
             >
               이름
             </Label>
@@ -197,7 +204,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
           <div>
             <Label
               htmlFor="username"
-              className="block text-sm font-semibold text-gray-700 mb-2"
+              className="mb-2 block text-sm font-semibold text-gray-700"
             >
               사용자명
             </Label>
@@ -206,7 +213,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
           <div>
             <Label
               htmlFor="email"
-              className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1"
+              className="mb-2 block flex items-center gap-1 text-sm font-semibold text-gray-700"
             >
               <Mail size={14} />
               이메일
@@ -216,7 +223,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
           <div>
             <Label
               htmlFor="phone"
-              className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1"
+              className="mb-2 block flex items-center gap-1 text-sm font-semibold text-gray-700"
             >
               <Phone size={14} />
               전화번호
@@ -226,7 +233,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
           <div>
             <Label
               htmlFor="status"
-              className="block text-sm font-semibold text-gray-700 mb-2"
+              className="mb-2 block text-sm font-semibold text-gray-700"
             >
               계정 상태
             </Label>
@@ -254,17 +261,17 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
       </div>
 
       {/* 탭 섹션 */}
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
         {/* 탭 헤더 */}
         <div className="border-b border-gray-200">
           <div className="flex">
             <button
               type="button"
               onClick={() => setActiveTab("info")}
-              className={`px-6 py-3 text-sm font-semibold transition-colors relative cursor-pointer ${
+              className={`relative cursor-pointer px-6 py-3 text-sm font-semibold transition-colors ${
                 activeTab === "info"
-                  ? "text-amber-600 border-b-2 border-amber-600 bg-amber-50/50"
-                  : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+                  ? "border-b-2 border-amber-600 bg-amber-50/50 text-amber-600"
+                  : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
               }`}
             >
               회원 상세 정보
@@ -272,10 +279,10 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
             <button
               type="button"
               onClick={() => setActiveTab("reservations")}
-              className={`px-6 py-3 text-sm font-semibold transition-colors relative cursor-pointer ${
+              className={`relative cursor-pointer px-6 py-3 text-sm font-semibold transition-colors ${
                 activeTab === "reservations"
-                  ? "text-amber-600 border-b-2 border-amber-600 bg-amber-50/50"
-                  : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+                  ? "border-b-2 border-amber-600 bg-amber-50/50 text-amber-600"
+                  : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
               }`}
             >
               예약 내역 ({orderSummary?.totalElements ?? 0})
@@ -289,7 +296,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
             <div className="space-y-0">
               {/* 활동 정보 */}
               <div>
-                <h4 className="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <h4 className="mb-4 flex items-center gap-2 text-base font-bold text-gray-900">
                   <Calendar size={18} className="text-amber-600" />
                   활동 정보
                 </h4>
@@ -297,7 +304,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                   <div>
                     <Label
                       htmlFor="createdAt"
-                      className="block text-sm font-semibold text-gray-700 mb-2"
+                      className="mb-2 block text-sm font-semibold text-gray-700"
                     >
                       가입일
                     </Label>
@@ -306,11 +313,13 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                   <div>
                     <Label
                       htmlFor="lastLoginAt"
-                      className="block text-sm font-semibold text-gray-700 mb-2"
+                      className="mb-2 block text-sm font-semibold text-gray-700"
                     >
                       마지막 로그인
                     </Label>
-                    <p className="text-gray-900">{userDetails.lastLoginAt ?? "-"}</p>
+                    <p className="text-gray-900">
+                      {userDetails.lastLoginAt ?? "-"}
+                    </p>
                   </div>
                 </div>
 
@@ -319,29 +328,32 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                   <div className="mt-6">
                     <Label
                       htmlFor="socialConnections"
-                      className="block text-sm font-semibold text-gray-700 mb-3"
+                      className="mb-3 block text-sm font-semibold text-gray-700"
                     >
                       소셜 로그인 연동
                     </Label>
                     <div className="flex gap-2">
-                      {(userDetails.userExt as any)?.socialConnections?.google && (
-                        <div className="px-3 py-2 bg-white border-2 border-red-200 rounded-lg flex items-center gap-2">
+                      {(userDetails.userExt as any)?.socialConnections
+                        ?.google && (
+                        <div className="flex items-center gap-2 rounded-lg border-2 border-red-200 bg-white px-3 py-2">
                           <IconGoogle size={20} />
                           <span className="text-sm font-medium text-gray-700">
                             Google
                           </span>
                         </div>
                       )}
-                      {(userDetails.userExt as any)?.socialConnections?.kakao && (
-                        <div className="px-3 py-2 bg-[#FEE500] rounded-lg flex items-center gap-2">
+                      {(userDetails.userExt as any)?.socialConnections
+                        ?.kakao && (
+                        <div className="flex items-center gap-2 rounded-lg bg-[#FEE500] px-3 py-2">
                           <IconKakao size={20} />
                           <span className="text-sm font-medium text-gray-900">
                             Kakao
                           </span>
                         </div>
                       )}
-                      {(userDetails.userExt as any)?.socialConnections?.naver && (
-                        <div className="px-3 py-2 bg-[#03C75A] rounded-lg flex items-center gap-2">
+                      {(userDetails.userExt as any)?.socialConnections
+                        ?.naver && (
+                        <div className="flex items-center gap-2 rounded-lg bg-[#03C75A] px-3 py-2">
                           <IconNaver size={20} />
                           <span className="text-sm font-medium text-white">
                             Naver
@@ -354,10 +366,10 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
               </div>
 
               {/* divider */}
-              <div className="pt-6 border-t border-gray-200 mt-6">
+              <div className="mt-6 border-t border-gray-200 pt-6">
                 {/* 권한 및 멤버십 */}
-                <div className="flex items-center justify-between mb-4">
-                  <h4 className="text-base font-bold text-gray-900 flex items-center gap-2">
+                <div className="mb-4 flex items-center justify-between">
+                  <h4 className="flex items-center gap-2 text-base font-bold text-gray-900">
                     <Shield size={18} className="text-amber-600" />
                     권한 및 멤버십
                   </h4>
@@ -367,7 +379,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                         <button
                           type="button"
                           onClick={() => setIsEditingRoles(true)}
-                          className="px-3 py-1.5 bg-amber-600 text-white text-sm rounded-lg hover:bg-amber-700 transition-colors font-medium flex items-center gap-1 cursor-pointer"
+                          className="flex cursor-pointer items-center gap-1 rounded-lg bg-amber-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-amber-700"
                         >
                           <Edit2 size={14} />
                           권한 수정
@@ -379,7 +391,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                             setIsEditingRoles(false);
                             setNewRole("");
                           }}
-                          className="px-3 py-1.5 bg-gray-200 text-gray-700 text-sm rounded-lg hover:bg-gray-300 transition-colors font-medium cursor-pointer"
+                          className="cursor-pointer rounded-lg bg-gray-200 px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-300"
                         >
                           완료
                         </button>
@@ -391,7 +403,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                   <div>
                     <Label
                       htmlFor="roles"
-                      className="block text-sm font-semibold text-gray-700 mb-3"
+                      className="mb-3 block text-sm font-semibold text-gray-700"
                     >
                       보유 권한
                     </Label>
@@ -399,7 +411,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                       {userDetails.roles?.map((role) => (
                         <span
                           key={role}
-                          className={`px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2 ${ROLE_COLOR_MAP[role]}`}
+                          className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium ${ROLE_COLOR_MAP[role]}`}
                         >
                           {ROLE_LABEL_MAP[role]}
                           {isEditingRoles && (
@@ -407,7 +419,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                               type="button"
                               disabled={isSaving}
                               onClick={() => onRemoveRole?.(role)}
-                              className="hover:opacity-70 cursor-pointer disabled:opacity-30"
+                              className="cursor-pointer hover:opacity-70 disabled:opacity-30"
                             >
                               <X size={14} />
                             </button>
@@ -426,7 +438,8 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                           </SelectTrigger>
                           <SelectContent>
                             {ASSIGNABLE_ROLES.filter(
-                              (role) => !(userDetails.roles ?? []).includes(role),
+                              (role) =>
+                                !(userDetails.roles ?? []).includes(role),
                             ).map((role) => (
                               <SelectItem key={role} value={role}>
                                 {ROLE_LABEL_MAP[role]}
@@ -438,7 +451,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                           type="button"
                           onClick={handleAddRole}
                           disabled={!newRole || isSaving}
-                          className="px-4 py-2 bg-amber-600 cursor-pointer text-white text-sm rounded-lg hover:bg-amber-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+                          className="flex cursor-pointer items-center gap-1 rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-amber-700 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           <Plus size={14} />
                           {isSaving ? "처리중..." : "추가"}
@@ -450,38 +463,44 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
               </div>
 
               {/* divider */}
-              <div className="pt-6 border-t border-gray-200 mt-6">
+              <div className="mt-6 border-t border-gray-200 pt-6">
                 {/* 약관 동의 정보 */}
-                <h4 className="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <h4 className="mb-4 flex items-center gap-2 text-base font-bold text-gray-900">
                   <CheckCircle size={18} className="text-amber-600" />
                   약관 동의 정보
                 </h4>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <span className="text-sm text-gray-700">개인정보 처리방침</span>
+                  <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
+                    <span className="text-sm text-gray-700">
+                      개인정보 처리방침
+                    </span>
                     {userDetails.userExt?.privacyAgree ? (
                       <CheckCircle size={20} className="text-green-600" />
                     ) : (
                       <XCircle size={20} className="text-red-600" />
                     )}
                   </div>
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <span className="text-sm text-gray-700">마케팅 수신 동의</span>
+                  <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
+                    <span className="text-sm text-gray-700">
+                      마케팅 수신 동의
+                    </span>
                     {userDetails.userExt?.marketingAgree ? (
                       <CheckCircle size={20} className="text-green-600" />
                     ) : (
                       <XCircle size={20} className="text-red-600" />
                     )}
                   </div>
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <span className="text-sm text-gray-700">이메일 수신 동의</span>
+                  <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
+                    <span className="text-sm text-gray-700">
+                      이메일 수신 동의
+                    </span>
                     {userDetails.userExt?.emailAgree ? (
                       <CheckCircle size={20} className="text-green-600" />
                     ) : (
                       <XCircle size={20} className="text-red-600" />
                     )}
                   </div>
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
                     <span className="text-sm text-gray-700">SMS 수신 동의</span>
                     {userDetails.userExt?.smsAgree ? (
                       <CheckCircle size={20} className="text-green-600" />
@@ -498,17 +517,21 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
               {orderSummary ? (
                 <>
                   {/* 총 구매 금액 요약 카드 */}
-                  <div className="bg-gradient-to-r from-amber-500 to-amber-600 rounded-xl p-5 mb-6">
+                  <div className="mb-6 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 p-5">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-amber-100 text-sm font-medium">총 구매 금액</p>
-                        <p className="text-white text-2xl font-bold mt-1">
+                        <p className="text-sm font-medium text-amber-100">
+                          총 구매 금액
+                        </p>
+                        <p className="mt-1 text-2xl font-bold text-white">
                           {(orderSummary.totalAmount ?? 0).toLocaleString()}원
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="text-amber-100 text-sm font-medium">총 주문 수</p>
-                        <p className="text-white text-2xl font-bold mt-1">
+                        <p className="text-sm font-medium text-amber-100">
+                          총 주문 수
+                        </p>
+                        <p className="mt-1 text-2xl font-bold text-white">
                           {orderSummary.totalElements}건
                         </p>
                       </div>
@@ -521,41 +544,60 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                       <table className="w-full text-sm">
                         <thead>
                           <tr className="border-b border-gray-200">
-                            <th className="text-left py-3 px-3 font-semibold text-gray-700">제품명</th>
-                            <th className="text-left py-3 px-3 font-semibold text-gray-700">주문번호</th>
-                            <th className="text-left py-3 px-3 font-semibold text-gray-700">주문유형</th>
-                            <th className="text-right py-3 px-3 font-semibold text-gray-700">신청수량</th>
-                            <th className="text-right py-3 px-3 font-semibold text-gray-700">배정수량</th>
-                            <th className="text-right py-3 px-3 font-semibold text-gray-700">금액</th>
-                            <th className="text-left py-3 px-3 font-semibold text-gray-700">주문일</th>
-                            <th className="text-left py-3 px-3 font-semibold text-gray-700">상태</th>
+                            <th className="px-3 py-3 text-left font-semibold text-gray-700">
+                              제품명
+                            </th>
+                            <th className="px-3 py-3 text-left font-semibold text-gray-700">
+                              주문번호
+                            </th>
+                            <th className="px-3 py-3 text-left font-semibold text-gray-700">
+                              주문유형
+                            </th>
+                            <th className="px-3 py-3 text-right font-semibold text-gray-700">
+                              신청수량
+                            </th>
+                            <th className="px-3 py-3 text-right font-semibold text-gray-700">
+                              배정수량
+                            </th>
+                            <th className="px-3 py-3 text-right font-semibold text-gray-700">
+                              금액
+                            </th>
+                            <th className="px-3 py-3 text-left font-semibold text-gray-700">
+                              주문일
+                            </th>
+                            <th className="px-3 py-3 text-left font-semibold text-gray-700">
+                              상태
+                            </th>
                           </tr>
                         </thead>
                         <tbody>
                           {(orderSummary.orders ?? []).map((order) => (
                             <tr
                               key={order.id}
-                              className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+                              className="border-b border-gray-100 transition-colors hover:bg-gray-50"
                             >
-                              <td className="py-3 px-3 font-medium text-gray-900">
+                              <td className="px-3 py-3 font-medium text-gray-900">
                                 {order.itemName}
                               </td>
-                              <td className="py-3 px-3 text-gray-600">
+                              <td className="px-3 py-3 text-gray-600">
                                 {order.orderNumber}
                               </td>
-                              <td className="py-3 px-3 text-gray-600">
-                                {ORDER_TYPE_LABEL[order.orderType ?? ""] ?? order.orderType}
+                              <td className="px-3 py-3 text-gray-600">
+                                {ORDER_TYPE_LABEL[order.orderType ?? ""] ??
+                                  order.orderType}
                               </td>
-                              <td className="py-3 px-3 text-right text-gray-900 font-medium">
+                              <td className="px-3 py-3 text-right font-medium text-gray-900">
                                 {order.requestedQuantity}병
                               </td>
-                              <td className="py-3 px-3 text-right text-amber-700 font-medium">
-                                {order.approvedQuantity != null ? `${order.approvedQuantity}병` : "-"}
+                              <td className="px-3 py-3 text-right font-medium text-amber-700">
+                                {order.approvedQuantity != null
+                                  ? `${order.approvedQuantity}병`
+                                  : "-"}
                               </td>
-                              <td className="py-3 px-3 text-right text-gray-900 font-medium">
+                              <td className="px-3 py-3 text-right font-medium text-gray-900">
                                 {(order.totalPrice ?? 0).toLocaleString()}원
                               </td>
-                              <td className="py-3 px-3 text-gray-600">
+                              <td className="px-3 py-3 text-gray-600">
                                 {new Date(order.createdAt ?? "")
                                   .toLocaleDateString("ko-KR", {
                                     year: "numeric",
@@ -565,15 +607,17 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                                   .replace(/\. /g, ".")
                                   .replace(/\.$/, "")}
                               </td>
-                              <td className="py-3 px-3">
+                              <td className="px-3 py-3">
                                 <span
-                                  className={`px-2 py-1 rounded text-xs font-medium ${
-                                    ORDER_STATUS_COLOR[order.orderStatus ?? ""] ??
-                                    "bg-gray-100 text-gray-700"
+                                  className={`rounded px-2 py-1 text-xs font-medium ${
+                                    ORDER_STATUS_COLOR[
+                                      order.orderStatus ?? ""
+                                    ] ?? "bg-gray-100 text-gray-700"
                                   }`}
                                 >
-                                  {ORDER_STATUS_LABEL[order.orderStatus ?? ""] ??
-                                    order.orderStatus}
+                                  {ORDER_STATUS_LABEL[
+                                    order.orderStatus ?? ""
+                                  ] ?? order.orderStatus}
                                 </span>
                               </td>
                             </tr>
@@ -582,15 +626,21 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                       </table>
                     </div>
                   ) : (
-                    <div className="text-center py-12 text-gray-500">
-                      <ShoppingBag size={48} className="mx-auto mb-3 text-gray-300" />
+                    <div className="py-12 text-center text-gray-500">
+                      <ShoppingBag
+                        size={48}
+                        className="mx-auto mb-3 text-gray-300"
+                      />
                       <p>주문 내역이 없습니다.</p>
                     </div>
                   )}
                 </>
               ) : (
-                <div className="text-center py-12 text-gray-500">
-                  <ShoppingBag size={48} className="mx-auto mb-3 text-gray-300" />
+                <div className="py-12 text-center text-gray-500">
+                  <ShoppingBag
+                    size={48}
+                    className="mx-auto mb-3 text-gray-300"
+                  />
                   <p>예약 내역 데이터가 없습니다.</p>
                 </div>
               )}
@@ -601,8 +651,8 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
 
       {/* 제재 정보 섹션 */}
       {userDetails.userExt?.isBanned && (
-        <div className="bg-red-50 rounded-xl p-6 border border-red-200">
-          <h3 className="text-lg font-bold text-red-900 mb-4 flex items-center gap-2">
+        <div className="rounded-xl border border-red-200 bg-red-50 p-6">
+          <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-red-900">
             <Ban size={20} className="text-red-600" />
             제재 정보
           </h3>
@@ -610,7 +660,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
             <div>
               <Label
                 htmlFor="banReason"
-                className="block text-sm font-semibold text-red-700 mb-1"
+                className="mb-1 block text-sm font-semibold text-red-700"
               >
                 제재 사유
               </Label>
@@ -620,7 +670,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
               <div>
                 <Label
                   htmlFor="banStartDate"
-                  className="block text-sm font-semibold text-red-700 mb-1"
+                  className="mb-1 block text-sm font-semibold text-red-700"
                 >
                   제재 시작일
                 </Label>
@@ -631,13 +681,11 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
               <div>
                 <Label
                   htmlFor="banEndDate"
-                  className="block text-sm font-semibold text-red-700 mb-1"
+                  className="mb-1 block text-sm font-semibold text-red-700"
                 >
                   제재 종료일
                 </Label>
-                <p className="text-red-900">
-                  {userDetails.userExt.banEndDate}
-                </p>
+                <p className="text-red-900">{userDetails.userExt.banEndDate}</p>
               </div>
             </div>
           </div>

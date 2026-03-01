@@ -53,9 +53,7 @@ export async function addMembershipAction(
     return { success: true };
   } catch (error) {
     const message =
-      error instanceof Error
-        ? error.message
-        : "멤버십 추가에 실패했습니다.";
+      error instanceof Error ? error.message : "멤버십 추가에 실패했습니다.";
     return { success: false, error: message };
   }
 }
@@ -87,9 +85,7 @@ export async function removeMembershipAction(
     return { success: true };
   } catch (error) {
     const message =
-      error instanceof Error
-        ? error.message
-        : "멤버십 삭제에 실패했습니다.";
+      error instanceof Error ? error.message : "멤버십 삭제에 실패했습니다.";
     return { success: false, error: message };
   }
 }

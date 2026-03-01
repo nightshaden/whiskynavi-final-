@@ -1,7 +1,5 @@
 "use client";
 
-import Image from "next/image";
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Carousel,
@@ -9,6 +7,8 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 
 type HeroItem = {
   id: string;
@@ -68,26 +68,26 @@ const Hero = () => {
         align: "start",
         loop: true,
       }}
-      className="relative w-full h-screen"
+      className="relative h-screen w-full"
     >
       <CarouselContent className="h-screen">
         {heroItems.map((item) => (
-          <CarouselItem key={item.id} className="pl-0 h-screen">
+          <CarouselItem key={item.id} className="h-screen pl-0">
             <HeroItem item={item} />
           </CarouselItem>
         ))}
       </CarouselContent>
       {/* Carousel Indicator Dots */}
-      <div className="absolute bottom-25 left-1/2 -translate-x-1/2 z-20 flex gap-5">
+      <div className="absolute bottom-25 left-1/2 z-20 flex -translate-x-1/2 gap-5">
         {heroItems.map((item, index) => (
           <button
             key={item.id}
             type="button"
             onClick={() => api?.scrollTo(index)}
-            className={`transition-all duration-300 rounded-full ${
+            className={`rounded-full transition-all duration-300 ${
               current === index
-                ? "w-6.25 h-2.5 bg-[#5D5D5D]"
-                : "w-2.5 h-2.5 bg-white"
+                ? "h-2.5 w-6.25 bg-[#5D5D5D]"
+                : "h-2.5 w-2.5 bg-white"
             }`}
             aria-label={`Go to slide ${index + 1}`}
           />
@@ -100,19 +100,19 @@ const Hero = () => {
 const HeroItem = ({ item }: { item: HeroItem }) => {
   return (
     <section
-      className="relative w-full h-screen pt-30 bg-cover bg-center before:absolute before:inset-0 before:bg-black/70 before:z-0"
+      className="relative h-screen w-full bg-cover bg-center pt-30 before:absolute before:inset-0 before:z-0 before:bg-black/70"
       style={{ backgroundImage: `url(${item.bgImage})` }}
     >
-      <div className="relative h-full z-10 max-w-screen-xl pb-50 mx-auto">
-        <div className="h-full flex justify-between px-30 mb-21">
-          <div className="w-full max-w-[600px] flex flex-col justify-center">
-            <h2 className="typo-bold-36 text-white whitespace-pre-line">
+      <div className="relative z-10 mx-auto h-full max-w-screen-xl pb-50">
+        <div className="mb-21 flex h-full justify-between px-30">
+          <div className="flex w-full max-w-[600px] flex-col justify-center">
+            <h2 className="typo-bold-36 whitespace-pre-line text-white">
               {item.title.replace(" : ", " \n: ")}
             </h2>
-            <p className="leading-loose typo-medium-18 text-white mt-10 whitespace-pre-line">
+            <p className="typo-medium-18 mt-10 leading-loose whitespace-pre-line text-white">
               {item.description}
             </p>
-            <Button color="white" className="mt-10 bg-white rounded-none w-fit">
+            <Button color="white" className="mt-10 w-fit rounded-none bg-white">
               <p className="typo-bold-16 text-black">예약 매장 확인</p>
             </Button>
           </div>

@@ -1,6 +1,4 @@
-import Link from "next/link";
 import { api, type BottleQueries } from "@/apis/apis";
-import { BottleImage } from "./BottleImage";
 import {
   Pagination,
   PaginationContent,
@@ -10,6 +8,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import Link from "next/link";
+import { BottleImage } from "./BottleImage";
 
 type PageProps = {
   searchParams: Promise<BottleQueries>;
@@ -85,13 +85,13 @@ const Page = async ({ searchParams }: PageProps) => {
 
   return (
     <main>
-      <section className="w-full mx-auto">
+      <section className="mx-auto w-full">
         <div className="flex flex-wrap gap-5">
           {bottlesResponse.content.map((bottle) => (
             <Link
               key={bottle.id}
               href={`/archive/${bottle.id}`}
-              className="w-[240px] block"
+              className="block w-[240px]"
             >
               <BottleImage
                 src={bottle.imgUrl ?? "/detail-sample.png"}
@@ -99,17 +99,17 @@ const Page = async ({ searchParams }: PageProps) => {
                 containerClassName="w-[240px] h-[240px] border-gray-300 border-solid border"
                 imageClassName="h-[240px]"
               />
-              <p className="mt-3 text-center text-white typo-medium-18">
+              <p className="typo-medium-18 mt-3 text-center text-white">
                 {bottle.name}
               </p>
-              <div className="flex flex-col gap-1 mt-2">
-                <p className="text-white text-center typo-regular-13">
+              <div className="mt-2 flex flex-col gap-1">
+                <p className="typo-regular-13 text-center text-white">
                   {bottle.brand}
                 </p>
-                <p className="text-white text-center typo-regular-13">
+                <p className="typo-regular-13 text-center text-white">
                   {bottle.series}
                 </p>
-                <p className="text-white text-center typo-regular-13">{`${bottle.abv}% / ${bottle.capacity}ml`}</p>
+                <p className="typo-regular-13 text-center text-white">{`${bottle.abv}% / ${bottle.capacity}ml`}</p>
               </div>
             </Link>
           ))}
@@ -119,7 +119,7 @@ const Page = async ({ searchParams }: PageProps) => {
 
         {totalPages > 1 && (
           <div className="mr-65">
-            <Pagination className="py-8 mt-20">
+            <Pagination className="mt-20 py-8">
               <PaginationContent>
                 <PaginationItem>
                   <PaginationPrevious

@@ -1,9 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -12,7 +9,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { Check } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+import { toast } from "sonner";
 import { confirmApplicationAction } from "../../actions";
 
 interface ApplicationConfirmModalProps {
@@ -51,7 +51,7 @@ export default function ApplicationConfirmModal({
       <DialogContent>
         <DialogHeader>
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
               <Check size={24} className="text-green-600" />
             </div>
             <DialogTitle>신청 확정</DialogTitle>
@@ -62,7 +62,7 @@ export default function ApplicationConfirmModal({
         </DialogHeader>
 
         <div className="py-2">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="mb-1 block text-sm font-medium text-gray-700">
             확정 수량
           </label>
           <input
@@ -71,9 +71,9 @@ export default function ApplicationConfirmModal({
             max={requestedQuantity}
             value={quantity}
             onChange={(e) => setQuantity(Number(e.target.value))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none"
           />
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="mt-1 text-xs text-gray-500">
             신청 수량: {requestedQuantity}
           </p>
         </div>
@@ -85,7 +85,7 @@ export default function ApplicationConfirmModal({
           <Button
             onClick={handleConfirm}
             disabled={isPending || quantity < 1 || quantity > requestedQuantity}
-            className="bg-green-600 hover:bg-green-700 text-white"
+            className="bg-green-600 text-white hover:bg-green-700"
           >
             {isPending ? "처리 중..." : "확정"}
           </Button>

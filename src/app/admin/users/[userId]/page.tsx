@@ -1,10 +1,10 @@
-import { notFound } from "next/navigation";
 import {
-  getApiAdminUsersId,
   getApiAdminOrdersUsersUserid,
+  getApiAdminUsersId,
 } from "@/apis/generated/api";
-import { getAuthToken } from "@/lib/auth";
 import { withToken } from "@/apis/mutator";
+import { getAuthToken } from "@/lib/auth";
+import { notFound } from "next/navigation";
 import UserDetailContent from "./_components/UserDetailContent";
 
 interface UserDetailPageProps {

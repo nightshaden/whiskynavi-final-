@@ -1,12 +1,12 @@
 "use client";
 
-import { ArrowLeft, Save, X } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useActionState } from "react";
 import type {
   BottleAdminResponse,
   BottleReservationNoticeResponse,
 } from "@/apis/generated/api";
+import { ArrowLeft, Save, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useActionState } from "react";
 import AdminHeader from "../../../../_components/AdminHeader";
 import { useSidebar } from "../../../../_components/AdminLayoutClient";
 import { updateNoticeFormAction } from "../../../actions";
@@ -38,11 +38,11 @@ export default function NoticeEditContent({
       />
 
       <form action={formAction} className="p-8">
-        <div className="flex items-center justify-between mb-6">
+        <div className="mb-6 flex items-center justify-between">
           <button
             type="button"
             onClick={() => router.push(`/admin/reservations/${notice.id}`)}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 cursor-pointer"
+            className="flex cursor-pointer items-center gap-2 text-gray-600 hover:text-gray-900"
           >
             <ArrowLeft size={20} />
             공고 상세로 돌아가기
@@ -52,7 +52,7 @@ export default function NoticeEditContent({
             <button
               type="submit"
               disabled={isPending}
-              className="px-4 py-2 bg-amber-600 text-white cursor-pointer rounded-lg hover:bg-amber-700 transition-colors flex items-center gap-2 disabled:opacity-50"
+              className="flex cursor-pointer items-center gap-2 rounded-lg bg-amber-600 px-4 py-2 text-white transition-colors hover:bg-amber-700 disabled:opacity-50"
             >
               <Save size={16} />
               {isPending ? "저장 중..." : "저장"}
@@ -61,7 +61,7 @@ export default function NoticeEditContent({
               type="button"
               onClick={() => router.push(`/admin/reservations/${notice.id}`)}
               disabled={isPending}
-              className="px-4 py-2 bg-gray-200 text-gray-700 cursor-pointer rounded-lg hover:bg-gray-300 transition-colors flex items-center gap-2 disabled:opacity-50"
+              className="flex cursor-pointer items-center gap-2 rounded-lg bg-gray-200 px-4 py-2 text-gray-700 transition-colors hover:bg-gray-300 disabled:opacity-50"
             >
               <X size={16} />
               취소
@@ -70,7 +70,7 @@ export default function NoticeEditContent({
         </div>
 
         {formState.error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm">
+          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600">
             {formState.error}
           </div>
         )}

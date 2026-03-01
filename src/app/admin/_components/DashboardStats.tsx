@@ -1,4 +1,4 @@
-import { Users, Package, Calendar, Award, Briefcase } from "lucide-react";
+import { Award, Briefcase, Calendar, Package, Users } from "lucide-react";
 import { getStats } from "../_lib/getStats";
 
 export default async function DashboardStats() {
@@ -50,15 +50,15 @@ export default async function DashboardStats() {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+    <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
       {items.map((item) => {
         const Icon = item.icon;
         return (
           <div
             key={item.label}
-            className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm"
+            className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm"
           >
-            <div className="flex items-center justify-between mb-4">
+            <div className="mb-4 flex items-center justify-between">
               <h3 className="text-sm font-medium text-gray-500">
                 {item.label}
               </h3>

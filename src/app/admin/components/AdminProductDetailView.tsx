@@ -1,8 +1,8 @@
 "use client";
 
+import type { BottleAdminResponse } from "@/apis/generated/api";
 import Image from "next/image";
 import { useState } from "react";
-import type { BottleAdminResponse } from "@/apis/generated/api";
 
 interface AdminProductDetailViewProps {
   productDetails: BottleAdminResponse;
@@ -21,7 +21,7 @@ export default function AdminProductDetailView({
     imgUrls.length > 0 ? imgUrls[selectedImageIndex] : fallbackImage;
 
   return (
-    <div className="bg-white rounded-lg p-4">
+    <div className="rounded-lg bg-white p-4">
       <div className="flex gap-6 divide-x divide-gray-200">
         {/* 왼쪽: 모든 필드 (설명 제외) */}
         <div className="flex-1 space-y-2 pr-6">
@@ -159,8 +159,8 @@ export default function AdminProductDetailView({
           {/* 추가 정보 */}
           {productDetails.extraInfos &&
             Object.keys(productDetails.extraInfos).length > 0 && (
-              <div className="pt-2 border-t">
-                <div className="text-sm text-gray-600 font-semibold mb-2">
+              <div className="border-t pt-2">
+                <div className="mb-2 text-sm font-semibold text-gray-600">
                   추가 정보
                 </div>
                 {Object.entries(productDetails.extraInfos).map(
@@ -179,21 +179,21 @@ export default function AdminProductDetailView({
 
         {/* 중간: 설명 */}
         <div className="flex-1 px-6">
-          <div className="text-sm text-gray-600 mb-1">설명</div>
-          <div className="text-sm text-gray-900 whitespace-pre-wrap">
+          <div className="mb-1 text-sm text-gray-600">설명</div>
+          <div className="text-sm whitespace-pre-wrap text-gray-900">
             {productDetails.description || "설명이 없습니다."}
           </div>
         </div>
 
         {/* 오른쪽: 이미지 */}
-        <div className="flex-1 flex flex-col pl-6">
+        <div className="flex flex-1 flex-col pl-6">
           <div className="relative mb-4">
             <Image
               src={currentImage}
               width={320}
               height={320}
               alt={productDetails.name ?? ""}
-              className="w-full h-80 object-cover rounded border border-gray-200"
+              className="h-80 w-full rounded border border-gray-200 object-cover"
             />
           </div>
           <div className="flex flex-wrap gap-2">
@@ -204,7 +204,7 @@ export default function AdminProductDetailView({
                   width={64}
                   height={64}
                   alt={`Product ${index + 1}`}
-                  className={`w-16 h-16 object-cover rounded border-2 cursor-pointer transition-all ${
+                  className={`h-16 w-16 cursor-pointer rounded border-2 object-cover transition-all ${
                     index === selectedImageIndex
                       ? "border-amber-600 ring-2 ring-amber-300"
                       : "border-gray-300 hover:border-gray-400"

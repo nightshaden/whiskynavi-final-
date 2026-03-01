@@ -1,8 +1,5 @@
 "use client";
 
-import { Command as CommandPrimitive } from "cmdk";
-import { SearchIcon } from "lucide-react";
-import type * as React from "react";
 import {
   Dialog,
   DialogContent,
@@ -12,6 +9,8 @@ import {
 } from "@/components/ui/dialog";
 import { IconSearch } from "@/icons";
 import { cn } from "@/lib/utils";
+import { Command as CommandPrimitive } from "cmdk";
+import type * as React from "react";
 
 function Command({
   className,
@@ -69,11 +68,11 @@ function CommandInput({
       data-slot="command-input-wrapper"
       className="flex h-9 items-center gap-2 border-b px-3"
     >
-      <IconSearch className="size-4 shrink-0 " />
+      <IconSearch className="size-4 shrink-0" />
       <CommandPrimitive.Input
         data-slot="command-input"
         className={cn(
-          "border-white/20 placeholder:text-[#4C4C4C] flex h-10 w-full rounded-md bg-transparent py-3 text-sm  outline-hidden disabled:cursor-not-allowed disabled:opacity-50",
+          "flex h-10 w-full rounded-md border-white/20 bg-transparent py-3 text-sm outline-hidden placeholder:text-[#4C4C4C] disabled:cursor-not-allowed disabled:opacity-50",
           className,
         )}
         {...props}
@@ -174,11 +173,11 @@ function CommandShortcut({
 export {
   Command,
   CommandDialog,
-  CommandInput,
-  CommandList,
   CommandEmpty,
   CommandGroup,
+  CommandInput,
   CommandItem,
-  CommandShortcut,
+  CommandList,
   CommandSeparator,
+  CommandShortcut,
 };

@@ -32,7 +32,11 @@ type FormAction =
 function formReducer(state: FormState, action: FormAction): FormState {
   switch (action.type) {
     case "SET_USER":
-      return { ...state, userId: action.payload.userId, name: action.payload.name };
+      return {
+        ...state,
+        userId: action.payload.userId,
+        name: action.payload.name,
+      };
     case "CLEAR_USER":
       return { ...state, userId: "", name: "" };
     case "SET_REASON":
@@ -65,7 +69,7 @@ function getInitialState(initialData?: BlacklistFormData): FormState {
     name: initialData?.name ?? "",
     reason: initialData?.reason ?? "",
     startAt: initialData?.startAt || undefined,
-    endAt: isPermanent ? null : (initialData?.endAt || null),
+    endAt: isPermanent ? null : initialData?.endAt || null,
     isPermanent,
   };
 }
@@ -95,7 +99,10 @@ export function useBlacklistForm({
 
   const handleSubmit = () => {
     const result = blacklistFormSchema.safeParse({
-      userId: mode === "edit" ? (initialData?.userId?.toString() ?? formState.userId) : formState.userId,
+      userId:
+        mode === "edit"
+          ? (initialData?.userId?.toString() ?? formState.userId)
+          : formState.userId,
       reason: formState.reason,
     });
 

@@ -1,6 +1,5 @@
 "use client";
 
-import { AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,6 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { AlertTriangle } from "lucide-react";
 
 interface RoleConflictModalProps {
   isOpen: boolean;
@@ -32,8 +32,8 @@ export default function RoleConflictModal({
     <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center">
+          <div className="mb-3 flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-amber-100">
               <AlertTriangle size={24} className="text-amber-600" />
             </div>
             <DialogTitle className="text-xl font-bold">
@@ -48,7 +48,7 @@ export default function RoleConflictModal({
             취소
           </Button>
           <Button
-            className="flex-1 bg-amber-600 hover:bg-amber-700 text-white"
+            className="flex-1 bg-amber-600 text-white hover:bg-amber-700"
             onClick={handleConfirm}
           >
             교체

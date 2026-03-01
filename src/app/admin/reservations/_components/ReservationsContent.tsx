@@ -1,8 +1,8 @@
 "use client";
 
+import type { BottleReservationNoticeResponse } from "@/apis/generated/api";
 import { Eye, Pencil, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-import type { BottleReservationNoticeResponse } from "@/apis/generated/api";
 import AdminHeader from "../../_components/AdminHeader";
 import { useSidebar } from "../../_components/AdminLayoutClient";
 import Pagination from "../../_components/Pagination";
@@ -70,24 +70,22 @@ export default function ReservationsContent({
       />
 
       <div className="p-8">
-        <div className="flex items-center justify-between mb-4">
-          <p className="text-sm text-gray-600">
-            총 {totalElements}건
-          </p>
+        <div className="mb-4 flex items-center justify-between">
+          <p className="text-sm text-gray-600">총 {totalElements}건</p>
           <button
             type="button"
             onClick={() => router.push("/admin/reservations/new")}
-            className="flex items-center gap-1.5 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors text-sm font-medium cursor-pointer"
+            className="flex cursor-pointer items-center gap-1.5 rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-amber-700"
           >
             <Plus size={16} />
             예약 공고 등록
           </button>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead className="border-b border-gray-200 bg-gray-50">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
                     ID
@@ -129,37 +127,42 @@ export default function ReservationsContent({
                   notices.map((notice) => (
                     <tr
                       key={notice.id}
-                      className="hover:bg-gray-50 transition-colors cursor-pointer"
-                      onClick={() => router.push(`/admin/reservations/${notice.id}`)}
+                      className="cursor-pointer transition-colors hover:bg-gray-50"
+                      onClick={() =>
+                        router.push(`/admin/reservations/${notice.id}`)
+                      }
                     >
                       <td className="px-4 py-3 text-sm text-gray-900">
                         {notice.id}
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-900 font-medium max-w-[200px] truncate">
+                      <td className="max-w-[200px] truncate px-4 py-3 text-sm font-medium text-gray-900">
                         {notice.bottleName}
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-600">
                         {notice.bottleBrand ?? "-"}
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-900 text-right">
+                      <td className="px-4 py-3 text-right text-sm text-gray-900">
                         {notice.price?.toLocaleString()}원
                       </td>
-                      <td className="px-4 py-3 text-sm text-center">
-                        <span className="text-blue-600 font-medium">
+                      <td className="px-4 py-3 text-center text-sm">
+                        <span className="font-medium text-blue-600">
                           {notice.appliedQuantity ?? 0}
                         </span>
-                        <span className="text-gray-400 mx-1">/</span>
+                        <span className="mx-1 text-gray-400">/</span>
                         <span className="text-gray-600">
                           {notice.availableQuantity ?? 0}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-sm text-center">
-                        <span className="text-green-600 font-medium">
+                      <td className="px-4 py-3 text-center text-sm">
+                        <span className="font-medium text-green-600">
                           {notice.approvedQuantity ?? 0}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">
-                        {formatPeriod(notice.reservationStartAt, notice.reservationEndAt)}
+                      <td className="px-4 py-3 text-sm whitespace-nowrap text-gray-600">
+                        {formatPeriod(
+                          notice.reservationStartAt,
+                          notice.reservationEndAt,
+                        )}
                       </td>
                       <td className="px-4 py-3 text-sm">
                         <div
@@ -168,16 +171,22 @@ export default function ReservationsContent({
                         >
                           <button
                             type="button"
-                            onClick={() => router.push(`/admin/reservations/${notice.id}`)}
-                            className="p-1.5 text-gray-500 hover:text-amber-600 hover:bg-amber-50 rounded-md transition-colors cursor-pointer"
+                            onClick={() =>
+                              router.push(`/admin/reservations/${notice.id}`)
+                            }
+                            className="cursor-pointer rounded-md p-1.5 text-gray-500 transition-colors hover:bg-amber-50 hover:text-amber-600"
                             title="상세"
                           >
                             <Eye size={16} />
                           </button>
                           <button
                             type="button"
-                            onClick={() => router.push(`/admin/reservations/${notice.id}/edit`)}
-                            className="p-1.5 text-gray-500 hover:text-amber-600 hover:bg-amber-50 rounded-md transition-colors cursor-pointer"
+                            onClick={() =>
+                              router.push(
+                                `/admin/reservations/${notice.id}/edit`,
+                              )
+                            }
+                            className="cursor-pointer rounded-md p-1.5 text-gray-500 transition-colors hover:bg-amber-50 hover:text-amber-600"
                             title="수정"
                           >
                             <Pencil size={16} />

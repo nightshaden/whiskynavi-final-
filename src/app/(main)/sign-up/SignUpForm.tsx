@@ -1,10 +1,10 @@
 "use client";
 
-import { CalendarIcon } from "lucide-react";
-import { useActionState, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { CalendarIcon } from "lucide-react";
+import { useActionState, useState } from "react";
 import { type SignUpState, signUpAction } from "./actions";
 import {
   AgreementSection,
@@ -31,12 +31,12 @@ export function SignUpForm() {
   const canSubmit = isEmailVerified && isUsernameVerified && !isPending;
 
   return (
-    <form action={formAction} className="w-full flex flex-col gap-6">
+    <form action={formAction} className="flex w-full flex-col gap-6">
       {/* 이름 (Name) */}
       <div className="w-full">
         <Label
           htmlFor="name"
-          className="text-black font-semibold typo-medium-14 block"
+          className="typo-medium-14 block font-semibold text-black"
         >
           이름
         </Label>
@@ -45,17 +45,17 @@ export function SignUpForm() {
           name="name"
           type="text"
           required
-          className="bg-transparent border-0 border-b border-gray-200 rounded-none px-0 py-3 text-black placeholder:text-gray-400 typo-regular-14 focus-visible:ring-0 focus-visible:border-black"
+          className="typo-regular-14 rounded-none border-0 border-b border-gray-200 bg-transparent px-0 py-3 text-black placeholder:text-gray-400 focus-visible:border-black focus-visible:ring-0"
         />
       </div>
 
       {/* 생년월일 & 성별 Row */}
-      <div className="flex flex-col md:flex-row gap-6 md:gap-8">
+      <div className="flex flex-col gap-6 md:flex-row md:gap-8">
         {/* 생년월일 (Date of Birth) */}
         <div className="flex-1">
           <Label
             htmlFor="birthDate"
-            className="text-black font-semibold typo-medium-14 block"
+            className="typo-medium-14 block font-semibold text-black"
           >
             생년월일
           </Label>
@@ -65,9 +65,9 @@ export function SignUpForm() {
               name="birthDate"
               type="text"
               placeholder="0000 - 00 - 00"
-              className="bg-transparent border-0 border-b border-gray-200 rounded-none px-0 py-3 text-black placeholder:text-gray-400 typo-regular-14 focus-visible:ring-0 focus-visible:border-black pr-8"
+              className="typo-regular-14 rounded-none border-0 border-b border-gray-200 bg-transparent px-0 py-3 pr-8 text-black placeholder:text-gray-400 focus-visible:border-black focus-visible:ring-0"
             />
-            <CalendarIcon className="absolute right-0 top-1/2 -translate-y-1/2 size-5 text-gray-500" />
+            <CalendarIcon className="absolute top-1/2 right-0 size-5 -translate-y-1/2 text-gray-500" />
           </div>
         </div>
 
@@ -85,7 +85,7 @@ export function SignUpForm() {
       <div className="w-full">
         <Label
           htmlFor="password"
-          className="text-black font-semibold typo-medium-14 block"
+          className="typo-medium-14 block font-semibold text-black"
         >
           비밀번호
         </Label>
@@ -95,10 +95,10 @@ export function SignUpForm() {
           type="password"
           required
           placeholder="8~16자, 영문 대소문자/숫자/특수문자 중 2가지 이상 조합"
-          className="bg-transparent border-0 border-b border-gray-200 rounded-none px-0 py-3 text-black placeholder:text-gray-400 typo-regular-14 focus-visible:ring-0 focus-visible:border-black"
+          className="typo-regular-14 rounded-none border-0 border-b border-gray-200 bg-transparent px-0 py-3 text-black placeholder:text-gray-400 focus-visible:border-black focus-visible:ring-0"
         />
         {state.fieldErrors?.password && (
-          <p className="mt-2 text-red-500 typo-regular-12">
+          <p className="typo-regular-12 mt-2 text-red-500">
             * {state.fieldErrors.password}
           </p>
         )}
@@ -108,7 +108,7 @@ export function SignUpForm() {
       <div className="w-full">
         <Label
           htmlFor="confirmPassword"
-          className="text-black font-semibold typo-medium-14 block"
+          className="typo-medium-14 block font-semibold text-black"
         >
           비밀번호 확인
         </Label>
@@ -117,7 +117,7 @@ export function SignUpForm() {
           name="confirmPassword"
           type="password"
           required
-          className="bg-transparent border-0 border-b border-gray-200 rounded-none px-0 py-3 text-black placeholder:text-gray-400 typo-regular-14 focus-visible:ring-0 focus-visible:border-black"
+          className="typo-regular-14 rounded-none border-0 border-b border-gray-200 bg-transparent px-0 py-3 text-black placeholder:text-gray-400 focus-visible:border-black focus-visible:ring-0"
         />
       </div>
 
@@ -128,28 +128,28 @@ export function SignUpForm() {
       />
 
       {/* Divider */}
-      <div className="w-full h-px bg-gray-200 my-2" />
+      <div className="my-2 h-px w-full bg-gray-200" />
 
       {/* Agreement Section - 별도 컴포넌트 */}
       <AgreementSection />
 
       {/* Error Message */}
       {state.error && (
-        <p className="text-red-500 text-sm text-center">{state.error}</p>
+        <p className="text-center text-sm text-red-500">{state.error}</p>
       )}
 
       {/* Submit Button */}
       <Button
         type="submit"
         disabled={!canSubmit}
-        className="w-full h-14 mt-4 bg-[#1E2A38] text-white typo-medium-16 rounded-[10px] hover:bg-[#2a3a4d] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="typo-medium-16 mt-4 h-14 w-full rounded-[10px] bg-[#1E2A38] text-white hover:bg-[#2a3a4d] disabled:cursor-not-allowed disabled:opacity-50"
       >
         {isPending ? "가입 중..." : "가입하기"}
       </Button>
 
       {/* 미검증 상태 안내 */}
       {(!isEmailVerified || !isUsernameVerified) && (
-        <p className="text-gray-500 text-xs text-center">
+        <p className="text-center text-xs text-gray-500">
           {!isEmailVerified && !isUsernameVerified
             ? "이메일과 닉네임 중복 확인이 필요합니다."
             : !isEmailVerified

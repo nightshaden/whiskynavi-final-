@@ -1,13 +1,13 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { IconGoogle, IconKakao, IconNaver } from "@/icons";
+import { signIn } from "next-auth/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export function SignInForm() {
   const router = useRouter();
@@ -63,10 +63,10 @@ export function SignInForm() {
     <>
       <form onSubmit={handleCredentialsSubmit} className="w-full">
         {/* Email Input */}
-        <div className="w-full mt-6">
+        <div className="mt-6 w-full">
           <Label
             htmlFor="email"
-            className="text-white font-semibold typo-medium-13 block"
+            className="typo-medium-13 block font-semibold text-white"
           >
             이메일 주소
           </Label>
@@ -76,15 +76,15 @@ export function SignInForm() {
             type="email"
             placeholder="ex) whiskynavi@whiskynavi.com"
             required
-            className="mt-2 bg-transparent border-0 border-b font-semibold typo-medium-13 border-gray-200 rounded-none px-0 py-3 text-white placeholder:text-gray-200 typo-medium-13 focus-visible:ring-0 focus-visible:border-white"
+            className="typo-medium-13 typo-medium-13 mt-2 rounded-none border-0 border-b border-gray-200 bg-transparent px-0 py-3 font-semibold text-white placeholder:text-gray-200 focus-visible:border-white focus-visible:ring-0"
           />
         </div>
 
         {/* Password Input */}
-        <div className="w-full mt-6">
+        <div className="mt-6 w-full">
           <Label
             htmlFor="password"
-            className="text-white font-semibold typo-medium-13 block"
+            className="typo-medium-13 block font-semibold text-white"
           >
             비밀번호
           </Label>
@@ -93,13 +93,13 @@ export function SignInForm() {
             name="password"
             type="password"
             required
-            className="mt-2 bg-transparent border-0 border-b font-semibold typo-medium-13 border-gray-200 rounded-none px-0 py-3 text-white placeholder:text-gray-200 typo-medium-13 focus-visible:ring-0 focus-visible:border-white"
+            className="typo-medium-13 typo-medium-13 mt-2 rounded-none border-0 border-b border-gray-200 bg-transparent px-0 py-3 font-semibold text-white placeholder:text-gray-200 focus-visible:border-white focus-visible:ring-0"
           />
         </div>
 
         {/* Error Message */}
         {error && (
-          <p className="mt-4 text-red-400 text-sm text-center">{error}</p>
+          <p className="mt-4 text-center text-sm text-red-400">{error}</p>
         )}
 
         {/* Login Button */}
@@ -107,44 +107,44 @@ export function SignInForm() {
           type="submit"
           variant="outline"
           disabled={isPending}
-          className="w-full h-14 mt-7 bg-white border border-white/30 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          className="mt-7 h-14 w-full cursor-pointer border border-white/30 bg-white disabled:cursor-not-allowed disabled:opacity-50"
         >
-          <p className="text-black font-semibold typo-medium-16">
+          <p className="typo-medium-16 font-semibold text-black">
             {isPending ? "로그인 중..." : "로그인"}
           </p>
         </Button>
       </form>
 
       {/* Sign Up & Find Password Links */}
-      <div className="w-full flex items-center justify-center gap-14 mt-5">
+      <div className="mt-5 flex w-full items-center justify-center gap-14">
         <Link
           href="/sign-up"
-          className="w-25 text-center text-[#FFF] font-semibold typo-medium-16"
+          className="typo-medium-16 w-25 text-center font-semibold text-[#FFF]"
         >
           회원가입
         </Link>
         <span className="text-[#FFF]">|</span>
         <Link
           href="/find-password"
-          className="w-25 text-center text-[#FFF] font-semibold typo-medium-16"
+          className="typo-medium-16 w-25 text-center font-semibold text-[#FFF]"
         >
           비밀번호 찾기
         </Link>
       </div>
 
       {/* Social Login Buttons */}
-      <div className="w-full flex flex-col gap-3 mt-9">
+      <div className="mt-9 flex w-full flex-col gap-3">
         {/* Google Login */}
         <Button
           type="button"
           variant="outline"
           onClick={() => signIn("google", { callbackUrl: "/" })}
-          className="w-full h-14 bg-white border-0 rounded-[10px] relative"
+          className="relative h-14 w-full rounded-[10px] border-0 bg-white"
         >
           <span className="absolute left-6.5">
             <IconGoogle size={24} />
           </span>
-          <p className="text-black font-semibold typo-medium-16">
+          <p className="typo-medium-16 font-semibold text-black">
             구글로 로그인
           </p>
         </Button>
@@ -153,12 +153,12 @@ export function SignInForm() {
         <Button
           type="button"
           onClick={() => signIn("naver", { callbackUrl: "/" })}
-          className="w-full h-14 bg-[#03C75A] border-0 rounded-[10px] relative"
+          className="relative h-14 w-full rounded-[10px] border-0 bg-[#03C75A]"
         >
           <span className="absolute left-4">
             <IconNaver size={44} />
           </span>
-          <p className="text-[#FFF] font-semibold typo-medium-16">
+          <p className="typo-medium-16 font-semibold text-[#FFF]">
             네이버로 로그인
           </p>
         </Button>
@@ -167,12 +167,12 @@ export function SignInForm() {
         <Button
           type="button"
           onClick={() => signIn("kakao", { callbackUrl: "/" })}
-          className="w-full h-14 bg-[#FEE500] border-0 rounded-[10px] relative"
+          className="relative h-14 w-full rounded-[10px] border-0 bg-[#FEE500]"
         >
           <span className="absolute left-4">
             <IconKakao size={44} />
           </span>
-          <p className="text-black font-semibold typo-medium-16">
+          <p className="typo-medium-16 font-semibold text-black">
             카카오로 로그인
           </p>
         </Button>

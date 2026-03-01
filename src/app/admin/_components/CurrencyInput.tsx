@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useCallback, type InputHTMLAttributes } from "react";
+import { useCallback, useState, type InputHTMLAttributes } from "react";
 
-interface CurrencyInputProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "value" | "onChange"> {
+interface CurrencyInputProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  "type" | "value" | "onChange"
+> {
   name: string;
   defaultValue?: number | string;
   suffix?: string;
@@ -11,7 +13,8 @@ interface CurrencyInputProps
 
 function formatNumber(value: string | number | undefined): string {
   if (value === undefined || value === "") return "";
-  const num = typeof value === "string" ? Number(value.replace(/,/g, "")) : value;
+  const num =
+    typeof value === "string" ? Number(value.replace(/,/g, "")) : value;
   if (isNaN(num)) return "";
   return num.toLocaleString("ko-KR");
 }
@@ -29,13 +32,10 @@ export default function CurrencyInput({
 }: CurrencyInputProps) {
   const [display, setDisplay] = useState(() => formatNumber(defaultValue));
 
-  const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const raw = e.target.value.replace(/[^0-9]/g, "");
-      setDisplay(raw ? Number(raw).toLocaleString("ko-KR") : "");
-    },
-    [],
-  );
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value.replace(/[^0-9]/g, "");
+    setDisplay(raw ? Number(raw).toLocaleString("ko-KR") : "");
+  }, []);
 
   return (
     <div className="relative flex-1">
@@ -49,7 +49,7 @@ export default function CurrencyInput({
         {...rest}
       />
       {suffix && (
-        <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-sm text-gray-400 pointer-events-none">
+        <span className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 text-sm text-gray-400">
           {suffix}
         </span>
       )}

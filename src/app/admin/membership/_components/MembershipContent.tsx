@@ -144,12 +144,12 @@ export default function MembershipContent({
 
       <div className="p-8">
         {/* 브랜드 선택 탭 및 액션 버튼 */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="mb-6 flex items-center justify-between">
           <div className="flex gap-2">
             <button
               type="button"
               onClick={() => handleBrandChange("navi")}
-              className={`px-6 py-3 rounded-lg font-semibold transition-colors cursor-pointer ${
+              className={`cursor-pointer rounded-lg px-6 py-3 font-semibold transition-colors ${
                 brand === "navi"
                   ? "bg-amber-600 text-white"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -160,7 +160,7 @@ export default function MembershipContent({
             <button
               type="button"
               onClick={() => handleBrandChange("tales")}
-              className={`px-6 py-3 rounded-lg font-semibold transition-colors cursor-pointer ${
+              className={`cursor-pointer rounded-lg px-6 py-3 font-semibold transition-colors ${
                 brand === "tales"
                   ? "bg-amber-600 text-white"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -173,14 +173,14 @@ export default function MembershipContent({
             <button
               type="button"
               onClick={() => router.push("/admin/membership/benefits")}
-              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-semibold cursor-pointer"
+              className="cursor-pointer rounded-lg bg-gray-100 px-4 py-2 font-semibold text-gray-700 transition-colors hover:bg-gray-200"
             >
               혜택 관리
             </button>
             <button
               type="button"
               onClick={handleAddMember}
-              className="px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors font-semibold flex items-center gap-2 cursor-pointer"
+              className="flex cursor-pointer items-center gap-2 rounded-lg bg-amber-600 px-4 py-2 font-semibold text-white transition-colors hover:bg-amber-700"
             >
               <UserPlus size={16} />
               멤버십 추가
@@ -204,7 +204,7 @@ export default function MembershipContent({
             <button
               type="button"
               onClick={handleSortDirectionToggle}
-              className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 transition-colors cursor-pointer"
+              className="cursor-pointer rounded-lg border border-gray-300 px-3 py-1.5 text-sm transition-colors hover:bg-gray-50"
             >
               {sortDirection === "asc" ? "↑ 오름차순" : "↓ 내림차순"}
             </button>
@@ -215,9 +215,11 @@ export default function MembershipContent({
         </div>
 
         {/* 멤버십 회원 목록 테이블 */}
-        <div className={`bg-white rounded-lg border border-gray-200 overflow-hidden transition-opacity ${isPending ? "opacity-60 pointer-events-none" : ""}`}>
+        <div
+          className={`overflow-hidden rounded-lg border border-gray-200 bg-white transition-opacity ${isPending ? "pointer-events-none opacity-60" : ""}`}
+        >
           <table className="w-full table-fixed">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="border-b border-gray-200 bg-gray-50">
               <tr>
                 <th className="w-16 px-3 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase">
                   ID
@@ -275,12 +277,12 @@ export default function MembershipContent({
                   return (
                     <tr
                       key={user.id}
-                      className="hover:bg-gray-50 transition-colors"
+                      className="transition-colors hover:bg-gray-50"
                     >
                       <td className="px-3 py-2 text-xs text-gray-900">
                         {user.id}
                       </td>
-                      <td className="px-3 py-2 text-xs text-gray-900 font-medium">
+                      <td className="px-3 py-2 text-xs font-medium text-gray-900">
                         {user.name}
                       </td>
                       <td className="px-3 py-2 text-xs text-gray-600">
@@ -291,7 +293,7 @@ export default function MembershipContent({
                       </td>
                       <td className="px-3 py-2 text-xs">
                         <span
-                          className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${
+                          className={`rounded px-1.5 py-0.5 text-[10px] font-medium ${
                             memberType === "업장"
                               ? "bg-purple-100 text-purple-700"
                               : "bg-gray-100 text-gray-700"
@@ -303,10 +305,7 @@ export default function MembershipContent({
                       <td className="px-3 py-2 text-xs">
                         <div className="flex flex-wrap gap-1">
                           {membershipRoles.map((role) => (
-                            <Badge
-                              key={role}
-                              className={ROLE_COLOR_MAP[role]}
-                            >
+                            <Badge key={role} className={ROLE_COLOR_MAP[role]}>
                               {ROLE_LABEL_MAP[role]}
                             </Badge>
                           ))}
@@ -319,7 +318,7 @@ export default function MembershipContent({
                         <button
                           type="button"
                           onClick={() => handleRemoveMember(user)}
-                          className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors cursor-pointer"
+                          className="cursor-pointer rounded-md p-1.5 text-gray-500 transition-colors hover:bg-red-50 hover:text-red-600"
                           title="멤버십 해제"
                         >
                           <UserMinus size={16} />

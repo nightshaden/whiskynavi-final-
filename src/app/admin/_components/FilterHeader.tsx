@@ -44,17 +44,14 @@ export default function FilterHeader({
       <button
         type="button"
         onClick={() => onToggle(filterKey)}
-        className={`flex items-center gap-1 hover:text-amber-600 cursor-pointer ${isActive ? "text-amber-600" : ""}`}
+        className={`flex cursor-pointer items-center gap-1 hover:text-amber-600 ${isActive ? "text-amber-600" : ""}`}
       >
         {label}
-        <Filter
-          size={iconSize}
-          className={isActive ? "fill-amber-600" : ""}
-        />
+        <Filter size={iconSize} className={isActive ? "fill-amber-600" : ""} />
       </button>
       {isOpen && (
         <div
-          className={`absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-50 ${dropdownWidth}`}
+          className={`absolute top-full left-0 z-50 mt-1 rounded-lg border border-gray-300 bg-white shadow-lg ${dropdownWidth}`}
         >
           {options.map((option) => (
             <button
@@ -64,7 +61,7 @@ export default function FilterHeader({
                 onSelect(filterKey, option.value);
                 onClose();
               }}
-              className={`block w-full px-3 py-2 text-left text-xs hover:bg-gray-100 cursor-pointer ${
+              className={`block w-full cursor-pointer px-3 py-2 text-left text-xs hover:bg-gray-100 ${
                 currentValue === option.value
                   ? "bg-amber-50 text-amber-700"
                   : ""

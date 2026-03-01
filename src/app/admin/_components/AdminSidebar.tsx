@@ -1,9 +1,9 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { Award, Ban, Calendar, Home, Package, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Users, Package, Calendar, Award, Ban, Home } from "lucide-react";
+import type { ReactNode } from "react";
 
 const menuItems = [
   { id: "users", label: "회원 관리", icon: Users, href: "/admin/users" },
@@ -45,11 +45,11 @@ export default function AdminSidebar({ isOpen, statsSlot }: AdminSidebarProps) {
 
   return (
     <div
-      className={`${isOpen ? "w-64" : "w-0"} transition-all duration-300 bg-white border-r border-gray-200 flex-shrink-0 overflow-hidden`}
+      className={`${isOpen ? "w-64" : "w-0"} flex-shrink-0 overflow-hidden border-r border-gray-200 bg-white transition-all duration-300`}
     >
       <div className="p-6">
         <Link href="/admin">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">관리자</h1>
+          <h1 className="mb-2 text-2xl font-bold text-gray-900">관리자</h1>
         </Link>
         <p className="text-sm text-gray-600">위스키내비 운영 관리</p>
       </div>
@@ -62,9 +62,9 @@ export default function AdminSidebar({ isOpen, statsSlot }: AdminSidebarProps) {
             <Link
               key={item.id}
               href={item.href}
-              className={`w-full flex items-center gap-3 px-4 py-3 mb-1 rounded-lg transition-colors ${
+              className={`mb-1 flex w-full items-center gap-3 rounded-lg px-4 py-3 transition-colors ${
                 active
-                  ? "bg-amber-50 text-amber-700 font-semibold"
+                  ? "bg-amber-50 font-semibold text-amber-700"
                   : "text-gray-700 hover:bg-gray-50"
               }`}
             >
@@ -75,10 +75,10 @@ export default function AdminSidebar({ isOpen, statsSlot }: AdminSidebarProps) {
         })}
 
         {/* 일반 페이지로 돌아가기 */}
-        <div className="mt-4 pt-4 border-t border-gray-200">
+        <div className="mt-4 border-t border-gray-200 pt-4">
           <Link
             href="/"
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+            className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
           >
             <Home size={20} />
             <span>일반 페이지로 돌아가기</span>

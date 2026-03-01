@@ -1,8 +1,8 @@
 "use client";
 
+import type { BottleParams } from "@/apis/apis";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { BottleParams } from "@/apis/apis";
 import { FILTER_DEFAULTS, type FilterState } from "./types";
 import {
   buildQueryString,

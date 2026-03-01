@@ -40,19 +40,12 @@ export default function AdminErrorPage({ error, reset }: AdminErrorPageProps) {
         </p>
 
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Button
-            variant="outline"
-            onClick={() => reset()}
-            className="gap-2"
-          >
+          <Button variant="outline" onClick={() => reset()} className="gap-2">
             <RotateCcw className="size-4" />
             다시 시도
           </Button>
 
-          <Button
-            onClick={() => router.push("/")}
-            className="gap-2"
-          >
+          <Button onClick={() => router.push("/")} className="gap-2">
             <Home className="size-4" />
             홈으로 이동
           </Button>

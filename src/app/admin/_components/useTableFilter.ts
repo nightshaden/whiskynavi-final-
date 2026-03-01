@@ -8,7 +8,10 @@ interface UseTableFilterOptions {
   basePath: string;
 }
 
-export function useTableFilter({ searchParams, basePath }: UseTableFilterOptions) {
+export function useTableFilter({
+  searchParams,
+  basePath,
+}: UseTableFilterOptions) {
   const router = useRouter();
   const [openFilter, setOpenFilter] = useState<string | null>(null);
   const filterRef = useRef<HTMLTableSectionElement>(null);

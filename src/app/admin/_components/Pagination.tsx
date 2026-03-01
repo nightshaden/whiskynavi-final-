@@ -1,9 +1,9 @@
 "use client";
 
+import { Label } from "@/components/ui/label";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
-import { Label } from "@/components/ui/label";
 
 interface PaginationProps {
   totalItems: number;
@@ -56,24 +56,24 @@ export default function Pagination({
   const endIndex = Math.min(currentPage * itemsPerPage, totalItems);
 
   return (
-    <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
+    <div className="flex items-center justify-between border-t border-gray-200 bg-gray-50 px-6 py-4">
       <div className="flex items-center gap-2">
         <Label className="text-sm text-gray-600">페이지당:</Label>
         <select
           value={itemsPerPage}
           onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
-          className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+          className="rounded border border-gray-300 px-2 py-1 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none"
         >
           <option value={10}>10</option>
           <option value={20}>20</option>
           <option value={50}>50</option>
           <option value={100}>100</option>
         </select>
-        <span className="text-sm text-gray-600 ml-4">
+        <span className="ml-4 text-sm text-gray-600">
           {totalItems}개 중 {startIndex}-{endIndex}
         </span>
         {isPending && (
-          <div className="ml-2 animate-spin rounded-full h-4 w-4 border-b-2 border-amber-600"></div>
+          <div className="ml-2 h-4 w-4 animate-spin rounded-full border-b-2 border-amber-600"></div>
         )}
       </div>
 
@@ -82,7 +82,7 @@ export default function Pagination({
           type="button"
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1 || isPending}
-          className="p-1.5 rounded border border-gray-300 cursor-pointer hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="cursor-pointer rounded border border-gray-300 p-1.5 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <ChevronLeft size={18} />
         </button>
@@ -105,7 +105,7 @@ export default function Pagination({
               key={pageNum}
               onClick={() => handlePageChange(pageNum)}
               disabled={isPending}
-              className={`w-8 h-8 rounded text-sm font-medium cursor-pointer ${
+              className={`h-8 w-8 cursor-pointer rounded text-sm font-medium ${
                 currentPage === pageNum
                   ? "bg-amber-600 text-white"
                   : "border border-gray-300 hover:bg-gray-50"
@@ -120,7 +120,7 @@ export default function Pagination({
           type="button"
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages || isPending}
-          className="p-1.5 rounded border border-gray-300 cursor-pointer hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="cursor-pointer rounded border border-gray-300 p-1.5 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <ChevronRight size={18} />
         </button>

@@ -1,6 +1,5 @@
 "use client";
 
-import { AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { AlertTriangle } from "lucide-react";
 
 // 삭제 확인 모달 컴포넌트
 export default function DeleteConfirmModal({
@@ -31,12 +31,12 @@ export default function DeleteConfirmModal({
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
               <AlertTriangle size={24} className="text-red-600" />
             </div>
             <DialogTitle className="text-xl font-bold">삭제 확인</DialogTitle>
           </div>
-          <DialogDescription className="text-gray-600 pt-2">
+          <DialogDescription className="pt-2 text-gray-600">
             이 항목을 블랙리스트에서 삭제하시겠습니까?
           </DialogDescription>
         </DialogHeader>

@@ -1,14 +1,14 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import {
   deleteApiAdminUsersId,
-  patchApiAdminUsersIdStatus,
   patchApiAdminUsersIdRolesAdd,
   patchApiAdminUsersIdRolesRemove,
+  patchApiAdminUsersIdStatus,
 } from "@/apis/generated/api";
-import { getAuthToken } from "@/lib/auth";
 import { withToken } from "@/apis/mutator";
+import { getAuthToken } from "@/lib/auth";
+import { revalidatePath } from "next/cache";
 
 export async function deleteUserAction(userId: number) {
   const token = await getAuthToken();
@@ -94,8 +94,16 @@ export async function replaceUserRoleAction(
   }
 
   try {
-    await patchApiAdminUsersIdRolesRemove(userId, { roles: [oldRole] }, withToken(token));
-    await patchApiAdminUsersIdRolesAdd(userId, { roles: [newRole] }, withToken(token));
+    await patchApiAdminUsersIdRolesRemove(
+      userId,
+      { roles: [oldRole] },
+      withToken(token),
+    );
+    await patchApiAdminUsersIdRolesAdd(
+      userId,
+      { roles: [newRole] },
+      withToken(token),
+    );
     revalidatePath(`/admin/users/${userId}`);
     return { success: true };
   } catch (error) {

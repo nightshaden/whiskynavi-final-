@@ -114,11 +114,11 @@ export default function MembershipBenefitsContent() {
 
       <div className="p-8">
         {/* 상단 네비게이션 */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="mb-6 flex items-center justify-between">
           <button
             type="button"
             onClick={() => router.push("/admin/membership")}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
+            className="flex cursor-pointer items-center gap-2 text-gray-600 transition-colors hover:text-gray-900"
           >
             <ArrowLeft size={20} />
             <span className="font-medium">멤버십 관리로 돌아가기</span>
@@ -145,16 +145,16 @@ export default function MembershipBenefitsContent() {
         </div>
 
         {/* 혜택 카드 그리드 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {brands.map(({ key, label }) => {
             const brandBenefits = currentBenefits[key].member;
 
             return (
               <div
                 key={key}
-                className="bg-white rounded-xl shadow-sm p-6 border-2 border-gray-200"
+                className="rounded-xl border-2 border-gray-200 bg-white p-6 shadow-sm"
               >
-                <div className="flex items-center justify-between mb-4">
+                <div className="mb-4 flex items-center justify-between">
                   <h3 className="text-2xl font-bold text-amber-600">{label}</h3>
                   <Award className="text-amber-600" size={32} />
                 </div>
@@ -170,7 +170,11 @@ export default function MembershipBenefitsContent() {
                           type="number"
                           value={brandBenefits.discount}
                           onChange={(e) =>
-                            updateBenefit(key, "discount", Number(e.target.value))
+                            updateBenefit(
+                              key,
+                              "discount",
+                              Number(e.target.value),
+                            )
                           }
                           className="mt-1"
                         />
@@ -192,52 +196,56 @@ export default function MembershipBenefitsContent() {
                           className="mt-1"
                         />
                       </div>
-                      {BOOLEAN_BENEFIT_FIELDS.map(({ key: field, label: fieldLabel }) => (
-                        <div
-                          key={field}
-                          className="flex items-center justify-between py-2"
-                        >
-                          <Label className="text-sm text-gray-700">
-                            {fieldLabel}
-                          </Label>
-                          <Switch
-                            checked={brandBenefits[field]}
-                            onCheckedChange={(checked) =>
-                              updateBenefit(key, field, checked)
-                            }
-                          />
-                        </div>
-                      ))}
+                      {BOOLEAN_BENEFIT_FIELDS.map(
+                        ({ key: field, label: fieldLabel }) => (
+                          <div
+                            key={field}
+                            className="flex items-center justify-between py-2"
+                          >
+                            <Label className="text-sm text-gray-700">
+                              {fieldLabel}
+                            </Label>
+                            <Switch
+                              checked={brandBenefits[field]}
+                              onCheckedChange={(checked) =>
+                                updateBenefit(key, field, checked)
+                              }
+                            />
+                          </div>
+                        ),
+                      )}
                     </>
                   ) : (
                     <>
-                      <div className="flex justify-between py-2 border-b border-gray-100">
+                      <div className="flex justify-between border-b border-gray-100 py-2">
                         <span className="text-sm text-gray-600">할인율</span>
                         <span className="text-sm font-semibold text-gray-900">
                           {brandBenefits.discount}%
                         </span>
                       </div>
-                      <div className="flex justify-between py-2 border-b border-gray-100">
+                      <div className="flex justify-between border-b border-gray-100 py-2">
                         <span className="text-sm text-gray-600">조기 접근</span>
                         <span className="text-sm font-semibold text-gray-900">
                           {brandBenefits.earlyAccess}일
                         </span>
                       </div>
-                      {BOOLEAN_BENEFIT_FIELDS.map(({ key: field, label: fieldLabel }) => (
-                        <div
-                          key={field}
-                          className={`flex justify-between py-2 ${field !== "prioritySupport" ? "border-b border-gray-100" : ""}`}
-                        >
-                          <span className="text-sm text-gray-600">
-                            {fieldLabel}
-                          </span>
-                          {brandBenefits[field] ? (
-                            <Check className="text-green-600" size={20} />
-                          ) : (
-                            <X className="text-gray-400" size={20} />
-                          )}
-                        </div>
-                      ))}
+                      {BOOLEAN_BENEFIT_FIELDS.map(
+                        ({ key: field, label: fieldLabel }) => (
+                          <div
+                            key={field}
+                            className={`flex justify-between py-2 ${field !== "prioritySupport" ? "border-b border-gray-100" : ""}`}
+                          >
+                            <span className="text-sm text-gray-600">
+                              {fieldLabel}
+                            </span>
+                            {brandBenefits[field] ? (
+                              <Check className="text-green-600" size={20} />
+                            ) : (
+                              <X className="text-gray-400" size={20} />
+                            )}
+                          </div>
+                        ),
+                      )}
                     </>
                   )}
                 </div>

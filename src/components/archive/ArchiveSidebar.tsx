@@ -1,8 +1,8 @@
 "use client";
 
+import type { BottleParams } from "@/apis/apis";
 import { X } from "lucide-react";
 import { useMemo } from "react";
-import type { BottleParams } from "@/apis/apis";
 import {
   Accordion,
   AccordionContent,
@@ -41,9 +41,9 @@ export function ArchiveSidebar({ params }: ArchiveSidebarProps) {
   } = useFilters({ params });
 
   return (
-    <div className="py-6 px-5 border-[0.85px] border-white border-opacity-20 w-full max-w-[280px] bg-[#282E39] h-fit">
+    <div className="border-opacity-20 h-fit w-full max-w-[280px] border-[0.85px] border-white bg-[#282E39] px-5 py-6">
       {/* Header */}
-      <h2 className="typo-bold-24 text-white mb-4">보틀 검색</h2>
+      <h2 className="typo-bold-24 mb-4 text-white">보틀 검색</h2>
 
       {/* GlobalSearch */}
       <SearchableDropdown
@@ -104,7 +104,7 @@ function ActiveFilters({ filters, onRemove }: ActiveFiltersProps) {
   ];
 
   return (
-    <div className="flex flex-wrap gap-1 max-w-[280px]">
+    <div className="flex max-w-[280px] flex-wrap gap-1">
       {filterConfigs.map(({ key, items, className }) =>
         items.map((item) => (
           <Badge
@@ -112,7 +112,7 @@ function ActiveFilters({ filters, onRemove }: ActiveFiltersProps) {
             className={`flex items-center ${className}`}
           >
             <button type="button" onClick={() => onRemove(key, item)}>
-              <X className="w-3 h-3" />
+              <X className="h-3 w-3" />
             </button>
             <span>{item}</span>
           </Badge>
@@ -215,16 +215,16 @@ function CheckboxFilterItem({
   onToggle,
 }: CheckboxFilterProps) {
   return (
-    <div className="flex items-center gap-2 group">
+    <div className="group flex items-center gap-2">
       <Checkbox
         id={id}
         checked={checked}
         onCheckedChange={onToggle}
-        className="border-white/30 bg-white/10 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
+        className="border-white/30 bg-white/10 data-[state=checked]:border-blue-500 data-[state=checked]:bg-blue-500"
       />
       <Label
         htmlFor={id}
-        className="text-white/90 typo-regular-14 group-hover:text-white cursor-pointer"
+        className="typo-regular-14 cursor-pointer text-white/90 group-hover:text-white"
       >
         {label}
       </Label>
@@ -241,7 +241,7 @@ interface BrandFilterProps {
 function BrandFilter({ brands, selectedBrands, onToggle }: BrandFilterProps) {
   return (
     <AccordionItem value="brand" className="border-white/20">
-      <AccordionTrigger className="text-white typo-medium-16 hover:no-underline py-4">
+      <AccordionTrigger className="typo-medium-16 py-4 text-white hover:no-underline">
         브랜드
       </AccordionTrigger>
       <AccordionContent>
@@ -274,7 +274,7 @@ function MaltTypeFilter({
 }: MaltTypeFilterProps) {
   return (
     <AccordionItem value="malt" className="border-white/20">
-      <AccordionTrigger className="text-white typo-medium-16 hover:no-underline py-4">
+      <AccordionTrigger className="typo-medium-16 py-4 text-white hover:no-underline">
         몰트
       </AccordionTrigger>
       <AccordionContent>
@@ -307,7 +307,7 @@ function DistilleryFilter({
 }: DistilleryFilterProps) {
   return (
     <AccordionItem value="distillery" className="border-white/20">
-      <AccordionTrigger className="text-white typo-medium-16 hover:no-underline py-4">
+      <AccordionTrigger className="typo-medium-16 py-4 text-white hover:no-underline">
         증류소
       </AccordionTrigger>
       <AccordionContent>
@@ -338,7 +338,7 @@ function CaskTypeFilter({
 }: CaskTypeFilterProps) {
   return (
     <AccordionItem value="cask" className="border-white/20">
-      <AccordionTrigger className="text-white typo-medium-16 hover:no-underline py-4">
+      <AccordionTrigger className="typo-medium-16 py-4 text-white hover:no-underline">
         캐스크 종류
       </AccordionTrigger>
       <AccordionContent>
@@ -364,7 +364,7 @@ interface AbvFilterProps {
 function AbvFilter({ value, onChange }: AbvFilterProps) {
   return (
     <AccordionItem value="abv" className="border-white/20">
-      <AccordionTrigger className="text-white typo-medium-16 hover:no-underline py-4">
+      <AccordionTrigger className="typo-medium-16 py-4 text-white hover:no-underline">
         도수
       </AccordionTrigger>
       <AccordionContent>
@@ -388,7 +388,7 @@ interface VintageFilterProps {
 function VintageFilter({ value, onChange }: VintageFilterProps) {
   return (
     <AccordionItem value="vintage" className="border-white/20">
-      <AccordionTrigger className="text-white typo-medium-16 hover:no-underline py-4">
+      <AccordionTrigger className="typo-medium-16 py-4 text-white hover:no-underline">
         빈티지
       </AccordionTrigger>
       <AccordionContent>

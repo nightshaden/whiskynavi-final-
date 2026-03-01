@@ -3,8 +3,8 @@ import { SignInForm } from "./SignInForm";
 
 const Page = () => {
   return (
-    <main className="min-h-screen flex items-center justify-center px-4">
-      <section className="flex flex-col items-center w-full max-w-[400px]">
+    <main className="flex min-h-screen items-center justify-center px-4">
+      <section className="flex w-full max-w-[400px] flex-col items-center">
         {/* Logo */}
         <div className="flex flex-col items-center">
           <Image

@@ -31,6 +31,9 @@ export default async function BlacklistPage({
     withToken(token),
   );
   return (
-    <BlacklistContent searchParams={params} blacklist={(res.data.content ?? []) as AdminUserResponse[]} />
+    <BlacklistContent
+      searchParams={params}
+      blacklist={(res.data.content ?? []) as AdminUserResponse[]}
+    />
   );
 }

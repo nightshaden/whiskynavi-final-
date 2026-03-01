@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
-import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
+import { useState } from "react";
 
 type BottleImageProps = {
   src: string;
@@ -27,11 +27,11 @@ export function BottleImage({
   return (
     <div
       className={cn(
-        "flex items-center justify-center overflow-hidden relative",
+        "relative flex items-center justify-center overflow-hidden",
         containerClassName,
       )}
     >
-      {isLoading && <Skeleton className="absolute inset-0 w-full h-full" />}
+      {isLoading && <Skeleton className="absolute inset-0 h-full w-full" />}
       <Image
         src={src}
         alt={alt}
