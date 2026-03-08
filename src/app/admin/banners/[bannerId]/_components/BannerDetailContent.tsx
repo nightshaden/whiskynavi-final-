@@ -1,0 +1,171 @@
+"use client";
+
+import type { BannerResponse } from "@/apis/generated/api";
+import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
+import { ArrowLeft, Edit2, ExternalLink } from "lucide-react";
+import { useRouter } from "next/navigation";
+import AdminHeader from "../../../_components/AdminHeader";
+import { useSidebar } from "../../../_components/AdminLayoutClient";
+
+interface BannerDetailContentProps {
+  banner: BannerResponse;
+}
+
+export default function BannerDetailContent({
+  banner,
+}: BannerDetailContentProps) {
+  const { toggle } = useSidebar();
+  const router = useRouter();
+
+  return (
+    <>
+      <AdminHeader
+        title="배너 상세"
+        onToggleSidebar={toggle}
+        showSearch={false}
+      />
+
+      <div className="p-8">
+        <div className="mb-6 flex items-center justify-between">
+          <button
+            type="button"
+            onClick={() => router.push("/admin/banners")}
+            className="flex cursor-pointer items-center gap-2 text-gray-600 hover:text-gray-900"
+          >
+            <ArrowLeft size={20} />
+            배너 목록으로 돌아가기
+          </button>
+
+          <button
+            type="button"
+            onClick={() => router.push(`/admin/banners/${banner.id}/edit`)}
+            className="flex cursor-pointer items-center gap-2 rounded-lg bg-amber-600 px-4 py-2 text-white transition-colors hover:bg-amber-700"
+          >
+            <Edit2 size={16} />
+            편집
+          </button>
+        </div>
+
+        {/* 미리보기 섹션 */}
+        <div className="mb-6 overflow-hidden rounded-lg border border-gray-200">
+          <div className="relative h-56 w-full bg-gray-900">
+            {banner.backgroundUrl ? (
+              <ImageWithFallback
+                src={banner.backgroundUrl}
+                alt="배경 이미지"
+                fill
+                className="object-cover opacity-70"
+              />
+            ) : null}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="flex items-center gap-6">
+                {banner.mainUrl ? (
+                  <ImageWithFallback
+                    src={banner.mainUrl}
+                    alt="메인 이미지"
+                    width={160}
+                    height={160}
+                    className="h-32 w-32 rounded object-contain"
+                  />
+                ) : null}
+                <div className="text-white">
+                  <h2 className="text-2xl font-bold">
+                    {banner.title ?? "(제목 없음)"}
+                  </h2>
+                  {banner.description ? (
+                    <p className="mt-1 text-white/80">{banner.description}</p>
+                  ) : null}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 메타데이터 */}
+        <div className="rounded-lg border border-gray-200 bg-white p-6">
+          <h3 className="mb-4 text-lg font-semibold text-gray-900">
+            배너 정보
+          </h3>
+          <dl className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <dt className="text-sm font-medium text-gray-500">ID</dt>
+              <dd className="mt-1 text-gray-900">{banner.id}</dd>
+            </div>
+            <div>
+              <dt className="text-sm font-medium text-gray-500">제목</dt>
+              <dd className="mt-1 text-gray-900">
+                {banner.title ?? "(없음)"}
+              </dd>
+            </div>
+            <div className="sm:col-span-2">
+              <dt className="text-sm font-medium text-gray-500">설명</dt>
+              <dd className="mt-1 text-gray-900">
+                {banner.description ?? "(없음)"}
+              </dd>
+            </div>
+            <div className="sm:col-span-2">
+              <dt className="text-sm font-medium text-gray-500">링크</dt>
+              <dd className="mt-1">
+                {banner.link ? (
+                  <a
+                    href={banner.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-amber-600 hover:text-amber-700"
+                  >
+                    {banner.link}
+                    <ExternalLink size={14} />
+                  </a>
+                ) : (
+                  <span className="text-gray-900">(없음)</span>
+                )}
+              </dd>
+            </div>
+          </dl>
+        </div>
+
+        {/* 이미지 상세 */}
+        <div className="mt-6 grid gap-6 md:grid-cols-2">
+          <div className="rounded-lg border border-gray-200 bg-white p-4">
+            <h4 className="mb-3 text-sm font-semibold text-gray-700">
+              배경 이미지
+            </h4>
+            <div className="relative h-48 w-full overflow-hidden rounded-lg bg-gray-100">
+              {banner.backgroundUrl ? (
+                <ImageWithFallback
+                  src={banner.backgroundUrl}
+                  alt="배경 이미지"
+                  fill
+                  className="object-cover"
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center text-sm text-gray-400">
+                  이미지 없음
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="rounded-lg border border-gray-200 bg-white p-4">
+            <h4 className="mb-3 text-sm font-semibold text-gray-700">
+              메인 이미지
+            </h4>
+            <div className="relative h-48 w-full overflow-hidden rounded-lg bg-gray-100">
+              {banner.mainUrl ? (
+                <ImageWithFallback
+                  src={banner.mainUrl}
+                  alt="메인 이미지"
+                  fill
+                  className="object-contain"
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center text-sm text-gray-400">
+                  이미지 없음
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}

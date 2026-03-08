@@ -1,5 +1,22 @@
 import type { BottleParams, BottleQueries } from "@/apis/apis";
-import { FILTER_DEFAULTS, type FilterState } from "./types";
+import { GetApiBottlesParams } from "@/apis/generated/api";
+import { FILTER_DEFAULTS, type FilterState } from "../_types";
+
+export type SearchParams = {
+  [K in keyof GetApiBottlesParams["filters"]]?: string;
+} & { page?: string; sort?: string };
+
+export const buildPageUrl = (params: SearchParams, page: number): string => {
+  const sp = new URLSearchParams();
+  for (const [key, value] of Object.entries(params)) {
+    if (key === "page") continue;
+    if (value !== undefined && value !== null && value !== "") {
+      sp.set(key, String(value));
+    }
+  }
+  sp.set("page", String(page));
+  return `/archive?${sp.toString()}`;
+};
 
 /**
  * 값이 어느 카테고리에 속하는지 찾는 함수
@@ -142,7 +159,7 @@ export function buildQueryString(queries: BottleQueries): string {
 /**
  * 현재 선택된 모든 필터 값들을 하나의 배열로 합침
  */
-export function getAllSelectedValues(filters: FilterState): string[] {
+export const getAllSelectedValues = (filters: FilterState): string[] => {
   return [
     ...filters.brands,
     ...filters.distilleries,
@@ -152,4 +169,4 @@ export function getAllSelectedValues(filters: FilterState): string[] {
     ...filters.maltTypes,
     ...filters.caskTypes,
   ];
-}
+};

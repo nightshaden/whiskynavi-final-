@@ -1,5 +1,5 @@
 import { api } from "@/apis/apis";
-import { BottleImage } from "../BottleImage";
+import { BottleImage } from "../_components/BottleImage";
 
 const Page = async ({ params }: { params: Promise<{ bottleId: string }> }) => {
   const { bottleId: bottleIdParam } = await params;

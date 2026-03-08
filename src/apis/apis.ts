@@ -272,6 +272,7 @@ export type BottleSearchParams = {
   distillationDateTo?: string;
   pageNumber?: number;
   pageSize?: number;
+  sort?: string;
 };
 
 export type BottleSearchParameterValues = {

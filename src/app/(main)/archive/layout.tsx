@@ -1,19 +1,21 @@
 import { api } from "@/apis/apis";
-import { ArchiveSidebar } from "@/components/archive/ArchiveSidebar";
+import { ArchiveSidebar } from "@/app/(main)/archive/_components/ArchiveSidebar";
+import ListHero from "./_components/ListHero";
+import MobileSearchBar from "./_components/MobileSearchBar";
 
 const Layout = async ({ children }: { children: React.ReactNode }) => {
   const bottleParams = await api.getBottleParams();
 
   return (
-    <main className="mx-auto mt-50 w-full">
-      <h1 className="typo-bold-40 text-center text-white">제품 목록</h1>
-      {/* 메인 영역 */}
-      <div className="mx-20 mt-15 flex gap-10">
-        {/* 사이드바 영역 */}
+    <div className="min-h-screen bg-[#1d2429]">
+      <ListHero />
+      <MobileSearchBar />
+
+      <div className="mx-auto flex max-w-[1440px] px-4 pt-4 pb-12 lg:px-10 lg:pt-2">
         <ArchiveSidebar params={bottleParams} />
         {children}
       </div>
-    </main>
+    </div>
   );
 };
 

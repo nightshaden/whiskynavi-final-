@@ -9,7 +9,7 @@ export const customFetch = async <T>(
   options: RequestInit,
 ): Promise<T> => {
   const fullUrl = url.startsWith("http") ? url : `${BASE_URL}${url}`;
-
+  console.log("???", fullUrl);
   const res = await fetch(fullUrl, {
     ...options,
     cache: "no-store",

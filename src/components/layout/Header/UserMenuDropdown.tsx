@@ -1,0 +1,42 @@
+import Link from "next/link";
+import { LogoutButton } from "./shared";
+
+interface UserMenuDropdownProps {
+  isAdmin: boolean;
+  close: () => void;
+}
+
+export default function UserMenuDropdown({
+  isAdmin,
+  close,
+}: UserMenuDropdownProps) {
+  return (
+    <>
+      <div className="fixed inset-0 z-[60]" onClick={close} />
+      <div className="fixed right-4 top-16 z-[60] w-44 rounded-lg border border-white/20 bg-[#1d2429] py-2 shadow-2xl backdrop-blur-md lg:right-8 lg:top-20">
+        <Link
+          href="/my-page"
+          onClick={close}
+          className="typo-regular-14 block px-4 py-2.5 text-white/90 transition-colors hover:bg-white/10 hover:text-white"
+        >
+          마이페이지
+        </Link>
+        {isAdmin ? (
+          <Link
+            href="/admin"
+            onClick={close}
+            className="typo-regular-14 block px-4 py-2.5 text-white/90 transition-colors hover:bg-white/10 hover:text-white"
+          >
+            관리자 페이지
+          </Link>
+        ) : null}
+        <div className="my-1 border-t border-white/10" />
+        <LogoutButton
+          onBeforeSignOut={close}
+          className="typo-regular-14 block w-full cursor-pointer px-4 py-2.5 text-left text-red-400 transition-colors hover:bg-white/10 hover:text-red-300"
+        />
+        {/* TODO: 다국어 지원 시 언어 선택 메뉴 항목 추가 */}
+      </div>
+    </>
+  );
+}

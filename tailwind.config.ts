@@ -107,6 +107,14 @@ const config: Config = {
         "0%, 100%": { opacity: "1" },
         "50%": { opacity: ".5" },
       },
+      fadeIn: {
+        from: { opacity: "0", transform: "scale(1.1)" },
+        to: { opacity: "1", transform: "scale(1)" },
+      },
+      slideUp: {
+        from: { opacity: "0", transform: "translateY(1rem)" },
+        to: { opacity: "1", transform: "translateY(0)" },
+      },
     },
   },
   // 플러그인은 CSS의 @layer components로 이동했습니다 (globals.css 참조)

@@ -29,10 +29,11 @@ export function ImageWithFallback({ className, style, ...rest }: ImageProps) {
 
   return (
     <Image
+      {...rest}
       className={className}
       style={style}
-      {...rest}
       onError={() => setDidError(true)}
+      alt={rest.alt}
     />
   );
 }

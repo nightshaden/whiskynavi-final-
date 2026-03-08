@@ -1,6 +1,14 @@
 "use client";
 
-import { Award, Ban, Calendar, Home, Package, Users } from "lucide-react";
+import {
+  Award,
+  Ban,
+  Calendar,
+  Home,
+  ImageIcon,
+  Package,
+  Users,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
@@ -24,6 +32,12 @@ const menuItems = [
     label: "멤버십 관리",
     icon: Award,
     href: "/admin/membership",
+  },
+  {
+    id: "banners",
+    label: "배너 관리",
+    icon: ImageIcon,
+    href: "/admin/banners",
   },
   { id: "blacklist", label: "블랙리스트", icon: Ban, href: "/admin/blacklist" },
 ];

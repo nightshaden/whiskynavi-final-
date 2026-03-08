@@ -1,98 +1,159 @@
 "use client";
 
-import { signOut, useSession } from "next-auth/react";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import { Menu } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
-import Link, { type LinkProps } from "next/link";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { type FC, useEffect, useState } from "react";
+import { overlay } from "overlay-kit";
+import { NAV_LINKS } from "./constants";
+import DesktopAuthArea from "./DesktopAuthArea";
+import MobileAuthSection from "./MobileAuthSection";
+import UserMenuDropdown from "./UserMenuDropdown";
+import { useScrolled } from "./useScrolled";
 
-const Header = () => {
+export default function Header() {
   const pathname = usePathname();
   const { data: session, status } = useSession();
-  const [isScrolled, setIsScrolled] = useState(false);
+  const isScrolled = useScrolled();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 0);
-    };
+  const isAdmin = session?.user?.roles?.includes("ROLE_ADMIN") ?? false;
 
-    window.addEventListener("scroll", handleScroll);
-    handleScroll(); // 초기 상태 체크
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // /admin 경로에서는 Header를 렌더링하지 않음
   if (pathname.startsWith("/admin")) {
     return null;
   }
 
+  const openUserMenu = () => {
+    overlay.open(({ isOpen, close }) =>
+      isOpen ? <UserMenuDropdown isAdmin={isAdmin} close={close} /> : null,
+    );
+  };
+
   return (
     <header
-      className={`fixed top-0 z-50 hidden w-full px-10 py-3.5 transition-all duration-300 lg:block ${
-        isScrolled ? "backdrop-blur-md" : "bg-transparent"
+      className={`fixed top-0 z-50 w-full border-b border-white/10 backdrop-blur-lg transition-all duration-300 ${
+        isScrolled ? "bg-[#0f1419]/70 shadow-lg" : "bg-transparent"
       }`}
     >
-      <div className="mx-auto flex w-full max-w-screen-xl items-center justify-between px-20">
-        <Link href="/">
-          <Image src="/logo.png" alt="logo" width={186} height={40} />
+      <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-4 md:px-6 lg:h-20 lg:px-8">
+        <Link href="/" className="group flex h-8 items-center lg:h-10">
+          <Image
+            src="/logo.png"
+            alt="WHISKYNAVI"
+            width={150}
+            height={40}
+            className="h-full w-auto object-contain transition-opacity group-hover:opacity-90"
+            priority
+          />
         </Link>
-        <nav className="flex items-center gap-[50px]">
-          <ul className="flex items-center gap-[50px]">
-            <li>
-              <NavLink href="/brand">브랜드</NavLink>
-            </li>
-            <li>
-              <NavLink href="/archive">아카이브</NavLink>
-            </li>
-            <li>
-              <NavLink href="/my-page">마이 페이지</NavLink>
-            </li>
-          </ul>
-          <div className="flex items-center gap-7">
-            {status === "loading" ? (
-              <span className="typo-bold-20 text-white opacity-50">...</span>
-            ) : session ? (
-              <button
-                type="button"
-                onClick={() => signOut({ callbackUrl: "/" })}
-                className="typo-bold-20 cursor-pointer text-white"
-              >
-                Logout
-              </button>
-            ) : (
-              <Link
-                href="/sign-in"
-                className="typo-bold-20 cursor-pointer text-white"
-              >
-                <p className="typo-bold-20 text-white">Login</p>
-              </Link>
-            )}
-            {session?.user.roles?.includes("ROLE_ADMIN") && (
-              <Link
-                href="/admin"
-                className="typo-bold-20 cursor-pointer text-white"
-              >
-                <p className="typo-bold-20 text-white">Admin</p>
-              </Link>
-            )}
-          </div>
+
+        <nav className="hidden items-center gap-12 lg:flex">
+          {NAV_LINKS.map(({ href, label }) => (
+            <Link
+              key={href}
+              href={href}
+              className={`typo-bold-18 transition-colors ${
+                pathname.startsWith(href)
+                  ? "text-white"
+                  : "text-white/80 hover:text-white"
+              }`}
+            >
+              {label}
+            </Link>
+          ))}
         </nav>
+
+        <div className="hidden items-center gap-4 lg:flex">
+          {/* TODO: 다국어 지원 시 Globe 버튼 + overlay.open으로 언어 선택 드롭다운 구현 */}
+          <DesktopAuthArea
+            status={status}
+            session={session}
+            onOpenUserMenu={openUserMenu}
+          />
+        </div>
+
+        <button
+          type="button"
+          onClick={() =>
+            overlay.open(({ isOpen, close }) => (
+              <Sheet
+                open={isOpen}
+                onOpenChange={(open) => {
+                  if (!open) close();
+                }}
+              >
+                <SheetContent
+                  side="right"
+                  className="w-4/5 border-white/10 bg-[#1d2429] sm:max-w-sm"
+                >
+                  <SheetHeader>
+                    <SheetTitle className="text-white">메뉴</SheetTitle>
+                  </SheetHeader>
+
+                  <nav className="flex flex-1 flex-col gap-1 px-4">
+                    {NAV_LINKS.map(({ href, label }) => (
+                      <Link
+                        key={href}
+                        href={href}
+                        onClick={close}
+                        className={`typo-bold-16 rounded-lg px-3 py-3 transition-colors ${
+                          pathname.startsWith(href)
+                            ? "bg-white/10 text-white"
+                            : "text-white/80 hover:bg-white/5 hover:text-white"
+                        }`}
+                      >
+                        {label}
+                      </Link>
+                    ))}
+                  </nav>
+
+                  <div className="border-t border-white/10 px-4 pt-4">
+                    <MobileAuthSection
+                      session={session}
+                      isAdmin={isAdmin}
+                      close={close}
+                    />
+                  </div>
+
+                  {/* TODO: 다국어 지원 시 활성화
+                <div className="border-t border-white/10 px-4 pt-4">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 px-3 text-white/70">
+                      <Globe size={18} />
+                      <span className="typo-bold-14">언어 선택</span>
+                    </div>
+                    {LANGUAGES.map((lang) => (
+                      <button
+                        key={lang.code}
+                        type="button"
+                        onClick={() => { changeLanguage(lang.code); close(); }}
+                        className={`typo-regular-14 w-full rounded-lg py-2 pl-10 text-left transition-colors ${
+                          currentLanguage === lang.code
+                            ? "text-white"
+                            : "text-white/60 hover:text-white/80"
+                        }`}
+                      >
+                        {lang.label}
+                      </button>
+                    ))}
+                  </div>
+                </div> */}
+                </SheetContent>
+              </Sheet>
+            ))
+          }
+          className="cursor-pointer text-white lg:hidden"
+          aria-label="메뉴 열기"
+        >
+          <Menu size={24} />
+        </button>
       </div>
     </header>
   );
-};
-
-export default Header;
-
-interface FooterLinkProps extends LinkProps {
-  children: React.ReactNode;
 }
-
-const NavLink: FC<FooterLinkProps> = ({ children, ...props }) => {
-  return (
-    <Link className="typo-bold-20 hover block px-2 py-3 text-white" {...props}>
-      {children}
-    </Link>
-  );
-};

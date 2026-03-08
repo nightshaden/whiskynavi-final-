@@ -108,7 +108,7 @@ export default function RootLayout({
       <body className={`${pretendard.className} bg-[#1D2429] antialiased`}>
         <AuthProvider>
           <OverlayProvider>
-            <Header />
+            {/* <Header /> */}
             {/* <main className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8"> */}
             {children}
             {/* </main> */}
