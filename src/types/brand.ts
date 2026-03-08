@@ -6,12 +6,11 @@ export type LineupItem = {
 };
 
 export interface Brand {
+  id: string;
   bgImage: string;
   icon: string;
   iconSize: { width: number; height: number };
   name: string;
   subname: string;
   description: string;
-  shortDescription?: string;
-  slides: LineupItem[];
 }
