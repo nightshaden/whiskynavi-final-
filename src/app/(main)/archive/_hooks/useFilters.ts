@@ -1,6 +1,6 @@
 "use client";
 
-import type { BottleParams } from "@/apis/apis";
+import { BottleSearchParameterValues } from "@/apis/generated/api";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FILTER_DEFAULTS, type FilterState } from "../_types";
@@ -13,7 +13,7 @@ import {
 } from "../_utils";
 
 interface UseFiltersOptions {
-  params: BottleParams;
+  params: BottleSearchParameterValues;
 }
 
 interface UseFiltersReturn {

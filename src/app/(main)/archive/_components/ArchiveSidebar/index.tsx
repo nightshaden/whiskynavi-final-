@@ -1,6 +1,6 @@
 "use client";
 
-import type { BottleParams } from "@/apis/apis";
+import { BottleSearchParameterValues } from "@/apis/generated/api";
 import SearchableDropdown from "@/components/ui/searchable-dropdown";
 import { useCallback, useMemo } from "react";
 import { useFilters } from "../../_hooks/useFilters";
@@ -16,7 +16,7 @@ import { MaltTypeFilter } from "./MaltTypeFilter";
 import { VintageFilter } from "./VintageFilter";
 
 interface ArchiveSidebarProps {
-  params: BottleParams;
+  params: BottleSearchParameterValues;
 }
 
 const DEFAULT_EXPANDED = [
@@ -70,25 +70,25 @@ export function ArchiveSidebar({ params }: ArchiveSidebarProps) {
 
       <FilterGroup defaultExpanded={DEFAULT_EXPANDED}>
         <BrandFilter
-          brands={params.brands}
+          brands={params.brands ?? []}
           selectedBrands={filters.brands}
           onToggle={toggleBrand}
         />
 
         <MaltTypeFilter
-          maltTypes={params.maltTypes}
+          maltTypes={params.maltTypes ?? []}
           selectedMaltTypes={filters.maltTypes}
           onToggle={toggleMaltType}
         />
 
         <DistilleryFilter
-          distilleries={params.distilleries}
+          distilleries={params.distilleries ?? []}
           selectedDistilleries={filters.distilleries}
           onChange={updateDistilleries}
         />
 
         <CaskTypeFilter
-          caskTypes={params.caskTypes}
+          caskTypes={params.caskTypes ?? []}
           selectedCaskTypes={filters.caskTypes}
           onChange={updateCaskTypes}
         />

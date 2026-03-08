@@ -1,5 +1,8 @@
-import type { BottleParams, BottleQueries } from "@/apis/apis";
-import { GetApiBottlesParams } from "@/apis/generated/api";
+import type { BottleQueries } from "@/apis/apis";
+import {
+  BottleSearchParameterValues,
+  GetApiBottlesParams,
+} from "@/apis/generated/api";
 import { FILTER_DEFAULTS, type FilterState } from "../_types";
 
 export type SearchParams = {
@@ -24,14 +27,16 @@ export const buildPageUrl = (params: SearchParams, page: number): string => {
  */
 export function findCategory(
   value: string,
-  params: BottleParams,
-): keyof BottleParams | null {
-  if (params.brands.includes(value)) {
+  params: BottleSearchParameterValues,
+): keyof BottleSearchParameterValues | null {
+  if (params.brands?.includes(value)) {
     return "brands";
   }
 
-  for (const key of Object.keys(params) as (keyof BottleParams)[]) {
-    if (params[key].includes(value)) {
+  for (const key of Object.keys(
+    params,
+  ) as (keyof BottleSearchParameterValues)[]) {
+    if (params[key]?.includes(value)) {
       return key;
     }
   }
@@ -40,16 +45,12 @@ export function findCategory(
 }
 
 /**
- * BottleParams에서 모든 고유 값들을 추출
+ * BottleSearchParameterValues에서 모든 고유 값들을 추출
  */
-export function extractAllValues(params: BottleParams): string[] {
-  return Array.from(
-    new Set(
-      (Object.keys(params) as (keyof BottleParams)[]).flatMap(
-        (key) => params[key],
-      ),
-    ),
-  );
+export function extractAllValues(
+  params: BottleSearchParameterValues,
+): string[] {
+  return Object.values(params).flatMap((value) => value ?? []);
 }
 
 /**
