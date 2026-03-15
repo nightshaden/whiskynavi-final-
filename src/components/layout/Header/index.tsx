@@ -12,7 +12,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { overlay } from "overlay-kit";
-import { NAV_LINKS } from "./constants";
+import { AUTH_NAV_LINKS, NAV_LINKS } from "./constants";
 import DesktopAuthArea from "./DesktopAuthArea";
 import MobileAuthSection from "./MobileAuthSection";
 import UserMenuDropdown from "./UserMenuDropdown";
@@ -67,6 +67,20 @@ export default function Header() {
               {label}
             </Link>
           ))}
+          {session &&
+            AUTH_NAV_LINKS.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                className={`typo-bold-18 transition-colors ${
+                  pathname.startsWith(href)
+                    ? "text-white"
+                    : "text-white/80 hover:text-white"
+                }`}
+              >
+                {label}
+              </Link>
+            ))}
         </nav>
 
         <div className="hidden items-center gap-4 lg:flex">
@@ -111,6 +125,21 @@ export default function Header() {
                         {label}
                       </Link>
                     ))}
+                    {session &&
+                      AUTH_NAV_LINKS.map(({ href, label }) => (
+                        <Link
+                          key={href}
+                          href={href}
+                          onClick={close}
+                          className={`typo-bold-16 rounded-lg px-3 py-3 transition-colors ${
+                            pathname.startsWith(href)
+                              ? "bg-white/10 text-white"
+                              : "text-white/80 hover:bg-white/5 hover:text-white"
+                          }`}
+                        >
+                          {label}
+                        </Link>
+                      ))}
                   </nav>
 
                   <div className="border-t border-white/10 px-4 pt-4">

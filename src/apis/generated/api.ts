@@ -5,28 +5,65 @@
  * Whisky Navi API Documentation
  * OpenAPI spec version: 1.0.0
  */
-import { customFetch } from "../mutator";
+import { customFetch } from '../mutator';
+export type AdminBusinessApplicationAuditLogResponseAfterStatus = typeof AdminBusinessApplicationAuditLogResponseAfterStatus[keyof typeof AdminBusinessApplicationAuditLogResponseAfterStatus];
+
+
+export const AdminBusinessApplicationAuditLogResponseAfterStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  CANCELED: 'CANCELED',
+} as const;
+
+export type AdminBusinessApplicationAuditLogResponseBeforeStatus = typeof AdminBusinessApplicationAuditLogResponseBeforeStatus[keyof typeof AdminBusinessApplicationAuditLogResponseBeforeStatus];
+
+
+export const AdminBusinessApplicationAuditLogResponseBeforeStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  CANCELED: 'CANCELED',
+} as const;
+
+export interface AdminBusinessApplicationAuditLogResponse {
+  action?: string;
+  actorType?: string;
+  actorUserId?: number;
+  actorUsername?: string;
+  afterStatus?: AdminBusinessApplicationAuditLogResponseAfterStatus;
+  applicationId?: number;
+  beforeStatus?: AdminBusinessApplicationAuditLogResponseBeforeStatus;
+  createdAt?: string;
+  id?: number;
+  memo?: string;
+}
+
 /**
- * 관리자가 비즈니스 신청을 반려할 때 입력하는 사유입니다.
+ * 관리자가 비즈니스 신청을 반려할 때 사유와 내부 메모를 입력합니다.
  */
-export interface AdminBusinessApplicationRejectRequest {
+export interface AdminBusinessApplicationDecisionRequest {
+  /** 관리자 내부 메모(사용자 비노출) */
+  adminMemo?: string;
   /**
-   * 거절 사유
+   * 사용자에게 노출되는 반려 사유
    * @minLength 1
    */
   rejectReason?: string;
 }
 
-export type AdminBusinessApplicationResponseStatus =
-  (typeof AdminBusinessApplicationResponseStatus)[keyof typeof AdminBusinessApplicationResponseStatus];
+export type AdminBusinessApplicationResponseStatus = typeof AdminBusinessApplicationResponseStatus[keyof typeof AdminBusinessApplicationResponseStatus];
+
 
 export const AdminBusinessApplicationResponseStatus = {
-  PENDING: "PENDING",
-  APPROVED: "APPROVED",
-  REJECTED: "REJECTED",
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  CANCELED: 'CANCELED',
 } as const;
 
 export interface AdminBusinessApplicationResponse {
+  adminMemo?: string;
   businessName?: string;
   businessRegistrationNumber?: string;
   contact?: string;
@@ -41,22 +78,54 @@ export interface AdminBusinessApplicationResponse {
   userId?: number;
 }
 
-export type AdminBusinessUserResponseRolesItem =
-  (typeof AdminBusinessUserResponseRolesItem)[keyof typeof AdminBusinessUserResponseRolesItem];
+export type AdminBusinessUserDetailResponseRolesItem = typeof AdminBusinessUserDetailResponseRolesItem[keyof typeof AdminBusinessUserDetailResponseRolesItem];
+
+
+export const AdminBusinessUserDetailResponseRolesItem = {
+  ROLE_GUEST: 'ROLE_GUEST',
+  ROLE_USER: 'ROLE_USER',
+  ROLE_ADMIN: 'ROLE_ADMIN',
+  ROLE_SUPER_ADMIN: 'ROLE_SUPER_ADMIN',
+  ROLE_CONSUMER: 'ROLE_CONSUMER',
+  ROLE_WHISKYNAVI_MEMBER: 'ROLE_WHISKYNAVI_MEMBER',
+  ROLE_WHISKYTALES_MEMBER: 'ROLE_WHISKYTALES_MEMBER',
+  ROLE_BLIND_MEMBER: 'ROLE_BLIND_MEMBER',
+  ROLE_BUSINESS: 'ROLE_BUSINESS',
+  ROLE_TRAILNTALE_BUSINESS: 'ROLE_TRAILNTALE_BUSINESS',
+  ROLE_COMMUNITY_BUSINESS: 'ROLE_COMMUNITY_BUSINESS',
+  ROLE_PICK_UP_BUSINESS: 'ROLE_PICK_UP_BUSINESS',
+} as const;
+
+export interface AdminBusinessUserDetailResponse {
+  businessCreatedAt?: string;
+  businessName?: string;
+  businessRegistrationNumber?: string;
+  businessUpdatedAt?: string;
+  contact?: string;
+  hasPickupRole?: boolean;
+  name?: string;
+  pickupAddress?: string;
+  roles?: AdminBusinessUserDetailResponseRolesItem[];
+  userId?: number;
+  username?: string;
+}
+
+export type AdminBusinessUserResponseRolesItem = typeof AdminBusinessUserResponseRolesItem[keyof typeof AdminBusinessUserResponseRolesItem];
+
 
 export const AdminBusinessUserResponseRolesItem = {
-  ROLE_GUEST: "ROLE_GUEST",
-  ROLE_USER: "ROLE_USER",
-  ROLE_ADMIN: "ROLE_ADMIN",
-  ROLE_SUPER_ADMIN: "ROLE_SUPER_ADMIN",
-  ROLE_CONSUMER: "ROLE_CONSUMER",
-  ROLE_WHISKYNAVI_MEMBER: "ROLE_WHISKYNAVI_MEMBER",
-  ROLE_WHISKYTALES_MEMBER: "ROLE_WHISKYTALES_MEMBER",
-  ROLE_BLIND_MEMBER: "ROLE_BLIND_MEMBER",
-  ROLE_BUSINESS: "ROLE_BUSINESS",
-  ROLE_TRAILNTALE_BUSINESS: "ROLE_TRAILNTALE_BUSINESS",
-  ROLE_COMMUNITY_BUSINESS: "ROLE_COMMUNITY_BUSINESS",
-  ROLE_PICK_UP_BUSINESS: "ROLE_PICK_UP_BUSINESS",
+  ROLE_GUEST: 'ROLE_GUEST',
+  ROLE_USER: 'ROLE_USER',
+  ROLE_ADMIN: 'ROLE_ADMIN',
+  ROLE_SUPER_ADMIN: 'ROLE_SUPER_ADMIN',
+  ROLE_CONSUMER: 'ROLE_CONSUMER',
+  ROLE_WHISKYNAVI_MEMBER: 'ROLE_WHISKYNAVI_MEMBER',
+  ROLE_WHISKYTALES_MEMBER: 'ROLE_WHISKYTALES_MEMBER',
+  ROLE_BLIND_MEMBER: 'ROLE_BLIND_MEMBER',
+  ROLE_BUSINESS: 'ROLE_BUSINESS',
+  ROLE_TRAILNTALE_BUSINESS: 'ROLE_TRAILNTALE_BUSINESS',
+  ROLE_COMMUNITY_BUSINESS: 'ROLE_COMMUNITY_BUSINESS',
+  ROLE_PICK_UP_BUSINESS: 'ROLE_PICK_UP_BUSINESS',
 } as const;
 
 export interface AdminBusinessUserResponse {
@@ -85,55 +154,55 @@ export interface AdminUserBanRequest {
 /**
  * 주문 상태
  */
-export type OrderResponseOrderStatus =
-  (typeof OrderResponseOrderStatus)[keyof typeof OrderResponseOrderStatus];
+export type OrderResponseOrderStatus = typeof OrderResponseOrderStatus[keyof typeof OrderResponseOrderStatus];
+
 
 export const OrderResponseOrderStatus = {
-  ORDER_REQUESTED: "ORDER_REQUESTED",
-  PAYMENT_PENDING: "PAYMENT_PENDING",
-  ORDER_PREPARING: "ORDER_PREPARING",
-  SHIPPING: "SHIPPING",
-  DELIVERY_COMPLETED: "DELIVERY_COMPLETED",
-  RECEIPT_PENDING: "RECEIPT_PENDING",
-  RECEIPT_COMPLETED: "RECEIPT_COMPLETED",
-  ORDER_CANCELED: "ORDER_CANCELED",
-  REFUND_REQUESTED: "REFUND_REQUESTED",
-  REFUND_COMPLETED: "REFUND_COMPLETED",
+  ORDER_REQUESTED: 'ORDER_REQUESTED',
+  PAYMENT_PENDING: 'PAYMENT_PENDING',
+  ORDER_PREPARING: 'ORDER_PREPARING',
+  SHIPPING: 'SHIPPING',
+  DELIVERY_COMPLETED: 'DELIVERY_COMPLETED',
+  RECEIPT_PENDING: 'RECEIPT_PENDING',
+  RECEIPT_COMPLETED: 'RECEIPT_COMPLETED',
+  ORDER_CANCELED: 'ORDER_CANCELED',
+  REFUND_REQUESTED: 'REFUND_REQUESTED',
+  REFUND_COMPLETED: 'REFUND_COMPLETED',
 } as const;
 
 /**
  * 판매 유형
  */
-export type OrderResponseOrderType =
-  (typeof OrderResponseOrderType)[keyof typeof OrderResponseOrderType];
+export type OrderResponseOrderType = typeof OrderResponseOrderType[keyof typeof OrderResponseOrderType];
+
 
 export const OrderResponseOrderType = {
-  RESERVATION: "RESERVATION",
-  PICKUP: "PICKUP",
-  GENERAL: "GENERAL",
+  RESERVATION: 'RESERVATION',
+  PICKUP: 'PICKUP',
+  GENERAL: 'GENERAL',
 } as const;
 
 /**
  * 판매 상품 유형
  */
-export type OrderResponseProductType =
-  (typeof OrderResponseProductType)[keyof typeof OrderResponseProductType];
+export type OrderResponseProductType = typeof OrderResponseProductType[keyof typeof OrderResponseProductType];
+
 
 export const OrderResponseProductType = {
-  BOTTLE: "BOTTLE",
-  MERCH: "MERCH",
+  BOTTLE: 'BOTTLE',
+  MERCH: 'MERCH',
 } as const;
 
 /**
  * 판매 공고 유형
  */
-export type OrderResponseSaleType =
-  (typeof OrderResponseSaleType)[keyof typeof OrderResponseSaleType];
+export type OrderResponseSaleType = typeof OrderResponseSaleType[keyof typeof OrderResponseSaleType];
+
 
 export const OrderResponseSaleType = {
-  RESERVATION: "RESERVATION",
-  PICKUP: "PICKUP",
-  GENERAL: "GENERAL",
+  RESERVATION: 'RESERVATION',
+  PICKUP: 'PICKUP',
+  GENERAL: 'GENERAL',
 } as const;
 
 /**
@@ -315,12 +384,12 @@ export interface AdminUserStatusUpdateRequest {
 /**
  * 공지 범위(전체 또는 게시판별)를 지정합니다.
  */
-export type AnnouncementRequestScope =
-  (typeof AnnouncementRequestScope)[keyof typeof AnnouncementRequestScope];
+export type AnnouncementRequestScope = typeof AnnouncementRequestScope[keyof typeof AnnouncementRequestScope];
+
 
 export const AnnouncementRequestScope = {
-  GLOBAL: "GLOBAL",
-  BOARD: "BOARD",
+  GLOBAL: 'GLOBAL',
+  BOARD: 'BOARD',
 } as const;
 
 /**
@@ -347,12 +416,12 @@ export interface AnnouncementRequest {
 /**
  * 공지 범위(전체/게시판)를 나타냅니다.
  */
-export type AnnouncementResponseScope =
-  (typeof AnnouncementResponseScope)[keyof typeof AnnouncementResponseScope];
+export type AnnouncementResponseScope = typeof AnnouncementResponseScope[keyof typeof AnnouncementResponseScope];
+
 
 export const AnnouncementResponseScope = {
-  GLOBAL: "GLOBAL",
-  BOARD: "BOARD",
+  GLOBAL: 'GLOBAL',
+  BOARD: 'BOARD',
 } as const;
 
 /**
@@ -374,61 +443,61 @@ export interface AnnouncementResponse {
 }
 
 /**
- * 로그인한 사용자의 프로필 정보를 반환하는 응답입니다.
+ * 로그인한 사용자 자기 정보 응답
  */
 export interface UserSelfResponse {
-  /** 차단 종료 일시입니다. */
+  /** 정지 종료 시각 */
   banEndDate?: string;
-  /** 차단 이유입니다. */
+  /** 정지 사유 */
   banReason?: string;
-  /** 차단 시작 일시입니다. */
+  /** 정지 시작 시각 */
   banStartDate?: string;
-  /** 사용자의 생년월일입니다. */
+  /** 생년월일 */
   birthDate?: string;
-  /** 계정에 연결된 이메일입니다. */
+  /** 이메일 */
   email?: string;
-  /** 이메일 수신 여부입니다. */
+  /** 이메일 동의 */
   emailAgree?: boolean;
-  /** 성별 정보(선택)입니다. */
+  /** 성별 */
   gender?: string;
-  /** 사용자의 식별자입니다. */
+  /** 사용자 ID */
   id?: number;
-  /** 현재 사용 정지 상태인지 여부입니다. */
+  /** 정지 여부 */
   isBanned?: boolean;
-  /** 마케팅 수신 여부입니다. */
+  /** 마케팅 동의 */
   marketingAgree?: boolean;
-  /** 사용자 이름입니다. */
+  /** 이름 */
   name?: string;
-  /** 연락처 전화번호입니다. */
+  /** 전화번호 */
   phone?: string;
-  /** 개인정보 처리 방침 동의 여부입니다. */
+  /** 개인정보 동의 */
   privacyAgree?: boolean;
-  /** 사용자의 역할 목록입니다. */
+  /** 권한 목록 */
   roles?: string[];
-  /** SMS 수신 여부입니다. */
+  /** SMS 동의 */
   smsAgree?: boolean;
-  /** SNS 수신 여부입니다. */
+  /** SNS 동의 */
   snsAgree?: boolean;
-  /** 현재 계정 상태입니다. */
+  /** 계정 상태 */
   status?: string;
-  /** 사용자의 별명입니다. */
+  /** 사용자 아이디 */
   username?: string;
 }
 
 /**
- * 인증 후 발급된 토큰과 사용자 정보를 담은 응답 객체입니다.
+ * 인증 토큰과 사용자 정보를 담는 응답
  */
 export interface AuthResponse {
-  /** API 호출 시 인증에 사용하는 JWT 액세스 토큰입니다. */
+  /** 액세스 토큰 */
   accessToken?: string;
-  /** 인증된 사용자의 이메일입니다. */
+  /** 사용자 이메일 */
   email?: string;
-  /** 새 액세스 토큰을 재발급받을 때 사용하는 리프레시 토큰입니다. */
+  /** 리프레시 토큰 */
   refreshToken?: string;
-  /** 인증된 사용자의 식별자입니다. */
+  /** 사용자 ID */
   userId?: number;
   userInfo?: UserSelfResponse;
-  /** 인증된 사용자의 아이디입니다. */
+  /** 사용자 아이디 */
   username?: string;
 }
 
@@ -502,18 +571,18 @@ export interface BottleAdminParameterValues {
 /**
  * Additional metadata key/value pairs.
  */
-export type BottleAdminResponseExtraInfos = { [key: string]: string };
+export type BottleAdminResponseExtraInfos = {[key: string]: string};
 
 /**
  * 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값
  */
-export type BottleAdminResponseReservationStatus =
-  (typeof BottleAdminResponseReservationStatus)[keyof typeof BottleAdminResponseReservationStatus];
+export type BottleAdminResponseReservationStatus = typeof BottleAdminResponseReservationStatus[keyof typeof BottleAdminResponseReservationStatus];
+
 
 export const BottleAdminResponseReservationStatus = {
-  NO_RESERVATION: "NO_RESERVATION",
-  RESERVATION_ONGOING: "RESERVATION_ONGOING",
-  RESERVATION_COMPLETED: "RESERVATION_COMPLETED",
+  NO_RESERVATION: 'NO_RESERVATION',
+  RESERVATION_ONGOING: 'RESERVATION_ONGOING',
+  RESERVATION_COMPLETED: 'RESERVATION_COMPLETED',
 } as const;
 
 /**
@@ -575,16 +644,16 @@ export interface BottleReservationApplicantResponse {
   username?: string;
 }
 
-export type BottleReservationApplicationPublicResponseStatus =
-  (typeof BottleReservationApplicationPublicResponseStatus)[keyof typeof BottleReservationApplicationPublicResponseStatus];
+export type BottleReservationApplicationPublicResponseStatus = typeof BottleReservationApplicationPublicResponseStatus[keyof typeof BottleReservationApplicationPublicResponseStatus];
+
 
 export const BottleReservationApplicationPublicResponseStatus = {
-  APPLIED: "APPLIED",
-  CANCELLED: "CANCELLED",
-  CONFIRMED: "CONFIRMED",
-  WAITING_PICKUP: "WAITING_PICKUP",
-  RECEIVED: "RECEIVED",
-  REJECTED: "REJECTED",
+  APPLIED: 'APPLIED',
+  CANCELLED: 'CANCELLED',
+  CONFIRMED: 'CONFIRMED',
+  WAITING_PICKUP: 'WAITING_PICKUP',
+  RECEIVED: 'RECEIVED',
+  REJECTED: 'REJECTED',
 } as const;
 
 export interface BottleReservationApplicationPublicResponse {
@@ -608,16 +677,16 @@ export interface BottleReservationApplicationRequest {
   userBusinessId: number;
 }
 
-export type BottleReservationApplicationResponseStatus =
-  (typeof BottleReservationApplicationResponseStatus)[keyof typeof BottleReservationApplicationResponseStatus];
+export type BottleReservationApplicationResponseStatus = typeof BottleReservationApplicationResponseStatus[keyof typeof BottleReservationApplicationResponseStatus];
+
 
 export const BottleReservationApplicationResponseStatus = {
-  APPLIED: "APPLIED",
-  CANCELLED: "CANCELLED",
-  CONFIRMED: "CONFIRMED",
-  WAITING_PICKUP: "WAITING_PICKUP",
-  RECEIVED: "RECEIVED",
-  REJECTED: "REJECTED",
+  APPLIED: 'APPLIED',
+  CANCELLED: 'CANCELLED',
+  CONFIRMED: 'CONFIRMED',
+  WAITING_PICKUP: 'WAITING_PICKUP',
+  RECEIVED: 'RECEIVED',
+  REJECTED: 'REJECTED',
 } as const;
 
 export interface BottleReservationPickupBusinessResponse {
@@ -648,22 +717,22 @@ export interface BottleReservationDecisionRequest {
   confirmedQuantity: number;
 }
 
-export type BottleReservationGradeConditionRequestRequiredRole =
-  (typeof BottleReservationGradeConditionRequestRequiredRole)[keyof typeof BottleReservationGradeConditionRequestRequiredRole];
+export type BottleReservationGradeConditionRequestRequiredRole = typeof BottleReservationGradeConditionRequestRequiredRole[keyof typeof BottleReservationGradeConditionRequestRequiredRole];
+
 
 export const BottleReservationGradeConditionRequestRequiredRole = {
-  ROLE_GUEST: "ROLE_GUEST",
-  ROLE_USER: "ROLE_USER",
-  ROLE_ADMIN: "ROLE_ADMIN",
-  ROLE_SUPER_ADMIN: "ROLE_SUPER_ADMIN",
-  ROLE_CONSUMER: "ROLE_CONSUMER",
-  ROLE_WHISKYNAVI_MEMBER: "ROLE_WHISKYNAVI_MEMBER",
-  ROLE_WHISKYTALES_MEMBER: "ROLE_WHISKYTALES_MEMBER",
-  ROLE_BLIND_MEMBER: "ROLE_BLIND_MEMBER",
-  ROLE_BUSINESS: "ROLE_BUSINESS",
-  ROLE_TRAILNTALE_BUSINESS: "ROLE_TRAILNTALE_BUSINESS",
-  ROLE_COMMUNITY_BUSINESS: "ROLE_COMMUNITY_BUSINESS",
-  ROLE_PICK_UP_BUSINESS: "ROLE_PICK_UP_BUSINESS",
+  ROLE_GUEST: 'ROLE_GUEST',
+  ROLE_USER: 'ROLE_USER',
+  ROLE_ADMIN: 'ROLE_ADMIN',
+  ROLE_SUPER_ADMIN: 'ROLE_SUPER_ADMIN',
+  ROLE_CONSUMER: 'ROLE_CONSUMER',
+  ROLE_WHISKYNAVI_MEMBER: 'ROLE_WHISKYNAVI_MEMBER',
+  ROLE_WHISKYTALES_MEMBER: 'ROLE_WHISKYTALES_MEMBER',
+  ROLE_BLIND_MEMBER: 'ROLE_BLIND_MEMBER',
+  ROLE_BUSINESS: 'ROLE_BUSINESS',
+  ROLE_TRAILNTALE_BUSINESS: 'ROLE_TRAILNTALE_BUSINESS',
+  ROLE_COMMUNITY_BUSINESS: 'ROLE_COMMUNITY_BUSINESS',
+  ROLE_PICK_UP_BUSINESS: 'ROLE_PICK_UP_BUSINESS',
 } as const;
 
 export interface BottleReservationGradeConditionRequest {
@@ -671,22 +740,22 @@ export interface BottleReservationGradeConditionRequest {
   requiredRole: BottleReservationGradeConditionRequestRequiredRole;
 }
 
-export type BottleReservationGradeConditionResponseRequiredRole =
-  (typeof BottleReservationGradeConditionResponseRequiredRole)[keyof typeof BottleReservationGradeConditionResponseRequiredRole];
+export type BottleReservationGradeConditionResponseRequiredRole = typeof BottleReservationGradeConditionResponseRequiredRole[keyof typeof BottleReservationGradeConditionResponseRequiredRole];
+
 
 export const BottleReservationGradeConditionResponseRequiredRole = {
-  ROLE_GUEST: "ROLE_GUEST",
-  ROLE_USER: "ROLE_USER",
-  ROLE_ADMIN: "ROLE_ADMIN",
-  ROLE_SUPER_ADMIN: "ROLE_SUPER_ADMIN",
-  ROLE_CONSUMER: "ROLE_CONSUMER",
-  ROLE_WHISKYNAVI_MEMBER: "ROLE_WHISKYNAVI_MEMBER",
-  ROLE_WHISKYTALES_MEMBER: "ROLE_WHISKYTALES_MEMBER",
-  ROLE_BLIND_MEMBER: "ROLE_BLIND_MEMBER",
-  ROLE_BUSINESS: "ROLE_BUSINESS",
-  ROLE_TRAILNTALE_BUSINESS: "ROLE_TRAILNTALE_BUSINESS",
-  ROLE_COMMUNITY_BUSINESS: "ROLE_COMMUNITY_BUSINESS",
-  ROLE_PICK_UP_BUSINESS: "ROLE_PICK_UP_BUSINESS",
+  ROLE_GUEST: 'ROLE_GUEST',
+  ROLE_USER: 'ROLE_USER',
+  ROLE_ADMIN: 'ROLE_ADMIN',
+  ROLE_SUPER_ADMIN: 'ROLE_SUPER_ADMIN',
+  ROLE_CONSUMER: 'ROLE_CONSUMER',
+  ROLE_WHISKYNAVI_MEMBER: 'ROLE_WHISKYNAVI_MEMBER',
+  ROLE_WHISKYTALES_MEMBER: 'ROLE_WHISKYTALES_MEMBER',
+  ROLE_BLIND_MEMBER: 'ROLE_BLIND_MEMBER',
+  ROLE_BUSINESS: 'ROLE_BUSINESS',
+  ROLE_TRAILNTALE_BUSINESS: 'ROLE_TRAILNTALE_BUSINESS',
+  ROLE_COMMUNITY_BUSINESS: 'ROLE_COMMUNITY_BUSINESS',
+  ROLE_PICK_UP_BUSINESS: 'ROLE_PICK_UP_BUSINESS',
 } as const;
 
 export interface BottleReservationGradeConditionResponse {
@@ -708,22 +777,22 @@ export interface BottleReservationNoticePublicResponse {
   updatedAt?: string;
 }
 
-export type BottleReservationNoticeRequestGradeConditionsItemRequiredRole =
-  (typeof BottleReservationNoticeRequestGradeConditionsItemRequiredRole)[keyof typeof BottleReservationNoticeRequestGradeConditionsItemRequiredRole];
+export type BottleReservationNoticeRequestGradeConditionsItemRequiredRole = typeof BottleReservationNoticeRequestGradeConditionsItemRequiredRole[keyof typeof BottleReservationNoticeRequestGradeConditionsItemRequiredRole];
+
 
 export const BottleReservationNoticeRequestGradeConditionsItemRequiredRole = {
-  ROLE_GUEST: "ROLE_GUEST",
-  ROLE_USER: "ROLE_USER",
-  ROLE_ADMIN: "ROLE_ADMIN",
-  ROLE_SUPER_ADMIN: "ROLE_SUPER_ADMIN",
-  ROLE_CONSUMER: "ROLE_CONSUMER",
-  ROLE_WHISKYNAVI_MEMBER: "ROLE_WHISKYNAVI_MEMBER",
-  ROLE_WHISKYTALES_MEMBER: "ROLE_WHISKYTALES_MEMBER",
-  ROLE_BLIND_MEMBER: "ROLE_BLIND_MEMBER",
-  ROLE_BUSINESS: "ROLE_BUSINESS",
-  ROLE_TRAILNTALE_BUSINESS: "ROLE_TRAILNTALE_BUSINESS",
-  ROLE_COMMUNITY_BUSINESS: "ROLE_COMMUNITY_BUSINESS",
-  ROLE_PICK_UP_BUSINESS: "ROLE_PICK_UP_BUSINESS",
+  ROLE_GUEST: 'ROLE_GUEST',
+  ROLE_USER: 'ROLE_USER',
+  ROLE_ADMIN: 'ROLE_ADMIN',
+  ROLE_SUPER_ADMIN: 'ROLE_SUPER_ADMIN',
+  ROLE_CONSUMER: 'ROLE_CONSUMER',
+  ROLE_WHISKYNAVI_MEMBER: 'ROLE_WHISKYNAVI_MEMBER',
+  ROLE_WHISKYTALES_MEMBER: 'ROLE_WHISKYTALES_MEMBER',
+  ROLE_BLIND_MEMBER: 'ROLE_BLIND_MEMBER',
+  ROLE_BUSINESS: 'ROLE_BUSINESS',
+  ROLE_TRAILNTALE_BUSINESS: 'ROLE_TRAILNTALE_BUSINESS',
+  ROLE_COMMUNITY_BUSINESS: 'ROLE_COMMUNITY_BUSINESS',
+  ROLE_PICK_UP_BUSINESS: 'ROLE_PICK_UP_BUSINESS',
 } as const;
 
 export type BottleReservationNoticeRequestGradeConditionsItem = {
@@ -760,7 +829,7 @@ export interface BottleReservationNoticeResponse {
 /**
  * 추가 메타데이터입니다.
  */
-export type BottleResponseExtraInfos = { [key: string]: string };
+export type BottleResponseExtraInfos = {[key: string]: string};
 
 /**
  * API에서 반환하는 병 정보 응답입니다.
@@ -817,13 +886,13 @@ export interface BottleSearchParameterValues {
 /**
  * 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값
  */
-export type BottleSearchRequestReservationStatus =
-  (typeof BottleSearchRequestReservationStatus)[keyof typeof BottleSearchRequestReservationStatus];
+export type BottleSearchRequestReservationStatus = typeof BottleSearchRequestReservationStatus[keyof typeof BottleSearchRequestReservationStatus];
+
 
 export const BottleSearchRequestReservationStatus = {
-  NO_RESERVATION: "NO_RESERVATION",
-  RESERVATION_ONGOING: "RESERVATION_ONGOING",
-  RESERVATION_COMPLETED: "RESERVATION_COMPLETED",
+  NO_RESERVATION: 'NO_RESERVATION',
+  RESERVATION_ONGOING: 'RESERVATION_ONGOING',
+  RESERVATION_COMPLETED: 'RESERVATION_COMPLETED',
 } as const;
 
 export interface BottleSearchRequest {
@@ -844,6 +913,8 @@ export interface BottleSearchRequest {
   /** 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값 */
   reservationStatus?: BottleSearchRequestReservationStatus;
   series?: string;
+  sortBy?: string;
+  sortDirection?: string;
   vintageFrom?: number;
   vintageTo?: number;
 }
@@ -903,32 +974,32 @@ export interface EmailVerificationSendRequest {
 }
 
 /**
- * 회원가입용 이메일 인증 코드 검증 요청
+ * 회원가입 이메일 인증코드 검증 요청
  */
 export interface EmailVerificationVerifyRequest {
   /**
-   * 수신한 인증 코드
+   * 인증 코드
    * @minLength 1
    */
   code?: string;
   /**
-   * 인증할 이메일 주소
+   * 인증 이메일 주소
    * @minLength 1
    */
   email?: string;
 }
 
 /**
- * 사용자 인증에 사용하는 요청 본문입니다.
+ * 로그인 요청 본문
  */
 export interface LoginRequest {
   /**
-   * 사용자의 email 입니다.
+   * 이메일
    * @minLength 1
    */
   email?: string;
   /**
-   * 아이디에 대응하는 비밀번호입니다.
+   * 비밀번호
    * @minLength 1
    */
   password?: string;
@@ -1015,36 +1086,36 @@ export interface OrderCancelRequest {
 /**
  * 판매 유형
  */
-export type OrderCreateRequestOrderType =
-  (typeof OrderCreateRequestOrderType)[keyof typeof OrderCreateRequestOrderType];
+export type OrderCreateRequestOrderType = typeof OrderCreateRequestOrderType[keyof typeof OrderCreateRequestOrderType];
+
 
 export const OrderCreateRequestOrderType = {
-  RESERVATION: "RESERVATION",
-  PICKUP: "PICKUP",
-  GENERAL: "GENERAL",
+  RESERVATION: 'RESERVATION',
+  PICKUP: 'PICKUP',
+  GENERAL: 'GENERAL',
 } as const;
 
 /**
  * 판매 상품 유형
  */
-export type OrderCreateRequestProductType =
-  (typeof OrderCreateRequestProductType)[keyof typeof OrderCreateRequestProductType];
+export type OrderCreateRequestProductType = typeof OrderCreateRequestProductType[keyof typeof OrderCreateRequestProductType];
+
 
 export const OrderCreateRequestProductType = {
-  BOTTLE: "BOTTLE",
-  MERCH: "MERCH",
+  BOTTLE: 'BOTTLE',
+  MERCH: 'MERCH',
 } as const;
 
 /**
  * 판매 공고 유형
  */
-export type OrderCreateRequestSaleType =
-  (typeof OrderCreateRequestSaleType)[keyof typeof OrderCreateRequestSaleType];
+export type OrderCreateRequestSaleType = typeof OrderCreateRequestSaleType[keyof typeof OrderCreateRequestSaleType];
+
 
 export const OrderCreateRequestSaleType = {
-  RESERVATION: "RESERVATION",
-  PICKUP: "PICKUP",
-  GENERAL: "GENERAL",
+  RESERVATION: 'RESERVATION',
+  PICKUP: 'PICKUP',
+  GENERAL: 'GENERAL',
 } as const;
 
 /**
@@ -1086,20 +1157,20 @@ export interface OrderCreateRequest {
 /**
  * 변경할 주문 상태
  */
-export type OrderStatusUpdateRequestOrderStatus =
-  (typeof OrderStatusUpdateRequestOrderStatus)[keyof typeof OrderStatusUpdateRequestOrderStatus];
+export type OrderStatusUpdateRequestOrderStatus = typeof OrderStatusUpdateRequestOrderStatus[keyof typeof OrderStatusUpdateRequestOrderStatus];
+
 
 export const OrderStatusUpdateRequestOrderStatus = {
-  ORDER_REQUESTED: "ORDER_REQUESTED",
-  PAYMENT_PENDING: "PAYMENT_PENDING",
-  ORDER_PREPARING: "ORDER_PREPARING",
-  SHIPPING: "SHIPPING",
-  DELIVERY_COMPLETED: "DELIVERY_COMPLETED",
-  RECEIPT_PENDING: "RECEIPT_PENDING",
-  RECEIPT_COMPLETED: "RECEIPT_COMPLETED",
-  ORDER_CANCELED: "ORDER_CANCELED",
-  REFUND_REQUESTED: "REFUND_REQUESTED",
-  REFUND_COMPLETED: "REFUND_COMPLETED",
+  ORDER_REQUESTED: 'ORDER_REQUESTED',
+  PAYMENT_PENDING: 'PAYMENT_PENDING',
+  ORDER_PREPARING: 'ORDER_PREPARING',
+  SHIPPING: 'SHIPPING',
+  DELIVERY_COMPLETED: 'DELIVERY_COMPLETED',
+  RECEIPT_PENDING: 'RECEIPT_PENDING',
+  RECEIPT_COMPLETED: 'RECEIPT_COMPLETED',
+  ORDER_CANCELED: 'ORDER_CANCELED',
+  REFUND_REQUESTED: 'REFUND_REQUESTED',
+  REFUND_COMPLETED: 'REFUND_COMPLETED',
 } as const;
 
 /**
@@ -1373,37 +1444,37 @@ export interface PagePostResponse {
 /**
  * 판매 상품 유형
  */
-export type SaleAnnouncementResponseProductType =
-  (typeof SaleAnnouncementResponseProductType)[keyof typeof SaleAnnouncementResponseProductType];
+export type SaleAnnouncementResponseProductType = typeof SaleAnnouncementResponseProductType[keyof typeof SaleAnnouncementResponseProductType];
+
 
 export const SaleAnnouncementResponseProductType = {
-  BOTTLE: "BOTTLE",
-  MERCH: "MERCH",
+  BOTTLE: 'BOTTLE',
+  MERCH: 'MERCH',
 } as const;
 
 /**
  * 판매 공고 상태
  */
-export type SaleAnnouncementResponseSaleStatus =
-  (typeof SaleAnnouncementResponseSaleStatus)[keyof typeof SaleAnnouncementResponseSaleStatus];
+export type SaleAnnouncementResponseSaleStatus = typeof SaleAnnouncementResponseSaleStatus[keyof typeof SaleAnnouncementResponseSaleStatus];
+
 
 export const SaleAnnouncementResponseSaleStatus = {
-  DRAFT: "DRAFT",
-  OPEN: "OPEN",
-  CLOSED: "CLOSED",
-  SOLD_OUT: "SOLD_OUT",
+  DRAFT: 'DRAFT',
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED',
+  SOLD_OUT: 'SOLD_OUT',
 } as const;
 
 /**
  * 판매 유형
  */
-export type SaleAnnouncementResponseSaleType =
-  (typeof SaleAnnouncementResponseSaleType)[keyof typeof SaleAnnouncementResponseSaleType];
+export type SaleAnnouncementResponseSaleType = typeof SaleAnnouncementResponseSaleType[keyof typeof SaleAnnouncementResponseSaleType];
+
 
 export const SaleAnnouncementResponseSaleType = {
-  RESERVATION: "RESERVATION",
-  PICKUP: "PICKUP",
-  GENERAL: "GENERAL",
+  RESERVATION: 'RESERVATION',
+  PICKUP: 'PICKUP',
+  GENERAL: 'GENERAL',
 } as const;
 
 /**
@@ -1446,6 +1517,42 @@ export interface SaleAnnouncementResponse {
 
 export interface PageSaleAnnouncementResponse {
   content?: SaleAnnouncementResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+export type UserBusinessApplicationResponseStatus = typeof UserBusinessApplicationResponseStatus[keyof typeof UserBusinessApplicationResponseStatus];
+
+
+export const UserBusinessApplicationResponseStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  CANCELED: 'CANCELED',
+} as const;
+
+export interface UserBusinessApplicationResponse {
+  businessName?: string;
+  businessRegistrationNumber?: string;
+  contact?: string;
+  createdAt?: string;
+  id?: number;
+  pickupAddress?: string;
+  rejectReason?: string;
+  status?: UserBusinessApplicationResponseStatus;
+  updatedAt?: string;
+}
+
+export interface PageUserBusinessApplicationResponse {
+  content?: UserBusinessApplicationResponse[];
   empty?: boolean;
   first?: boolean;
   last?: boolean;
@@ -1783,40 +1890,40 @@ export interface PpurioTarget {
  * 뿌리오 토큰 발급 응답
  */
 export interface PpurioTokenResponse {
-  /** 토큰 만료 시각(yyyMMddHHmmss) */
+  /** 토큰 만료 시각(yyyyMMddHHmmss) */
   expired?: number;
-  /** 발급된 엑세스 토큰 값 */
+  /** 발급된 액세스 토큰 */
   token?: string;
-  /** 토큰 타입 (예: Bearer) */
+  /** 토큰 타입(예: Bearer) */
   type?: string;
 }
 
 /**
- * 사전 등록 신청 정보를 받기 위한 요청 본문입니다.
+ * 사전 등록 요청 본문
  */
 export interface PreRegisterRequest {
-  /** 신청자의 생년월일입니다. */
+  /** 생년월일 */
   birthday?: string;
   /**
-   * 출시 소식을 받을 이메일입니다.
+   * 이메일
    * @minLength 0
    * @maxLength 100
    */
   email?: string;
   /**
-   * 선택 입력 항목인 성별 정보입니다.
+   * 성별
    * @minLength 0
    * @maxLength 10
    */
   gender?: string;
   /**
-   * 신청자의 이름입니다.
+   * 이름
    * @minLength 0
    * @maxLength 100
    */
   name?: string;
   /**
-   * 연락을 위한 선택 전화번호입니다.
+   * 전화번호
    * @minLength 0
    * @maxLength 20
    */
@@ -1824,22 +1931,22 @@ export interface PreRegisterRequest {
 }
 
 /**
- * 저장된 사전 등록 정보를 반환하는 응답입니다.
+ * 저장된 사전 등록 정보 응답
  */
 export interface PreRegisterResponse {
-  /** 제출된 생년월일입니다. */
+  /** 생년월일 */
   birthday?: string;
-  /** 등록이 생성된 일시입니다. */
+  /** 등록 생성 시각 */
   createdAt?: string;
-  /** 제출된 이메일입니다. */
+  /** 이메일 */
   email?: string;
-  /** 제출된 성별 값입니다. */
+  /** 성별 */
   gender?: string;
-  /** 사전 등록 식별자입니다. */
+  /** 사전 등록 ID */
   id?: number;
-  /** 제출된 이름입니다. */
+  /** 이름 */
   name?: string;
-  /** 제출된 전화번호입니다. */
+  /** 전화번호 */
   phoneNumber?: string;
 }
 
@@ -1916,37 +2023,37 @@ export interface ResetPasswordResponse {
 /**
  * 판매 상품 유형
  */
-export type SaleAnnouncementCreateRequestProductType =
-  (typeof SaleAnnouncementCreateRequestProductType)[keyof typeof SaleAnnouncementCreateRequestProductType];
+export type SaleAnnouncementCreateRequestProductType = typeof SaleAnnouncementCreateRequestProductType[keyof typeof SaleAnnouncementCreateRequestProductType];
+
 
 export const SaleAnnouncementCreateRequestProductType = {
-  BOTTLE: "BOTTLE",
-  MERCH: "MERCH",
+  BOTTLE: 'BOTTLE',
+  MERCH: 'MERCH',
 } as const;
 
 /**
  * 판매 공고 상태
  */
-export type SaleAnnouncementCreateRequestSaleStatus =
-  (typeof SaleAnnouncementCreateRequestSaleStatus)[keyof typeof SaleAnnouncementCreateRequestSaleStatus];
+export type SaleAnnouncementCreateRequestSaleStatus = typeof SaleAnnouncementCreateRequestSaleStatus[keyof typeof SaleAnnouncementCreateRequestSaleStatus];
+
 
 export const SaleAnnouncementCreateRequestSaleStatus = {
-  DRAFT: "DRAFT",
-  OPEN: "OPEN",
-  CLOSED: "CLOSED",
-  SOLD_OUT: "SOLD_OUT",
+  DRAFT: 'DRAFT',
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED',
+  SOLD_OUT: 'SOLD_OUT',
 } as const;
 
 /**
  * 판매 유형
  */
-export type SaleAnnouncementCreateRequestSaleType =
-  (typeof SaleAnnouncementCreateRequestSaleType)[keyof typeof SaleAnnouncementCreateRequestSaleType];
+export type SaleAnnouncementCreateRequestSaleType = typeof SaleAnnouncementCreateRequestSaleType[keyof typeof SaleAnnouncementCreateRequestSaleType];
+
 
 export const SaleAnnouncementCreateRequestSaleType = {
-  RESERVATION: "RESERVATION",
-  PICKUP: "PICKUP",
-  GENERAL: "GENERAL",
+  RESERVATION: 'RESERVATION',
+  PICKUP: 'PICKUP',
+  GENERAL: 'GENERAL',
 } as const;
 
 /**
@@ -1992,25 +2099,25 @@ export interface SaleAnnouncementCreateRequest {
 /**
  * 판매 상품 유형
  */
-export type SaleAnnouncementUpdateRequestProductType =
-  (typeof SaleAnnouncementUpdateRequestProductType)[keyof typeof SaleAnnouncementUpdateRequestProductType];
+export type SaleAnnouncementUpdateRequestProductType = typeof SaleAnnouncementUpdateRequestProductType[keyof typeof SaleAnnouncementUpdateRequestProductType];
+
 
 export const SaleAnnouncementUpdateRequestProductType = {
-  BOTTLE: "BOTTLE",
-  MERCH: "MERCH",
+  BOTTLE: 'BOTTLE',
+  MERCH: 'MERCH',
 } as const;
 
 /**
  * 판매 공고 상태
  */
-export type SaleAnnouncementUpdateRequestSaleStatus =
-  (typeof SaleAnnouncementUpdateRequestSaleStatus)[keyof typeof SaleAnnouncementUpdateRequestSaleStatus];
+export type SaleAnnouncementUpdateRequestSaleStatus = typeof SaleAnnouncementUpdateRequestSaleStatus[keyof typeof SaleAnnouncementUpdateRequestSaleStatus];
+
 
 export const SaleAnnouncementUpdateRequestSaleStatus = {
-  DRAFT: "DRAFT",
-  OPEN: "OPEN",
-  CLOSED: "CLOSED",
-  SOLD_OUT: "SOLD_OUT",
+  DRAFT: 'DRAFT',
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED',
+  SOLD_OUT: 'SOLD_OUT',
 } as const;
 
 /**
@@ -2046,53 +2153,53 @@ export interface SaleAnnouncementUpdateRequest {
 }
 
 /**
- * 새 사용자 계정을 등록할 때 사용하는 요청 본문입니다.
+ * 회원가입 요청 본문
  */
 export interface SignupRequest {
-  /** 선택 입력 항목인 사용자의 생년월일입니다. */
+  /** 생년월일 */
   birthDate?: string;
   /**
-   * 알림을 받을 이메일 주소입니다.
+   * 이메일 주소
    * @minLength 0
    * @maxLength 100
    */
   email?: string;
-  /** email 발송 동의 */
+  /** 이메일 동의 여부 */
   emailAgree?: boolean;
   /**
-   * 선택 입력 항목인 성별 정보입니다.
+   * 성별
    * @minLength 0
    * @maxLength 32
    */
   gender?: string;
-  /** 마케팅 동의 */
+  /** 마케팅 동의 여부 */
   marketingAgree?: boolean;
   /**
-   * 사용자의 실명입니다.
+   * 이름
    * @minLength 0
    * @maxLength 100
    */
   name?: string;
   /**
-   * 설정할 계정 비밀번호입니다.
+   * 비밀번호
    * @minLength 6
    * @maxLength 100
    */
   password?: string;
   /**
-   * 전화번호입니다.
+   * 전화번호
    * @minLength 0
    * @maxLength 20
    */
   phone?: string;
-  /** 사용자 개인정보 이용 동의 */
+  /** 개인정보 동의 여부 */
   privacyAgree?: boolean;
-  /** 문자메세지 발송 동의 */
+  /** SMS 동의 여부 */
   smsAgree?: boolean;
-  /** SNS 발송 동의 */
+  /** SNS 동의 여부 */
   snsAgree?: boolean;
   /**
-   * 사용자가 등록하려는 고유 아이디입니다.
+   * 사용자 아이디
    * @minLength 3
    * @maxLength 50
    */
@@ -2143,13 +2250,22 @@ export interface UpdatePostRequest {
   title?: string;
 }
 
-export type UserBusinessApplicationSubmitResponseStatus =
-  (typeof UserBusinessApplicationSubmitResponseStatus)[keyof typeof UserBusinessApplicationSubmitResponseStatus];
+export interface UserBusinessApplicationCancelRequest {
+  /**
+   * 신청 취소 사유
+   * @minLength 1
+   */
+  cancelReason?: string;
+}
+
+export type UserBusinessApplicationSubmitResponseStatus = typeof UserBusinessApplicationSubmitResponseStatus[keyof typeof UserBusinessApplicationSubmitResponseStatus];
+
 
 export const UserBusinessApplicationSubmitResponseStatus = {
-  PENDING: "PENDING",
-  APPROVED: "APPROVED",
-  REJECTED: "REJECTED",
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  CANCELED: 'CANCELED',
 } as const;
 
 export interface UserBusinessApplicationSubmitResponse {
@@ -2184,12 +2300,12 @@ export interface UsernameRequest {
 }
 
 export type PostApiAdminBannersParams = {
-  /**
-   * @minLength 1
-   */
-  title: string;
-  description?: string;
-  link?: string;
+/**
+ * @minLength 1
+ */
+title: string;
+description?: string;
+link?: string;
 };
 
 export type PostApiAdminBannersBody = {
@@ -2198,9 +2314,9 @@ export type PostApiAdminBannersBody = {
 };
 
 export type PatchApiAdminBannersIdParams = {
-  title?: string;
-  description?: string;
-  link?: string;
+title?: string;
+description?: string;
+link?: string;
 };
 
 export type PatchApiAdminBannersIdBody = {
@@ -2235,12 +2351,12 @@ export type PostApiAdminBoardsBody = {
 /**
  * 공지 범위(전체 또는 게시판별)를 지정합니다.
  */
-export type PostApiAdminBoardsAnnouncementsBodyScope =
-  (typeof PostApiAdminBoardsAnnouncementsBodyScope)[keyof typeof PostApiAdminBoardsAnnouncementsBodyScope];
+export type PostApiAdminBoardsAnnouncementsBodyScope = typeof PostApiAdminBoardsAnnouncementsBodyScope[keyof typeof PostApiAdminBoardsAnnouncementsBodyScope];
+
 
 export const PostApiAdminBoardsAnnouncementsBodyScope = {
-  GLOBAL: "GLOBAL",
-  BOARD: "BOARD",
+  GLOBAL: 'GLOBAL',
+  BOARD: 'BOARD',
 } as const;
 
 /**
@@ -2265,60 +2381,62 @@ export type PostApiAdminBoardsAnnouncementsBody = {
 };
 
 export type GetApiAdminBottlesParams = {
-  filters: {
-    abvFrom?: number;
-    abvTo?: number;
-    bottledDateFrom?: string;
-    bottledDateTo?: string;
-    brand?: string;
-    caskType?: string;
-    company?: string;
-    distillationDateFrom?: string;
-    distillationDateTo?: string;
-    distillery?: string;
-    maltType?: string;
-    name?: string;
-    pageNumber?: number;
-    pageSize?: number;
-    /** 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값 */
-    reservationStatus?: GetApiAdminBottlesFiltersReservationStatus;
-    series?: string;
-    vintageFrom?: number;
-    vintageTo?: number;
-  };
+filters: {
+  abvFrom?: number;
+  abvTo?: number;
+  bottledDateFrom?: string;
+  bottledDateTo?: string;
+  brand?: string;
+  caskType?: string;
+  company?: string;
+  distillationDateFrom?: string;
+  distillationDateTo?: string;
+  distillery?: string;
+  maltType?: string;
+  name?: string;
+  pageNumber?: number;
+  pageSize?: number;
+  /** 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값 */
+  reservationStatus?: GetApiAdminBottlesFiltersReservationStatus;
+  series?: string;
+  sortBy?: string;
+  sortDirection?: string;
+  vintageFrom?: number;
+  vintageTo?: number;
+};
 };
 
 /**
  * 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값
  */
-export type GetApiAdminBottlesFiltersReservationStatus =
-  (typeof GetApiAdminBottlesFiltersReservationStatus)[keyof typeof GetApiAdminBottlesFiltersReservationStatus];
+export type GetApiAdminBottlesFiltersReservationStatus = typeof GetApiAdminBottlesFiltersReservationStatus[keyof typeof GetApiAdminBottlesFiltersReservationStatus];
+
 
 export const GetApiAdminBottlesFiltersReservationStatus = {
-  NO_RESERVATION: "NO_RESERVATION",
-  RESERVATION_ONGOING: "RESERVATION_ONGOING",
-  RESERVATION_COMPLETED: "RESERVATION_COMPLETED",
+  NO_RESERVATION: 'NO_RESERVATION',
+  RESERVATION_ONGOING: 'RESERVATION_ONGOING',
+  RESERVATION_COMPLETED: 'RESERVATION_COMPLETED',
 } as const;
 
 export type PostApiAdminBottlesParams = {
-  name: string;
-  company?: string;
-  brand?: string;
-  series?: string;
-  extraInfos?: string;
-  maltType?: string;
-  distillery?: string;
-  distillationDate?: string;
-  bottledDate?: string;
-  caskType?: string;
-  caskNumber?: string;
-  abv?: number;
-  capacity?: number;
-  description?: string;
-  supplyPrice?: number;
-  consumerPrice?: number;
-  stockQuantity?: number;
-  visible?: boolean;
+name: string;
+company?: string;
+brand?: string;
+series?: string;
+extraInfos?: string;
+maltType?: string;
+distillery?: string;
+distillationDate?: string;
+bottledDate?: string;
+caskType?: string;
+caskNumber?: string;
+abv?: number;
+capacity?: number;
+description?: string;
+supplyPrice?: number;
+consumerPrice?: number;
+stockQuantity?: number;
+visible?: boolean;
 };
 
 export type PostApiAdminBottlesBody = {
@@ -2326,65 +2444,63 @@ export type PostApiAdminBottlesBody = {
 };
 
 export type GetApiAdminBottlesReservationsApplicationsParams = {
-  userId?: number;
-  noticeId?: number;
-  /**
-   * Zero-based page index (0..N)
-   * @minimum 0
-   */
-  page?: number;
-  /**
-   * The size of the page to be returned
-   * @minimum 1
-   */
-  size?: number;
-  /**
-   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
-   */
-  sort?: string[];
+userId?: number;
+noticeId?: number;
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
 };
 
-export type PostApiAdminBottlesReservationsApplicationsApplicationidConfirmBody =
-  {
-    /** @minimum 1 */
-    confirmedQuantity: number;
-  };
+export type PostApiAdminBottlesReservationsApplicationsApplicationidConfirmBody = {
+  /** @minimum 1 */
+  confirmedQuantity: number;
+};
 
 export type GetApiAdminBottlesReservationsNoticesParams = {
-  /**
-   * Zero-based page index (0..N)
-   * @minimum 0
-   */
-  page?: number;
-  /**
-   * The size of the page to be returned
-   * @minimum 1
-   */
-  size?: number;
-  /**
-   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
-   */
-  sort?: string[];
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
 };
 
-export type PostApiAdminBottlesReservationsNoticesBodyGradeConditionsItemRequiredRole =
-  (typeof PostApiAdminBottlesReservationsNoticesBodyGradeConditionsItemRequiredRole)[keyof typeof PostApiAdminBottlesReservationsNoticesBodyGradeConditionsItemRequiredRole];
+export type PostApiAdminBottlesReservationsNoticesBodyGradeConditionsItemRequiredRole = typeof PostApiAdminBottlesReservationsNoticesBodyGradeConditionsItemRequiredRole[keyof typeof PostApiAdminBottlesReservationsNoticesBodyGradeConditionsItemRequiredRole];
 
-export const PostApiAdminBottlesReservationsNoticesBodyGradeConditionsItemRequiredRole =
-  {
-    ROLE_GUEST: "ROLE_GUEST",
-    ROLE_USER: "ROLE_USER",
-    ROLE_ADMIN: "ROLE_ADMIN",
-    ROLE_SUPER_ADMIN: "ROLE_SUPER_ADMIN",
-    ROLE_CONSUMER: "ROLE_CONSUMER",
-    ROLE_WHISKYNAVI_MEMBER: "ROLE_WHISKYNAVI_MEMBER",
-    ROLE_WHISKYTALES_MEMBER: "ROLE_WHISKYTALES_MEMBER",
-    ROLE_BLIND_MEMBER: "ROLE_BLIND_MEMBER",
-    ROLE_BUSINESS: "ROLE_BUSINESS",
-    ROLE_TRAILNTALE_BUSINESS: "ROLE_TRAILNTALE_BUSINESS",
-    ROLE_COMMUNITY_BUSINESS: "ROLE_COMMUNITY_BUSINESS",
-    ROLE_PICK_UP_BUSINESS: "ROLE_PICK_UP_BUSINESS",
-  } as const;
+
+export const PostApiAdminBottlesReservationsNoticesBodyGradeConditionsItemRequiredRole = {
+  ROLE_GUEST: 'ROLE_GUEST',
+  ROLE_USER: 'ROLE_USER',
+  ROLE_ADMIN: 'ROLE_ADMIN',
+  ROLE_SUPER_ADMIN: 'ROLE_SUPER_ADMIN',
+  ROLE_CONSUMER: 'ROLE_CONSUMER',
+  ROLE_WHISKYNAVI_MEMBER: 'ROLE_WHISKYNAVI_MEMBER',
+  ROLE_WHISKYTALES_MEMBER: 'ROLE_WHISKYTALES_MEMBER',
+  ROLE_BLIND_MEMBER: 'ROLE_BLIND_MEMBER',
+  ROLE_BUSINESS: 'ROLE_BUSINESS',
+  ROLE_TRAILNTALE_BUSINESS: 'ROLE_TRAILNTALE_BUSINESS',
+  ROLE_COMMUNITY_BUSINESS: 'ROLE_COMMUNITY_BUSINESS',
+  ROLE_PICK_UP_BUSINESS: 'ROLE_PICK_UP_BUSINESS',
+} as const;
 
 export type PostApiAdminBottlesReservationsNoticesBodyGradeConditionsItem = {
   applicableFrom: string;
@@ -2401,30 +2517,28 @@ export type PostApiAdminBottlesReservationsNoticesBody = {
   reservationStartAt: string;
 };
 
-export type PutApiAdminBottlesReservationsNoticesNoticeidBodyGradeConditionsItemRequiredRole =
-  (typeof PutApiAdminBottlesReservationsNoticesNoticeidBodyGradeConditionsItemRequiredRole)[keyof typeof PutApiAdminBottlesReservationsNoticesNoticeidBodyGradeConditionsItemRequiredRole];
+export type PutApiAdminBottlesReservationsNoticesNoticeidBodyGradeConditionsItemRequiredRole = typeof PutApiAdminBottlesReservationsNoticesNoticeidBodyGradeConditionsItemRequiredRole[keyof typeof PutApiAdminBottlesReservationsNoticesNoticeidBodyGradeConditionsItemRequiredRole];
 
-export const PutApiAdminBottlesReservationsNoticesNoticeidBodyGradeConditionsItemRequiredRole =
-  {
-    ROLE_GUEST: "ROLE_GUEST",
-    ROLE_USER: "ROLE_USER",
-    ROLE_ADMIN: "ROLE_ADMIN",
-    ROLE_SUPER_ADMIN: "ROLE_SUPER_ADMIN",
-    ROLE_CONSUMER: "ROLE_CONSUMER",
-    ROLE_WHISKYNAVI_MEMBER: "ROLE_WHISKYNAVI_MEMBER",
-    ROLE_WHISKYTALES_MEMBER: "ROLE_WHISKYTALES_MEMBER",
-    ROLE_BLIND_MEMBER: "ROLE_BLIND_MEMBER",
-    ROLE_BUSINESS: "ROLE_BUSINESS",
-    ROLE_TRAILNTALE_BUSINESS: "ROLE_TRAILNTALE_BUSINESS",
-    ROLE_COMMUNITY_BUSINESS: "ROLE_COMMUNITY_BUSINESS",
-    ROLE_PICK_UP_BUSINESS: "ROLE_PICK_UP_BUSINESS",
-  } as const;
 
-export type PutApiAdminBottlesReservationsNoticesNoticeidBodyGradeConditionsItem =
-  {
-    applicableFrom: string;
-    requiredRole: PutApiAdminBottlesReservationsNoticesNoticeidBodyGradeConditionsItemRequiredRole;
-  };
+export const PutApiAdminBottlesReservationsNoticesNoticeidBodyGradeConditionsItemRequiredRole = {
+  ROLE_GUEST: 'ROLE_GUEST',
+  ROLE_USER: 'ROLE_USER',
+  ROLE_ADMIN: 'ROLE_ADMIN',
+  ROLE_SUPER_ADMIN: 'ROLE_SUPER_ADMIN',
+  ROLE_CONSUMER: 'ROLE_CONSUMER',
+  ROLE_WHISKYNAVI_MEMBER: 'ROLE_WHISKYNAVI_MEMBER',
+  ROLE_WHISKYTALES_MEMBER: 'ROLE_WHISKYTALES_MEMBER',
+  ROLE_BLIND_MEMBER: 'ROLE_BLIND_MEMBER',
+  ROLE_BUSINESS: 'ROLE_BUSINESS',
+  ROLE_TRAILNTALE_BUSINESS: 'ROLE_TRAILNTALE_BUSINESS',
+  ROLE_COMMUNITY_BUSINESS: 'ROLE_COMMUNITY_BUSINESS',
+  ROLE_PICK_UP_BUSINESS: 'ROLE_PICK_UP_BUSINESS',
+} as const;
+
+export type PutApiAdminBottlesReservationsNoticesNoticeidBodyGradeConditionsItem = {
+  applicableFrom: string;
+  requiredRole: PutApiAdminBottlesReservationsNoticesNoticeidBodyGradeConditionsItemRequiredRole;
+};
 
 export type PutApiAdminBottlesReservationsNoticesNoticeidBody = {
   bottleId: number;
@@ -2437,24 +2551,24 @@ export type PutApiAdminBottlesReservationsNoticesNoticeidBody = {
 };
 
 export type PatchApiAdminBottlesIdParams = {
-  name?: string;
-  company?: string;
-  brand?: string;
-  series?: string;
-  extraInfos?: string;
-  maltType?: string;
-  distillery?: string;
-  distillationDate?: string;
-  bottledDate?: string;
-  caskType?: string;
-  caskNumber?: string;
-  abv?: number;
-  capacity?: number;
-  description?: string;
-  supplyPrice?: number;
-  consumerPrice?: number;
-  stockQuantity?: number;
-  visible?: boolean;
+name?: string;
+company?: string;
+brand?: string;
+series?: string;
+extraInfos?: string;
+maltType?: string;
+distillery?: string;
+distillationDate?: string;
+bottledDate?: string;
+caskType?: string;
+caskNumber?: string;
+abv?: number;
+capacity?: number;
+description?: string;
+supplyPrice?: number;
+consumerPrice?: number;
+stockQuantity?: number;
+visible?: boolean;
 };
 
 export type PatchApiAdminBottlesIdBody = {
@@ -2462,113 +2576,126 @@ export type PatchApiAdminBottlesIdBody = {
 };
 
 export type GetApiAdminBusinessesApplicationsParams = {
-  /**
-   * Zero-based page index (0..N)
-   * @minimum 0
-   */
-  page?: number;
-  /**
-   * The size of the page to be returned
-   * @minimum 1
-   */
-  size?: number;
-  /**
-   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
-   */
-  sort?: string[];
+status?: GetApiAdminBusinessesApplicationsStatus;
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
 };
 
+export type GetApiAdminBusinessesApplicationsStatus = typeof GetApiAdminBusinessesApplicationsStatus[keyof typeof GetApiAdminBusinessesApplicationsStatus];
+
+
+export const GetApiAdminBusinessesApplicationsStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  CANCELED: 'CANCELED',
+} as const;
+
 /**
- * 관리자가 비즈니스 신청을 반려할 때 입력하는 사유입니다.
+ * 관리자가 비즈니스 신청을 반려할 때 사유와 내부 메모를 입력합니다.
  */
 export type PostApiAdminBusinessesApplicationsApplicationidRejectBody = {
+  /** 관리자 내부 메모(사용자 비노출) */
+  adminMemo?: string;
   /**
-   * 거절 사유
+   * 사용자에게 노출되는 반려 사유
    * @minLength 1
    */
   rejectReason?: string;
 };
 
 export type GetApiAdminBusinessesMembersParams = {
-  /**
-   * Zero-based page index (0..N)
-   * @minimum 0
-   */
-  page?: number;
-  /**
-   * The size of the page to be returned
-   * @minimum 1
-   */
-  size?: number;
-  /**
-   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
-   */
-  sort?: string[];
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
 };
 
-export type PostApiAdminNiceidRevokeBody = { [key: string]: string };
+export type PostApiAdminNiceidRevokeBody = {[key: string]: string};
 
-export type PostApiAdminNiceidRevoke200 = { [key: string]: string };
+export type PostApiAdminNiceidRevoke200 = {[key: string]: string};
 
 export type GetApiAdminOrdersParams = {
-  /**
-   * Zero-based page index (0..N)
-   * @minimum 0
-   */
-  page?: number;
-  /**
-   * The size of the page to be returned
-   * @minimum 1
-   */
-  size?: number;
-  /**
-   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
-   */
-  sort?: string[];
-  orderType?: GetApiAdminOrdersOrderType;
-  orderStatus?: GetApiAdminOrdersOrderStatus;
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
+orderType?: GetApiAdminOrdersOrderType;
+orderStatus?: GetApiAdminOrdersOrderStatus;
 };
 
-export type GetApiAdminOrdersOrderType =
-  (typeof GetApiAdminOrdersOrderType)[keyof typeof GetApiAdminOrdersOrderType];
+export type GetApiAdminOrdersOrderType = typeof GetApiAdminOrdersOrderType[keyof typeof GetApiAdminOrdersOrderType];
+
 
 export const GetApiAdminOrdersOrderType = {
-  RESERVATION: "RESERVATION",
-  PICKUP: "PICKUP",
-  GENERAL: "GENERAL",
+  RESERVATION: 'RESERVATION',
+  PICKUP: 'PICKUP',
+  GENERAL: 'GENERAL',
 } as const;
 
-export type GetApiAdminOrdersOrderStatus =
-  (typeof GetApiAdminOrdersOrderStatus)[keyof typeof GetApiAdminOrdersOrderStatus];
+export type GetApiAdminOrdersOrderStatus = typeof GetApiAdminOrdersOrderStatus[keyof typeof GetApiAdminOrdersOrderStatus];
+
 
 export const GetApiAdminOrdersOrderStatus = {
-  ORDER_REQUESTED: "ORDER_REQUESTED",
-  PAYMENT_PENDING: "PAYMENT_PENDING",
-  ORDER_PREPARING: "ORDER_PREPARING",
-  SHIPPING: "SHIPPING",
-  DELIVERY_COMPLETED: "DELIVERY_COMPLETED",
-  RECEIPT_PENDING: "RECEIPT_PENDING",
-  RECEIPT_COMPLETED: "RECEIPT_COMPLETED",
-  ORDER_CANCELED: "ORDER_CANCELED",
-  REFUND_REQUESTED: "REFUND_REQUESTED",
-  REFUND_COMPLETED: "REFUND_COMPLETED",
+  ORDER_REQUESTED: 'ORDER_REQUESTED',
+  PAYMENT_PENDING: 'PAYMENT_PENDING',
+  ORDER_PREPARING: 'ORDER_PREPARING',
+  SHIPPING: 'SHIPPING',
+  DELIVERY_COMPLETED: 'DELIVERY_COMPLETED',
+  RECEIPT_PENDING: 'RECEIPT_PENDING',
+  RECEIPT_COMPLETED: 'RECEIPT_COMPLETED',
+  ORDER_CANCELED: 'ORDER_CANCELED',
+  REFUND_REQUESTED: 'REFUND_REQUESTED',
+  REFUND_COMPLETED: 'REFUND_COMPLETED',
 } as const;
 
 export type GetApiAdminOrdersUsersUseridParams = {
-  /**
-   * Zero-based page index (0..N)
-   * @minimum 0
-   */
-  page?: number;
-  /**
-   * The size of the page to be returned
-   * @minimum 1
-   */
-  size?: number;
-  /**
-   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
-   */
-  sort?: string[];
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
 };
 
 /**
@@ -2582,20 +2709,20 @@ export type PatchApiAdminOrdersOrderidApproveBody = {
 /**
  * 변경할 주문 상태
  */
-export type PatchApiAdminOrdersOrderidStatusBodyOrderStatus =
-  (typeof PatchApiAdminOrdersOrderidStatusBodyOrderStatus)[keyof typeof PatchApiAdminOrdersOrderidStatusBodyOrderStatus];
+export type PatchApiAdminOrdersOrderidStatusBodyOrderStatus = typeof PatchApiAdminOrdersOrderidStatusBodyOrderStatus[keyof typeof PatchApiAdminOrdersOrderidStatusBodyOrderStatus];
+
 
 export const PatchApiAdminOrdersOrderidStatusBodyOrderStatus = {
-  ORDER_REQUESTED: "ORDER_REQUESTED",
-  PAYMENT_PENDING: "PAYMENT_PENDING",
-  ORDER_PREPARING: "ORDER_PREPARING",
-  SHIPPING: "SHIPPING",
-  DELIVERY_COMPLETED: "DELIVERY_COMPLETED",
-  RECEIPT_PENDING: "RECEIPT_PENDING",
-  RECEIPT_COMPLETED: "RECEIPT_COMPLETED",
-  ORDER_CANCELED: "ORDER_CANCELED",
-  REFUND_REQUESTED: "REFUND_REQUESTED",
-  REFUND_COMPLETED: "REFUND_COMPLETED",
+  ORDER_REQUESTED: 'ORDER_REQUESTED',
+  PAYMENT_PENDING: 'PAYMENT_PENDING',
+  ORDER_PREPARING: 'ORDER_PREPARING',
+  SHIPPING: 'SHIPPING',
+  DELIVERY_COMPLETED: 'DELIVERY_COMPLETED',
+  RECEIPT_PENDING: 'RECEIPT_PENDING',
+  RECEIPT_COMPLETED: 'RECEIPT_COMPLETED',
+  ORDER_CANCELED: 'ORDER_CANCELED',
+  REFUND_REQUESTED: 'REFUND_REQUESTED',
+  REFUND_COMPLETED: 'REFUND_COMPLETED',
 } as const;
 
 /**
@@ -2615,37 +2742,37 @@ export type PatchApiAdminOrdersOrderidStatusBody = {
 /**
  * 판매 상품 유형
  */
-export type PostApiAdminSalesBodyProductType =
-  (typeof PostApiAdminSalesBodyProductType)[keyof typeof PostApiAdminSalesBodyProductType];
+export type PostApiAdminSalesBodyProductType = typeof PostApiAdminSalesBodyProductType[keyof typeof PostApiAdminSalesBodyProductType];
+
 
 export const PostApiAdminSalesBodyProductType = {
-  BOTTLE: "BOTTLE",
-  MERCH: "MERCH",
+  BOTTLE: 'BOTTLE',
+  MERCH: 'MERCH',
 } as const;
 
 /**
  * 판매 공고 상태
  */
-export type PostApiAdminSalesBodySaleStatus =
-  (typeof PostApiAdminSalesBodySaleStatus)[keyof typeof PostApiAdminSalesBodySaleStatus];
+export type PostApiAdminSalesBodySaleStatus = typeof PostApiAdminSalesBodySaleStatus[keyof typeof PostApiAdminSalesBodySaleStatus];
+
 
 export const PostApiAdminSalesBodySaleStatus = {
-  DRAFT: "DRAFT",
-  OPEN: "OPEN",
-  CLOSED: "CLOSED",
-  SOLD_OUT: "SOLD_OUT",
+  DRAFT: 'DRAFT',
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED',
+  SOLD_OUT: 'SOLD_OUT',
 } as const;
 
 /**
  * 판매 유형
  */
-export type PostApiAdminSalesBodySaleType =
-  (typeof PostApiAdminSalesBodySaleType)[keyof typeof PostApiAdminSalesBodySaleType];
+export type PostApiAdminSalesBodySaleType = typeof PostApiAdminSalesBodySaleType[keyof typeof PostApiAdminSalesBodySaleType];
+
 
 export const PostApiAdminSalesBodySaleType = {
-  RESERVATION: "RESERVATION",
-  PICKUP: "PICKUP",
-  GENERAL: "GENERAL",
+  RESERVATION: 'RESERVATION',
+  PICKUP: 'PICKUP',
+  GENERAL: 'GENERAL',
 } as const;
 
 /**
@@ -2691,25 +2818,25 @@ export type PostApiAdminSalesBody = {
 /**
  * 판매 상품 유형
  */
-export type PatchApiAdminSalesSaleidBodyProductType =
-  (typeof PatchApiAdminSalesSaleidBodyProductType)[keyof typeof PatchApiAdminSalesSaleidBodyProductType];
+export type PatchApiAdminSalesSaleidBodyProductType = typeof PatchApiAdminSalesSaleidBodyProductType[keyof typeof PatchApiAdminSalesSaleidBodyProductType];
+
 
 export const PatchApiAdminSalesSaleidBodyProductType = {
-  BOTTLE: "BOTTLE",
-  MERCH: "MERCH",
+  BOTTLE: 'BOTTLE',
+  MERCH: 'MERCH',
 } as const;
 
 /**
  * 판매 공고 상태
  */
-export type PatchApiAdminSalesSaleidBodySaleStatus =
-  (typeof PatchApiAdminSalesSaleidBodySaleStatus)[keyof typeof PatchApiAdminSalesSaleidBodySaleStatus];
+export type PatchApiAdminSalesSaleidBodySaleStatus = typeof PatchApiAdminSalesSaleidBodySaleStatus[keyof typeof PatchApiAdminSalesSaleidBodySaleStatus];
+
 
 export const PatchApiAdminSalesSaleidBodySaleStatus = {
-  DRAFT: "DRAFT",
-  OPEN: "OPEN",
-  CLOSED: "CLOSED",
-  SOLD_OUT: "SOLD_OUT",
+  DRAFT: 'DRAFT',
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED',
+  SOLD_OUT: 'SOLD_OUT',
 } as const;
 
 /**
@@ -2744,26 +2871,34 @@ export type PatchApiAdminSalesSaleidBody = {
   totalQuantity?: number;
 };
 
+export type GetApiAdminTaxInvoicesBusinessesBusinessidTaxInvoiceMonthlyPdfParams = {
+yearMonth: string;
+};
+
+export type GetApiAdminTaxInvoicesBusinessesBusinessidVatReportMonthlyPdfParams = {
+yearMonth: string;
+};
+
 export type GetApiAdminUsersParams = {
-  filters: {
-    createdAtFrom?: string;
-    createdAtTo?: string;
-    email?: string;
-    isBanned?: boolean;
-    lastLoginAtFrom?: string;
-    lastLoginAtTo?: string;
-    name?: string;
-    pageNumber?: number;
-    pageSize?: number;
-    phone?: string;
-    role?: string;
-    sortBy?: string;
-    sortDirection?: string;
-    status?: string;
-    updatedAtFrom?: string;
-    updatedAtTo?: string;
-    username?: string;
-  };
+filters: {
+  createdAtFrom?: string;
+  createdAtTo?: string;
+  email?: string;
+  isBanned?: boolean;
+  lastLoginAtFrom?: string;
+  lastLoginAtTo?: string;
+  name?: string;
+  pageNumber?: number;
+  pageSize?: number;
+  phone?: string;
+  role?: string;
+  sortBy?: string;
+  sortDirection?: string;
+  status?: string;
+  updatedAtFrom?: string;
+  updatedAtTo?: string;
+  username?: string;
+};
 };
 
 /**
@@ -2869,29 +3004,25 @@ export type PostApiAuthEmailVerificationResetSendBody = {
   email?: string;
 };
 
-export type PostApiAuthEmailVerificationResetSend200 = {
-  [key: string]: string;
-};
+export type PostApiAuthEmailVerificationResetSend200 = {[key: string]: string};
 
 /**
- * 회원가입용 이메일 인증 코드 검증 요청
+ * 회원가입 이메일 인증코드 검증 요청
  */
 export type PostApiAuthEmailVerificationResetVerifyBody = {
   /**
-   * 수신한 인증 코드
+   * 인증 코드
    * @minLength 1
    */
   code?: string;
   /**
-   * 인증할 이메일 주소
+   * 인증 이메일 주소
    * @minLength 1
    */
   email?: string;
 };
 
-export type PostApiAuthEmailVerificationResetVerify200 = {
-  [key: string]: string;
-};
+export type PostApiAuthEmailVerificationResetVerify200 = {[key: string]: string};
 
 /**
  * 회원가입용 이메일 인증 코드 발송 요청
@@ -2904,37 +3035,37 @@ export type PostApiAuthEmailVerificationSendBody = {
   email?: string;
 };
 
-export type PostApiAuthEmailVerificationSend200 = { [key: string]: string };
+export type PostApiAuthEmailVerificationSend200 = {[key: string]: string};
 
 /**
- * 회원가입용 이메일 인증 코드 검증 요청
+ * 회원가입 이메일 인증코드 검증 요청
  */
 export type PostApiAuthEmailVerificationVerifyBody = {
   /**
-   * 수신한 인증 코드
+   * 인증 코드
    * @minLength 1
    */
   code?: string;
   /**
-   * 인증할 이메일 주소
+   * 인증 이메일 주소
    * @minLength 1
    */
   email?: string;
 };
 
-export type PostApiAuthEmailVerificationVerify200 = { [key: string]: string };
+export type PostApiAuthEmailVerificationVerify200 = {[key: string]: string};
 
 /**
- * 사용자 인증에 사용하는 요청 본문입니다.
+ * 로그인 요청 본문
  */
 export type PostApiAuthLoginBody = {
   /**
-   * 사용자의 email 입니다.
+   * 이메일
    * @minLength 1
    */
   email?: string;
   /**
-   * 아이디에 대응하는 비밀번호입니다.
+   * 비밀번호
    * @minLength 1
    */
   password?: string;
@@ -2952,10 +3083,10 @@ export type PostApiAuthOauthCompleteBody = {
 };
 
 export type GetApiAuthOauthProviderCallbackParams = {
-  code?: string;
-  state?: string;
-  error?: string;
-  error_description?: string;
+code?: string;
+state?: string;
+error?: string;
+error_description?: string;
 };
 
 /**
@@ -2981,53 +3112,53 @@ export type PostApiAuthResetPasswordBody = {
 };
 
 /**
- * 새 사용자 계정을 등록할 때 사용하는 요청 본문입니다.
+ * 회원가입 요청 본문
  */
 export type PostApiAuthSignupBody = {
-  /** 선택 입력 항목인 사용자의 생년월일입니다. */
+  /** 생년월일 */
   birthDate?: string;
   /**
-   * 알림을 받을 이메일 주소입니다.
+   * 이메일 주소
    * @minLength 0
    * @maxLength 100
    */
   email?: string;
-  /** email 발송 동의 */
+  /** 이메일 동의 여부 */
   emailAgree?: boolean;
   /**
-   * 선택 입력 항목인 성별 정보입니다.
+   * 성별
    * @minLength 0
    * @maxLength 32
    */
   gender?: string;
-  /** 마케팅 동의 */
+  /** 마케팅 동의 여부 */
   marketingAgree?: boolean;
   /**
-   * 사용자의 실명입니다.
+   * 이름
    * @minLength 0
    * @maxLength 100
    */
   name?: string;
   /**
-   * 설정할 계정 비밀번호입니다.
+   * 비밀번호
    * @minLength 6
    * @maxLength 100
    */
   password?: string;
   /**
-   * 전화번호입니다.
+   * 전화번호
    * @minLength 0
    * @maxLength 20
    */
   phone?: string;
-  /** 사용자 개인정보 이용 동의 */
+  /** 개인정보 동의 여부 */
   privacyAgree?: boolean;
-  /** 문자메세지 발송 동의 */
+  /** SMS 동의 여부 */
   smsAgree?: boolean;
-  /** SNS 발송 동의 */
+  /** SNS 동의 여부 */
   snsAgree?: boolean;
   /**
-   * 사용자가 등록하려는 고유 아이디입니다.
+   * 사용자 아이디
    * @minLength 3
    * @maxLength 50
    */
@@ -3035,112 +3166,112 @@ export type PostApiAuthSignupBody = {
 };
 
 export type GetApiBannersParams = {
-  /**
-   * Zero-based page index (0..N)
-   * @minimum 0
-   */
-  page?: number;
-  /**
-   * The size of the page to be returned
-   * @minimum 1
-   */
-  size?: number;
-  /**
-   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
-   */
-  sort?: string[];
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
 };
 
 export type GetApiBoardsParams = {
-  /**
-   * Zero-based page index (0..N)
-   * @minimum 0
-   */
-  page?: number;
-  /**
-   * The size of the page to be returned
-   * @minimum 1
-   */
-  size?: number;
-  /**
-   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
-   */
-  sort?: string[];
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
 };
 
 export type GetApiBoardsAnnouncementsBoardBoardidParams = {
-  /**
-   * Zero-based page index (0..N)
-   * @minimum 0
-   */
-  page?: number;
-  /**
-   * The size of the page to be returned
-   * @minimum 1
-   */
-  size?: number;
-  /**
-   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
-   */
-  sort?: string[];
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
 };
 
 export type GetApiBoardsAnnouncementsGlobalParams = {
-  /**
-   * Zero-based page index (0..N)
-   * @minimum 0
-   */
-  page?: number;
-  /**
-   * The size of the page to be returned
-   * @minimum 1
-   */
-  size?: number;
-  /**
-   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
-   */
-  sort?: string[];
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
 };
 
 export type GetApiBoardsBoardidAnnouncementsParams = {
-  /**
-   * Zero-based page index (0..N)
-   * @minimum 0
-   */
-  page?: number;
-  /**
-   * The size of the page to be returned
-   * @minimum 1
-   */
-  size?: number;
-  /**
-   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
-   */
-  sort?: string[];
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
 };
 
 export type GetApiBoardsBoardidPostsParams = {
-  pageable: {
-    /** @minimum 0 */
-    page?: number;
-    /** @minimum 1 */
-    size?: number;
-    sort?: string[];
-  };
-  /**
-   * 게시글 검색 시 사용할 수 있는 검색 구분값입니다.
-   */
-  searchType?: GetApiBoardsBoardidPostsSearchType;
-  keyword?: string;
+pageable: {
+  /** @minimum 0 */
+  page?: number;
+  /** @minimum 1 */
+  size?: number;
+  sort?: string[];
+};
+/**
+ * 게시글 검색 시 사용할 수 있는 검색 구분값입니다.
+ */
+searchType?: GetApiBoardsBoardidPostsSearchType;
+keyword?: string;
 };
 
-export type GetApiBoardsBoardidPostsSearchType =
-  (typeof GetApiBoardsBoardidPostsSearchType)[keyof typeof GetApiBoardsBoardidPostsSearchType];
+export type GetApiBoardsBoardidPostsSearchType = typeof GetApiBoardsBoardidPostsSearchType[keyof typeof GetApiBoardsBoardidPostsSearchType];
+
 
 export const GetApiBoardsBoardidPostsSearchType = {
-  TITLE: "TITLE",
-  CONTENT: "CONTENT",
-  AUTHOR: "AUTHOR",
+  TITLE: 'TITLE',
+  CONTENT: 'CONTENT',
+  AUTHOR: 'AUTHOR',
 } as const;
 
 /**
@@ -3175,56 +3306,58 @@ export type PutApiBoardsBoardidPostsPostidBody = {
 };
 
 export type GetApiBottlesParams = {
-  filters: {
-    abvFrom?: number;
-    abvTo?: number;
-    bottledDateFrom?: string;
-    bottledDateTo?: string;
-    brand?: string;
-    caskType?: string;
-    company?: string;
-    distillationDateFrom?: string;
-    distillationDateTo?: string;
-    distillery?: string;
-    maltType?: string;
-    name?: string;
-    pageNumber?: number;
-    pageSize?: number;
-    /** 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값 */
-    reservationStatus?: GetApiBottlesFiltersReservationStatus;
-    series?: string;
-    vintageFrom?: number;
-    vintageTo?: number;
-  };
+filters: {
+  abvFrom?: number;
+  abvTo?: number;
+  bottledDateFrom?: string;
+  bottledDateTo?: string;
+  brand?: string;
+  caskType?: string;
+  company?: string;
+  distillationDateFrom?: string;
+  distillationDateTo?: string;
+  distillery?: string;
+  maltType?: string;
+  name?: string;
+  pageNumber?: number;
+  pageSize?: number;
+  /** 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값 */
+  reservationStatus?: GetApiBottlesFiltersReservationStatus;
+  series?: string;
+  sortBy?: string;
+  sortDirection?: string;
+  vintageFrom?: number;
+  vintageTo?: number;
+};
 };
 
 /**
  * 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값
  */
-export type GetApiBottlesFiltersReservationStatus =
-  (typeof GetApiBottlesFiltersReservationStatus)[keyof typeof GetApiBottlesFiltersReservationStatus];
+export type GetApiBottlesFiltersReservationStatus = typeof GetApiBottlesFiltersReservationStatus[keyof typeof GetApiBottlesFiltersReservationStatus];
+
 
 export const GetApiBottlesFiltersReservationStatus = {
-  NO_RESERVATION: "NO_RESERVATION",
-  RESERVATION_ONGOING: "RESERVATION_ONGOING",
-  RESERVATION_COMPLETED: "RESERVATION_COMPLETED",
+  NO_RESERVATION: 'NO_RESERVATION',
+  RESERVATION_ONGOING: 'RESERVATION_ONGOING',
+  RESERVATION_COMPLETED: 'RESERVATION_COMPLETED',
 } as const;
 
 export type GetApiBottlesReservationsApplicationsMeParams = {
-  /**
-   * Zero-based page index (0..N)
-   * @minimum 0
-   */
-  page?: number;
-  /**
-   * The size of the page to be returned
-   * @minimum 1
-   */
-  size?: number;
-  /**
-   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
-   */
-  sort?: string[];
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
 };
 
 export type PutApiBottlesReservationsApplicationsApplicationidBody = {
@@ -3234,20 +3367,20 @@ export type PutApiBottlesReservationsApplicationsApplicationidBody = {
 };
 
 export type GetApiBottlesReservationsNoticesParams = {
-  /**
-   * Zero-based page index (0..N)
-   * @minimum 0
-   */
-  page?: number;
-  /**
-   * The size of the page to be returned
-   * @minimum 1
-   */
-  size?: number;
-  /**
-   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
-   */
-  sort?: string[];
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
 };
 
 export type PostApiBottlesReservationsNoticesNoticeidApplicationsBody = {
@@ -3257,56 +3390,56 @@ export type PostApiBottlesReservationsNoticesNoticeidApplicationsBody = {
 };
 
 export type GetApiOrdersParams = {
-  /**
-   * Zero-based page index (0..N)
-   * @minimum 0
-   */
-  page?: number;
-  /**
-   * The size of the page to be returned
-   * @minimum 1
-   */
-  size?: number;
-  /**
-   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
-   */
-  sort?: string[];
-  userId?: number;
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
+userId?: number;
 };
 
 /**
  * 판매 유형
  */
-export type PostApiOrdersBodyOrderType =
-  (typeof PostApiOrdersBodyOrderType)[keyof typeof PostApiOrdersBodyOrderType];
+export type PostApiOrdersBodyOrderType = typeof PostApiOrdersBodyOrderType[keyof typeof PostApiOrdersBodyOrderType];
+
 
 export const PostApiOrdersBodyOrderType = {
-  RESERVATION: "RESERVATION",
-  PICKUP: "PICKUP",
-  GENERAL: "GENERAL",
+  RESERVATION: 'RESERVATION',
+  PICKUP: 'PICKUP',
+  GENERAL: 'GENERAL',
 } as const;
 
 /**
  * 판매 상품 유형
  */
-export type PostApiOrdersBodyProductType =
-  (typeof PostApiOrdersBodyProductType)[keyof typeof PostApiOrdersBodyProductType];
+export type PostApiOrdersBodyProductType = typeof PostApiOrdersBodyProductType[keyof typeof PostApiOrdersBodyProductType];
+
 
 export const PostApiOrdersBodyProductType = {
-  BOTTLE: "BOTTLE",
-  MERCH: "MERCH",
+  BOTTLE: 'BOTTLE',
+  MERCH: 'MERCH',
 } as const;
 
 /**
  * 판매 공고 유형
  */
-export type PostApiOrdersBodySaleType =
-  (typeof PostApiOrdersBodySaleType)[keyof typeof PostApiOrdersBodySaleType];
+export type PostApiOrdersBodySaleType = typeof PostApiOrdersBodySaleType[keyof typeof PostApiOrdersBodySaleType];
+
 
 export const PostApiOrdersBodySaleType = {
-  RESERVATION: "RESERVATION",
-  PICKUP: "PICKUP",
-  GENERAL: "GENERAL",
+  RESERVATION: 'RESERVATION',
+  PICKUP: 'PICKUP',
+  GENERAL: 'GENERAL',
 } as const;
 
 /**
@@ -3612,31 +3745,31 @@ export type PostApiPpurioMessageBody = {
 };
 
 /**
- * 사전 등록 신청 정보를 받기 위한 요청 본문입니다.
+ * 사전 등록 요청 본문
  */
 export type PostApiPreRegisterBody = {
-  /** 신청자의 생년월일입니다. */
+  /** 생년월일 */
   birthday?: string;
   /**
-   * 출시 소식을 받을 이메일입니다.
+   * 이메일
    * @minLength 0
    * @maxLength 100
    */
   email?: string;
   /**
-   * 선택 입력 항목인 성별 정보입니다.
+   * 성별
    * @minLength 0
    * @maxLength 10
    */
   gender?: string;
   /**
-   * 신청자의 이름입니다.
+   * 이름
    * @minLength 0
    * @maxLength 100
    */
   name?: string;
   /**
-   * 연락을 위한 선택 전화번호입니다.
+   * 전화번호
    * @minLength 0
    * @maxLength 20
    */
@@ -3644,48 +3777,56 @@ export type PostApiPreRegisterBody = {
 };
 
 export type GetApiS3PresignedParams = {
-  key: string;
-  filename?: string;
+key: string;
+filename?: string;
 };
 
 export type PostApiS3UploadBody = {
   file: Blob;
 };
 
-export type PostApiS3Upload200 = { [key: string]: string };
+export type PostApiS3Upload200 = {[key: string]: string};
 
 export type GetApiSalesParams = {
-  /**
-   * Zero-based page index (0..N)
-   * @minimum 0
-   */
-  page?: number;
-  /**
-   * The size of the page to be returned
-   * @minimum 1
-   */
-  size?: number;
-  /**
-   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
-   */
-  sort?: string[];
-  saleStatus?: GetApiSalesSaleStatus;
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
+saleStatus?: GetApiSalesSaleStatus;
 };
 
-export type GetApiSalesSaleStatus =
-  (typeof GetApiSalesSaleStatus)[keyof typeof GetApiSalesSaleStatus];
+export type GetApiSalesSaleStatus = typeof GetApiSalesSaleStatus[keyof typeof GetApiSalesSaleStatus];
+
 
 export const GetApiSalesSaleStatus = {
-  DRAFT: "DRAFT",
-  OPEN: "OPEN",
-  CLOSED: "CLOSED",
-  SOLD_OUT: "SOLD_OUT",
+  DRAFT: 'DRAFT',
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED',
+  SOLD_OUT: 'SOLD_OUT',
 } as const;
 
+export type GetApiTaxInvoicesTaxInvoiceMonthlyPdfParams = {
+yearMonth: string;
+};
+
+export type GetApiTaxInvoicesVatReportMonthlyPdfParams = {
+yearMonth: string;
+};
+
 export type PostApiUserNiceidResultParams = {
-  token_version_id: string;
-  enc_data: string;
-  integrity_value: string;
+token_version_id: string;
+enc_data: string;
+integrity_value: string;
 };
 
 export type PostApiUserNiceidSessionBody = {
@@ -3699,31 +3840,56 @@ export type PostApiUserNiceidSessionBody = {
 };
 
 export type PostApiUsersBusinessesApplicationsParams = {
-  businessName: string;
-  pickupAddress: string;
-  contact: string;
-  businessRegistrationNumber: string;
+businessName: string;
+pickupAddress: string;
+contact: string;
+businessRegistrationNumber: string;
 };
 
 export type PostApiUsersBusinessesApplicationsBody = {
   document: Blob;
 };
 
+export type GetApiUsersBusinessesApplicationsMeHistoryParams = {
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
+};
+
+export type PostApiUsersBusinessesApplicationsApplicationidCancelBody = {
+  /**
+   * 신청 취소 사유
+   * @minLength 1
+   */
+  cancelReason?: string;
+};
+
 export type GetApiUsersBusinessesPickupLocationsParams = {
-  /**
-   * Zero-based page index (0..N)
-   * @minimum 0
-   */
-  page?: number;
-  /**
-   * The size of the page to be returned
-   * @minimum 1
-   */
-  size?: number;
-  /**
-   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
-   */
-  sort?: string[];
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
 };
 
 /**
@@ -3731,4266 +3897,4583 @@ export type GetApiUsersBusinessesPickupLocationsParams = {
  * @summary 배너 생성(관리자)
  */
 export type postApiAdminBannersResponse200 = {
-  data: BannerResponse;
-  status: 200;
+  data: BannerResponse
+  status: 200
+}
+    
+export type postApiAdminBannersResponseSuccess = (postApiAdminBannersResponse200) & {
+  headers: Headers;
 };
+;
 
-export type postApiAdminBannersResponseSuccess =
-  postApiAdminBannersResponse200 & {
-    headers: Headers;
-  };
+export type postApiAdminBannersResponse = (postApiAdminBannersResponseSuccess)
 
-export type postApiAdminBannersResponse = postApiAdminBannersResponseSuccess;
-
-export const getPostApiAdminBannersUrl = (
-  params: PostApiAdminBannersParams,
-) => {
+export const getPostApiAdminBannersUrl = (params: PostApiAdminBannersParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value === undefined) return;
-    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       Object.entries(value).forEach(([k, v]) => {
         if (v === undefined) return;
-        if (Array.isArray(v)) {
-          v.forEach((item) =>
-            normalizedParams.append(k, item == null ? "null" : String(item)),
-          );
-        } else {
-          normalizedParams.append(k, v === null ? "null" : String(v));
-        }
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
       });
     } else if (Array.isArray(value)) {
-      value.forEach((v) =>
-        normalizedParams.append(key, v == null ? "null" : String(v)),
-      );
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
     } else {
-      normalizedParams.append(key, value === null ? "null" : String(value));
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/api/admin/banners?${stringifiedParams}`
-    : `/api/admin/banners`;
-};
+  return stringifiedParams.length > 0 ? `/api/admin/banners?${stringifiedParams}` : `/api/admin/banners`
+}
 
-export const postApiAdminBanners = async (
-  postApiAdminBannersBody: PostApiAdminBannersBody,
-  params: PostApiAdminBannersParams,
-  options?: RequestInit,
-): Promise<postApiAdminBannersResponse> => {
-  const formData = new FormData();
-  formData.append(`backgroundImg`, postApiAdminBannersBody.backgroundImg);
-  formData.append(`mainImg`, postApiAdminBannersBody.mainImg);
+export const postApiAdminBanners = async (postApiAdminBannersBody: PostApiAdminBannersBody,
+    params: PostApiAdminBannersParams, options?: RequestInit): Promise<postApiAdminBannersResponse> => {
+    const formData = new FormData();
+formData.append(`backgroundImg`, postApiAdminBannersBody.backgroundImg);
+formData.append(`mainImg`, postApiAdminBannersBody.mainImg);
 
-  return customFetch<postApiAdminBannersResponse>(
-    getPostApiAdminBannersUrl(params),
-    {
-      ...options,
-      method: "POST",
-      body: formData,
-    },
-  );
-};
+  return customFetch<postApiAdminBannersResponse>(getPostApiAdminBannersUrl(params),
+  {      
+    ...options,
+    method: 'POST'
+    ,
+    body: 
+      formData,
+  }
+);}
+
+
 
 /**
  * 배너의 메타데이터를 수정하고 필요 시 업로드 이미지를 교체합니다.
  * @summary 배너 수정(관리자)
  */
 export type patchApiAdminBannersIdResponse200 = {
-  data: BannerResponse;
-  status: 200;
+  data: BannerResponse
+  status: 200
+}
+    
+export type patchApiAdminBannersIdResponseSuccess = (patchApiAdminBannersIdResponse200) & {
+  headers: Headers;
 };
+;
 
-export type patchApiAdminBannersIdResponseSuccess =
-  patchApiAdminBannersIdResponse200 & {
-    headers: Headers;
-  };
+export type patchApiAdminBannersIdResponse = (patchApiAdminBannersIdResponseSuccess)
 
-export type patchApiAdminBannersIdResponse =
-  patchApiAdminBannersIdResponseSuccess;
-
-export const getPatchApiAdminBannersIdUrl = (
-  id: number,
-  params?: PatchApiAdminBannersIdParams,
-) => {
+export const getPatchApiAdminBannersIdUrl = (id: number,
+    params?: PatchApiAdminBannersIdParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value === undefined) return;
-    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       Object.entries(value).forEach(([k, v]) => {
         if (v === undefined) return;
-        if (Array.isArray(v)) {
-          v.forEach((item) =>
-            normalizedParams.append(k, item == null ? "null" : String(item)),
-          );
-        } else {
-          normalizedParams.append(k, v === null ? "null" : String(v));
-        }
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
       });
     } else if (Array.isArray(value)) {
-      value.forEach((v) =>
-        normalizedParams.append(key, v == null ? "null" : String(v)),
-      );
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
     } else {
-      normalizedParams.append(key, value === null ? "null" : String(value));
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/api/admin/banners/${id}?${stringifiedParams}`
-    : `/api/admin/banners/${id}`;
-};
+  return stringifiedParams.length > 0 ? `/api/admin/banners/${id}?${stringifiedParams}` : `/api/admin/banners/${id}`
+}
 
-export const patchApiAdminBannersId = async (
-  id: number,
-  patchApiAdminBannersIdBody: PatchApiAdminBannersIdBody,
-  params?: PatchApiAdminBannersIdParams,
-  options?: RequestInit,
-): Promise<patchApiAdminBannersIdResponse> => {
-  const formData = new FormData();
-  if (patchApiAdminBannersIdBody.backgroundImg !== undefined) {
-    formData.append(`backgroundImg`, patchApiAdminBannersIdBody.backgroundImg);
-  }
-  if (patchApiAdminBannersIdBody.mainImg !== undefined) {
-    formData.append(`mainImg`, patchApiAdminBannersIdBody.mainImg);
-  }
+export const patchApiAdminBannersId = async (id: number,
+    patchApiAdminBannersIdBody: PatchApiAdminBannersIdBody,
+    params?: PatchApiAdminBannersIdParams, options?: RequestInit): Promise<patchApiAdminBannersIdResponse> => {
+    const formData = new FormData();
+if(patchApiAdminBannersIdBody.backgroundImg !== undefined) {
+ formData.append(`backgroundImg`, patchApiAdminBannersIdBody.backgroundImg);
+ }
+if(patchApiAdminBannersIdBody.mainImg !== undefined) {
+ formData.append(`mainImg`, patchApiAdminBannersIdBody.mainImg);
+ }
 
-  return customFetch<patchApiAdminBannersIdResponse>(
-    getPatchApiAdminBannersIdUrl(id, params),
-    {
-      ...options,
-      method: "PATCH",
-      body: formData,
-    },
-  );
-};
+  return customFetch<patchApiAdminBannersIdResponse>(getPatchApiAdminBannersIdUrl(id,params),
+  {      
+    ...options,
+    method: 'PATCH'
+    ,
+    body: 
+      formData,
+  }
+);}
+
+
 
 /**
  * 게시글과 공지사항을 담을 새 게시판을 생성합니다.
  * @summary 게시판 생성(관리자)
  */
 export type postApiAdminBoardsResponse200 = {
-  data: BoardResponse;
-  status: 200;
+  data: BoardResponse
+  status: 200
+}
+    
+export type postApiAdminBoardsResponseSuccess = (postApiAdminBoardsResponse200) & {
+  headers: Headers;
 };
+;
 
-export type postApiAdminBoardsResponseSuccess =
-  postApiAdminBoardsResponse200 & {
-    headers: Headers;
-  };
-
-export type postApiAdminBoardsResponse = postApiAdminBoardsResponseSuccess;
+export type postApiAdminBoardsResponse = (postApiAdminBoardsResponseSuccess)
 
 export const getPostApiAdminBoardsUrl = () => {
-  return `/api/admin/boards`;
-};
 
-export const postApiAdminBoards = async (
-  postApiAdminBoardsBody: PostApiAdminBoardsBody,
-  options?: RequestInit,
-): Promise<postApiAdminBoardsResponse> => {
-  return customFetch<postApiAdminBoardsResponse>(getPostApiAdminBoardsUrl(), {
+
+  
+
+  return `/api/admin/boards`
+}
+
+export const postApiAdminBoards = async (postApiAdminBoardsBody: PostApiAdminBoardsBody, options?: RequestInit): Promise<postApiAdminBoardsResponse> => {
+  
+  return customFetch<postApiAdminBoardsResponse>(getPostApiAdminBoardsUrl(),
+  {      
     ...options,
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(postApiAdminBoardsBody),
-  });
-};
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiAdminBoardsBody,)
+  }
+);}
+
+
 
 /**
  * 전체 또는 특정 게시판에 노출될 공지사항을 등록합니다.
  * @summary 공지 등록(관리자)
  */
 export type postApiAdminBoardsAnnouncementsResponse200 = {
-  data: AnnouncementResponse;
-  status: 200;
+  data: AnnouncementResponse
+  status: 200
+}
+    
+export type postApiAdminBoardsAnnouncementsResponseSuccess = (postApiAdminBoardsAnnouncementsResponse200) & {
+  headers: Headers;
 };
+;
 
-export type postApiAdminBoardsAnnouncementsResponseSuccess =
-  postApiAdminBoardsAnnouncementsResponse200 & {
-    headers: Headers;
-  };
-
-export type postApiAdminBoardsAnnouncementsResponse =
-  postApiAdminBoardsAnnouncementsResponseSuccess;
+export type postApiAdminBoardsAnnouncementsResponse = (postApiAdminBoardsAnnouncementsResponseSuccess)
 
 export const getPostApiAdminBoardsAnnouncementsUrl = () => {
-  return `/api/admin/boards/announcements`;
-};
 
-export const postApiAdminBoardsAnnouncements = async (
-  postApiAdminBoardsAnnouncementsBody: PostApiAdminBoardsAnnouncementsBody,
-  options?: RequestInit,
-): Promise<postApiAdminBoardsAnnouncementsResponse> => {
-  return customFetch<postApiAdminBoardsAnnouncementsResponse>(
-    getPostApiAdminBoardsAnnouncementsUrl(),
-    {
-      ...options,
-      method: "POST",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(postApiAdminBoardsAnnouncementsBody),
-    },
-  );
-};
+
+  
+
+  return `/api/admin/boards/announcements`
+}
+
+export const postApiAdminBoardsAnnouncements = async (postApiAdminBoardsAnnouncementsBody: PostApiAdminBoardsAnnouncementsBody, options?: RequestInit): Promise<postApiAdminBoardsAnnouncementsResponse> => {
+  
+  return customFetch<postApiAdminBoardsAnnouncementsResponse>(getPostApiAdminBoardsAnnouncementsUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiAdminBoardsAnnouncementsBody,)
+  }
+);}
+
+
 
 /**
  * 관리자가 지정한 게시판의 모든 게시글을 삭제합니다.
  * @summary 관리자 게시글 삭제
  */
 export type deleteApiAdminBoardsBoardidPostsPostidResponse200 = {
-  data: boolean;
-  status: 200;
+  data: boolean
+  status: 200
+}
+    
+export type deleteApiAdminBoardsBoardidPostsPostidResponseSuccess = (deleteApiAdminBoardsBoardidPostsPostidResponse200) & {
+  headers: Headers;
 };
+;
 
-export type deleteApiAdminBoardsBoardidPostsPostidResponseSuccess =
-  deleteApiAdminBoardsBoardidPostsPostidResponse200 & {
-    headers: Headers;
-  };
+export type deleteApiAdminBoardsBoardidPostsPostidResponse = (deleteApiAdminBoardsBoardidPostsPostidResponseSuccess)
 
-export type deleteApiAdminBoardsBoardidPostsPostidResponse =
-  deleteApiAdminBoardsBoardidPostsPostidResponseSuccess;
+export const getDeleteApiAdminBoardsBoardidPostsPostidUrl = (boardId: number,
+    postId: number,) => {
 
-export const getDeleteApiAdminBoardsBoardidPostsPostidUrl = (
-  boardId: number,
-  postId: number,
-) => {
-  return `/api/admin/boards/${boardId}/posts/${postId}`;
-};
 
-export const deleteApiAdminBoardsBoardidPostsPostid = async (
-  boardId: number,
-  postId: number,
-  options?: RequestInit,
-): Promise<deleteApiAdminBoardsBoardidPostsPostidResponse> => {
-  return customFetch<deleteApiAdminBoardsBoardidPostsPostidResponse>(
-    getDeleteApiAdminBoardsBoardidPostsPostidUrl(boardId, postId),
-    {
-      ...options,
-      method: "DELETE",
-    },
-  );
-};
+  
+
+  return `/api/admin/boards/${boardId}/posts/${postId}`
+}
+
+export const deleteApiAdminBoardsBoardidPostsPostid = async (boardId: number,
+    postId: number, options?: RequestInit): Promise<deleteApiAdminBoardsBoardidPostsPostidResponse> => {
+  
+  return customFetch<deleteApiAdminBoardsBoardidPostsPostidResponse>(getDeleteApiAdminBoardsBoardidPostsPostidUrl(boardId,postId),
+  {      
+    ...options,
+    method: 'DELETE'
+    
+    
+  }
+);}
+
+
 
 /**
  * 관리자가 병 목록을 조회합니다.
  * @summary 병 목록 조회(관리자)
  */
 export type getApiAdminBottlesResponse200 = {
-  data: PageBottleAdminResponse;
-  status: 200;
+  data: PageBottleAdminResponse
+  status: 200
+}
+    
+export type getApiAdminBottlesResponseSuccess = (getApiAdminBottlesResponse200) & {
+  headers: Headers;
 };
+;
 
-export type getApiAdminBottlesResponseSuccess =
-  getApiAdminBottlesResponse200 & {
-    headers: Headers;
-  };
+export type getApiAdminBottlesResponse = (getApiAdminBottlesResponseSuccess)
 
-export type getApiAdminBottlesResponse = getApiAdminBottlesResponseSuccess;
-
-export const getGetApiAdminBottlesUrl = (params: GetApiAdminBottlesParams) => {
+export const getGetApiAdminBottlesUrl = (params: GetApiAdminBottlesParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value === undefined) return;
-    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       Object.entries(value).forEach(([k, v]) => {
         if (v === undefined) return;
-        if (Array.isArray(v)) {
-          v.forEach((item) =>
-            normalizedParams.append(k, item == null ? "null" : String(item)),
-          );
-        } else {
-          normalizedParams.append(k, v === null ? "null" : String(v));
-        }
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
       });
     } else if (Array.isArray(value)) {
-      value.forEach((v) =>
-        normalizedParams.append(key, v == null ? "null" : String(v)),
-      );
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
     } else {
-      normalizedParams.append(key, value === null ? "null" : String(value));
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/api/admin/bottles?${stringifiedParams}`
-    : `/api/admin/bottles`;
-};
+  return stringifiedParams.length > 0 ? `/api/admin/bottles?${stringifiedParams}` : `/api/admin/bottles`
+}
 
-export const getApiAdminBottles = async (
-  params: GetApiAdminBottlesParams,
-  options?: RequestInit,
-): Promise<getApiAdminBottlesResponse> => {
-  return customFetch<getApiAdminBottlesResponse>(
-    getGetApiAdminBottlesUrl(params),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
+export const getApiAdminBottles = async (params: GetApiAdminBottlesParams, options?: RequestInit): Promise<getApiAdminBottlesResponse> => {
+  
+  return customFetch<getApiAdminBottlesResponse>(getGetApiAdminBottlesUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 라벨 이미지를 업로드하고 병의 메타데이터를 저장합니다.
  * @summary 병 정보 등록(관리자)
  */
 export type postApiAdminBottlesResponse200 = {
-  data: BottleAdminResponse;
-  status: 200;
+  data: BottleAdminResponse
+  status: 200
+}
+    
+export type postApiAdminBottlesResponseSuccess = (postApiAdminBottlesResponse200) & {
+  headers: Headers;
 };
+;
 
-export type postApiAdminBottlesResponseSuccess =
-  postApiAdminBottlesResponse200 & {
-    headers: Headers;
-  };
+export type postApiAdminBottlesResponse = (postApiAdminBottlesResponseSuccess)
 
-export type postApiAdminBottlesResponse = postApiAdminBottlesResponseSuccess;
-
-export const getPostApiAdminBottlesUrl = (
-  params: PostApiAdminBottlesParams,
-) => {
+export const getPostApiAdminBottlesUrl = (params: PostApiAdminBottlesParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value === undefined) return;
-    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       Object.entries(value).forEach(([k, v]) => {
         if (v === undefined) return;
-        if (Array.isArray(v)) {
-          v.forEach((item) =>
-            normalizedParams.append(k, item == null ? "null" : String(item)),
-          );
-        } else {
-          normalizedParams.append(k, v === null ? "null" : String(v));
-        }
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
       });
     } else if (Array.isArray(value)) {
-      value.forEach((v) =>
-        normalizedParams.append(key, v == null ? "null" : String(v)),
-      );
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
     } else {
-      normalizedParams.append(key, value === null ? "null" : String(value));
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/api/admin/bottles?${stringifiedParams}`
-    : `/api/admin/bottles`;
-};
+  return stringifiedParams.length > 0 ? `/api/admin/bottles?${stringifiedParams}` : `/api/admin/bottles`
+}
 
-export const postApiAdminBottles = async (
-  postApiAdminBottlesBody: PostApiAdminBottlesBody,
-  params: PostApiAdminBottlesParams,
-  options?: RequestInit,
-): Promise<postApiAdminBottlesResponse> => {
-  const formData = new FormData();
-  formData.append(`labelImg`, postApiAdminBottlesBody.labelImg);
+export const postApiAdminBottles = async (postApiAdminBottlesBody: PostApiAdminBottlesBody,
+    params: PostApiAdminBottlesParams, options?: RequestInit): Promise<postApiAdminBottlesResponse> => {
+    const formData = new FormData();
+formData.append(`labelImg`, postApiAdminBottlesBody.labelImg);
 
-  return customFetch<postApiAdminBottlesResponse>(
-    getPostApiAdminBottlesUrl(params),
-    {
-      ...options,
-      method: "POST",
-      body: formData,
-    },
-  );
-};
+  return customFetch<postApiAdminBottlesResponse>(getPostApiAdminBottlesUrl(params),
+  {      
+    ...options,
+    method: 'POST'
+    ,
+    body: 
+      formData,
+  }
+);}
+
+
 
 /**
  * 관리자 병 생성/수정 화면에서 사용하는 옵션 목록을 조회합니다.
  * @summary 병 생성/수정 옵션 조회(관리자)
  */
 export type getApiAdminBottlesParametersResponse200 = {
-  data: BottleAdminParameterValues;
-  status: 200;
+  data: BottleAdminParameterValues
+  status: 200
+}
+    
+export type getApiAdminBottlesParametersResponseSuccess = (getApiAdminBottlesParametersResponse200) & {
+  headers: Headers;
 };
+;
 
-export type getApiAdminBottlesParametersResponseSuccess =
-  getApiAdminBottlesParametersResponse200 & {
-    headers: Headers;
-  };
-
-export type getApiAdminBottlesParametersResponse =
-  getApiAdminBottlesParametersResponseSuccess;
+export type getApiAdminBottlesParametersResponse = (getApiAdminBottlesParametersResponseSuccess)
 
 export const getGetApiAdminBottlesParametersUrl = () => {
-  return `/api/admin/bottles/parameters`;
-};
 
-export const getApiAdminBottlesParameters = async (
-  options?: RequestInit,
-): Promise<getApiAdminBottlesParametersResponse> => {
-  return customFetch<getApiAdminBottlesParametersResponse>(
-    getGetApiAdminBottlesParametersUrl(),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
+
+  
+
+  return `/api/admin/bottles/parameters`
+}
+
+export const getApiAdminBottlesParameters = async ( options?: RequestInit): Promise<getApiAdminBottlesParametersResponse> => {
+  
+  return customFetch<getApiAdminBottlesParametersResponse>(getGetApiAdminBottlesParametersUrl(),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 모든 신청 목록을 조회하며 사용자 혹은 공고 ID로 필터링합니다.
  * @summary 예약 신청 목록(관리자)
  */
 export type getApiAdminBottlesReservationsApplicationsResponse200 = {
-  data: PageBottleReservationApplicationResponse;
-  status: 200;
+  data: PageBottleReservationApplicationResponse
+  status: 200
+}
+    
+export type getApiAdminBottlesReservationsApplicationsResponseSuccess = (getApiAdminBottlesReservationsApplicationsResponse200) & {
+  headers: Headers;
 };
+;
 
-export type getApiAdminBottlesReservationsApplicationsResponseSuccess =
-  getApiAdminBottlesReservationsApplicationsResponse200 & {
-    headers: Headers;
-  };
+export type getApiAdminBottlesReservationsApplicationsResponse = (getApiAdminBottlesReservationsApplicationsResponseSuccess)
 
-export type getApiAdminBottlesReservationsApplicationsResponse =
-  getApiAdminBottlesReservationsApplicationsResponseSuccess;
-
-export const getGetApiAdminBottlesReservationsApplicationsUrl = (
-  params?: GetApiAdminBottlesReservationsApplicationsParams,
-) => {
+export const getGetApiAdminBottlesReservationsApplicationsUrl = (params?: GetApiAdminBottlesReservationsApplicationsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value === undefined) return;
-    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       Object.entries(value).forEach(([k, v]) => {
         if (v === undefined) return;
-        if (Array.isArray(v)) {
-          v.forEach((item) =>
-            normalizedParams.append(k, item == null ? "null" : String(item)),
-          );
-        } else {
-          normalizedParams.append(k, v === null ? "null" : String(v));
-        }
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
       });
     } else if (Array.isArray(value)) {
-      value.forEach((v) =>
-        normalizedParams.append(key, v == null ? "null" : String(v)),
-      );
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
     } else {
-      normalizedParams.append(key, value === null ? "null" : String(value));
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/api/admin/bottles/reservations/applications?${stringifiedParams}`
-    : `/api/admin/bottles/reservations/applications`;
-};
+  return stringifiedParams.length > 0 ? `/api/admin/bottles/reservations/applications?${stringifiedParams}` : `/api/admin/bottles/reservations/applications`
+}
 
-export const getApiAdminBottlesReservationsApplications = async (
-  params?: GetApiAdminBottlesReservationsApplicationsParams,
-  options?: RequestInit,
-): Promise<getApiAdminBottlesReservationsApplicationsResponse> => {
-  return customFetch<getApiAdminBottlesReservationsApplicationsResponse>(
-    getGetApiAdminBottlesReservationsApplicationsUrl(params),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
+export const getApiAdminBottlesReservationsApplications = async (params?: GetApiAdminBottlesReservationsApplicationsParams, options?: RequestInit): Promise<getApiAdminBottlesReservationsApplicationsResponse> => {
+  
+  return customFetch<getApiAdminBottlesReservationsApplicationsResponse>(getGetApiAdminBottlesReservationsApplicationsUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 관리자가 예약 신청 상세 정보를 조회합니다.
  * @summary 예약 신청 상세(관리자)
  */
-export type getApiAdminBottlesReservationsApplicationsApplicationidResponse200 =
-  {
-    data: BottleReservationApplicationResponse;
-    status: 200;
-  };
-
-export type getApiAdminBottlesReservationsApplicationsApplicationidResponseSuccess =
-  getApiAdminBottlesReservationsApplicationsApplicationidResponse200 & {
-    headers: Headers;
-  };
-
-export type getApiAdminBottlesReservationsApplicationsApplicationidResponse =
-  getApiAdminBottlesReservationsApplicationsApplicationidResponseSuccess;
-
-export const getGetApiAdminBottlesReservationsApplicationsApplicationidUrl = (
-  applicationId: number,
-) => {
-  return `/api/admin/bottles/reservations/applications/${applicationId}`;
+export type getApiAdminBottlesReservationsApplicationsApplicationidResponse200 = {
+  data: BottleReservationApplicationResponse
+  status: 200
+}
+    
+export type getApiAdminBottlesReservationsApplicationsApplicationidResponseSuccess = (getApiAdminBottlesReservationsApplicationsApplicationidResponse200) & {
+  headers: Headers;
 };
+;
 
-export const getApiAdminBottlesReservationsApplicationsApplicationid = async (
-  applicationId: number,
-  options?: RequestInit,
-): Promise<getApiAdminBottlesReservationsApplicationsApplicationidResponse> => {
-  return customFetch<getApiAdminBottlesReservationsApplicationsApplicationidResponse>(
-    getGetApiAdminBottlesReservationsApplicationsApplicationidUrl(
-      applicationId,
-    ),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
+export type getApiAdminBottlesReservationsApplicationsApplicationidResponse = (getApiAdminBottlesReservationsApplicationsApplicationidResponseSuccess)
+
+export const getGetApiAdminBottlesReservationsApplicationsApplicationidUrl = (applicationId: number,) => {
+
+
+  
+
+  return `/api/admin/bottles/reservations/applications/${applicationId}`
+}
+
+export const getApiAdminBottlesReservationsApplicationsApplicationid = async (applicationId: number, options?: RequestInit): Promise<getApiAdminBottlesReservationsApplicationsApplicationidResponse> => {
+  
+  return customFetch<getApiAdminBottlesReservationsApplicationsApplicationidResponse>(getGetApiAdminBottlesReservationsApplicationsApplicationidUrl(applicationId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 관리자가 신청을 취소 처리합니다.
  * @summary 예약 신청 취소
  */
-export type postApiAdminBottlesReservationsApplicationsApplicationidCancelResponse200 =
-  {
-    data: BottleReservationApplicationResponse;
-    status: 200;
-  };
+export type postApiAdminBottlesReservationsApplicationsApplicationidCancelResponse200 = {
+  data: BottleReservationApplicationResponse
+  status: 200
+}
+    
+export type postApiAdminBottlesReservationsApplicationsApplicationidCancelResponseSuccess = (postApiAdminBottlesReservationsApplicationsApplicationidCancelResponse200) & {
+  headers: Headers;
+};
+;
 
-export type postApiAdminBottlesReservationsApplicationsApplicationidCancelResponseSuccess =
-  postApiAdminBottlesReservationsApplicationsApplicationidCancelResponse200 & {
-    headers: Headers;
-  };
+export type postApiAdminBottlesReservationsApplicationsApplicationidCancelResponse = (postApiAdminBottlesReservationsApplicationsApplicationidCancelResponseSuccess)
 
-export type postApiAdminBottlesReservationsApplicationsApplicationidCancelResponse =
-  postApiAdminBottlesReservationsApplicationsApplicationidCancelResponseSuccess;
+export const getPostApiAdminBottlesReservationsApplicationsApplicationidCancelUrl = (applicationId: number,) => {
 
-export const getPostApiAdminBottlesReservationsApplicationsApplicationidCancelUrl =
-  (applicationId: number) => {
-    return `/api/admin/bottles/reservations/applications/${applicationId}/cancel`;
-  };
 
-export const postApiAdminBottlesReservationsApplicationsApplicationidCancel =
-  async (
-    applicationId: number,
-    options?: RequestInit,
-  ): Promise<postApiAdminBottlesReservationsApplicationsApplicationidCancelResponse> => {
-    return customFetch<postApiAdminBottlesReservationsApplicationsApplicationidCancelResponse>(
-      getPostApiAdminBottlesReservationsApplicationsApplicationidCancelUrl(
-        applicationId,
-      ),
-      {
-        ...options,
-        method: "POST",
-      },
-    );
-  };
+  
+
+  return `/api/admin/bottles/reservations/applications/${applicationId}/cancel`
+}
+
+export const postApiAdminBottlesReservationsApplicationsApplicationidCancel = async (applicationId: number, options?: RequestInit): Promise<postApiAdminBottlesReservationsApplicationsApplicationidCancelResponse> => {
+  
+  return customFetch<postApiAdminBottlesReservationsApplicationsApplicationidCancelResponse>(getPostApiAdminBottlesReservationsApplicationsApplicationidCancelUrl(applicationId),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+);}
+
+
 
 /**
  * 관리자가 신청을 승인하고 최종 수량을 입력합니다.
  * @summary 예약 신청 확정
  */
-export type postApiAdminBottlesReservationsApplicationsApplicationidConfirmResponse200 =
-  {
-    data: BottleReservationApplicationResponse;
-    status: 200;
-  };
+export type postApiAdminBottlesReservationsApplicationsApplicationidConfirmResponse200 = {
+  data: BottleReservationApplicationResponse
+  status: 200
+}
+    
+export type postApiAdminBottlesReservationsApplicationsApplicationidConfirmResponseSuccess = (postApiAdminBottlesReservationsApplicationsApplicationidConfirmResponse200) & {
+  headers: Headers;
+};
+;
 
-export type postApiAdminBottlesReservationsApplicationsApplicationidConfirmResponseSuccess =
-  postApiAdminBottlesReservationsApplicationsApplicationidConfirmResponse200 & {
-    headers: Headers;
-  };
+export type postApiAdminBottlesReservationsApplicationsApplicationidConfirmResponse = (postApiAdminBottlesReservationsApplicationsApplicationidConfirmResponseSuccess)
 
-export type postApiAdminBottlesReservationsApplicationsApplicationidConfirmResponse =
-  postApiAdminBottlesReservationsApplicationsApplicationidConfirmResponseSuccess;
+export const getPostApiAdminBottlesReservationsApplicationsApplicationidConfirmUrl = (applicationId: number,) => {
 
-export const getPostApiAdminBottlesReservationsApplicationsApplicationidConfirmUrl =
-  (applicationId: number) => {
-    return `/api/admin/bottles/reservations/applications/${applicationId}/confirm`;
-  };
 
-export const postApiAdminBottlesReservationsApplicationsApplicationidConfirm =
-  async (
-    applicationId: number,
-    postApiAdminBottlesReservationsApplicationsApplicationidConfirmBody: PostApiAdminBottlesReservationsApplicationsApplicationidConfirmBody,
-    options?: RequestInit,
-  ): Promise<postApiAdminBottlesReservationsApplicationsApplicationidConfirmResponse> => {
-    return customFetch<postApiAdminBottlesReservationsApplicationsApplicationidConfirmResponse>(
-      getPostApiAdminBottlesReservationsApplicationsApplicationidConfirmUrl(
-        applicationId,
-      ),
-      {
-        ...options,
-        method: "POST",
-        headers: { "Content-Type": "application/json", ...options?.headers },
-        body: JSON.stringify(
-          postApiAdminBottlesReservationsApplicationsApplicationidConfirmBody,
-        ),
-      },
-    );
-  };
+  
+
+  return `/api/admin/bottles/reservations/applications/${applicationId}/confirm`
+}
+
+export const postApiAdminBottlesReservationsApplicationsApplicationidConfirm = async (applicationId: number,
+    postApiAdminBottlesReservationsApplicationsApplicationidConfirmBody: PostApiAdminBottlesReservationsApplicationsApplicationidConfirmBody, options?: RequestInit): Promise<postApiAdminBottlesReservationsApplicationsApplicationidConfirmResponse> => {
+  
+  return customFetch<postApiAdminBottlesReservationsApplicationsApplicationidConfirmResponse>(getPostApiAdminBottlesReservationsApplicationsApplicationidConfirmUrl(applicationId),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiAdminBottlesReservationsApplicationsApplicationidConfirmBody,)
+  }
+);}
+
+
 
 /**
  * 관리자가 신청을 임의로 거절합니다.
  * @summary 예약 신청 거절
  */
-export type postApiAdminBottlesReservationsApplicationsApplicationidRejectResponse200 =
-  {
-    data: BottleReservationApplicationResponse;
-    status: 200;
-  };
+export type postApiAdminBottlesReservationsApplicationsApplicationidRejectResponse200 = {
+  data: BottleReservationApplicationResponse
+  status: 200
+}
+    
+export type postApiAdminBottlesReservationsApplicationsApplicationidRejectResponseSuccess = (postApiAdminBottlesReservationsApplicationsApplicationidRejectResponse200) & {
+  headers: Headers;
+};
+;
 
-export type postApiAdminBottlesReservationsApplicationsApplicationidRejectResponseSuccess =
-  postApiAdminBottlesReservationsApplicationsApplicationidRejectResponse200 & {
-    headers: Headers;
-  };
+export type postApiAdminBottlesReservationsApplicationsApplicationidRejectResponse = (postApiAdminBottlesReservationsApplicationsApplicationidRejectResponseSuccess)
 
-export type postApiAdminBottlesReservationsApplicationsApplicationidRejectResponse =
-  postApiAdminBottlesReservationsApplicationsApplicationidRejectResponseSuccess;
+export const getPostApiAdminBottlesReservationsApplicationsApplicationidRejectUrl = (applicationId: number,) => {
 
-export const getPostApiAdminBottlesReservationsApplicationsApplicationidRejectUrl =
-  (applicationId: number) => {
-    return `/api/admin/bottles/reservations/applications/${applicationId}/reject`;
-  };
 
-export const postApiAdminBottlesReservationsApplicationsApplicationidReject =
-  async (
-    applicationId: number,
-    options?: RequestInit,
-  ): Promise<postApiAdminBottlesReservationsApplicationsApplicationidRejectResponse> => {
-    return customFetch<postApiAdminBottlesReservationsApplicationsApplicationidRejectResponse>(
-      getPostApiAdminBottlesReservationsApplicationsApplicationidRejectUrl(
-        applicationId,
-      ),
-      {
-        ...options,
-        method: "POST",
-      },
-    );
-  };
+  
+
+  return `/api/admin/bottles/reservations/applications/${applicationId}/reject`
+}
+
+export const postApiAdminBottlesReservationsApplicationsApplicationidReject = async (applicationId: number, options?: RequestInit): Promise<postApiAdminBottlesReservationsApplicationsApplicationidRejectResponse> => {
+  
+  return customFetch<postApiAdminBottlesReservationsApplicationsApplicationidRejectResponse>(getPostApiAdminBottlesReservationsApplicationsApplicationidRejectUrl(applicationId),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+);}
+
+
 
 /**
  * 관리자가 예약 공고 목록을 조회합니다.
  * @summary 예약 공고 목록(관리자)
  */
 export type getApiAdminBottlesReservationsNoticesResponse200 = {
-  data: PageBottleReservationNoticeResponse;
-  status: 200;
+  data: PageBottleReservationNoticeResponse
+  status: 200
+}
+    
+export type getApiAdminBottlesReservationsNoticesResponseSuccess = (getApiAdminBottlesReservationsNoticesResponse200) & {
+  headers: Headers;
 };
+;
 
-export type getApiAdminBottlesReservationsNoticesResponseSuccess =
-  getApiAdminBottlesReservationsNoticesResponse200 & {
-    headers: Headers;
-  };
+export type getApiAdminBottlesReservationsNoticesResponse = (getApiAdminBottlesReservationsNoticesResponseSuccess)
 
-export type getApiAdminBottlesReservationsNoticesResponse =
-  getApiAdminBottlesReservationsNoticesResponseSuccess;
-
-export const getGetApiAdminBottlesReservationsNoticesUrl = (
-  params?: GetApiAdminBottlesReservationsNoticesParams,
-) => {
+export const getGetApiAdminBottlesReservationsNoticesUrl = (params?: GetApiAdminBottlesReservationsNoticesParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value === undefined) return;
-    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       Object.entries(value).forEach(([k, v]) => {
         if (v === undefined) return;
-        if (Array.isArray(v)) {
-          v.forEach((item) =>
-            normalizedParams.append(k, item == null ? "null" : String(item)),
-          );
-        } else {
-          normalizedParams.append(k, v === null ? "null" : String(v));
-        }
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
       });
     } else if (Array.isArray(value)) {
-      value.forEach((v) =>
-        normalizedParams.append(key, v == null ? "null" : String(v)),
-      );
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
     } else {
-      normalizedParams.append(key, value === null ? "null" : String(value));
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/api/admin/bottles/reservations/notices?${stringifiedParams}`
-    : `/api/admin/bottles/reservations/notices`;
-};
+  return stringifiedParams.length > 0 ? `/api/admin/bottles/reservations/notices?${stringifiedParams}` : `/api/admin/bottles/reservations/notices`
+}
 
-export const getApiAdminBottlesReservationsNotices = async (
-  params?: GetApiAdminBottlesReservationsNoticesParams,
-  options?: RequestInit,
-): Promise<getApiAdminBottlesReservationsNoticesResponse> => {
-  return customFetch<getApiAdminBottlesReservationsNoticesResponse>(
-    getGetApiAdminBottlesReservationsNoticesUrl(params),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
+export const getApiAdminBottlesReservationsNotices = async (params?: GetApiAdminBottlesReservationsNoticesParams, options?: RequestInit): Promise<getApiAdminBottlesReservationsNoticesResponse> => {
+  
+  return customFetch<getApiAdminBottlesReservationsNoticesResponse>(getGetApiAdminBottlesReservationsNoticesUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 예약 기간과 가격 정보를 입력해 특정 병 예약 공고를 등록합니다.
  * @summary 예약 공고 생성(관리자)
  */
 export type postApiAdminBottlesReservationsNoticesResponse200 = {
-  data: BottleReservationNoticeResponse;
-  status: 200;
+  data: BottleReservationNoticeResponse
+  status: 200
+}
+    
+export type postApiAdminBottlesReservationsNoticesResponseSuccess = (postApiAdminBottlesReservationsNoticesResponse200) & {
+  headers: Headers;
 };
+;
 
-export type postApiAdminBottlesReservationsNoticesResponseSuccess =
-  postApiAdminBottlesReservationsNoticesResponse200 & {
-    headers: Headers;
-  };
-
-export type postApiAdminBottlesReservationsNoticesResponse =
-  postApiAdminBottlesReservationsNoticesResponseSuccess;
+export type postApiAdminBottlesReservationsNoticesResponse = (postApiAdminBottlesReservationsNoticesResponseSuccess)
 
 export const getPostApiAdminBottlesReservationsNoticesUrl = () => {
-  return `/api/admin/bottles/reservations/notices`;
-};
 
-export const postApiAdminBottlesReservationsNotices = async (
-  postApiAdminBottlesReservationsNoticesBody: PostApiAdminBottlesReservationsNoticesBody,
-  options?: RequestInit,
-): Promise<postApiAdminBottlesReservationsNoticesResponse> => {
-  return customFetch<postApiAdminBottlesReservationsNoticesResponse>(
-    getPostApiAdminBottlesReservationsNoticesUrl(),
-    {
-      ...options,
-      method: "POST",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(postApiAdminBottlesReservationsNoticesBody),
-    },
-  );
-};
+
+  
+
+  return `/api/admin/bottles/reservations/notices`
+}
+
+export const postApiAdminBottlesReservationsNotices = async (postApiAdminBottlesReservationsNoticesBody: PostApiAdminBottlesReservationsNoticesBody, options?: RequestInit): Promise<postApiAdminBottlesReservationsNoticesResponse> => {
+  
+  return customFetch<postApiAdminBottlesReservationsNoticesResponse>(getPostApiAdminBottlesReservationsNoticesUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiAdminBottlesReservationsNoticesBody,)
+  }
+);}
+
+
 
 /**
  * 관리자가 예약 공고 상세 정보를 조회합니다.
  * @summary 예약 공고 상세(관리자)
  */
 export type getApiAdminBottlesReservationsNoticesNoticeidResponse200 = {
-  data: BottleReservationNoticeResponse;
-  status: 200;
+  data: BottleReservationNoticeResponse
+  status: 200
+}
+    
+export type getApiAdminBottlesReservationsNoticesNoticeidResponseSuccess = (getApiAdminBottlesReservationsNoticesNoticeidResponse200) & {
+  headers: Headers;
 };
+;
 
-export type getApiAdminBottlesReservationsNoticesNoticeidResponseSuccess =
-  getApiAdminBottlesReservationsNoticesNoticeidResponse200 & {
-    headers: Headers;
-  };
+export type getApiAdminBottlesReservationsNoticesNoticeidResponse = (getApiAdminBottlesReservationsNoticesNoticeidResponseSuccess)
 
-export type getApiAdminBottlesReservationsNoticesNoticeidResponse =
-  getApiAdminBottlesReservationsNoticesNoticeidResponseSuccess;
+export const getGetApiAdminBottlesReservationsNoticesNoticeidUrl = (noticeId: number,) => {
 
-export const getGetApiAdminBottlesReservationsNoticesNoticeidUrl = (
-  noticeId: number,
-) => {
-  return `/api/admin/bottles/reservations/notices/${noticeId}`;
-};
 
-export const getApiAdminBottlesReservationsNoticesNoticeid = async (
-  noticeId: number,
-  options?: RequestInit,
-): Promise<getApiAdminBottlesReservationsNoticesNoticeidResponse> => {
-  return customFetch<getApiAdminBottlesReservationsNoticesNoticeidResponse>(
-    getGetApiAdminBottlesReservationsNoticesNoticeidUrl(noticeId),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
+  
+
+  return `/api/admin/bottles/reservations/notices/${noticeId}`
+}
+
+export const getApiAdminBottlesReservationsNoticesNoticeid = async (noticeId: number, options?: RequestInit): Promise<getApiAdminBottlesReservationsNoticesNoticeidResponse> => {
+  
+  return customFetch<getApiAdminBottlesReservationsNoticesNoticeidResponse>(getGetApiAdminBottlesReservationsNoticesNoticeidUrl(noticeId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 등록된 예약 공고의 기간 및 가격 정보를 수정합니다.
  * @summary 예약 공고 수정(관리자)
  */
 export type putApiAdminBottlesReservationsNoticesNoticeidResponse200 = {
-  data: BottleReservationNoticeResponse;
-  status: 200;
+  data: BottleReservationNoticeResponse
+  status: 200
+}
+    
+export type putApiAdminBottlesReservationsNoticesNoticeidResponseSuccess = (putApiAdminBottlesReservationsNoticesNoticeidResponse200) & {
+  headers: Headers;
 };
+;
 
-export type putApiAdminBottlesReservationsNoticesNoticeidResponseSuccess =
-  putApiAdminBottlesReservationsNoticesNoticeidResponse200 & {
-    headers: Headers;
-  };
+export type putApiAdminBottlesReservationsNoticesNoticeidResponse = (putApiAdminBottlesReservationsNoticesNoticeidResponseSuccess)
 
-export type putApiAdminBottlesReservationsNoticesNoticeidResponse =
-  putApiAdminBottlesReservationsNoticesNoticeidResponseSuccess;
+export const getPutApiAdminBottlesReservationsNoticesNoticeidUrl = (noticeId: number,) => {
 
-export const getPutApiAdminBottlesReservationsNoticesNoticeidUrl = (
-  noticeId: number,
-) => {
-  return `/api/admin/bottles/reservations/notices/${noticeId}`;
-};
 
-export const putApiAdminBottlesReservationsNoticesNoticeid = async (
-  noticeId: number,
-  putApiAdminBottlesReservationsNoticesNoticeidBody: PutApiAdminBottlesReservationsNoticesNoticeidBody,
-  options?: RequestInit,
-): Promise<putApiAdminBottlesReservationsNoticesNoticeidResponse> => {
-  return customFetch<putApiAdminBottlesReservationsNoticesNoticeidResponse>(
-    getPutApiAdminBottlesReservationsNoticesNoticeidUrl(noticeId),
-    {
-      ...options,
-      method: "PUT",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(putApiAdminBottlesReservationsNoticesNoticeidBody),
-    },
-  );
-};
+  
+
+  return `/api/admin/bottles/reservations/notices/${noticeId}`
+}
+
+export const putApiAdminBottlesReservationsNoticesNoticeid = async (noticeId: number,
+    putApiAdminBottlesReservationsNoticesNoticeidBody: PutApiAdminBottlesReservationsNoticesNoticeidBody, options?: RequestInit): Promise<putApiAdminBottlesReservationsNoticesNoticeidResponse> => {
+  
+  return customFetch<putApiAdminBottlesReservationsNoticesNoticeidResponse>(getPutApiAdminBottlesReservationsNoticesNoticeidUrl(noticeId),
+  {      
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      putApiAdminBottlesReservationsNoticesNoticeidBody,)
+  }
+);}
+
+
 
 /**
  * 선택한 병 정보와 관련 메타데이터를 삭제합니다.
  * @summary 병 정보 삭제(관리자)
  */
 export type deleteApiAdminBottlesIdResponse200 = {
-  data: boolean;
-  status: 200;
+  data: boolean
+  status: 200
+}
+    
+export type deleteApiAdminBottlesIdResponseSuccess = (deleteApiAdminBottlesIdResponse200) & {
+  headers: Headers;
 };
+;
 
-export type deleteApiAdminBottlesIdResponseSuccess =
-  deleteApiAdminBottlesIdResponse200 & {
-    headers: Headers;
-  };
+export type deleteApiAdminBottlesIdResponse = (deleteApiAdminBottlesIdResponseSuccess)
 
-export type deleteApiAdminBottlesIdResponse =
-  deleteApiAdminBottlesIdResponseSuccess;
+export const getDeleteApiAdminBottlesIdUrl = (id: number,) => {
 
-export const getDeleteApiAdminBottlesIdUrl = (id: number) => {
-  return `/api/admin/bottles/${id}`;
-};
 
-export const deleteApiAdminBottlesId = async (
-  id: number,
-  options?: RequestInit,
-): Promise<deleteApiAdminBottlesIdResponse> => {
-  return customFetch<deleteApiAdminBottlesIdResponse>(
-    getDeleteApiAdminBottlesIdUrl(id),
-    {
-      ...options,
-      method: "DELETE",
-    },
-  );
-};
+  
+
+  return `/api/admin/bottles/${id}`
+}
+
+export const deleteApiAdminBottlesId = async (id: number, options?: RequestInit): Promise<deleteApiAdminBottlesIdResponse> => {
+  
+  return customFetch<deleteApiAdminBottlesIdResponse>(getDeleteApiAdminBottlesIdUrl(id),
+  {      
+    ...options,
+    method: 'DELETE'
+    
+    
+  }
+);}
+
+
 
 /**
  * 관리자가 병 상세 정보를 조회합니다.
  * @summary 병 상세 조회(관리자)
  */
 export type getApiAdminBottlesIdResponse200 = {
-  data: BottleAdminResponse;
-  status: 200;
+  data: BottleAdminResponse
+  status: 200
+}
+    
+export type getApiAdminBottlesIdResponseSuccess = (getApiAdminBottlesIdResponse200) & {
+  headers: Headers;
 };
+;
 
-export type getApiAdminBottlesIdResponseSuccess =
-  getApiAdminBottlesIdResponse200 & {
-    headers: Headers;
-  };
+export type getApiAdminBottlesIdResponse = (getApiAdminBottlesIdResponseSuccess)
 
-export type getApiAdminBottlesIdResponse = getApiAdminBottlesIdResponseSuccess;
+export const getGetApiAdminBottlesIdUrl = (id: number,) => {
 
-export const getGetApiAdminBottlesIdUrl = (id: number) => {
-  return `/api/admin/bottles/${id}`;
-};
 
-export const getApiAdminBottlesId = async (
-  id: number,
-  options?: RequestInit,
-): Promise<getApiAdminBottlesIdResponse> => {
-  return customFetch<getApiAdminBottlesIdResponse>(
-    getGetApiAdminBottlesIdUrl(id),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
+  
+
+  return `/api/admin/bottles/${id}`
+}
+
+export const getApiAdminBottlesId = async (id: number, options?: RequestInit): Promise<getApiAdminBottlesIdResponse> => {
+  
+  return customFetch<getApiAdminBottlesIdResponse>(getGetApiAdminBottlesIdUrl(id),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 병의 메타데이터와 라벨 이미지를 수정합니다.
  * @summary 병 정보 수정(관리자)
  */
 export type patchApiAdminBottlesIdResponse200 = {
-  data: BottleAdminResponse;
-  status: 200;
+  data: BottleAdminResponse
+  status: 200
+}
+    
+export type patchApiAdminBottlesIdResponseSuccess = (patchApiAdminBottlesIdResponse200) & {
+  headers: Headers;
 };
+;
 
-export type patchApiAdminBottlesIdResponseSuccess =
-  patchApiAdminBottlesIdResponse200 & {
-    headers: Headers;
-  };
+export type patchApiAdminBottlesIdResponse = (patchApiAdminBottlesIdResponseSuccess)
 
-export type patchApiAdminBottlesIdResponse =
-  patchApiAdminBottlesIdResponseSuccess;
-
-export const getPatchApiAdminBottlesIdUrl = (
-  id: number,
-  params?: PatchApiAdminBottlesIdParams,
-) => {
+export const getPatchApiAdminBottlesIdUrl = (id: number,
+    params?: PatchApiAdminBottlesIdParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value === undefined) return;
-    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       Object.entries(value).forEach(([k, v]) => {
         if (v === undefined) return;
-        if (Array.isArray(v)) {
-          v.forEach((item) =>
-            normalizedParams.append(k, item == null ? "null" : String(item)),
-          );
-        } else {
-          normalizedParams.append(k, v === null ? "null" : String(v));
-        }
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
       });
     } else if (Array.isArray(value)) {
-      value.forEach((v) =>
-        normalizedParams.append(key, v == null ? "null" : String(v)),
-      );
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
     } else {
-      normalizedParams.append(key, value === null ? "null" : String(value));
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/api/admin/bottles/${id}?${stringifiedParams}`
-    : `/api/admin/bottles/${id}`;
-};
+  return stringifiedParams.length > 0 ? `/api/admin/bottles/${id}?${stringifiedParams}` : `/api/admin/bottles/${id}`
+}
 
-export const patchApiAdminBottlesId = async (
-  id: number,
-  patchApiAdminBottlesIdBody: PatchApiAdminBottlesIdBody,
-  params?: PatchApiAdminBottlesIdParams,
-  options?: RequestInit,
-): Promise<patchApiAdminBottlesIdResponse> => {
-  const formData = new FormData();
-  if (patchApiAdminBottlesIdBody.labelImg !== undefined) {
-    formData.append(`labelImg`, patchApiAdminBottlesIdBody.labelImg);
+export const patchApiAdminBottlesId = async (id: number,
+    patchApiAdminBottlesIdBody: PatchApiAdminBottlesIdBody,
+    params?: PatchApiAdminBottlesIdParams, options?: RequestInit): Promise<patchApiAdminBottlesIdResponse> => {
+    const formData = new FormData();
+if(patchApiAdminBottlesIdBody.labelImg !== undefined) {
+ formData.append(`labelImg`, patchApiAdminBottlesIdBody.labelImg);
+ }
+
+  return customFetch<patchApiAdminBottlesIdResponse>(getPatchApiAdminBottlesIdUrl(id,params),
+  {      
+    ...options,
+    method: 'PATCH'
+    ,
+    body: 
+      formData,
   }
+);}
 
-  return customFetch<patchApiAdminBottlesIdResponse>(
-    getPatchApiAdminBottlesIdUrl(id, params),
-    {
-      ...options,
-      method: "PATCH",
-      body: formData,
-    },
-  );
-};
+
 
 /**
  * 관리자가 비즈니스 신청 목록을 페이지 단위로 조회합니다.
  * @summary 비즈니스 신청 목록 조회(관리자)
  */
 export type getApiAdminBusinessesApplicationsResponse200 = {
-  data: PageAdminBusinessApplicationResponse;
-  status: 200;
+  data: PageAdminBusinessApplicationResponse
+  status: 200
+}
+    
+export type getApiAdminBusinessesApplicationsResponseSuccess = (getApiAdminBusinessesApplicationsResponse200) & {
+  headers: Headers;
 };
+;
 
-export type getApiAdminBusinessesApplicationsResponseSuccess =
-  getApiAdminBusinessesApplicationsResponse200 & {
-    headers: Headers;
-  };
+export type getApiAdminBusinessesApplicationsResponse = (getApiAdminBusinessesApplicationsResponseSuccess)
 
-export type getApiAdminBusinessesApplicationsResponse =
-  getApiAdminBusinessesApplicationsResponseSuccess;
-
-export const getGetApiAdminBusinessesApplicationsUrl = (
-  params?: GetApiAdminBusinessesApplicationsParams,
-) => {
+export const getGetApiAdminBusinessesApplicationsUrl = (params?: GetApiAdminBusinessesApplicationsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value === undefined) return;
-    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       Object.entries(value).forEach(([k, v]) => {
         if (v === undefined) return;
-        if (Array.isArray(v)) {
-          v.forEach((item) =>
-            normalizedParams.append(k, item == null ? "null" : String(item)),
-          );
-        } else {
-          normalizedParams.append(k, v === null ? "null" : String(v));
-        }
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
       });
     } else if (Array.isArray(value)) {
-      value.forEach((v) =>
-        normalizedParams.append(key, v == null ? "null" : String(v)),
-      );
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
     } else {
-      normalizedParams.append(key, value === null ? "null" : String(value));
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/api/admin/businesses/applications?${stringifiedParams}`
-    : `/api/admin/businesses/applications`;
-};
+  return stringifiedParams.length > 0 ? `/api/admin/businesses/applications?${stringifiedParams}` : `/api/admin/businesses/applications`
+}
 
-export const getApiAdminBusinessesApplications = async (
-  params?: GetApiAdminBusinessesApplicationsParams,
-  options?: RequestInit,
-): Promise<getApiAdminBusinessesApplicationsResponse> => {
-  return customFetch<getApiAdminBusinessesApplicationsResponse>(
-    getGetApiAdminBusinessesApplicationsUrl(params),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
+export const getApiAdminBusinessesApplications = async (params?: GetApiAdminBusinessesApplicationsParams, options?: RequestInit): Promise<getApiAdminBusinessesApplicationsResponse> => {
+  
+  return customFetch<getApiAdminBusinessesApplicationsResponse>(getGetApiAdminBusinessesApplicationsUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 관리자가 비즈니스 신청 상세 정보를 조회합니다.
  * @summary 비즈니스 신청 상세 조회(관리자)
  */
 export type getApiAdminBusinessesApplicationsApplicationidResponse200 = {
-  data: AdminBusinessApplicationResponse;
-  status: 200;
+  data: AdminBusinessApplicationResponse
+  status: 200
+}
+    
+export type getApiAdminBusinessesApplicationsApplicationidResponseSuccess = (getApiAdminBusinessesApplicationsApplicationidResponse200) & {
+  headers: Headers;
 };
+;
 
-export type getApiAdminBusinessesApplicationsApplicationidResponseSuccess =
-  getApiAdminBusinessesApplicationsApplicationidResponse200 & {
-    headers: Headers;
-  };
+export type getApiAdminBusinessesApplicationsApplicationidResponse = (getApiAdminBusinessesApplicationsApplicationidResponseSuccess)
 
-export type getApiAdminBusinessesApplicationsApplicationidResponse =
-  getApiAdminBusinessesApplicationsApplicationidResponseSuccess;
+export const getGetApiAdminBusinessesApplicationsApplicationidUrl = (applicationId: number,) => {
 
-export const getGetApiAdminBusinessesApplicationsApplicationidUrl = (
-  applicationId: number,
-) => {
-  return `/api/admin/businesses/applications/${applicationId}`;
-};
 
-export const getApiAdminBusinessesApplicationsApplicationid = async (
-  applicationId: number,
-  options?: RequestInit,
-): Promise<getApiAdminBusinessesApplicationsApplicationidResponse> => {
-  return customFetch<getApiAdminBusinessesApplicationsApplicationidResponse>(
-    getGetApiAdminBusinessesApplicationsApplicationidUrl(applicationId),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
+  
+
+  return `/api/admin/businesses/applications/${applicationId}`
+}
+
+export const getApiAdminBusinessesApplicationsApplicationid = async (applicationId: number, options?: RequestInit): Promise<getApiAdminBusinessesApplicationsApplicationidResponse> => {
+  
+  return customFetch<getApiAdminBusinessesApplicationsApplicationidResponse>(getGetApiAdminBusinessesApplicationsApplicationidUrl(applicationId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 관리자가 신청을 승인하고 픽업 사업장으로 등록합니다.
  * @summary 비즈니스 신청 승인(관리자)
  */
-export type postApiAdminBusinessesApplicationsApplicationidApproveResponse200 =
-  {
-    data: AdminBusinessApplicationResponse;
-    status: 200;
-  };
-
-export type postApiAdminBusinessesApplicationsApplicationidApproveResponseSuccess =
-  postApiAdminBusinessesApplicationsApplicationidApproveResponse200 & {
-    headers: Headers;
-  };
-
-export type postApiAdminBusinessesApplicationsApplicationidApproveResponse =
-  postApiAdminBusinessesApplicationsApplicationidApproveResponseSuccess;
-
-export const getPostApiAdminBusinessesApplicationsApplicationidApproveUrl = (
-  applicationId: number,
-) => {
-  return `/api/admin/businesses/applications/${applicationId}/approve`;
+export type postApiAdminBusinessesApplicationsApplicationidApproveResponse200 = {
+  data: AdminBusinessApplicationResponse
+  status: 200
+}
+    
+export type postApiAdminBusinessesApplicationsApplicationidApproveResponseSuccess = (postApiAdminBusinessesApplicationsApplicationidApproveResponse200) & {
+  headers: Headers;
 };
+;
 
-export const postApiAdminBusinessesApplicationsApplicationidApprove = async (
-  applicationId: number,
-  options?: RequestInit,
-): Promise<postApiAdminBusinessesApplicationsApplicationidApproveResponse> => {
-  return customFetch<postApiAdminBusinessesApplicationsApplicationidApproveResponse>(
-    getPostApiAdminBusinessesApplicationsApplicationidApproveUrl(applicationId),
-    {
-      ...options,
-      method: "POST",
-    },
-  );
-};
+export type postApiAdminBusinessesApplicationsApplicationidApproveResponse = (postApiAdminBusinessesApplicationsApplicationidApproveResponseSuccess)
+
+export const getPostApiAdminBusinessesApplicationsApplicationidApproveUrl = (applicationId: number,) => {
+
+
+  
+
+  return `/api/admin/businesses/applications/${applicationId}/approve`
+}
+
+export const postApiAdminBusinessesApplicationsApplicationidApprove = async (applicationId: number, options?: RequestInit): Promise<postApiAdminBusinessesApplicationsApplicationidApproveResponse> => {
+  
+  return customFetch<postApiAdminBusinessesApplicationsApplicationidApproveResponse>(getPostApiAdminBusinessesApplicationsApplicationidApproveUrl(applicationId),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+);}
+
+
 
 /**
- * 관리자가 신청을 반려 처리하고 사유를 기록합니다.
+ * 비즈니스 신청 상태 변경 이력을 최신순으로 조회합니다.
+ * @summary 비즈니스 신청 감사 로그 조회(관리자)
+ */
+export type getApiAdminBusinessesApplicationsApplicationidAuditLogsResponse200 = {
+  data: AdminBusinessApplicationAuditLogResponse[]
+  status: 200
+}
+    
+export type getApiAdminBusinessesApplicationsApplicationidAuditLogsResponseSuccess = (getApiAdminBusinessesApplicationsApplicationidAuditLogsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiAdminBusinessesApplicationsApplicationidAuditLogsResponse = (getApiAdminBusinessesApplicationsApplicationidAuditLogsResponseSuccess)
+
+export const getGetApiAdminBusinessesApplicationsApplicationidAuditLogsUrl = (applicationId: number,) => {
+
+
+  
+
+  return `/api/admin/businesses/applications/${applicationId}/audit-logs`
+}
+
+export const getApiAdminBusinessesApplicationsApplicationidAuditLogs = async (applicationId: number, options?: RequestInit): Promise<getApiAdminBusinessesApplicationsApplicationidAuditLogsResponse> => {
+  
+  return customFetch<getApiAdminBusinessesApplicationsApplicationidAuditLogsResponse>(getGetApiAdminBusinessesApplicationsApplicationidAuditLogsUrl(applicationId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 관리자가 반려 사유와 내부 메모를 입력해 신청을 반려합니다.
  * @summary 비즈니스 신청 반려(관리자)
  */
 export type postApiAdminBusinessesApplicationsApplicationidRejectResponse200 = {
-  data: AdminBusinessApplicationResponse;
-  status: 200;
+  data: AdminBusinessApplicationResponse
+  status: 200
+}
+    
+export type postApiAdminBusinessesApplicationsApplicationidRejectResponseSuccess = (postApiAdminBusinessesApplicationsApplicationidRejectResponse200) & {
+  headers: Headers;
 };
+;
 
-export type postApiAdminBusinessesApplicationsApplicationidRejectResponseSuccess =
-  postApiAdminBusinessesApplicationsApplicationidRejectResponse200 & {
-    headers: Headers;
-  };
+export type postApiAdminBusinessesApplicationsApplicationidRejectResponse = (postApiAdminBusinessesApplicationsApplicationidRejectResponseSuccess)
 
-export type postApiAdminBusinessesApplicationsApplicationidRejectResponse =
-  postApiAdminBusinessesApplicationsApplicationidRejectResponseSuccess;
+export const getPostApiAdminBusinessesApplicationsApplicationidRejectUrl = (applicationId: number,) => {
 
-export const getPostApiAdminBusinessesApplicationsApplicationidRejectUrl = (
-  applicationId: number,
-) => {
-  return `/api/admin/businesses/applications/${applicationId}/reject`;
-};
 
-export const postApiAdminBusinessesApplicationsApplicationidReject = async (
-  applicationId: number,
-  postApiAdminBusinessesApplicationsApplicationidRejectBody: PostApiAdminBusinessesApplicationsApplicationidRejectBody,
-  options?: RequestInit,
-): Promise<postApiAdminBusinessesApplicationsApplicationidRejectResponse> => {
-  return customFetch<postApiAdminBusinessesApplicationsApplicationidRejectResponse>(
-    getPostApiAdminBusinessesApplicationsApplicationidRejectUrl(applicationId),
-    {
-      ...options,
-      method: "POST",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(
-        postApiAdminBusinessesApplicationsApplicationidRejectBody,
-      ),
-    },
-  );
-};
+  
+
+  return `/api/admin/businesses/applications/${applicationId}/reject`
+}
+
+export const postApiAdminBusinessesApplicationsApplicationidReject = async (applicationId: number,
+    postApiAdminBusinessesApplicationsApplicationidRejectBody: PostApiAdminBusinessesApplicationsApplicationidRejectBody, options?: RequestInit): Promise<postApiAdminBusinessesApplicationsApplicationidRejectResponse> => {
+  
+  return customFetch<postApiAdminBusinessesApplicationsApplicationidRejectResponse>(getPostApiAdminBusinessesApplicationsApplicationidRejectUrl(applicationId),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiAdminBusinessesApplicationsApplicationidRejectBody,)
+  }
+);}
+
+
 
 /**
  * 비즈니스 등급 회원 목록을 조회합니다.
  * @summary 비즈니스 회원 목록 조회(관리자)
  */
 export type getApiAdminBusinessesMembersResponse200 = {
-  data: PageAdminBusinessUserResponse;
-  status: 200;
+  data: PageAdminBusinessUserResponse
+  status: 200
+}
+    
+export type getApiAdminBusinessesMembersResponseSuccess = (getApiAdminBusinessesMembersResponse200) & {
+  headers: Headers;
 };
+;
 
-export type getApiAdminBusinessesMembersResponseSuccess =
-  getApiAdminBusinessesMembersResponse200 & {
-    headers: Headers;
-  };
+export type getApiAdminBusinessesMembersResponse = (getApiAdminBusinessesMembersResponseSuccess)
 
-export type getApiAdminBusinessesMembersResponse =
-  getApiAdminBusinessesMembersResponseSuccess;
-
-export const getGetApiAdminBusinessesMembersUrl = (
-  params?: GetApiAdminBusinessesMembersParams,
-) => {
+export const getGetApiAdminBusinessesMembersUrl = (params?: GetApiAdminBusinessesMembersParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value === undefined) return;
-    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       Object.entries(value).forEach(([k, v]) => {
         if (v === undefined) return;
-        if (Array.isArray(v)) {
-          v.forEach((item) =>
-            normalizedParams.append(k, item == null ? "null" : String(item)),
-          );
-        } else {
-          normalizedParams.append(k, v === null ? "null" : String(v));
-        }
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
       });
     } else if (Array.isArray(value)) {
-      value.forEach((v) =>
-        normalizedParams.append(key, v == null ? "null" : String(v)),
-      );
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
     } else {
-      normalizedParams.append(key, value === null ? "null" : String(value));
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/api/admin/businesses/members?${stringifiedParams}`
-    : `/api/admin/businesses/members`;
-};
+  return stringifiedParams.length > 0 ? `/api/admin/businesses/members?${stringifiedParams}` : `/api/admin/businesses/members`
+}
 
-export const getApiAdminBusinessesMembers = async (
-  params?: GetApiAdminBusinessesMembersParams,
-  options?: RequestInit,
-): Promise<getApiAdminBusinessesMembersResponse> => {
-  return customFetch<getApiAdminBusinessesMembersResponse>(
-    getGetApiAdminBusinessesMembersUrl(params),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
+export const getApiAdminBusinessesMembers = async (params?: GetApiAdminBusinessesMembersParams, options?: RequestInit): Promise<getApiAdminBusinessesMembersResponse> => {
+  
+  return customFetch<getApiAdminBusinessesMembersResponse>(getGetApiAdminBusinessesMembersUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 비즈니스 등급 회원의 기본 정보와 사업장 정보를 조회합니다.
+ * @summary 비즈니스 회원 상세 조회(관리자)
+ */
+export type getApiAdminBusinessesMembersUseridResponse200 = {
+  data: AdminBusinessUserDetailResponse
+  status: 200
+}
+    
+export type getApiAdminBusinessesMembersUseridResponseSuccess = (getApiAdminBusinessesMembersUseridResponse200) & {
+  headers: Headers;
 };
+;
+
+export type getApiAdminBusinessesMembersUseridResponse = (getApiAdminBusinessesMembersUseridResponseSuccess)
+
+export const getGetApiAdminBusinessesMembersUseridUrl = (userId: number,) => {
+
+
+  
+
+  return `/api/admin/businesses/members/${userId}`
+}
+
+export const getApiAdminBusinessesMembersUserid = async (userId: number, options?: RequestInit): Promise<getApiAdminBusinessesMembersUseridResponse> => {
+  
+  return customFetch<getApiAdminBusinessesMembersUseridResponse>(getGetApiAdminBusinessesMembersUseridUrl(userId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 비즈니스 등급 회원에게 픽업 권한을 부여합니다.
  * @summary 픽업 권한 부여(관리자)
  */
 export type postApiAdminBusinessesMembersUseridPickupGrantResponse200 = {
-  data: AdminBusinessUserResponse;
-  status: 200;
+  data: AdminBusinessUserResponse
+  status: 200
+}
+    
+export type postApiAdminBusinessesMembersUseridPickupGrantResponseSuccess = (postApiAdminBusinessesMembersUseridPickupGrantResponse200) & {
+  headers: Headers;
 };
+;
 
-export type postApiAdminBusinessesMembersUseridPickupGrantResponseSuccess =
-  postApiAdminBusinessesMembersUseridPickupGrantResponse200 & {
-    headers: Headers;
-  };
+export type postApiAdminBusinessesMembersUseridPickupGrantResponse = (postApiAdminBusinessesMembersUseridPickupGrantResponseSuccess)
 
-export type postApiAdminBusinessesMembersUseridPickupGrantResponse =
-  postApiAdminBusinessesMembersUseridPickupGrantResponseSuccess;
+export const getPostApiAdminBusinessesMembersUseridPickupGrantUrl = (userId: number,) => {
 
-export const getPostApiAdminBusinessesMembersUseridPickupGrantUrl = (
-  userId: number,
-) => {
-  return `/api/admin/businesses/members/${userId}/pickup/grant`;
-};
 
-export const postApiAdminBusinessesMembersUseridPickupGrant = async (
-  userId: number,
-  options?: RequestInit,
-): Promise<postApiAdminBusinessesMembersUseridPickupGrantResponse> => {
-  return customFetch<postApiAdminBusinessesMembersUseridPickupGrantResponse>(
-    getPostApiAdminBusinessesMembersUseridPickupGrantUrl(userId),
-    {
-      ...options,
-      method: "POST",
-    },
-  );
-};
+  
+
+  return `/api/admin/businesses/members/${userId}/pickup/grant`
+}
+
+export const postApiAdminBusinessesMembersUseridPickupGrant = async (userId: number, options?: RequestInit): Promise<postApiAdminBusinessesMembersUseridPickupGrantResponse> => {
+  
+  return customFetch<postApiAdminBusinessesMembersUseridPickupGrantResponse>(getPostApiAdminBusinessesMembersUseridPickupGrantUrl(userId),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+);}
+
+
 
 /**
  * 비즈니스 등급 회원에게서 픽업 권한을 박탈합니다.
  * @summary 픽업 권한 박탈(관리자)
  */
 export type postApiAdminBusinessesMembersUseridPickupRevokeResponse200 = {
-  data: AdminBusinessUserResponse;
-  status: 200;
+  data: AdminBusinessUserResponse
+  status: 200
+}
+    
+export type postApiAdminBusinessesMembersUseridPickupRevokeResponseSuccess = (postApiAdminBusinessesMembersUseridPickupRevokeResponse200) & {
+  headers: Headers;
 };
+;
 
-export type postApiAdminBusinessesMembersUseridPickupRevokeResponseSuccess =
-  postApiAdminBusinessesMembersUseridPickupRevokeResponse200 & {
-    headers: Headers;
-  };
+export type postApiAdminBusinessesMembersUseridPickupRevokeResponse = (postApiAdminBusinessesMembersUseridPickupRevokeResponseSuccess)
 
-export type postApiAdminBusinessesMembersUseridPickupRevokeResponse =
-  postApiAdminBusinessesMembersUseridPickupRevokeResponseSuccess;
+export const getPostApiAdminBusinessesMembersUseridPickupRevokeUrl = (userId: number,) => {
 
-export const getPostApiAdminBusinessesMembersUseridPickupRevokeUrl = (
-  userId: number,
-) => {
-  return `/api/admin/businesses/members/${userId}/pickup/revoke`;
-};
 
-export const postApiAdminBusinessesMembersUseridPickupRevoke = async (
-  userId: number,
-  options?: RequestInit,
-): Promise<postApiAdminBusinessesMembersUseridPickupRevokeResponse> => {
-  return customFetch<postApiAdminBusinessesMembersUseridPickupRevokeResponse>(
-    getPostApiAdminBusinessesMembersUseridPickupRevokeUrl(userId),
-    {
-      ...options,
-      method: "POST",
-    },
-  );
-};
+  
+
+  return `/api/admin/businesses/members/${userId}/pickup/revoke`
+}
+
+export const postApiAdminBusinessesMembersUseridPickupRevoke = async (userId: number, options?: RequestInit): Promise<postApiAdminBusinessesMembersUseridPickupRevokeResponse> => {
+  
+  return customFetch<postApiAdminBusinessesMembersUseridPickupRevokeResponse>(getPostApiAdminBusinessesMembersUseridPickupRevokeUrl(userId),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+);}
+
+
 
 /**
  * 관리자가 NICE 기관 액세스 토큰을 폐기합니다.
  * @summary NICE 기관 토큰 폐기(관리자)
  */
 export type postApiAdminNiceidRevokeResponse200 = {
-  data: PostApiAdminNiceidRevoke200;
-  status: 200;
+  data: PostApiAdminNiceidRevoke200
+  status: 200
+}
+    
+export type postApiAdminNiceidRevokeResponseSuccess = (postApiAdminNiceidRevokeResponse200) & {
+  headers: Headers;
 };
+;
 
-export type postApiAdminNiceidRevokeResponseSuccess =
-  postApiAdminNiceidRevokeResponse200 & {
-    headers: Headers;
-  };
-
-export type postApiAdminNiceidRevokeResponse =
-  postApiAdminNiceidRevokeResponseSuccess;
+export type postApiAdminNiceidRevokeResponse = (postApiAdminNiceidRevokeResponseSuccess)
 
 export const getPostApiAdminNiceidRevokeUrl = () => {
-  return `/api/admin/niceid/revoke`;
-};
 
-export const postApiAdminNiceidRevoke = async (
-  postApiAdminNiceidRevokeBody: PostApiAdminNiceidRevokeBody,
-  options?: RequestInit,
-): Promise<postApiAdminNiceidRevokeResponse> => {
-  return customFetch<postApiAdminNiceidRevokeResponse>(
-    getPostApiAdminNiceidRevokeUrl(),
-    {
-      ...options,
-      method: "POST",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(postApiAdminNiceidRevokeBody),
-    },
-  );
-};
+
+  
+
+  return `/api/admin/niceid/revoke`
+}
+
+export const postApiAdminNiceidRevoke = async (postApiAdminNiceidRevokeBody: PostApiAdminNiceidRevokeBody, options?: RequestInit): Promise<postApiAdminNiceidRevokeResponse> => {
+  
+  return customFetch<postApiAdminNiceidRevokeResponse>(getPostApiAdminNiceidRevokeUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiAdminNiceidRevokeBody,)
+  }
+);}
+
+
 
 /**
  * @summary 관리자 주문 목록 조회
  */
 export type getApiAdminOrdersResponse200 = {
-  data: PageOrderResponse;
-  status: 200;
-};
-
-export type getApiAdminOrdersResponseSuccess = getApiAdminOrdersResponse200 & {
+  data: PageOrderResponse
+  status: 200
+}
+    
+export type getApiAdminOrdersResponseSuccess = (getApiAdminOrdersResponse200) & {
   headers: Headers;
 };
+;
 
-export type getApiAdminOrdersResponse = getApiAdminOrdersResponseSuccess;
+export type getApiAdminOrdersResponse = (getApiAdminOrdersResponseSuccess)
 
-export const getGetApiAdminOrdersUrl = (params?: GetApiAdminOrdersParams) => {
+export const getGetApiAdminOrdersUrl = (params?: GetApiAdminOrdersParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value === undefined) return;
-    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       Object.entries(value).forEach(([k, v]) => {
         if (v === undefined) return;
-        if (Array.isArray(v)) {
-          v.forEach((item) =>
-            normalizedParams.append(k, item == null ? "null" : String(item)),
-          );
-        } else {
-          normalizedParams.append(k, v === null ? "null" : String(v));
-        }
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
       });
     } else if (Array.isArray(value)) {
-      value.forEach((v) =>
-        normalizedParams.append(key, v == null ? "null" : String(v)),
-      );
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
     } else {
-      normalizedParams.append(key, value === null ? "null" : String(value));
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/api/admin/orders?${stringifiedParams}`
-    : `/api/admin/orders`;
-};
+  return stringifiedParams.length > 0 ? `/api/admin/orders?${stringifiedParams}` : `/api/admin/orders`
+}
 
-export const getApiAdminOrders = async (
-  params?: GetApiAdminOrdersParams,
-  options?: RequestInit,
-): Promise<getApiAdminOrdersResponse> => {
-  return customFetch<getApiAdminOrdersResponse>(
-    getGetApiAdminOrdersUrl(params),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
+export const getApiAdminOrders = async (params?: GetApiAdminOrdersParams, options?: RequestInit): Promise<getApiAdminOrdersResponse> => {
+  
+  return customFetch<getApiAdminOrdersResponse>(getGetApiAdminOrdersUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * @summary 관리자 사용자 주문 내역 및 주문 총액 조회
  */
 export type getApiAdminOrdersUsersUseridResponse200 = {
-  data: AdminUserOrderSummaryResponse;
-  status: 200;
+  data: AdminUserOrderSummaryResponse
+  status: 200
+}
+    
+export type getApiAdminOrdersUsersUseridResponseSuccess = (getApiAdminOrdersUsersUseridResponse200) & {
+  headers: Headers;
 };
+;
 
-export type getApiAdminOrdersUsersUseridResponseSuccess =
-  getApiAdminOrdersUsersUseridResponse200 & {
-    headers: Headers;
-  };
+export type getApiAdminOrdersUsersUseridResponse = (getApiAdminOrdersUsersUseridResponseSuccess)
 
-export type getApiAdminOrdersUsersUseridResponse =
-  getApiAdminOrdersUsersUseridResponseSuccess;
-
-export const getGetApiAdminOrdersUsersUseridUrl = (
-  userId: number,
-  params?: GetApiAdminOrdersUsersUseridParams,
-) => {
+export const getGetApiAdminOrdersUsersUseridUrl = (userId: number,
+    params?: GetApiAdminOrdersUsersUseridParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value === undefined) return;
-    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       Object.entries(value).forEach(([k, v]) => {
         if (v === undefined) return;
-        if (Array.isArray(v)) {
-          v.forEach((item) =>
-            normalizedParams.append(k, item == null ? "null" : String(item)),
-          );
-        } else {
-          normalizedParams.append(k, v === null ? "null" : String(v));
-        }
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
       });
     } else if (Array.isArray(value)) {
-      value.forEach((v) =>
-        normalizedParams.append(key, v == null ? "null" : String(v)),
-      );
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
     } else {
-      normalizedParams.append(key, value === null ? "null" : String(value));
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/api/admin/orders/users/${userId}?${stringifiedParams}`
-    : `/api/admin/orders/users/${userId}`;
-};
+  return stringifiedParams.length > 0 ? `/api/admin/orders/users/${userId}?${stringifiedParams}` : `/api/admin/orders/users/${userId}`
+}
 
-export const getApiAdminOrdersUsersUserid = async (
-  userId: number,
-  params?: GetApiAdminOrdersUsersUseridParams,
-  options?: RequestInit,
-): Promise<getApiAdminOrdersUsersUseridResponse> => {
-  return customFetch<getApiAdminOrdersUsersUseridResponse>(
-    getGetApiAdminOrdersUsersUseridUrl(userId, params),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
+export const getApiAdminOrdersUsersUserid = async (userId: number,
+    params?: GetApiAdminOrdersUsersUseridParams, options?: RequestInit): Promise<getApiAdminOrdersUsersUseridResponse> => {
+  
+  return customFetch<getApiAdminOrdersUsersUseridResponse>(getGetApiAdminOrdersUsersUseridUrl(userId,params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * @summary 관리자 주문 승인/수량 조정
  */
 export type patchApiAdminOrdersOrderidApproveResponse200 = {
-  data: OrderResponse;
-  status: 200;
+  data: OrderResponse
+  status: 200
+}
+    
+export type patchApiAdminOrdersOrderidApproveResponseSuccess = (patchApiAdminOrdersOrderidApproveResponse200) & {
+  headers: Headers;
 };
+;
 
-export type patchApiAdminOrdersOrderidApproveResponseSuccess =
-  patchApiAdminOrdersOrderidApproveResponse200 & {
-    headers: Headers;
-  };
+export type patchApiAdminOrdersOrderidApproveResponse = (patchApiAdminOrdersOrderidApproveResponseSuccess)
 
-export type patchApiAdminOrdersOrderidApproveResponse =
-  patchApiAdminOrdersOrderidApproveResponseSuccess;
+export const getPatchApiAdminOrdersOrderidApproveUrl = (orderId: number,) => {
 
-export const getPatchApiAdminOrdersOrderidApproveUrl = (orderId: number) => {
-  return `/api/admin/orders/${orderId}/approve`;
-};
 
-export const patchApiAdminOrdersOrderidApprove = async (
-  orderId: number,
-  patchApiAdminOrdersOrderidApproveBody: PatchApiAdminOrdersOrderidApproveBody,
-  options?: RequestInit,
-): Promise<patchApiAdminOrdersOrderidApproveResponse> => {
-  return customFetch<patchApiAdminOrdersOrderidApproveResponse>(
-    getPatchApiAdminOrdersOrderidApproveUrl(orderId),
-    {
-      ...options,
-      method: "PATCH",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(patchApiAdminOrdersOrderidApproveBody),
-    },
-  );
-};
+  
+
+  return `/api/admin/orders/${orderId}/approve`
+}
+
+export const patchApiAdminOrdersOrderidApprove = async (orderId: number,
+    patchApiAdminOrdersOrderidApproveBody: PatchApiAdminOrdersOrderidApproveBody, options?: RequestInit): Promise<patchApiAdminOrdersOrderidApproveResponse> => {
+  
+  return customFetch<patchApiAdminOrdersOrderidApproveResponse>(getPatchApiAdminOrdersOrderidApproveUrl(orderId),
+  {      
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      patchApiAdminOrdersOrderidApproveBody,)
+  }
+);}
+
+
 
 /**
  * @summary 관리자 주문 상태 변경
  */
 export type patchApiAdminOrdersOrderidStatusResponse200 = {
-  data: OrderResponse;
-  status: 200;
+  data: OrderResponse
+  status: 200
+}
+    
+export type patchApiAdminOrdersOrderidStatusResponseSuccess = (patchApiAdminOrdersOrderidStatusResponse200) & {
+  headers: Headers;
 };
+;
 
-export type patchApiAdminOrdersOrderidStatusResponseSuccess =
-  patchApiAdminOrdersOrderidStatusResponse200 & {
-    headers: Headers;
-  };
+export type patchApiAdminOrdersOrderidStatusResponse = (patchApiAdminOrdersOrderidStatusResponseSuccess)
 
-export type patchApiAdminOrdersOrderidStatusResponse =
-  patchApiAdminOrdersOrderidStatusResponseSuccess;
+export const getPatchApiAdminOrdersOrderidStatusUrl = (orderId: number,) => {
 
-export const getPatchApiAdminOrdersOrderidStatusUrl = (orderId: number) => {
-  return `/api/admin/orders/${orderId}/status`;
-};
 
-export const patchApiAdminOrdersOrderidStatus = async (
-  orderId: number,
-  patchApiAdminOrdersOrderidStatusBody: PatchApiAdminOrdersOrderidStatusBody,
-  options?: RequestInit,
-): Promise<patchApiAdminOrdersOrderidStatusResponse> => {
-  return customFetch<patchApiAdminOrdersOrderidStatusResponse>(
-    getPatchApiAdminOrdersOrderidStatusUrl(orderId),
-    {
-      ...options,
-      method: "PATCH",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(patchApiAdminOrdersOrderidStatusBody),
-    },
-  );
-};
+  
+
+  return `/api/admin/orders/${orderId}/status`
+}
+
+export const patchApiAdminOrdersOrderidStatus = async (orderId: number,
+    patchApiAdminOrdersOrderidStatusBody: PatchApiAdminOrdersOrderidStatusBody, options?: RequestInit): Promise<patchApiAdminOrdersOrderidStatusResponse> => {
+  
+  return customFetch<patchApiAdminOrdersOrderidStatusResponse>(getPatchApiAdminOrdersOrderidStatusUrl(orderId),
+  {      
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      patchApiAdminOrdersOrderidStatusBody,)
+  }
+);}
+
+
 
 /**
  * @summary 판매 공고 생성
  */
 export type postApiAdminSalesResponse200 = {
-  data: SaleAnnouncementResponse;
-  status: 200;
-};
-
-export type postApiAdminSalesResponseSuccess = postApiAdminSalesResponse200 & {
+  data: SaleAnnouncementResponse
+  status: 200
+}
+    
+export type postApiAdminSalesResponseSuccess = (postApiAdminSalesResponse200) & {
   headers: Headers;
 };
+;
 
-export type postApiAdminSalesResponse = postApiAdminSalesResponseSuccess;
+export type postApiAdminSalesResponse = (postApiAdminSalesResponseSuccess)
 
 export const getPostApiAdminSalesUrl = () => {
-  return `/api/admin/sales`;
-};
 
-export const postApiAdminSales = async (
-  postApiAdminSalesBody: PostApiAdminSalesBody,
-  options?: RequestInit,
-): Promise<postApiAdminSalesResponse> => {
-  return customFetch<postApiAdminSalesResponse>(getPostApiAdminSalesUrl(), {
+
+  
+
+  return `/api/admin/sales`
+}
+
+export const postApiAdminSales = async (postApiAdminSalesBody: PostApiAdminSalesBody, options?: RequestInit): Promise<postApiAdminSalesResponse> => {
+  
+  return customFetch<postApiAdminSalesResponse>(getPostApiAdminSalesUrl(),
+  {      
     ...options,
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(postApiAdminSalesBody),
-  });
-};
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiAdminSalesBody,)
+  }
+);}
+
+
 
 /**
  * @summary 판매 공고 수정
  */
 export type patchApiAdminSalesSaleidResponse200 = {
-  data: SaleAnnouncementResponse;
-  status: 200;
+  data: SaleAnnouncementResponse
+  status: 200
+}
+    
+export type patchApiAdminSalesSaleidResponseSuccess = (patchApiAdminSalesSaleidResponse200) & {
+  headers: Headers;
 };
+;
 
-export type patchApiAdminSalesSaleidResponseSuccess =
-  patchApiAdminSalesSaleidResponse200 & {
-    headers: Headers;
-  };
+export type patchApiAdminSalesSaleidResponse = (patchApiAdminSalesSaleidResponseSuccess)
 
-export type patchApiAdminSalesSaleidResponse =
-  patchApiAdminSalesSaleidResponseSuccess;
+export const getPatchApiAdminSalesSaleidUrl = (saleId: number,) => {
 
-export const getPatchApiAdminSalesSaleidUrl = (saleId: number) => {
-  return `/api/admin/sales/${saleId}`;
+
+  
+
+  return `/api/admin/sales/${saleId}`
+}
+
+export const patchApiAdminSalesSaleid = async (saleId: number,
+    patchApiAdminSalesSaleidBody: PatchApiAdminSalesSaleidBody, options?: RequestInit): Promise<patchApiAdminSalesSaleidResponse> => {
+  
+  return customFetch<patchApiAdminSalesSaleidResponse>(getPatchApiAdminSalesSaleidUrl(saleId),
+  {      
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      patchApiAdminSalesSaleidBody,)
+  }
+);}
+
+
+
+/**
+ * @summary 관리자 사업장 월별 세금계산서 PDF 다운로드
+ */
+export type getApiAdminTaxInvoicesBusinessesBusinessidTaxInvoiceMonthlyPdfResponse200 = {
+  data: Blob
+  status: 200
+}
+    
+export type getApiAdminTaxInvoicesBusinessesBusinessidTaxInvoiceMonthlyPdfResponseSuccess = (getApiAdminTaxInvoicesBusinessesBusinessidTaxInvoiceMonthlyPdfResponse200) & {
+  headers: Headers;
 };
+;
 
-export const patchApiAdminSalesSaleid = async (
-  saleId: number,
-  patchApiAdminSalesSaleidBody: PatchApiAdminSalesSaleidBody,
-  options?: RequestInit,
-): Promise<patchApiAdminSalesSaleidResponse> => {
-  return customFetch<patchApiAdminSalesSaleidResponse>(
-    getPatchApiAdminSalesSaleidUrl(saleId),
-    {
-      ...options,
-      method: "PATCH",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(patchApiAdminSalesSaleidBody),
-    },
-  );
+export type getApiAdminTaxInvoicesBusinessesBusinessidTaxInvoiceMonthlyPdfResponse = (getApiAdminTaxInvoicesBusinessesBusinessidTaxInvoiceMonthlyPdfResponseSuccess)
+
+export const getGetApiAdminTaxInvoicesBusinessesBusinessidTaxInvoiceMonthlyPdfUrl = (businessId: number,
+    params: GetApiAdminTaxInvoicesBusinessesBusinessidTaxInvoiceMonthlyPdfParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
+    } else {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/admin/tax-invoices/businesses/${businessId}/tax-invoice/monthly/pdf?${stringifiedParams}` : `/api/admin/tax-invoices/businesses/${businessId}/tax-invoice/monthly/pdf`
+}
+
+export const getApiAdminTaxInvoicesBusinessesBusinessidTaxInvoiceMonthlyPdf = async (businessId: number,
+    params: GetApiAdminTaxInvoicesBusinessesBusinessidTaxInvoiceMonthlyPdfParams, options?: RequestInit): Promise<getApiAdminTaxInvoicesBusinessesBusinessidTaxInvoiceMonthlyPdfResponse> => {
+  
+  return customFetch<getApiAdminTaxInvoicesBusinessesBusinessidTaxInvoiceMonthlyPdfResponse>(getGetApiAdminTaxInvoicesBusinessesBusinessidTaxInvoiceMonthlyPdfUrl(businessId,params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * @summary 관리자 사업장 월별 부가세 신고 내역서 PDF 다운로드
+ */
+export type getApiAdminTaxInvoicesBusinessesBusinessidVatReportMonthlyPdfResponse200 = {
+  data: Blob
+  status: 200
+}
+    
+export type getApiAdminTaxInvoicesBusinessesBusinessidVatReportMonthlyPdfResponseSuccess = (getApiAdminTaxInvoicesBusinessesBusinessidVatReportMonthlyPdfResponse200) & {
+  headers: Headers;
 };
+;
+
+export type getApiAdminTaxInvoicesBusinessesBusinessidVatReportMonthlyPdfResponse = (getApiAdminTaxInvoicesBusinessesBusinessidVatReportMonthlyPdfResponseSuccess)
+
+export const getGetApiAdminTaxInvoicesBusinessesBusinessidVatReportMonthlyPdfUrl = (businessId: number,
+    params: GetApiAdminTaxInvoicesBusinessesBusinessidVatReportMonthlyPdfParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
+    } else {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/admin/tax-invoices/businesses/${businessId}/vat-report/monthly/pdf?${stringifiedParams}` : `/api/admin/tax-invoices/businesses/${businessId}/vat-report/monthly/pdf`
+}
+
+export const getApiAdminTaxInvoicesBusinessesBusinessidVatReportMonthlyPdf = async (businessId: number,
+    params: GetApiAdminTaxInvoicesBusinessesBusinessidVatReportMonthlyPdfParams, options?: RequestInit): Promise<getApiAdminTaxInvoicesBusinessesBusinessidVatReportMonthlyPdfResponse> => {
+  
+  return customFetch<getApiAdminTaxInvoicesBusinessesBusinessidVatReportMonthlyPdfResponse>(getGetApiAdminTaxInvoicesBusinessesBusinessidVatReportMonthlyPdfUrl(businessId,params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 관리자가 검색 조건과 페이지 정보로 사용자 목록을 조회합니다.
  * @summary 사용자 목록 조회(관리자)
  */
 export type getApiAdminUsersResponse200 = {
-  data: PageAdminUserResponse;
-  status: 200;
-};
-
-export type getApiAdminUsersResponseSuccess = getApiAdminUsersResponse200 & {
+  data: PageAdminUserResponse
+  status: 200
+}
+    
+export type getApiAdminUsersResponseSuccess = (getApiAdminUsersResponse200) & {
   headers: Headers;
 };
+;
 
-export type getApiAdminUsersResponse = getApiAdminUsersResponseSuccess;
+export type getApiAdminUsersResponse = (getApiAdminUsersResponseSuccess)
 
-export const getGetApiAdminUsersUrl = (params: GetApiAdminUsersParams) => {
+export const getGetApiAdminUsersUrl = (params: GetApiAdminUsersParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value === undefined) return;
-    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       Object.entries(value).forEach(([k, v]) => {
         if (v === undefined) return;
-        if (Array.isArray(v)) {
-          v.forEach((item) =>
-            normalizedParams.append(k, item == null ? "null" : String(item)),
-          );
-        } else {
-          normalizedParams.append(k, v === null ? "null" : String(v));
-        }
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
       });
     } else if (Array.isArray(value)) {
-      value.forEach((v) =>
-        normalizedParams.append(key, v == null ? "null" : String(v)),
-      );
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
     } else {
-      normalizedParams.append(key, value === null ? "null" : String(value));
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/api/admin/users?${stringifiedParams}`
-    : `/api/admin/users`;
-};
+  return stringifiedParams.length > 0 ? `/api/admin/users?${stringifiedParams}` : `/api/admin/users`
+}
 
-export const getApiAdminUsers = async (
-  params: GetApiAdminUsersParams,
-  options?: RequestInit,
-): Promise<getApiAdminUsersResponse> => {
-  return customFetch<getApiAdminUsersResponse>(getGetApiAdminUsersUrl(params), {
+export const getApiAdminUsers = async (params: GetApiAdminUsersParams, options?: RequestInit): Promise<getApiAdminUsersResponse> => {
+  
+  return customFetch<getApiAdminUsersResponse>(getGetApiAdminUsersUrl(params),
+  {      
     ...options,
-    method: "GET",
-  });
-};
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 계정을 바로 삭제하지 않고 상태만 DELETED 로 표시합니다.
  * @summary 사용자 소프트 삭제(관리자)
  */
 export type deleteApiAdminUsersIdResponse200 = {
-  data: boolean;
-  status: 200;
+  data: boolean
+  status: 200
+}
+    
+export type deleteApiAdminUsersIdResponseSuccess = (deleteApiAdminUsersIdResponse200) & {
+  headers: Headers;
 };
+;
 
-export type deleteApiAdminUsersIdResponseSuccess =
-  deleteApiAdminUsersIdResponse200 & {
-    headers: Headers;
-  };
+export type deleteApiAdminUsersIdResponse = (deleteApiAdminUsersIdResponseSuccess)
 
-export type deleteApiAdminUsersIdResponse =
-  deleteApiAdminUsersIdResponseSuccess;
+export const getDeleteApiAdminUsersIdUrl = (id: number,) => {
 
-export const getDeleteApiAdminUsersIdUrl = (id: number) => {
-  return `/api/admin/users/${id}`;
-};
 
-export const deleteApiAdminUsersId = async (
-  id: number,
-  options?: RequestInit,
-): Promise<deleteApiAdminUsersIdResponse> => {
-  return customFetch<deleteApiAdminUsersIdResponse>(
-    getDeleteApiAdminUsersIdUrl(id),
-    {
-      ...options,
-      method: "DELETE",
-    },
-  );
-};
+  
+
+  return `/api/admin/users/${id}`
+}
+
+export const deleteApiAdminUsersId = async (id: number, options?: RequestInit): Promise<deleteApiAdminUsersIdResponse> => {
+  
+  return customFetch<deleteApiAdminUsersIdResponse>(getDeleteApiAdminUsersIdUrl(id),
+  {      
+    ...options,
+    method: 'DELETE'
+    
+    
+  }
+);}
+
+
 
 /**
  * 관리자가 지정 사용자의 상세 정보를 조회합니다.
  * @summary 사용자 상세 조회(관리자)
  */
 export type getApiAdminUsersIdResponse200 = {
-  data: AdminUserResponse;
-  status: 200;
+  data: AdminUserResponse
+  status: 200
+}
+    
+export type getApiAdminUsersIdResponseSuccess = (getApiAdminUsersIdResponse200) & {
+  headers: Headers;
 };
+;
 
-export type getApiAdminUsersIdResponseSuccess =
-  getApiAdminUsersIdResponse200 & {
-    headers: Headers;
-  };
+export type getApiAdminUsersIdResponse = (getApiAdminUsersIdResponseSuccess)
 
-export type getApiAdminUsersIdResponse = getApiAdminUsersIdResponseSuccess;
+export const getGetApiAdminUsersIdUrl = (id: number,) => {
 
-export const getGetApiAdminUsersIdUrl = (id: number) => {
-  return `/api/admin/users/${id}`;
-};
 
-export const getApiAdminUsersId = async (
-  id: number,
-  options?: RequestInit,
-): Promise<getApiAdminUsersIdResponse> => {
-  return customFetch<getApiAdminUsersIdResponse>(getGetApiAdminUsersIdUrl(id), {
+  
+
+  return `/api/admin/users/${id}`
+}
+
+export const getApiAdminUsersId = async (id: number, options?: RequestInit): Promise<getApiAdminUsersIdResponse> => {
+  
+  return customFetch<getApiAdminUsersIdResponse>(getGetApiAdminUsersIdUrl(id),
+  {      
     ...options,
-    method: "GET",
-  });
-};
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 관리자가 사유와 기간을 입력해 사용자를 밴 처리합니다.
  * @summary 사용자 밴 처리(관리자)
  */
 export type patchApiAdminUsersIdBanResponse200 = {
-  data: AdminUserResponse;
-  status: 200;
+  data: AdminUserResponse
+  status: 200
+}
+    
+export type patchApiAdminUsersIdBanResponseSuccess = (patchApiAdminUsersIdBanResponse200) & {
+  headers: Headers;
 };
+;
 
-export type patchApiAdminUsersIdBanResponseSuccess =
-  patchApiAdminUsersIdBanResponse200 & {
-    headers: Headers;
-  };
+export type patchApiAdminUsersIdBanResponse = (patchApiAdminUsersIdBanResponseSuccess)
 
-export type patchApiAdminUsersIdBanResponse =
-  patchApiAdminUsersIdBanResponseSuccess;
+export const getPatchApiAdminUsersIdBanUrl = (id: number,) => {
 
-export const getPatchApiAdminUsersIdBanUrl = (id: number) => {
-  return `/api/admin/users/${id}/ban`;
-};
 
-export const patchApiAdminUsersIdBan = async (
-  id: number,
-  patchApiAdminUsersIdBanBody: PatchApiAdminUsersIdBanBody,
-  options?: RequestInit,
-): Promise<patchApiAdminUsersIdBanResponse> => {
-  return customFetch<patchApiAdminUsersIdBanResponse>(
-    getPatchApiAdminUsersIdBanUrl(id),
-    {
-      ...options,
-      method: "PATCH",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(patchApiAdminUsersIdBanBody),
-    },
-  );
-};
+  
+
+  return `/api/admin/users/${id}/ban`
+}
+
+export const patchApiAdminUsersIdBan = async (id: number,
+    patchApiAdminUsersIdBanBody: PatchApiAdminUsersIdBanBody, options?: RequestInit): Promise<patchApiAdminUsersIdBanResponse> => {
+  
+  return customFetch<patchApiAdminUsersIdBanResponse>(getPatchApiAdminUsersIdBanUrl(id),
+  {      
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      patchApiAdminUsersIdBanBody,)
+  }
+);}
+
+
 
 /**
  * 관리자가 밴 사유를 추가하고 기간을 수정합니다.
  * @summary 사용자 밴 수정(관리자)
  */
 export type patchApiAdminUsersIdBanUpdateResponse200 = {
-  data: AdminUserResponse;
-  status: 200;
+  data: AdminUserResponse
+  status: 200
+}
+    
+export type patchApiAdminUsersIdBanUpdateResponseSuccess = (patchApiAdminUsersIdBanUpdateResponse200) & {
+  headers: Headers;
 };
+;
 
-export type patchApiAdminUsersIdBanUpdateResponseSuccess =
-  patchApiAdminUsersIdBanUpdateResponse200 & {
-    headers: Headers;
-  };
+export type patchApiAdminUsersIdBanUpdateResponse = (patchApiAdminUsersIdBanUpdateResponseSuccess)
 
-export type patchApiAdminUsersIdBanUpdateResponse =
-  patchApiAdminUsersIdBanUpdateResponseSuccess;
+export const getPatchApiAdminUsersIdBanUpdateUrl = (id: number,) => {
 
-export const getPatchApiAdminUsersIdBanUpdateUrl = (id: number) => {
-  return `/api/admin/users/${id}/ban/update`;
-};
 
-export const patchApiAdminUsersIdBanUpdate = async (
-  id: number,
-  patchApiAdminUsersIdBanUpdateBody: PatchApiAdminUsersIdBanUpdateBody,
-  options?: RequestInit,
-): Promise<patchApiAdminUsersIdBanUpdateResponse> => {
-  return customFetch<patchApiAdminUsersIdBanUpdateResponse>(
-    getPatchApiAdminUsersIdBanUpdateUrl(id),
-    {
-      ...options,
-      method: "PATCH",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(patchApiAdminUsersIdBanUpdateBody),
-    },
-  );
-};
+  
+
+  return `/api/admin/users/${id}/ban/update`
+}
+
+export const patchApiAdminUsersIdBanUpdate = async (id: number,
+    patchApiAdminUsersIdBanUpdateBody: PatchApiAdminUsersIdBanUpdateBody, options?: RequestInit): Promise<patchApiAdminUsersIdBanUpdateResponse> => {
+  
+  return customFetch<patchApiAdminUsersIdBanUpdateResponse>(getPatchApiAdminUsersIdBanUpdateUrl(id),
+  {      
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      patchApiAdminUsersIdBanUpdateBody,)
+  }
+);}
+
+
 
 /**
  * 관리자가 사용자에게 역할을 추가합니다.
  * @summary 사용자 역할 추가(관리자)
  */
 export type patchApiAdminUsersIdRolesAddResponse200 = {
-  data: AdminUserResponse;
-  status: 200;
+  data: AdminUserResponse
+  status: 200
+}
+    
+export type patchApiAdminUsersIdRolesAddResponseSuccess = (patchApiAdminUsersIdRolesAddResponse200) & {
+  headers: Headers;
 };
+;
 
-export type patchApiAdminUsersIdRolesAddResponseSuccess =
-  patchApiAdminUsersIdRolesAddResponse200 & {
-    headers: Headers;
-  };
+export type patchApiAdminUsersIdRolesAddResponse = (patchApiAdminUsersIdRolesAddResponseSuccess)
 
-export type patchApiAdminUsersIdRolesAddResponse =
-  patchApiAdminUsersIdRolesAddResponseSuccess;
+export const getPatchApiAdminUsersIdRolesAddUrl = (id: number,) => {
 
-export const getPatchApiAdminUsersIdRolesAddUrl = (id: number) => {
-  return `/api/admin/users/${id}/roles/add`;
-};
 
-export const patchApiAdminUsersIdRolesAdd = async (
-  id: number,
-  patchApiAdminUsersIdRolesAddBody: PatchApiAdminUsersIdRolesAddBody,
-  options?: RequestInit,
-): Promise<patchApiAdminUsersIdRolesAddResponse> => {
-  return customFetch<patchApiAdminUsersIdRolesAddResponse>(
-    getPatchApiAdminUsersIdRolesAddUrl(id),
-    {
-      ...options,
-      method: "PATCH",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(patchApiAdminUsersIdRolesAddBody),
-    },
-  );
-};
+  
+
+  return `/api/admin/users/${id}/roles/add`
+}
+
+export const patchApiAdminUsersIdRolesAdd = async (id: number,
+    patchApiAdminUsersIdRolesAddBody: PatchApiAdminUsersIdRolesAddBody, options?: RequestInit): Promise<patchApiAdminUsersIdRolesAddResponse> => {
+  
+  return customFetch<patchApiAdminUsersIdRolesAddResponse>(getPatchApiAdminUsersIdRolesAddUrl(id),
+  {      
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      patchApiAdminUsersIdRolesAddBody,)
+  }
+);}
+
+
 
 /**
  * 관리자가 사용자에게서 특정 역할을 제거합니다.
  * @summary 사용자 역할 제거(관리자)
  */
 export type patchApiAdminUsersIdRolesRemoveResponse200 = {
-  data: AdminUserResponse;
-  status: 200;
+  data: AdminUserResponse
+  status: 200
+}
+    
+export type patchApiAdminUsersIdRolesRemoveResponseSuccess = (patchApiAdminUsersIdRolesRemoveResponse200) & {
+  headers: Headers;
 };
+;
 
-export type patchApiAdminUsersIdRolesRemoveResponseSuccess =
-  patchApiAdminUsersIdRolesRemoveResponse200 & {
-    headers: Headers;
-  };
+export type patchApiAdminUsersIdRolesRemoveResponse = (patchApiAdminUsersIdRolesRemoveResponseSuccess)
 
-export type patchApiAdminUsersIdRolesRemoveResponse =
-  patchApiAdminUsersIdRolesRemoveResponseSuccess;
+export const getPatchApiAdminUsersIdRolesRemoveUrl = (id: number,) => {
 
-export const getPatchApiAdminUsersIdRolesRemoveUrl = (id: number) => {
-  return `/api/admin/users/${id}/roles/remove`;
-};
 
-export const patchApiAdminUsersIdRolesRemove = async (
-  id: number,
-  patchApiAdminUsersIdRolesRemoveBody: PatchApiAdminUsersIdRolesRemoveBody,
-  options?: RequestInit,
-): Promise<patchApiAdminUsersIdRolesRemoveResponse> => {
-  return customFetch<patchApiAdminUsersIdRolesRemoveResponse>(
-    getPatchApiAdminUsersIdRolesRemoveUrl(id),
-    {
-      ...options,
-      method: "PATCH",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(patchApiAdminUsersIdRolesRemoveBody),
-    },
-  );
-};
+  
+
+  return `/api/admin/users/${id}/roles/remove`
+}
+
+export const patchApiAdminUsersIdRolesRemove = async (id: number,
+    patchApiAdminUsersIdRolesRemoveBody: PatchApiAdminUsersIdRolesRemoveBody, options?: RequestInit): Promise<patchApiAdminUsersIdRolesRemoveResponse> => {
+  
+  return customFetch<patchApiAdminUsersIdRolesRemoveResponse>(getPatchApiAdminUsersIdRolesRemoveUrl(id),
+  {      
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      patchApiAdminUsersIdRolesRemoveBody,)
+  }
+);}
+
+
 
 /**
  * 관리자가 사용자의 상태 값을 수정합니다.
  * @summary 사용자 상태 변경(관리자)
  */
 export type patchApiAdminUsersIdStatusResponse200 = {
-  data: AdminUserResponse;
-  status: 200;
+  data: AdminUserResponse
+  status: 200
+}
+    
+export type patchApiAdminUsersIdStatusResponseSuccess = (patchApiAdminUsersIdStatusResponse200) & {
+  headers: Headers;
 };
+;
 
-export type patchApiAdminUsersIdStatusResponseSuccess =
-  patchApiAdminUsersIdStatusResponse200 & {
-    headers: Headers;
-  };
+export type patchApiAdminUsersIdStatusResponse = (patchApiAdminUsersIdStatusResponseSuccess)
 
-export type patchApiAdminUsersIdStatusResponse =
-  patchApiAdminUsersIdStatusResponseSuccess;
+export const getPatchApiAdminUsersIdStatusUrl = (id: number,) => {
 
-export const getPatchApiAdminUsersIdStatusUrl = (id: number) => {
-  return `/api/admin/users/${id}/status`;
-};
 
-export const patchApiAdminUsersIdStatus = async (
-  id: number,
-  patchApiAdminUsersIdStatusBody: PatchApiAdminUsersIdStatusBody,
-  options?: RequestInit,
-): Promise<patchApiAdminUsersIdStatusResponse> => {
-  return customFetch<patchApiAdminUsersIdStatusResponse>(
-    getPatchApiAdminUsersIdStatusUrl(id),
-    {
-      ...options,
-      method: "PATCH",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(patchApiAdminUsersIdStatusBody),
-    },
-  );
-};
+  
+
+  return `/api/admin/users/${id}/status`
+}
+
+export const patchApiAdminUsersIdStatus = async (id: number,
+    patchApiAdminUsersIdStatusBody: PatchApiAdminUsersIdStatusBody, options?: RequestInit): Promise<patchApiAdminUsersIdStatusResponse> => {
+  
+  return customFetch<patchApiAdminUsersIdStatusResponse>(getPatchApiAdminUsersIdStatusUrl(id),
+  {      
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      patchApiAdminUsersIdStatusBody,)
+  }
+);}
+
+
 
 /**
  * 로그인 사용자 비밀번호를 변경합니다.
  * @summary 비밀번호 변경
  */
 export type putApiAuthChangePasswordResponse200 = {
-  data: boolean;
-  status: 200;
+  data: boolean
+  status: 200
+}
+    
+export type putApiAuthChangePasswordResponseSuccess = (putApiAuthChangePasswordResponse200) & {
+  headers: Headers;
 };
+;
 
-export type putApiAuthChangePasswordResponseSuccess =
-  putApiAuthChangePasswordResponse200 & {
-    headers: Headers;
-  };
-
-export type putApiAuthChangePasswordResponse =
-  putApiAuthChangePasswordResponseSuccess;
+export type putApiAuthChangePasswordResponse = (putApiAuthChangePasswordResponseSuccess)
 
 export const getPutApiAuthChangePasswordUrl = () => {
-  return `/api/auth/change-password`;
-};
 
-export const putApiAuthChangePassword = async (
-  putApiAuthChangePasswordBody: PutApiAuthChangePasswordBody,
-  options?: RequestInit,
-): Promise<putApiAuthChangePasswordResponse> => {
-  return customFetch<putApiAuthChangePasswordResponse>(
-    getPutApiAuthChangePasswordUrl(),
-    {
-      ...options,
-      method: "PUT",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(putApiAuthChangePasswordBody),
-    },
-  );
-};
+
+  
+
+  return `/api/auth/change-password`
+}
+
+export const putApiAuthChangePassword = async (putApiAuthChangePasswordBody: PutApiAuthChangePasswordBody, options?: RequestInit): Promise<putApiAuthChangePasswordResponse> => {
+  
+  return customFetch<putApiAuthChangePasswordResponse>(getPutApiAuthChangePasswordUrl(),
+  {      
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      putApiAuthChangePasswordBody,)
+  }
+);}
+
+
 
 /**
  * 회원가입 전에 이메일 중복 여부를 확인합니다.
  * @summary 이메일 중복 확인
  */
 export type postApiAuthCheckEmailResponse200 = {
-  data: EmailAvailabilityResponse;
-  status: 200;
+  data: EmailAvailabilityResponse
+  status: 200
+}
+    
+export type postApiAuthCheckEmailResponseSuccess = (postApiAuthCheckEmailResponse200) & {
+  headers: Headers;
 };
+;
 
-export type postApiAuthCheckEmailResponseSuccess =
-  postApiAuthCheckEmailResponse200 & {
-    headers: Headers;
-  };
-
-export type postApiAuthCheckEmailResponse =
-  postApiAuthCheckEmailResponseSuccess;
+export type postApiAuthCheckEmailResponse = (postApiAuthCheckEmailResponseSuccess)
 
 export const getPostApiAuthCheckEmailUrl = () => {
-  return `/api/auth/check-email`;
-};
 
-export const postApiAuthCheckEmail = async (
-  postApiAuthCheckEmailBody: PostApiAuthCheckEmailBody,
-  options?: RequestInit,
-): Promise<postApiAuthCheckEmailResponse> => {
-  return customFetch<postApiAuthCheckEmailResponse>(
-    getPostApiAuthCheckEmailUrl(),
-    {
-      ...options,
-      method: "POST",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(postApiAuthCheckEmailBody),
-    },
-  );
-};
+
+  
+
+  return `/api/auth/check-email`
+}
+
+export const postApiAuthCheckEmail = async (postApiAuthCheckEmailBody: PostApiAuthCheckEmailBody, options?: RequestInit): Promise<postApiAuthCheckEmailResponse> => {
+  
+  return customFetch<postApiAuthCheckEmailResponse>(getPostApiAuthCheckEmailUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiAuthCheckEmailBody,)
+  }
+);}
+
+
 
 /**
  * 회원가입 전에 사용자명 중복 여부를 확인합니다.
  * @summary 사용자명 중복 확인
  */
 export type postApiAuthCheckUsernameResponse200 = {
-  data: UsernameAvailabilityResponse;
-  status: 200;
+  data: UsernameAvailabilityResponse
+  status: 200
+}
+    
+export type postApiAuthCheckUsernameResponseSuccess = (postApiAuthCheckUsernameResponse200) & {
+  headers: Headers;
 };
+;
 
-export type postApiAuthCheckUsernameResponseSuccess =
-  postApiAuthCheckUsernameResponse200 & {
-    headers: Headers;
-  };
-
-export type postApiAuthCheckUsernameResponse =
-  postApiAuthCheckUsernameResponseSuccess;
+export type postApiAuthCheckUsernameResponse = (postApiAuthCheckUsernameResponseSuccess)
 
 export const getPostApiAuthCheckUsernameUrl = () => {
-  return `/api/auth/check-username`;
-};
 
-export const postApiAuthCheckUsername = async (
-  postApiAuthCheckUsernameBody: PostApiAuthCheckUsernameBody,
-  options?: RequestInit,
-): Promise<postApiAuthCheckUsernameResponse> => {
-  return customFetch<postApiAuthCheckUsernameResponse>(
-    getPostApiAuthCheckUsernameUrl(),
-    {
-      ...options,
-      method: "POST",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(postApiAuthCheckUsernameBody),
-    },
-  );
-};
+
+  
+
+  return `/api/auth/check-username`
+}
+
+export const postApiAuthCheckUsername = async (postApiAuthCheckUsernameBody: PostApiAuthCheckUsernameBody, options?: RequestInit): Promise<postApiAuthCheckUsernameResponse> => {
+  
+  return customFetch<postApiAuthCheckUsernameResponse>(getPostApiAuthCheckUsernameUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiAuthCheckUsernameBody,)
+  }
+);}
+
+
 
 /**
  * 비밀번호 재설정 전에 이메일로 인증 코드를 발송합니다.
- * @summary 비밀번호 재설정용 이메일 인증 코드 발송
+ * @summary 비밀번호 재설정 이메일 인증 코드 발송
  */
 export type postApiAuthEmailVerificationResetSendResponse200 = {
-  data: PostApiAuthEmailVerificationResetSend200;
-  status: 200;
+  data: PostApiAuthEmailVerificationResetSend200
+  status: 200
+}
+    
+export type postApiAuthEmailVerificationResetSendResponseSuccess = (postApiAuthEmailVerificationResetSendResponse200) & {
+  headers: Headers;
 };
+;
 
-export type postApiAuthEmailVerificationResetSendResponseSuccess =
-  postApiAuthEmailVerificationResetSendResponse200 & {
-    headers: Headers;
-  };
-
-export type postApiAuthEmailVerificationResetSendResponse =
-  postApiAuthEmailVerificationResetSendResponseSuccess;
+export type postApiAuthEmailVerificationResetSendResponse = (postApiAuthEmailVerificationResetSendResponseSuccess)
 
 export const getPostApiAuthEmailVerificationResetSendUrl = () => {
-  return `/api/auth/email-verification/reset/send`;
-};
 
-export const postApiAuthEmailVerificationResetSend = async (
-  postApiAuthEmailVerificationResetSendBody: PostApiAuthEmailVerificationResetSendBody,
-  options?: RequestInit,
-): Promise<postApiAuthEmailVerificationResetSendResponse> => {
-  return customFetch<postApiAuthEmailVerificationResetSendResponse>(
-    getPostApiAuthEmailVerificationResetSendUrl(),
-    {
-      ...options,
-      method: "POST",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(postApiAuthEmailVerificationResetSendBody),
-    },
-  );
-};
+
+  
+
+  return `/api/auth/email-verification/reset/send`
+}
+
+export const postApiAuthEmailVerificationResetSend = async (postApiAuthEmailVerificationResetSendBody: PostApiAuthEmailVerificationResetSendBody, options?: RequestInit): Promise<postApiAuthEmailVerificationResetSendResponse> => {
+  
+  return customFetch<postApiAuthEmailVerificationResetSendResponse>(getPostApiAuthEmailVerificationResetSendUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiAuthEmailVerificationResetSendBody,)
+  }
+);}
+
+
 
 /**
  * 이메일로 받은 인증 코드를 검증합니다.
- * @summary 비밀번호 재설정용 이메일 인증 코드 검증
+ * @summary 비밀번호 재설정 이메일 인증 코드 검증
  */
 export type postApiAuthEmailVerificationResetVerifyResponse200 = {
-  data: PostApiAuthEmailVerificationResetVerify200;
-  status: 200;
+  data: PostApiAuthEmailVerificationResetVerify200
+  status: 200
+}
+    
+export type postApiAuthEmailVerificationResetVerifyResponseSuccess = (postApiAuthEmailVerificationResetVerifyResponse200) & {
+  headers: Headers;
 };
+;
 
-export type postApiAuthEmailVerificationResetVerifyResponseSuccess =
-  postApiAuthEmailVerificationResetVerifyResponse200 & {
-    headers: Headers;
-  };
-
-export type postApiAuthEmailVerificationResetVerifyResponse =
-  postApiAuthEmailVerificationResetVerifyResponseSuccess;
+export type postApiAuthEmailVerificationResetVerifyResponse = (postApiAuthEmailVerificationResetVerifyResponseSuccess)
 
 export const getPostApiAuthEmailVerificationResetVerifyUrl = () => {
-  return `/api/auth/email-verification/reset/verify`;
-};
 
-export const postApiAuthEmailVerificationResetVerify = async (
-  postApiAuthEmailVerificationResetVerifyBody: PostApiAuthEmailVerificationResetVerifyBody,
-  options?: RequestInit,
-): Promise<postApiAuthEmailVerificationResetVerifyResponse> => {
-  return customFetch<postApiAuthEmailVerificationResetVerifyResponse>(
-    getPostApiAuthEmailVerificationResetVerifyUrl(),
-    {
-      ...options,
-      method: "POST",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(postApiAuthEmailVerificationResetVerifyBody),
-    },
-  );
-};
+
+  
+
+  return `/api/auth/email-verification/reset/verify`
+}
+
+export const postApiAuthEmailVerificationResetVerify = async (postApiAuthEmailVerificationResetVerifyBody: PostApiAuthEmailVerificationResetVerifyBody, options?: RequestInit): Promise<postApiAuthEmailVerificationResetVerifyResponse> => {
+  
+  return customFetch<postApiAuthEmailVerificationResetVerifyResponse>(getPostApiAuthEmailVerificationResetVerifyUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiAuthEmailVerificationResetVerifyBody,)
+  }
+);}
+
+
 
 /**
  * 회원가입 전에 이메일로 인증 코드를 발송합니다.
  * @summary 회원가입 이메일 인증 코드 발송
  */
 export type postApiAuthEmailVerificationSendResponse200 = {
-  data: PostApiAuthEmailVerificationSend200;
-  status: 200;
+  data: PostApiAuthEmailVerificationSend200
+  status: 200
+}
+    
+export type postApiAuthEmailVerificationSendResponseSuccess = (postApiAuthEmailVerificationSendResponse200) & {
+  headers: Headers;
 };
+;
 
-export type postApiAuthEmailVerificationSendResponseSuccess =
-  postApiAuthEmailVerificationSendResponse200 & {
-    headers: Headers;
-  };
-
-export type postApiAuthEmailVerificationSendResponse =
-  postApiAuthEmailVerificationSendResponseSuccess;
+export type postApiAuthEmailVerificationSendResponse = (postApiAuthEmailVerificationSendResponseSuccess)
 
 export const getPostApiAuthEmailVerificationSendUrl = () => {
-  return `/api/auth/email-verification/send`;
-};
 
-export const postApiAuthEmailVerificationSend = async (
-  postApiAuthEmailVerificationSendBody: PostApiAuthEmailVerificationSendBody,
-  options?: RequestInit,
-): Promise<postApiAuthEmailVerificationSendResponse> => {
-  return customFetch<postApiAuthEmailVerificationSendResponse>(
-    getPostApiAuthEmailVerificationSendUrl(),
-    {
-      ...options,
-      method: "POST",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(postApiAuthEmailVerificationSendBody),
-    },
-  );
-};
+
+  
+
+  return `/api/auth/email-verification/send`
+}
+
+export const postApiAuthEmailVerificationSend = async (postApiAuthEmailVerificationSendBody: PostApiAuthEmailVerificationSendBody, options?: RequestInit): Promise<postApiAuthEmailVerificationSendResponse> => {
+  
+  return customFetch<postApiAuthEmailVerificationSendResponse>(getPostApiAuthEmailVerificationSendUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiAuthEmailVerificationSendBody,)
+  }
+);}
+
+
 
 /**
  * 이메일로 받은 인증 코드를 검증합니다.
  * @summary 회원가입 이메일 인증 코드 검증
  */
 export type postApiAuthEmailVerificationVerifyResponse200 = {
-  data: PostApiAuthEmailVerificationVerify200;
-  status: 200;
+  data: PostApiAuthEmailVerificationVerify200
+  status: 200
+}
+    
+export type postApiAuthEmailVerificationVerifyResponseSuccess = (postApiAuthEmailVerificationVerifyResponse200) & {
+  headers: Headers;
 };
+;
 
-export type postApiAuthEmailVerificationVerifyResponseSuccess =
-  postApiAuthEmailVerificationVerifyResponse200 & {
-    headers: Headers;
-  };
-
-export type postApiAuthEmailVerificationVerifyResponse =
-  postApiAuthEmailVerificationVerifyResponseSuccess;
+export type postApiAuthEmailVerificationVerifyResponse = (postApiAuthEmailVerificationVerifyResponseSuccess)
 
 export const getPostApiAuthEmailVerificationVerifyUrl = () => {
-  return `/api/auth/email-verification/verify`;
-};
 
-export const postApiAuthEmailVerificationVerify = async (
-  postApiAuthEmailVerificationVerifyBody: PostApiAuthEmailVerificationVerifyBody,
-  options?: RequestInit,
-): Promise<postApiAuthEmailVerificationVerifyResponse> => {
-  return customFetch<postApiAuthEmailVerificationVerifyResponse>(
-    getPostApiAuthEmailVerificationVerifyUrl(),
-    {
-      ...options,
-      method: "POST",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(postApiAuthEmailVerificationVerifyBody),
-    },
-  );
-};
+
+  
+
+  return `/api/auth/email-verification/verify`
+}
+
+export const postApiAuthEmailVerificationVerify = async (postApiAuthEmailVerificationVerifyBody: PostApiAuthEmailVerificationVerifyBody, options?: RequestInit): Promise<postApiAuthEmailVerificationVerifyResponse> => {
+  
+  return customFetch<postApiAuthEmailVerificationVerifyResponse>(getPostApiAuthEmailVerificationVerifyUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiAuthEmailVerificationVerifyBody,)
+  }
+);}
+
+
 
 /**
  * 이메일/비밀번호를 검증하고 토큰 정보를 반환합니다.
  * @summary 로그인
  */
 export type postApiAuthLoginResponse200 = {
-  data: AuthResponse;
-  status: 200;
-};
-
-export type postApiAuthLoginResponseSuccess = postApiAuthLoginResponse200 & {
+  data: AuthResponse
+  status: 200
+}
+    
+export type postApiAuthLoginResponseSuccess = (postApiAuthLoginResponse200) & {
   headers: Headers;
 };
+;
 
-export type postApiAuthLoginResponse = postApiAuthLoginResponseSuccess;
+export type postApiAuthLoginResponse = (postApiAuthLoginResponseSuccess)
 
 export const getPostApiAuthLoginUrl = () => {
-  return `/api/auth/login`;
-};
 
-export const postApiAuthLogin = async (
-  postApiAuthLoginBody: PostApiAuthLoginBody,
-  options?: RequestInit,
-): Promise<postApiAuthLoginResponse> => {
-  return customFetch<postApiAuthLoginResponse>(getPostApiAuthLoginUrl(), {
+
+  
+
+  return `/api/auth/login`
+}
+
+export const postApiAuthLogin = async (postApiAuthLoginBody: PostApiAuthLoginBody, options?: RequestInit): Promise<postApiAuthLoginResponse> => {
+  
+  return customFetch<postApiAuthLoginResponse>(getPostApiAuthLoginUrl(),
+  {      
     ...options,
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(postApiAuthLoginBody),
-  });
-};
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiAuthLoginBody,)
+  }
+);}
+
+
 
 /**
  * 프론트가 전달한 1회용 ticket으로 JWT 응답을 조회합니다.
  * @summary 소셜 OAuth 로그인 완료
  */
 export type postApiAuthOauthCompleteResponse200 = {
-  data: AuthResponse;
-  status: 200;
+  data: AuthResponse
+  status: 200
+}
+    
+export type postApiAuthOauthCompleteResponseSuccess = (postApiAuthOauthCompleteResponse200) & {
+  headers: Headers;
 };
+;
 
-export type postApiAuthOauthCompleteResponseSuccess =
-  postApiAuthOauthCompleteResponse200 & {
-    headers: Headers;
-  };
-
-export type postApiAuthOauthCompleteResponse =
-  postApiAuthOauthCompleteResponseSuccess;
+export type postApiAuthOauthCompleteResponse = (postApiAuthOauthCompleteResponseSuccess)
 
 export const getPostApiAuthOauthCompleteUrl = () => {
-  return `/api/auth/oauth/complete`;
-};
 
-export const postApiAuthOauthComplete = async (
-  postApiAuthOauthCompleteBody: PostApiAuthOauthCompleteBody,
-  options?: RequestInit,
-): Promise<postApiAuthOauthCompleteResponse> => {
-  return customFetch<postApiAuthOauthCompleteResponse>(
-    getPostApiAuthOauthCompleteUrl(),
-    {
-      ...options,
-      method: "POST",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(postApiAuthOauthCompleteBody),
-    },
-  );
-};
+
+  
+
+  return `/api/auth/oauth/complete`
+}
+
+export const postApiAuthOauthComplete = async (postApiAuthOauthCompleteBody: PostApiAuthOauthCompleteBody, options?: RequestInit): Promise<postApiAuthOauthCompleteResponse> => {
+  
+  return customFetch<postApiAuthOauthCompleteResponse>(getPostApiAuthOauthCompleteUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiAuthOauthCompleteBody,)
+  }
+);}
+
+
 
 /**
  * 제공자 콜백에서 code/state를 처리하고 프론트로 리다이렉트합니다.
  * @summary 소셜 OAuth 콜백
  */
 export type getApiAuthOauthProviderCallbackResponse200 = {
-  data: void;
-  status: 200;
+  data: void
+  status: 200
+}
+    
+export type getApiAuthOauthProviderCallbackResponseSuccess = (getApiAuthOauthProviderCallbackResponse200) & {
+  headers: Headers;
 };
+;
 
-export type getApiAuthOauthProviderCallbackResponseSuccess =
-  getApiAuthOauthProviderCallbackResponse200 & {
-    headers: Headers;
-  };
+export type getApiAuthOauthProviderCallbackResponse = (getApiAuthOauthProviderCallbackResponseSuccess)
 
-export type getApiAuthOauthProviderCallbackResponse =
-  getApiAuthOauthProviderCallbackResponseSuccess;
-
-export const getGetApiAuthOauthProviderCallbackUrl = (
-  provider: string,
-  params?: GetApiAuthOauthProviderCallbackParams,
-) => {
+export const getGetApiAuthOauthProviderCallbackUrl = (provider: string,
+    params?: GetApiAuthOauthProviderCallbackParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value === undefined) return;
-    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       Object.entries(value).forEach(([k, v]) => {
         if (v === undefined) return;
-        if (Array.isArray(v)) {
-          v.forEach((item) =>
-            normalizedParams.append(k, item == null ? "null" : String(item)),
-          );
-        } else {
-          normalizedParams.append(k, v === null ? "null" : String(v));
-        }
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
       });
     } else if (Array.isArray(value)) {
-      value.forEach((v) =>
-        normalizedParams.append(key, v == null ? "null" : String(v)),
-      );
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
     } else {
-      normalizedParams.append(key, value === null ? "null" : String(value));
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/api/auth/oauth/${provider}/callback?${stringifiedParams}`
-    : `/api/auth/oauth/${provider}/callback`;
-};
+  return stringifiedParams.length > 0 ? `/api/auth/oauth/${provider}/callback?${stringifiedParams}` : `/api/auth/oauth/${provider}/callback`
+}
 
-export const getApiAuthOauthProviderCallback = async (
-  provider: string,
-  params?: GetApiAuthOauthProviderCallbackParams,
-  options?: RequestInit,
-): Promise<getApiAuthOauthProviderCallbackResponse> => {
-  return customFetch<getApiAuthOauthProviderCallbackResponse>(
-    getGetApiAuthOauthProviderCallbackUrl(provider, params),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
+export const getApiAuthOauthProviderCallback = async (provider: string,
+    params?: GetApiAuthOauthProviderCallbackParams, options?: RequestInit): Promise<getApiAuthOauthProviderCallbackResponse> => {
+  
+  return customFetch<getApiAuthOauthProviderCallbackResponse>(getGetApiAuthOauthProviderCallbackUrl(provider,params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 로그인 사용자 기준 백엔드 콜백 기반 소셜 연동 인가 URL을 생성합니다.
  * @summary 소셜 연동 OAuth 시작 URL 조회
  */
 export type getApiAuthOauthProviderLinkResponse200 = {
-  data: SocialAuthorizeResponse;
-  status: 200;
+  data: SocialAuthorizeResponse
+  status: 200
+}
+    
+export type getApiAuthOauthProviderLinkResponseSuccess = (getApiAuthOauthProviderLinkResponse200) & {
+  headers: Headers;
 };
+;
 
-export type getApiAuthOauthProviderLinkResponseSuccess =
-  getApiAuthOauthProviderLinkResponse200 & {
-    headers: Headers;
-  };
+export type getApiAuthOauthProviderLinkResponse = (getApiAuthOauthProviderLinkResponseSuccess)
 
-export type getApiAuthOauthProviderLinkResponse =
-  getApiAuthOauthProviderLinkResponseSuccess;
+export const getGetApiAuthOauthProviderLinkUrl = (provider: string,) => {
 
-export const getGetApiAuthOauthProviderLinkUrl = (provider: string) => {
-  return `/api/auth/oauth/${provider}/link`;
-};
 
-export const getApiAuthOauthProviderLink = async (
-  provider: string,
-  options?: RequestInit,
-): Promise<getApiAuthOauthProviderLinkResponse> => {
-  return customFetch<getApiAuthOauthProviderLinkResponse>(
-    getGetApiAuthOauthProviderLinkUrl(provider),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
+  
+
+  return `/api/auth/oauth/${provider}/link`
+}
+
+export const getApiAuthOauthProviderLink = async (provider: string, options?: RequestInit): Promise<getApiAuthOauthProviderLinkResponse> => {
+  
+  return customFetch<getApiAuthOauthProviderLinkResponse>(getGetApiAuthOauthProviderLinkUrl(provider),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 백엔드 콜백 기반 소셜 로그인 인가 URL을 생성합니다.
  * @summary 소셜 로그인 OAuth 시작 URL 조회
  */
 export type getApiAuthOauthProviderLoginResponse200 = {
-  data: SocialAuthorizeResponse;
-  status: 200;
+  data: SocialAuthorizeResponse
+  status: 200
+}
+    
+export type getApiAuthOauthProviderLoginResponseSuccess = (getApiAuthOauthProviderLoginResponse200) & {
+  headers: Headers;
 };
+;
 
-export type getApiAuthOauthProviderLoginResponseSuccess =
-  getApiAuthOauthProviderLoginResponse200 & {
-    headers: Headers;
-  };
+export type getApiAuthOauthProviderLoginResponse = (getApiAuthOauthProviderLoginResponseSuccess)
 
-export type getApiAuthOauthProviderLoginResponse =
-  getApiAuthOauthProviderLoginResponseSuccess;
+export const getGetApiAuthOauthProviderLoginUrl = (provider: string,) => {
 
-export const getGetApiAuthOauthProviderLoginUrl = (provider: string) => {
-  return `/api/auth/oauth/${provider}/login`;
-};
 
-export const getApiAuthOauthProviderLogin = async (
-  provider: string,
-  options?: RequestInit,
-): Promise<getApiAuthOauthProviderLoginResponse> => {
-  return customFetch<getApiAuthOauthProviderLoginResponse>(
-    getGetApiAuthOauthProviderLoginUrl(provider),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
+  
+
+  return `/api/auth/oauth/${provider}/login`
+}
+
+export const getApiAuthOauthProviderLogin = async (provider: string, options?: RequestInit): Promise<getApiAuthOauthProviderLoginResponse> => {
+  
+  return customFetch<getApiAuthOauthProviderLoginResponse>(getGetApiAuthOauthProviderLoginUrl(provider),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 리프레시 토큰으로 액세스 토큰을 재발급합니다.
  * @summary 토큰 재발급
  */
 export type postApiAuthRefreshResponse200 = {
-  data: AuthResponse;
-  status: 200;
+  data: AuthResponse
+  status: 200
+}
+    
+export type postApiAuthRefreshResponseSuccess = (postApiAuthRefreshResponse200) & {
+  headers: Headers;
 };
+;
 
-export type postApiAuthRefreshResponseSuccess =
-  postApiAuthRefreshResponse200 & {
-    headers: Headers;
-  };
-
-export type postApiAuthRefreshResponse = postApiAuthRefreshResponseSuccess;
+export type postApiAuthRefreshResponse = (postApiAuthRefreshResponseSuccess)
 
 export const getPostApiAuthRefreshUrl = () => {
-  return `/api/auth/refresh`;
-};
 
-export const postApiAuthRefresh = async (
-  postApiAuthRefreshBody: PostApiAuthRefreshBody,
-  options?: RequestInit,
-): Promise<postApiAuthRefreshResponse> => {
-  return customFetch<postApiAuthRefreshResponse>(getPostApiAuthRefreshUrl(), {
+
+  
+
+  return `/api/auth/refresh`
+}
+
+export const postApiAuthRefresh = async (postApiAuthRefreshBody: PostApiAuthRefreshBody, options?: RequestInit): Promise<postApiAuthRefreshResponse> => {
+  
+  return customFetch<postApiAuthRefreshResponse>(getPostApiAuthRefreshUrl(),
+  {      
     ...options,
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(postApiAuthRefreshBody),
-  });
-};
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiAuthRefreshBody,)
+  }
+);}
+
+
 
 /**
  * 이메일 인증 후 임시 비밀번호를 메일로 전송합니다.
  * @summary 임시 비밀번호 발급
  */
 export type postApiAuthResetPasswordResponse200 = {
-  data: ResetPasswordResponse;
-  status: 200;
+  data: ResetPasswordResponse
+  status: 200
+}
+    
+export type postApiAuthResetPasswordResponseSuccess = (postApiAuthResetPasswordResponse200) & {
+  headers: Headers;
 };
+;
 
-export type postApiAuthResetPasswordResponseSuccess =
-  postApiAuthResetPasswordResponse200 & {
-    headers: Headers;
-  };
-
-export type postApiAuthResetPasswordResponse =
-  postApiAuthResetPasswordResponseSuccess;
+export type postApiAuthResetPasswordResponse = (postApiAuthResetPasswordResponseSuccess)
 
 export const getPostApiAuthResetPasswordUrl = () => {
-  return `/api/auth/reset-password`;
-};
 
-export const postApiAuthResetPassword = async (
-  postApiAuthResetPasswordBody: PostApiAuthResetPasswordBody,
-  options?: RequestInit,
-): Promise<postApiAuthResetPasswordResponse> => {
-  return customFetch<postApiAuthResetPasswordResponse>(
-    getPostApiAuthResetPasswordUrl(),
-    {
-      ...options,
-      method: "POST",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(postApiAuthResetPasswordBody),
-    },
-  );
-};
+
+  
+
+  return `/api/auth/reset-password`
+}
+
+export const postApiAuthResetPassword = async (postApiAuthResetPasswordBody: PostApiAuthResetPasswordBody, options?: RequestInit): Promise<postApiAuthResetPasswordResponse> => {
+  
+  return customFetch<postApiAuthResetPasswordResponse>(getPostApiAuthResetPasswordUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiAuthResetPasswordBody,)
+  }
+);}
+
+
 
 /**
  * 로컬 계정을 생성하고 토큰 정보를 반환합니다.
  * @summary 회원 가입
  */
 export type postApiAuthSignupResponse200 = {
-  data: AuthResponse;
-  status: 200;
-};
-
-export type postApiAuthSignupResponseSuccess = postApiAuthSignupResponse200 & {
+  data: AuthResponse
+  status: 200
+}
+    
+export type postApiAuthSignupResponseSuccess = (postApiAuthSignupResponse200) & {
   headers: Headers;
 };
+;
 
-export type postApiAuthSignupResponse = postApiAuthSignupResponseSuccess;
+export type postApiAuthSignupResponse = (postApiAuthSignupResponseSuccess)
 
 export const getPostApiAuthSignupUrl = () => {
-  return `/api/auth/signup`;
-};
 
-export const postApiAuthSignup = async (
-  postApiAuthSignupBody: PostApiAuthSignupBody,
-  options?: RequestInit,
-): Promise<postApiAuthSignupResponse> => {
-  return customFetch<postApiAuthSignupResponse>(getPostApiAuthSignupUrl(), {
+
+  
+
+  return `/api/auth/signup`
+}
+
+export const postApiAuthSignup = async (postApiAuthSignupBody: PostApiAuthSignupBody, options?: RequestInit): Promise<postApiAuthSignupResponse> => {
+  
+  return customFetch<postApiAuthSignupResponse>(getPostApiAuthSignupUrl(),
+  {      
     ...options,
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(postApiAuthSignupBody),
-  });
-};
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiAuthSignupBody,)
+  }
+);}
+
+
 
 /**
  * 시스템에 등록된 모든 배너 정보를 반환합니다.
  * @summary 배너 목록 조회
  */
 export type getApiBannersResponse200 = {
-  data: PageBannerResponse;
-  status: 200;
-};
-
-export type getApiBannersResponseSuccess = getApiBannersResponse200 & {
+  data: PageBannerResponse
+  status: 200
+}
+    
+export type getApiBannersResponseSuccess = (getApiBannersResponse200) & {
   headers: Headers;
 };
+;
 
-export type getApiBannersResponse = getApiBannersResponseSuccess;
+export type getApiBannersResponse = (getApiBannersResponseSuccess)
 
-export const getGetApiBannersUrl = (params?: GetApiBannersParams) => {
+export const getGetApiBannersUrl = (params?: GetApiBannersParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value === undefined) return;
-    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       Object.entries(value).forEach(([k, v]) => {
         if (v === undefined) return;
-        if (Array.isArray(v)) {
-          v.forEach((item) =>
-            normalizedParams.append(k, item == null ? "null" : String(item)),
-          );
-        } else {
-          normalizedParams.append(k, v === null ? "null" : String(v));
-        }
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
       });
     } else if (Array.isArray(value)) {
-      value.forEach((v) =>
-        normalizedParams.append(key, v == null ? "null" : String(v)),
-      );
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
     } else {
-      normalizedParams.append(key, value === null ? "null" : String(value));
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/api/banners?${stringifiedParams}`
-    : `/api/banners`;
-};
+  return stringifiedParams.length > 0 ? `/api/banners?${stringifiedParams}` : `/api/banners`
+}
 
-export const getApiBanners = async (
-  params?: GetApiBannersParams,
-  options?: RequestInit,
-): Promise<getApiBannersResponse> => {
-  return customFetch<getApiBannersResponse>(getGetApiBannersUrl(params), {
+export const getApiBanners = async (params?: GetApiBannersParams, options?: RequestInit): Promise<getApiBannersResponse> => {
+  
+  return customFetch<getApiBannersResponse>(getGetApiBannersUrl(params),
+  {      
     ...options,
-    method: "GET",
-  });
-};
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 식별자로 지정한 배너의 상세 정보를 조회합니다.
  * @summary 배너 상세 조회
  */
 export type getApiBannersIdResponse200 = {
-  data: BannerResponse;
-  status: 200;
-};
-
-export type getApiBannersIdResponseSuccess = getApiBannersIdResponse200 & {
+  data: BannerResponse
+  status: 200
+}
+    
+export type getApiBannersIdResponseSuccess = (getApiBannersIdResponse200) & {
   headers: Headers;
 };
+;
 
-export type getApiBannersIdResponse = getApiBannersIdResponseSuccess;
+export type getApiBannersIdResponse = (getApiBannersIdResponseSuccess)
 
-export const getGetApiBannersIdUrl = (id: number) => {
-  return `/api/banners/${id}`;
-};
+export const getGetApiBannersIdUrl = (id: number,) => {
 
-export const getApiBannersId = async (
-  id: number,
-  options?: RequestInit,
-): Promise<getApiBannersIdResponse> => {
-  return customFetch<getApiBannersIdResponse>(getGetApiBannersIdUrl(id), {
+
+  
+
+  return `/api/banners/${id}`
+}
+
+export const getApiBannersId = async (id: number, options?: RequestInit): Promise<getApiBannersIdResponse> => {
+  
+  return customFetch<getApiBannersIdResponse>(getGetApiBannersIdUrl(id),
+  {      
     ...options,
-    method: "GET",
-  });
-};
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 작성 및 열람이 가능한 전체 게시판을 조회합니다.
  * @summary 게시판 목록 조회
  */
 export type getApiBoardsResponse200 = {
-  data: PageBoardResponse;
-  status: 200;
-};
-
-export type getApiBoardsResponseSuccess = getApiBoardsResponse200 & {
+  data: PageBoardResponse
+  status: 200
+}
+    
+export type getApiBoardsResponseSuccess = (getApiBoardsResponse200) & {
   headers: Headers;
 };
+;
 
-export type getApiBoardsResponse = getApiBoardsResponseSuccess;
+export type getApiBoardsResponse = (getApiBoardsResponseSuccess)
 
-export const getGetApiBoardsUrl = (params?: GetApiBoardsParams) => {
+export const getGetApiBoardsUrl = (params?: GetApiBoardsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value === undefined) return;
-    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       Object.entries(value).forEach(([k, v]) => {
         if (v === undefined) return;
-        if (Array.isArray(v)) {
-          v.forEach((item) =>
-            normalizedParams.append(k, item == null ? "null" : String(item)),
-          );
-        } else {
-          normalizedParams.append(k, v === null ? "null" : String(v));
-        }
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
       });
     } else if (Array.isArray(value)) {
-      value.forEach((v) =>
-        normalizedParams.append(key, v == null ? "null" : String(v)),
-      );
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
     } else {
-      normalizedParams.append(key, value === null ? "null" : String(value));
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/api/boards?${stringifiedParams}`
-    : `/api/boards`;
-};
+  return stringifiedParams.length > 0 ? `/api/boards?${stringifiedParams}` : `/api/boards`
+}
 
-export const getApiBoards = async (
-  params?: GetApiBoardsParams,
-  options?: RequestInit,
-): Promise<getApiBoardsResponse> => {
-  return customFetch<getApiBoardsResponse>(getGetApiBoardsUrl(params), {
+export const getApiBoards = async (params?: GetApiBoardsParams, options?: RequestInit): Promise<getApiBoardsResponse> => {
+  
+  return customFetch<getApiBoardsResponse>(getGetApiBoardsUrl(params),
+  {      
     ...options,
-    method: "GET",
-  });
-};
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 지정한 게시판에만 적용되는 공지사항을 조회합니다.
  * @summary 게시판별 공지 조회
  */
 export type getApiBoardsAnnouncementsBoardBoardidResponse200 = {
-  data: PageAnnouncementResponse;
-  status: 200;
+  data: PageAnnouncementResponse
+  status: 200
+}
+    
+export type getApiBoardsAnnouncementsBoardBoardidResponseSuccess = (getApiBoardsAnnouncementsBoardBoardidResponse200) & {
+  headers: Headers;
 };
+;
 
-export type getApiBoardsAnnouncementsBoardBoardidResponseSuccess =
-  getApiBoardsAnnouncementsBoardBoardidResponse200 & {
-    headers: Headers;
-  };
+export type getApiBoardsAnnouncementsBoardBoardidResponse = (getApiBoardsAnnouncementsBoardBoardidResponseSuccess)
 
-export type getApiBoardsAnnouncementsBoardBoardidResponse =
-  getApiBoardsAnnouncementsBoardBoardidResponseSuccess;
-
-export const getGetApiBoardsAnnouncementsBoardBoardidUrl = (
-  boardId: number,
-  params?: GetApiBoardsAnnouncementsBoardBoardidParams,
-) => {
+export const getGetApiBoardsAnnouncementsBoardBoardidUrl = (boardId: number,
+    params?: GetApiBoardsAnnouncementsBoardBoardidParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value === undefined) return;
-    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       Object.entries(value).forEach(([k, v]) => {
         if (v === undefined) return;
-        if (Array.isArray(v)) {
-          v.forEach((item) =>
-            normalizedParams.append(k, item == null ? "null" : String(item)),
-          );
-        } else {
-          normalizedParams.append(k, v === null ? "null" : String(v));
-        }
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
       });
     } else if (Array.isArray(value)) {
-      value.forEach((v) =>
-        normalizedParams.append(key, v == null ? "null" : String(v)),
-      );
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
     } else {
-      normalizedParams.append(key, value === null ? "null" : String(value));
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/api/boards/announcements/board/${boardId}?${stringifiedParams}`
-    : `/api/boards/announcements/board/${boardId}`;
-};
+  return stringifiedParams.length > 0 ? `/api/boards/announcements/board/${boardId}?${stringifiedParams}` : `/api/boards/announcements/board/${boardId}`
+}
 
-export const getApiBoardsAnnouncementsBoardBoardid = async (
-  boardId: number,
-  params?: GetApiBoardsAnnouncementsBoardBoardidParams,
-  options?: RequestInit,
-): Promise<getApiBoardsAnnouncementsBoardBoardidResponse> => {
-  return customFetch<getApiBoardsAnnouncementsBoardBoardidResponse>(
-    getGetApiBoardsAnnouncementsBoardBoardidUrl(boardId, params),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
+export const getApiBoardsAnnouncementsBoardBoardid = async (boardId: number,
+    params?: GetApiBoardsAnnouncementsBoardBoardidParams, options?: RequestInit): Promise<getApiBoardsAnnouncementsBoardBoardidResponse> => {
+  
+  return customFetch<getApiBoardsAnnouncementsBoardBoardidResponse>(getGetApiBoardsAnnouncementsBoardBoardidUrl(boardId,params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 모든 사용자와 게시판에 공통으로 적용되는 공지 목록을 조회합니다.
  * @summary 전체 공지 조회
  */
 export type getApiBoardsAnnouncementsGlobalResponse200 = {
-  data: PageAnnouncementResponse;
-  status: 200;
+  data: PageAnnouncementResponse
+  status: 200
+}
+    
+export type getApiBoardsAnnouncementsGlobalResponseSuccess = (getApiBoardsAnnouncementsGlobalResponse200) & {
+  headers: Headers;
 };
+;
 
-export type getApiBoardsAnnouncementsGlobalResponseSuccess =
-  getApiBoardsAnnouncementsGlobalResponse200 & {
-    headers: Headers;
-  };
+export type getApiBoardsAnnouncementsGlobalResponse = (getApiBoardsAnnouncementsGlobalResponseSuccess)
 
-export type getApiBoardsAnnouncementsGlobalResponse =
-  getApiBoardsAnnouncementsGlobalResponseSuccess;
-
-export const getGetApiBoardsAnnouncementsGlobalUrl = (
-  params?: GetApiBoardsAnnouncementsGlobalParams,
-) => {
+export const getGetApiBoardsAnnouncementsGlobalUrl = (params?: GetApiBoardsAnnouncementsGlobalParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value === undefined) return;
-    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       Object.entries(value).forEach(([k, v]) => {
         if (v === undefined) return;
-        if (Array.isArray(v)) {
-          v.forEach((item) =>
-            normalizedParams.append(k, item == null ? "null" : String(item)),
-          );
-        } else {
-          normalizedParams.append(k, v === null ? "null" : String(v));
-        }
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
       });
     } else if (Array.isArray(value)) {
-      value.forEach((v) =>
-        normalizedParams.append(key, v == null ? "null" : String(v)),
-      );
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
     } else {
-      normalizedParams.append(key, value === null ? "null" : String(value));
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/api/boards/announcements/global?${stringifiedParams}`
-    : `/api/boards/announcements/global`;
-};
+  return stringifiedParams.length > 0 ? `/api/boards/announcements/global?${stringifiedParams}` : `/api/boards/announcements/global`
+}
 
-export const getApiBoardsAnnouncementsGlobal = async (
-  params?: GetApiBoardsAnnouncementsGlobalParams,
-  options?: RequestInit,
-): Promise<getApiBoardsAnnouncementsGlobalResponse> => {
-  return customFetch<getApiBoardsAnnouncementsGlobalResponse>(
-    getGetApiBoardsAnnouncementsGlobalUrl(params),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
+export const getApiBoardsAnnouncementsGlobal = async (params?: GetApiBoardsAnnouncementsGlobalParams, options?: RequestInit): Promise<getApiBoardsAnnouncementsGlobalResponse> => {
+  
+  return customFetch<getApiBoardsAnnouncementsGlobalResponse>(getGetApiBoardsAnnouncementsGlobalUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 해당 게시판에만 적용되는 공지사항 목록을 반환합니다.
  * @summary 게시판 공지 조회
  */
 export type getApiBoardsBoardidAnnouncementsResponse200 = {
-  data: PageAnnouncementResponse;
-  status: 200;
+  data: PageAnnouncementResponse
+  status: 200
+}
+    
+export type getApiBoardsBoardidAnnouncementsResponseSuccess = (getApiBoardsBoardidAnnouncementsResponse200) & {
+  headers: Headers;
 };
+;
 
-export type getApiBoardsBoardidAnnouncementsResponseSuccess =
-  getApiBoardsBoardidAnnouncementsResponse200 & {
-    headers: Headers;
-  };
+export type getApiBoardsBoardidAnnouncementsResponse = (getApiBoardsBoardidAnnouncementsResponseSuccess)
 
-export type getApiBoardsBoardidAnnouncementsResponse =
-  getApiBoardsBoardidAnnouncementsResponseSuccess;
-
-export const getGetApiBoardsBoardidAnnouncementsUrl = (
-  boardId: number,
-  params?: GetApiBoardsBoardidAnnouncementsParams,
-) => {
+export const getGetApiBoardsBoardidAnnouncementsUrl = (boardId: number,
+    params?: GetApiBoardsBoardidAnnouncementsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value === undefined) return;
-    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       Object.entries(value).forEach(([k, v]) => {
         if (v === undefined) return;
-        if (Array.isArray(v)) {
-          v.forEach((item) =>
-            normalizedParams.append(k, item == null ? "null" : String(item)),
-          );
-        } else {
-          normalizedParams.append(k, v === null ? "null" : String(v));
-        }
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
       });
     } else if (Array.isArray(value)) {
-      value.forEach((v) =>
-        normalizedParams.append(key, v == null ? "null" : String(v)),
-      );
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
     } else {
-      normalizedParams.append(key, value === null ? "null" : String(value));
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/api/boards/${boardId}/announcements?${stringifiedParams}`
-    : `/api/boards/${boardId}/announcements`;
-};
+  return stringifiedParams.length > 0 ? `/api/boards/${boardId}/announcements?${stringifiedParams}` : `/api/boards/${boardId}/announcements`
+}
 
-export const getApiBoardsBoardidAnnouncements = async (
-  boardId: number,
-  params?: GetApiBoardsBoardidAnnouncementsParams,
-  options?: RequestInit,
-): Promise<getApiBoardsBoardidAnnouncementsResponse> => {
-  return customFetch<getApiBoardsBoardidAnnouncementsResponse>(
-    getGetApiBoardsBoardidAnnouncementsUrl(boardId, params),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
+export const getApiBoardsBoardidAnnouncements = async (boardId: number,
+    params?: GetApiBoardsBoardidAnnouncementsParams, options?: RequestInit): Promise<getApiBoardsBoardidAnnouncementsResponse> => {
+  
+  return customFetch<getApiBoardsBoardidAnnouncementsResponse>(getGetApiBoardsBoardidAnnouncementsUrl(boardId,params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 선택한 게시판의 게시글을 페이지 단위로 조회하며 검색 조건을 적용할 수 있습니다.
  * @summary 게시글 목록 조회
  */
 export type getApiBoardsBoardidPostsResponse200 = {
-  data: PagePostResponse;
-  status: 200;
+  data: PagePostResponse
+  status: 200
+}
+    
+export type getApiBoardsBoardidPostsResponseSuccess = (getApiBoardsBoardidPostsResponse200) & {
+  headers: Headers;
 };
+;
 
-export type getApiBoardsBoardidPostsResponseSuccess =
-  getApiBoardsBoardidPostsResponse200 & {
-    headers: Headers;
-  };
+export type getApiBoardsBoardidPostsResponse = (getApiBoardsBoardidPostsResponseSuccess)
 
-export type getApiBoardsBoardidPostsResponse =
-  getApiBoardsBoardidPostsResponseSuccess;
-
-export const getGetApiBoardsBoardidPostsUrl = (
-  boardId: number,
-  params: GetApiBoardsBoardidPostsParams,
-) => {
+export const getGetApiBoardsBoardidPostsUrl = (boardId: number,
+    params: GetApiBoardsBoardidPostsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value === undefined) return;
-    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       Object.entries(value).forEach(([k, v]) => {
         if (v === undefined) return;
-        if (Array.isArray(v)) {
-          v.forEach((item) =>
-            normalizedParams.append(k, item == null ? "null" : String(item)),
-          );
-        } else {
-          normalizedParams.append(k, v === null ? "null" : String(v));
-        }
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
       });
     } else if (Array.isArray(value)) {
-      value.forEach((v) =>
-        normalizedParams.append(key, v == null ? "null" : String(v)),
-      );
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
     } else {
-      normalizedParams.append(key, value === null ? "null" : String(value));
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/api/boards/${boardId}/posts?${stringifiedParams}`
-    : `/api/boards/${boardId}/posts`;
-};
+  return stringifiedParams.length > 0 ? `/api/boards/${boardId}/posts?${stringifiedParams}` : `/api/boards/${boardId}/posts`
+}
 
-export const getApiBoardsBoardidPosts = async (
-  boardId: number,
-  params: GetApiBoardsBoardidPostsParams,
-  options?: RequestInit,
-): Promise<getApiBoardsBoardidPostsResponse> => {
-  return customFetch<getApiBoardsBoardidPostsResponse>(
-    getGetApiBoardsBoardidPostsUrl(boardId, params),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
+export const getApiBoardsBoardidPosts = async (boardId: number,
+    params: GetApiBoardsBoardidPostsParams, options?: RequestInit): Promise<getApiBoardsBoardidPostsResponse> => {
+  
+  return customFetch<getApiBoardsBoardidPostsResponse>(getGetApiBoardsBoardidPostsUrl(boardId,params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 선택한 게시판에 새 글을 등록합니다.
  * @summary 게시글 작성
  */
 export type postApiBoardsBoardidPostsResponse200 = {
-  data: PostResponse;
-  status: 200;
+  data: PostResponse
+  status: 200
+}
+    
+export type postApiBoardsBoardidPostsResponseSuccess = (postApiBoardsBoardidPostsResponse200) & {
+  headers: Headers;
 };
+;
 
-export type postApiBoardsBoardidPostsResponseSuccess =
-  postApiBoardsBoardidPostsResponse200 & {
-    headers: Headers;
-  };
+export type postApiBoardsBoardidPostsResponse = (postApiBoardsBoardidPostsResponseSuccess)
 
-export type postApiBoardsBoardidPostsResponse =
-  postApiBoardsBoardidPostsResponseSuccess;
+export const getPostApiBoardsBoardidPostsUrl = (boardId: number,) => {
 
-export const getPostApiBoardsBoardidPostsUrl = (boardId: number) => {
-  return `/api/boards/${boardId}/posts`;
-};
 
-export const postApiBoardsBoardidPosts = async (
-  boardId: number,
-  postApiBoardsBoardidPostsBody: PostApiBoardsBoardidPostsBody,
-  options?: RequestInit,
-): Promise<postApiBoardsBoardidPostsResponse> => {
-  return customFetch<postApiBoardsBoardidPostsResponse>(
-    getPostApiBoardsBoardidPostsUrl(boardId),
-    {
-      ...options,
-      method: "POST",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(postApiBoardsBoardidPostsBody),
-    },
-  );
-};
+  
+
+  return `/api/boards/${boardId}/posts`
+}
+
+export const postApiBoardsBoardidPosts = async (boardId: number,
+    postApiBoardsBoardidPostsBody: PostApiBoardsBoardidPostsBody, options?: RequestInit): Promise<postApiBoardsBoardidPostsResponse> => {
+  
+  return customFetch<postApiBoardsBoardidPostsResponse>(getPostApiBoardsBoardidPostsUrl(boardId),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiBoardsBoardidPostsBody,)
+  }
+);}
+
+
 
 /**
  * 본인이 작성한 게시글을 삭제합니다.
  * @summary 게시글 삭제
  */
 export type deleteApiBoardsBoardidPostsPostidResponse200 = {
-  data: boolean;
-  status: 200;
+  data: boolean
+  status: 200
+}
+    
+export type deleteApiBoardsBoardidPostsPostidResponseSuccess = (deleteApiBoardsBoardidPostsPostidResponse200) & {
+  headers: Headers;
 };
+;
 
-export type deleteApiBoardsBoardidPostsPostidResponseSuccess =
-  deleteApiBoardsBoardidPostsPostidResponse200 & {
-    headers: Headers;
-  };
+export type deleteApiBoardsBoardidPostsPostidResponse = (deleteApiBoardsBoardidPostsPostidResponseSuccess)
 
-export type deleteApiBoardsBoardidPostsPostidResponse =
-  deleteApiBoardsBoardidPostsPostidResponseSuccess;
+export const getDeleteApiBoardsBoardidPostsPostidUrl = (boardId: number,
+    postId: number,) => {
 
-export const getDeleteApiBoardsBoardidPostsPostidUrl = (
-  boardId: number,
-  postId: number,
-) => {
-  return `/api/boards/${boardId}/posts/${postId}`;
-};
 
-export const deleteApiBoardsBoardidPostsPostid = async (
-  boardId: number,
-  postId: number,
-  options?: RequestInit,
-): Promise<deleteApiBoardsBoardidPostsPostidResponse> => {
-  return customFetch<deleteApiBoardsBoardidPostsPostidResponse>(
-    getDeleteApiBoardsBoardidPostsPostidUrl(boardId, postId),
-    {
-      ...options,
-      method: "DELETE",
-    },
-  );
-};
+  
+
+  return `/api/boards/${boardId}/posts/${postId}`
+}
+
+export const deleteApiBoardsBoardidPostsPostid = async (boardId: number,
+    postId: number, options?: RequestInit): Promise<deleteApiBoardsBoardidPostsPostidResponse> => {
+  
+  return customFetch<deleteApiBoardsBoardidPostsPostidResponse>(getDeleteApiBoardsBoardidPostsPostidUrl(boardId,postId),
+  {      
+    ...options,
+    method: 'DELETE'
+    
+    
+  }
+);}
+
+
 
 /**
  * 본인이 작성한 게시글의 제목과 내용을 수정합니다.
  * @summary 게시글 수정
  */
 export type putApiBoardsBoardidPostsPostidResponse200 = {
-  data: PostResponse;
-  status: 200;
+  data: PostResponse
+  status: 200
+}
+    
+export type putApiBoardsBoardidPostsPostidResponseSuccess = (putApiBoardsBoardidPostsPostidResponse200) & {
+  headers: Headers;
 };
+;
 
-export type putApiBoardsBoardidPostsPostidResponseSuccess =
-  putApiBoardsBoardidPostsPostidResponse200 & {
-    headers: Headers;
-  };
+export type putApiBoardsBoardidPostsPostidResponse = (putApiBoardsBoardidPostsPostidResponseSuccess)
 
-export type putApiBoardsBoardidPostsPostidResponse =
-  putApiBoardsBoardidPostsPostidResponseSuccess;
+export const getPutApiBoardsBoardidPostsPostidUrl = (boardId: number,
+    postId: number,) => {
 
-export const getPutApiBoardsBoardidPostsPostidUrl = (
-  boardId: number,
-  postId: number,
-) => {
-  return `/api/boards/${boardId}/posts/${postId}`;
-};
 
-export const putApiBoardsBoardidPostsPostid = async (
-  boardId: number,
-  postId: number,
-  putApiBoardsBoardidPostsPostidBody: PutApiBoardsBoardidPostsPostidBody,
-  options?: RequestInit,
-): Promise<putApiBoardsBoardidPostsPostidResponse> => {
-  return customFetch<putApiBoardsBoardidPostsPostidResponse>(
-    getPutApiBoardsBoardidPostsPostidUrl(boardId, postId),
-    {
-      ...options,
-      method: "PUT",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(putApiBoardsBoardidPostsPostidBody),
-    },
-  );
-};
+  
+
+  return `/api/boards/${boardId}/posts/${postId}`
+}
+
+export const putApiBoardsBoardidPostsPostid = async (boardId: number,
+    postId: number,
+    putApiBoardsBoardidPostsPostidBody: PutApiBoardsBoardidPostsPostidBody, options?: RequestInit): Promise<putApiBoardsBoardidPostsPostidResponse> => {
+  
+  return customFetch<putApiBoardsBoardidPostsPostidResponse>(getPutApiBoardsBoardidPostsPostidUrl(boardId,postId),
+  {      
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      putApiBoardsBoardidPostsPostidBody,)
+  }
+);}
+
+
 
 /**
  * 사용자에게 노출 가능한 전체 보틀 리스트를 반환합니다.
  * @summary 보틀 목록 조회
  */
 export type getApiBottlesResponse200 = {
-  data: PageBottleResponse;
-  status: 200;
-};
-
-export type getApiBottlesResponseSuccess = getApiBottlesResponse200 & {
+  data: PageBottleResponse
+  status: 200
+}
+    
+export type getApiBottlesResponseSuccess = (getApiBottlesResponse200) & {
   headers: Headers;
 };
+;
 
-export type getApiBottlesResponse = getApiBottlesResponseSuccess;
+export type getApiBottlesResponse = (getApiBottlesResponseSuccess)
 
-export const getGetApiBottlesUrl = (params: GetApiBottlesParams) => {
+export const getGetApiBottlesUrl = (params: GetApiBottlesParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value === undefined) return;
-    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       Object.entries(value).forEach(([k, v]) => {
         if (v === undefined) return;
-        if (Array.isArray(v)) {
-          v.forEach((item) =>
-            normalizedParams.append(k, item == null ? "null" : String(item)),
-          );
-        } else {
-          normalizedParams.append(k, v === null ? "null" : String(v));
-        }
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
       });
     } else if (Array.isArray(value)) {
-      value.forEach((v) =>
-        normalizedParams.append(key, v == null ? "null" : String(v)),
-      );
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
     } else {
-      normalizedParams.append(key, value === null ? "null" : String(value));
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/api/bottles?${stringifiedParams}`
-    : `/api/bottles`;
-};
+  return stringifiedParams.length > 0 ? `/api/bottles?${stringifiedParams}` : `/api/bottles`
+}
 
-export const getApiBottles = async (
-  params: GetApiBottlesParams,
-  options?: RequestInit,
-): Promise<getApiBottlesResponse> => {
-  return customFetch<getApiBottlesResponse>(getGetApiBottlesUrl(params), {
+export const getApiBottles = async (params: GetApiBottlesParams, options?: RequestInit): Promise<getApiBottlesResponse> => {
+  
+  return customFetch<getApiBottlesResponse>(getGetApiBottlesUrl(params),
+  {      
     ...options,
-    method: "GET",
-  });
-};
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * GET /api/bottles 노출 시 사용할 검색 파라미터 정보를 반환합니다.
  * @summary 보틀 검색 파라미터 조회
  */
 export type getApiBottlesParametersResponse200 = {
-  data: BottleSearchParameterValues;
-  status: 200;
+  data: BottleSearchParameterValues
+  status: 200
+}
+    
+export type getApiBottlesParametersResponseSuccess = (getApiBottlesParametersResponse200) & {
+  headers: Headers;
 };
+;
 
-export type getApiBottlesParametersResponseSuccess =
-  getApiBottlesParametersResponse200 & {
-    headers: Headers;
-  };
-
-export type getApiBottlesParametersResponse =
-  getApiBottlesParametersResponseSuccess;
+export type getApiBottlesParametersResponse = (getApiBottlesParametersResponseSuccess)
 
 export const getGetApiBottlesParametersUrl = () => {
-  return `/api/bottles/parameters`;
-};
 
-export const getApiBottlesParameters = async (
-  options?: RequestInit,
-): Promise<getApiBottlesParametersResponse> => {
-  return customFetch<getApiBottlesParametersResponse>(
-    getGetApiBottlesParametersUrl(),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
+
+  
+
+  return `/api/bottles/parameters`
+}
+
+export const getApiBottlesParameters = async ( options?: RequestInit): Promise<getApiBottlesParametersResponse> => {
+  
+  return customFetch<getApiBottlesParametersResponse>(getGetApiBottlesParametersUrl(),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 사용자가 자신의 예약 신청 내역을 페이지 단위로 조회합니다.
  * @summary 내 예약 신청 목록
  */
 export type getApiBottlesReservationsApplicationsMeResponse200 = {
-  data: PageBottleReservationApplicationPublicResponse;
-  status: 200;
+  data: PageBottleReservationApplicationPublicResponse
+  status: 200
+}
+    
+export type getApiBottlesReservationsApplicationsMeResponseSuccess = (getApiBottlesReservationsApplicationsMeResponse200) & {
+  headers: Headers;
 };
+;
 
-export type getApiBottlesReservationsApplicationsMeResponseSuccess =
-  getApiBottlesReservationsApplicationsMeResponse200 & {
-    headers: Headers;
-  };
+export type getApiBottlesReservationsApplicationsMeResponse = (getApiBottlesReservationsApplicationsMeResponseSuccess)
 
-export type getApiBottlesReservationsApplicationsMeResponse =
-  getApiBottlesReservationsApplicationsMeResponseSuccess;
-
-export const getGetApiBottlesReservationsApplicationsMeUrl = (
-  params?: GetApiBottlesReservationsApplicationsMeParams,
-) => {
+export const getGetApiBottlesReservationsApplicationsMeUrl = (params?: GetApiBottlesReservationsApplicationsMeParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value === undefined) return;
-    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       Object.entries(value).forEach(([k, v]) => {
         if (v === undefined) return;
-        if (Array.isArray(v)) {
-          v.forEach((item) =>
-            normalizedParams.append(k, item == null ? "null" : String(item)),
-          );
-        } else {
-          normalizedParams.append(k, v === null ? "null" : String(v));
-        }
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
       });
     } else if (Array.isArray(value)) {
-      value.forEach((v) =>
-        normalizedParams.append(key, v == null ? "null" : String(v)),
-      );
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
     } else {
-      normalizedParams.append(key, value === null ? "null" : String(value));
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/api/bottles/reservations/applications/me?${stringifiedParams}`
-    : `/api/bottles/reservations/applications/me`;
-};
+  return stringifiedParams.length > 0 ? `/api/bottles/reservations/applications/me?${stringifiedParams}` : `/api/bottles/reservations/applications/me`
+}
 
-export const getApiBottlesReservationsApplicationsMe = async (
-  params?: GetApiBottlesReservationsApplicationsMeParams,
-  options?: RequestInit,
-): Promise<getApiBottlesReservationsApplicationsMeResponse> => {
-  return customFetch<getApiBottlesReservationsApplicationsMeResponse>(
-    getGetApiBottlesReservationsApplicationsMeUrl(params),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
+export const getApiBottlesReservationsApplicationsMe = async (params?: GetApiBottlesReservationsApplicationsMeParams, options?: RequestInit): Promise<getApiBottlesReservationsApplicationsMeResponse> => {
+  
+  return customFetch<getApiBottlesReservationsApplicationsMeResponse>(getGetApiBottlesReservationsApplicationsMeUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 예약 기간 동안 본인의 신청을 취소합니다. 취소 후 재신청은 불가합니다.
  * @summary 예약 신청 취소
  */
 export type deleteApiBottlesReservationsApplicationsApplicationidResponse200 = {
-  data: boolean;
-  status: 200;
+  data: boolean
+  status: 200
+}
+    
+export type deleteApiBottlesReservationsApplicationsApplicationidResponseSuccess = (deleteApiBottlesReservationsApplicationsApplicationidResponse200) & {
+  headers: Headers;
 };
+;
 
-export type deleteApiBottlesReservationsApplicationsApplicationidResponseSuccess =
-  deleteApiBottlesReservationsApplicationsApplicationidResponse200 & {
-    headers: Headers;
-  };
+export type deleteApiBottlesReservationsApplicationsApplicationidResponse = (deleteApiBottlesReservationsApplicationsApplicationidResponseSuccess)
 
-export type deleteApiBottlesReservationsApplicationsApplicationidResponse =
-  deleteApiBottlesReservationsApplicationsApplicationidResponseSuccess;
+export const getDeleteApiBottlesReservationsApplicationsApplicationidUrl = (applicationId: number,) => {
 
-export const getDeleteApiBottlesReservationsApplicationsApplicationidUrl = (
-  applicationId: number,
-) => {
-  return `/api/bottles/reservations/applications/${applicationId}`;
-};
 
-export const deleteApiBottlesReservationsApplicationsApplicationid = async (
-  applicationId: number,
-  options?: RequestInit,
-): Promise<deleteApiBottlesReservationsApplicationsApplicationidResponse> => {
-  return customFetch<deleteApiBottlesReservationsApplicationsApplicationidResponse>(
-    getDeleteApiBottlesReservationsApplicationsApplicationidUrl(applicationId),
-    {
-      ...options,
-      method: "DELETE",
-    },
-  );
-};
+  
+
+  return `/api/bottles/reservations/applications/${applicationId}`
+}
+
+export const deleteApiBottlesReservationsApplicationsApplicationid = async (applicationId: number, options?: RequestInit): Promise<deleteApiBottlesReservationsApplicationsApplicationidResponse> => {
+  
+  return customFetch<deleteApiBottlesReservationsApplicationsApplicationidResponse>(getDeleteApiBottlesReservationsApplicationsApplicationidUrl(applicationId),
+  {      
+    ...options,
+    method: 'DELETE'
+    
+    
+  }
+);}
+
+
 
 /**
  * 예약 기간 동안 본인의 신청 정보를 수정합니다.
  * @summary 예약 신청 수정
  */
 export type putApiBottlesReservationsApplicationsApplicationidResponse200 = {
-  data: BottleReservationApplicationPublicResponse;
-  status: 200;
+  data: BottleReservationApplicationPublicResponse
+  status: 200
+}
+    
+export type putApiBottlesReservationsApplicationsApplicationidResponseSuccess = (putApiBottlesReservationsApplicationsApplicationidResponse200) & {
+  headers: Headers;
 };
+;
 
-export type putApiBottlesReservationsApplicationsApplicationidResponseSuccess =
-  putApiBottlesReservationsApplicationsApplicationidResponse200 & {
-    headers: Headers;
-  };
+export type putApiBottlesReservationsApplicationsApplicationidResponse = (putApiBottlesReservationsApplicationsApplicationidResponseSuccess)
 
-export type putApiBottlesReservationsApplicationsApplicationidResponse =
-  putApiBottlesReservationsApplicationsApplicationidResponseSuccess;
+export const getPutApiBottlesReservationsApplicationsApplicationidUrl = (applicationId: number,) => {
 
-export const getPutApiBottlesReservationsApplicationsApplicationidUrl = (
-  applicationId: number,
-) => {
-  return `/api/bottles/reservations/applications/${applicationId}`;
-};
 
-export const putApiBottlesReservationsApplicationsApplicationid = async (
-  applicationId: number,
-  putApiBottlesReservationsApplicationsApplicationidBody: PutApiBottlesReservationsApplicationsApplicationidBody,
-  options?: RequestInit,
-): Promise<putApiBottlesReservationsApplicationsApplicationidResponse> => {
-  return customFetch<putApiBottlesReservationsApplicationsApplicationidResponse>(
-    getPutApiBottlesReservationsApplicationsApplicationidUrl(applicationId),
-    {
-      ...options,
-      method: "PUT",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(
-        putApiBottlesReservationsApplicationsApplicationidBody,
-      ),
-    },
-  );
-};
+  
+
+  return `/api/bottles/reservations/applications/${applicationId}`
+}
+
+export const putApiBottlesReservationsApplicationsApplicationid = async (applicationId: number,
+    putApiBottlesReservationsApplicationsApplicationidBody: PutApiBottlesReservationsApplicationsApplicationidBody, options?: RequestInit): Promise<putApiBottlesReservationsApplicationsApplicationidResponse> => {
+  
+  return customFetch<putApiBottlesReservationsApplicationsApplicationidResponse>(getPutApiBottlesReservationsApplicationsApplicationidUrl(applicationId),
+  {      
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      putApiBottlesReservationsApplicationsApplicationidBody,)
+  }
+);}
+
+
 
 /**
  * 예약이 가능한 공고 목록을 페이지 단위로 조회합니다.
  * @summary 예약 공고 목록
  */
 export type getApiBottlesReservationsNoticesResponse200 = {
-  data: PageBottleReservationNoticePublicResponse;
-  status: 200;
+  data: PageBottleReservationNoticePublicResponse
+  status: 200
+}
+    
+export type getApiBottlesReservationsNoticesResponseSuccess = (getApiBottlesReservationsNoticesResponse200) & {
+  headers: Headers;
 };
+;
 
-export type getApiBottlesReservationsNoticesResponseSuccess =
-  getApiBottlesReservationsNoticesResponse200 & {
-    headers: Headers;
-  };
+export type getApiBottlesReservationsNoticesResponse = (getApiBottlesReservationsNoticesResponseSuccess)
 
-export type getApiBottlesReservationsNoticesResponse =
-  getApiBottlesReservationsNoticesResponseSuccess;
-
-export const getGetApiBottlesReservationsNoticesUrl = (
-  params?: GetApiBottlesReservationsNoticesParams,
-) => {
+export const getGetApiBottlesReservationsNoticesUrl = (params?: GetApiBottlesReservationsNoticesParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value === undefined) return;
-    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       Object.entries(value).forEach(([k, v]) => {
         if (v === undefined) return;
-        if (Array.isArray(v)) {
-          v.forEach((item) =>
-            normalizedParams.append(k, item == null ? "null" : String(item)),
-          );
-        } else {
-          normalizedParams.append(k, v === null ? "null" : String(v));
-        }
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
       });
     } else if (Array.isArray(value)) {
-      value.forEach((v) =>
-        normalizedParams.append(key, v == null ? "null" : String(v)),
-      );
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
     } else {
-      normalizedParams.append(key, value === null ? "null" : String(value));
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/api/bottles/reservations/notices?${stringifiedParams}`
-    : `/api/bottles/reservations/notices`;
-};
+  return stringifiedParams.length > 0 ? `/api/bottles/reservations/notices?${stringifiedParams}` : `/api/bottles/reservations/notices`
+}
 
-export const getApiBottlesReservationsNotices = async (
-  params?: GetApiBottlesReservationsNoticesParams,
-  options?: RequestInit,
-): Promise<getApiBottlesReservationsNoticesResponse> => {
-  return customFetch<getApiBottlesReservationsNoticesResponse>(
-    getGetApiBottlesReservationsNoticesUrl(params),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
+export const getApiBottlesReservationsNotices = async (params?: GetApiBottlesReservationsNoticesParams, options?: RequestInit): Promise<getApiBottlesReservationsNoticesResponse> => {
+  
+  return customFetch<getApiBottlesReservationsNoticesResponse>(getGetApiBottlesReservationsNoticesUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 종료되지 않은 예약 공고 중 가장 최근에 생성된 공고를 조회합니다.
  * @summary 최근 생성된 종료되지 않은 예약 공고
  */
 export type getApiBottlesReservationsNoticesLatestActiveResponse200 = {
-  data: BottleReservationNoticePublicResponse;
-  status: 200;
+  data: BottleReservationNoticePublicResponse
+  status: 200
+}
+    
+export type getApiBottlesReservationsNoticesLatestActiveResponseSuccess = (getApiBottlesReservationsNoticesLatestActiveResponse200) & {
+  headers: Headers;
 };
+;
 
-export type getApiBottlesReservationsNoticesLatestActiveResponseSuccess =
-  getApiBottlesReservationsNoticesLatestActiveResponse200 & {
-    headers: Headers;
-  };
-
-export type getApiBottlesReservationsNoticesLatestActiveResponse =
-  getApiBottlesReservationsNoticesLatestActiveResponseSuccess;
+export type getApiBottlesReservationsNoticesLatestActiveResponse = (getApiBottlesReservationsNoticesLatestActiveResponseSuccess)
 
 export const getGetApiBottlesReservationsNoticesLatestActiveUrl = () => {
-  return `/api/bottles/reservations/notices/latest-active`;
-};
 
-export const getApiBottlesReservationsNoticesLatestActive = async (
-  options?: RequestInit,
-): Promise<getApiBottlesReservationsNoticesLatestActiveResponse> => {
-  return customFetch<getApiBottlesReservationsNoticesLatestActiveResponse>(
-    getGetApiBottlesReservationsNoticesLatestActiveUrl(),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
+
+  
+
+  return `/api/bottles/reservations/notices/latest-active`
+}
+
+export const getApiBottlesReservationsNoticesLatestActive = async ( options?: RequestInit): Promise<getApiBottlesReservationsNoticesLatestActiveResponse> => {
+  
+  return customFetch<getApiBottlesReservationsNoticesLatestActiveResponse>(getGetApiBottlesReservationsNoticesLatestActiveUrl(),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 최근 종료된 예약 공고 10건을 조회합니다.
  * @summary 최근 종료된 예약 공고 10건
  */
 export type getApiBottlesReservationsNoticesRecentEndedResponse200 = {
-  data: BottleReservationNoticePublicResponse[];
-  status: 200;
+  data: BottleReservationNoticePublicResponse[]
+  status: 200
+}
+    
+export type getApiBottlesReservationsNoticesRecentEndedResponseSuccess = (getApiBottlesReservationsNoticesRecentEndedResponse200) & {
+  headers: Headers;
 };
+;
 
-export type getApiBottlesReservationsNoticesRecentEndedResponseSuccess =
-  getApiBottlesReservationsNoticesRecentEndedResponse200 & {
-    headers: Headers;
-  };
-
-export type getApiBottlesReservationsNoticesRecentEndedResponse =
-  getApiBottlesReservationsNoticesRecentEndedResponseSuccess;
+export type getApiBottlesReservationsNoticesRecentEndedResponse = (getApiBottlesReservationsNoticesRecentEndedResponseSuccess)
 
 export const getGetApiBottlesReservationsNoticesRecentEndedUrl = () => {
-  return `/api/bottles/reservations/notices/recent-ended`;
-};
 
-export const getApiBottlesReservationsNoticesRecentEnded = async (
-  options?: RequestInit,
-): Promise<getApiBottlesReservationsNoticesRecentEndedResponse> => {
-  return customFetch<getApiBottlesReservationsNoticesRecentEndedResponse>(
-    getGetApiBottlesReservationsNoticesRecentEndedUrl(),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
+
+  
+
+  return `/api/bottles/reservations/notices/recent-ended`
+}
+
+export const getApiBottlesReservationsNoticesRecentEnded = async ( options?: RequestInit): Promise<getApiBottlesReservationsNoticesRecentEndedResponse> => {
+  
+  return customFetch<getApiBottlesReservationsNoticesRecentEndedResponse>(getGetApiBottlesReservationsNoticesRecentEndedUrl(),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 예약 공고의 상세 정보를 조회합니다.
  * @summary 예약 공고 상세
  */
 export type getApiBottlesReservationsNoticesNoticeidResponse200 = {
-  data: BottleReservationNoticePublicResponse;
-  status: 200;
+  data: BottleReservationNoticePublicResponse
+  status: 200
+}
+    
+export type getApiBottlesReservationsNoticesNoticeidResponseSuccess = (getApiBottlesReservationsNoticesNoticeidResponse200) & {
+  headers: Headers;
 };
+;
 
-export type getApiBottlesReservationsNoticesNoticeidResponseSuccess =
-  getApiBottlesReservationsNoticesNoticeidResponse200 & {
-    headers: Headers;
-  };
+export type getApiBottlesReservationsNoticesNoticeidResponse = (getApiBottlesReservationsNoticesNoticeidResponseSuccess)
 
-export type getApiBottlesReservationsNoticesNoticeidResponse =
-  getApiBottlesReservationsNoticesNoticeidResponseSuccess;
+export const getGetApiBottlesReservationsNoticesNoticeidUrl = (noticeId: number,) => {
 
-export const getGetApiBottlesReservationsNoticesNoticeidUrl = (
-  noticeId: number,
-) => {
-  return `/api/bottles/reservations/notices/${noticeId}`;
-};
 
-export const getApiBottlesReservationsNoticesNoticeid = async (
-  noticeId: number,
-  options?: RequestInit,
-): Promise<getApiBottlesReservationsNoticesNoticeidResponse> => {
-  return customFetch<getApiBottlesReservationsNoticesNoticeidResponse>(
-    getGetApiBottlesReservationsNoticesNoticeidUrl(noticeId),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
+  
+
+  return `/api/bottles/reservations/notices/${noticeId}`
+}
+
+export const getApiBottlesReservationsNoticesNoticeid = async (noticeId: number, options?: RequestInit): Promise<getApiBottlesReservationsNoticesNoticeidResponse> => {
+  
+  return customFetch<getApiBottlesReservationsNoticesNoticeidResponse>(getGetApiBottlesReservationsNoticesNoticeidUrl(noticeId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 예약 기간 동안 수량과 수령지 정보를 입력해 신청합니다.
  * @summary 예약 신청
  */
 export type postApiBottlesReservationsNoticesNoticeidApplicationsResponse200 = {
-  data: BottleReservationApplicationPublicResponse;
-  status: 200;
+  data: BottleReservationApplicationPublicResponse
+  status: 200
+}
+    
+export type postApiBottlesReservationsNoticesNoticeidApplicationsResponseSuccess = (postApiBottlesReservationsNoticesNoticeidApplicationsResponse200) & {
+  headers: Headers;
 };
+;
 
-export type postApiBottlesReservationsNoticesNoticeidApplicationsResponseSuccess =
-  postApiBottlesReservationsNoticesNoticeidApplicationsResponse200 & {
-    headers: Headers;
-  };
+export type postApiBottlesReservationsNoticesNoticeidApplicationsResponse = (postApiBottlesReservationsNoticesNoticeidApplicationsResponseSuccess)
 
-export type postApiBottlesReservationsNoticesNoticeidApplicationsResponse =
-  postApiBottlesReservationsNoticesNoticeidApplicationsResponseSuccess;
+export const getPostApiBottlesReservationsNoticesNoticeidApplicationsUrl = (noticeId: number,) => {
 
-export const getPostApiBottlesReservationsNoticesNoticeidApplicationsUrl = (
-  noticeId: number,
-) => {
-  return `/api/bottles/reservations/notices/${noticeId}/applications`;
-};
 
-export const postApiBottlesReservationsNoticesNoticeidApplications = async (
-  noticeId: number,
-  postApiBottlesReservationsNoticesNoticeidApplicationsBody: PostApiBottlesReservationsNoticesNoticeidApplicationsBody,
-  options?: RequestInit,
-): Promise<postApiBottlesReservationsNoticesNoticeidApplicationsResponse> => {
-  return customFetch<postApiBottlesReservationsNoticesNoticeidApplicationsResponse>(
-    getPostApiBottlesReservationsNoticesNoticeidApplicationsUrl(noticeId),
-    {
-      ...options,
-      method: "POST",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(
-        postApiBottlesReservationsNoticesNoticeidApplicationsBody,
-      ),
-    },
-  );
-};
+  
+
+  return `/api/bottles/reservations/notices/${noticeId}/applications`
+}
+
+export const postApiBottlesReservationsNoticesNoticeidApplications = async (noticeId: number,
+    postApiBottlesReservationsNoticesNoticeidApplicationsBody: PostApiBottlesReservationsNoticesNoticeidApplicationsBody, options?: RequestInit): Promise<postApiBottlesReservationsNoticesNoticeidApplicationsResponse> => {
+  
+  return customFetch<postApiBottlesReservationsNoticesNoticeidApplicationsResponse>(getPostApiBottlesReservationsNoticesNoticeidApplicationsUrl(noticeId),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiBottlesReservationsNoticesNoticeidApplicationsBody,)
+  }
+);}
+
+
 
 /**
  * 식별자를 기준으로 보틀 상세 정보를 조회합니다.
  * @summary 보틀 상세 조회
  */
 export type getApiBottlesIdResponse200 = {
-  data: BottleResponse;
-  status: 200;
-};
-
-export type getApiBottlesIdResponseSuccess = getApiBottlesIdResponse200 & {
+  data: BottleResponse
+  status: 200
+}
+    
+export type getApiBottlesIdResponseSuccess = (getApiBottlesIdResponse200) & {
   headers: Headers;
 };
+;
 
-export type getApiBottlesIdResponse = getApiBottlesIdResponseSuccess;
+export type getApiBottlesIdResponse = (getApiBottlesIdResponseSuccess)
 
-export const getGetApiBottlesIdUrl = (id: number) => {
-  return `/api/bottles/${id}`;
-};
+export const getGetApiBottlesIdUrl = (id: number,) => {
 
-export const getApiBottlesId = async (
-  id: number,
-  options?: RequestInit,
-): Promise<getApiBottlesIdResponse> => {
-  return customFetch<getApiBottlesIdResponse>(getGetApiBottlesIdUrl(id), {
+
+  
+
+  return `/api/bottles/${id}`
+}
+
+export const getApiBottlesId = async (id: number, options?: RequestInit): Promise<getApiBottlesIdResponse> => {
+  
+  return customFetch<getApiBottlesIdResponse>(getGetApiBottlesIdUrl(id),
+  {      
     ...options,
-    method: "GET",
-  });
-};
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * @summary 주문 목록 조회
  */
 export type getApiOrdersResponse200 = {
-  data: PageOrderResponse;
-  status: 200;
-};
-
-export type getApiOrdersResponseSuccess = getApiOrdersResponse200 & {
+  data: PageOrderResponse
+  status: 200
+}
+    
+export type getApiOrdersResponseSuccess = (getApiOrdersResponse200) & {
   headers: Headers;
 };
+;
 
-export type getApiOrdersResponse = getApiOrdersResponseSuccess;
+export type getApiOrdersResponse = (getApiOrdersResponseSuccess)
 
-export const getGetApiOrdersUrl = (params?: GetApiOrdersParams) => {
+export const getGetApiOrdersUrl = (params?: GetApiOrdersParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value === undefined) return;
-    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       Object.entries(value).forEach(([k, v]) => {
         if (v === undefined) return;
-        if (Array.isArray(v)) {
-          v.forEach((item) =>
-            normalizedParams.append(k, item == null ? "null" : String(item)),
-          );
-        } else {
-          normalizedParams.append(k, v === null ? "null" : String(v));
-        }
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
       });
     } else if (Array.isArray(value)) {
-      value.forEach((v) =>
-        normalizedParams.append(key, v == null ? "null" : String(v)),
-      );
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
     } else {
-      normalizedParams.append(key, value === null ? "null" : String(value));
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/api/orders?${stringifiedParams}`
-    : `/api/orders`;
-};
+  return stringifiedParams.length > 0 ? `/api/orders?${stringifiedParams}` : `/api/orders`
+}
 
-export const getApiOrders = async (
-  params?: GetApiOrdersParams,
-  options?: RequestInit,
-): Promise<getApiOrdersResponse> => {
-  return customFetch<getApiOrdersResponse>(getGetApiOrdersUrl(params), {
+export const getApiOrders = async (params?: GetApiOrdersParams, options?: RequestInit): Promise<getApiOrdersResponse> => {
+  
+  return customFetch<getApiOrdersResponse>(getGetApiOrdersUrl(params),
+  {      
     ...options,
-    method: "GET",
-  });
-};
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * @summary 주문 생성
  */
 export type postApiOrdersResponse200 = {
-  data: OrderResponse;
-  status: 200;
-};
-
-export type postApiOrdersResponseSuccess = postApiOrdersResponse200 & {
+  data: OrderResponse
+  status: 200
+}
+    
+export type postApiOrdersResponseSuccess = (postApiOrdersResponse200) & {
   headers: Headers;
 };
+;
 
-export type postApiOrdersResponse = postApiOrdersResponseSuccess;
+export type postApiOrdersResponse = (postApiOrdersResponseSuccess)
 
 export const getPostApiOrdersUrl = () => {
-  return `/api/orders`;
-};
 
-export const postApiOrders = async (
-  postApiOrdersBody: PostApiOrdersBody,
-  options?: RequestInit,
-): Promise<postApiOrdersResponse> => {
-  return customFetch<postApiOrdersResponse>(getPostApiOrdersUrl(), {
+
+  
+
+  return `/api/orders`
+}
+
+export const postApiOrders = async (postApiOrdersBody: PostApiOrdersBody, options?: RequestInit): Promise<postApiOrdersResponse> => {
+  
+  return customFetch<postApiOrdersResponse>(getPostApiOrdersUrl(),
+  {      
     ...options,
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(postApiOrdersBody),
-  });
-};
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiOrdersBody,)
+  }
+);}
+
+
 
 /**
  * @summary 주문 단건 조회
  */
 export type getApiOrdersOrderidResponse200 = {
-  data: OrderResponse;
-  status: 200;
+  data: OrderResponse
+  status: 200
+}
+    
+export type getApiOrdersOrderidResponseSuccess = (getApiOrdersOrderidResponse200) & {
+  headers: Headers;
 };
+;
 
-export type getApiOrdersOrderidResponseSuccess =
-  getApiOrdersOrderidResponse200 & {
-    headers: Headers;
-  };
+export type getApiOrdersOrderidResponse = (getApiOrdersOrderidResponseSuccess)
 
-export type getApiOrdersOrderidResponse = getApiOrdersOrderidResponseSuccess;
+export const getGetApiOrdersOrderidUrl = (orderId: number,) => {
 
-export const getGetApiOrdersOrderidUrl = (orderId: number) => {
-  return `/api/orders/${orderId}`;
-};
 
-export const getApiOrdersOrderid = async (
-  orderId: number,
-  options?: RequestInit,
-): Promise<getApiOrdersOrderidResponse> => {
-  return customFetch<getApiOrdersOrderidResponse>(
-    getGetApiOrdersOrderidUrl(orderId),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
+  
+
+  return `/api/orders/${orderId}`
+}
+
+export const getApiOrdersOrderid = async (orderId: number, options?: RequestInit): Promise<getApiOrdersOrderidResponse> => {
+  
+  return customFetch<getApiOrdersOrderidResponse>(getGetApiOrdersOrderidUrl(orderId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * @summary 주문 취소 요청
  */
 export type patchApiOrdersOrderidCancelResponse200 = {
-  data: OrderResponse;
-  status: 200;
+  data: OrderResponse
+  status: 200
+}
+    
+export type patchApiOrdersOrderidCancelResponseSuccess = (patchApiOrdersOrderidCancelResponse200) & {
+  headers: Headers;
 };
+;
 
-export type patchApiOrdersOrderidCancelResponseSuccess =
-  patchApiOrdersOrderidCancelResponse200 & {
-    headers: Headers;
-  };
+export type patchApiOrdersOrderidCancelResponse = (patchApiOrdersOrderidCancelResponseSuccess)
 
-export type patchApiOrdersOrderidCancelResponse =
-  patchApiOrdersOrderidCancelResponseSuccess;
+export const getPatchApiOrdersOrderidCancelUrl = (orderId: number,) => {
 
-export const getPatchApiOrdersOrderidCancelUrl = (orderId: number) => {
-  return `/api/orders/${orderId}/cancel`;
-};
 
-export const patchApiOrdersOrderidCancel = async (
-  orderId: number,
-  patchApiOrdersOrderidCancelBody: PatchApiOrdersOrderidCancelBody,
-  options?: RequestInit,
-): Promise<patchApiOrdersOrderidCancelResponse> => {
-  return customFetch<patchApiOrdersOrderidCancelResponse>(
-    getPatchApiOrdersOrderidCancelUrl(orderId),
-    {
-      ...options,
-      method: "PATCH",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(patchApiOrdersOrderidCancelBody),
-    },
-  );
-};
+  
+
+  return `/api/orders/${orderId}/cancel`
+}
+
+export const patchApiOrdersOrderidCancel = async (orderId: number,
+    patchApiOrdersOrderidCancelBody: PatchApiOrdersOrderidCancelBody, options?: RequestInit): Promise<patchApiOrdersOrderidCancelResponse> => {
+  
+  return customFetch<patchApiOrdersOrderidCancelResponse>(getPatchApiOrdersOrderidCancelUrl(orderId),
+  {      
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      patchApiOrdersOrderidCancelBody,)
+  }
+);}
+
+
 
 /**
  * 예약된 문자 발송을 취소합니다.
  * @summary 문자 예약 취소
  */
 export type postApiPpurioCancelResponse200 = {
-  data: PpurioResponse;
-  status: 200;
+  data: PpurioResponse
+  status: 200
+}
+    
+export type postApiPpurioCancelResponseSuccess = (postApiPpurioCancelResponse200) & {
+  headers: Headers;
 };
+;
 
-export type postApiPpurioCancelResponseSuccess =
-  postApiPpurioCancelResponse200 & {
-    headers: Headers;
-  };
-
-export type postApiPpurioCancelResponse = postApiPpurioCancelResponseSuccess;
+export type postApiPpurioCancelResponse = (postApiPpurioCancelResponseSuccess)
 
 export const getPostApiPpurioCancelUrl = () => {
-  return `/api/ppurio/cancel`;
-};
 
-export const postApiPpurioCancel = async (
-  postApiPpurioCancelBody: PostApiPpurioCancelBody,
-  options?: RequestInit,
-): Promise<postApiPpurioCancelResponse> => {
-  return customFetch<postApiPpurioCancelResponse>(getPostApiPpurioCancelUrl(), {
+
+  
+
+  return `/api/ppurio/cancel`
+}
+
+export const postApiPpurioCancel = async (postApiPpurioCancelBody: PostApiPpurioCancelBody, options?: RequestInit): Promise<postApiPpurioCancelResponse> => {
+  
+  return customFetch<postApiPpurioCancelResponse>(getPostApiPpurioCancelUrl(),
+  {      
     ...options,
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(postApiPpurioCancelBody),
-  });
-};
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiPpurioCancelBody,)
+  }
+);}
+
+
 
 /**
  * 예약된 카카오 알림톡 발송을 취소합니다.
  * @summary 카카오 예약 취소
  */
 export type postApiPpurioCancelKakaoResponse200 = {
-  data: PpurioResponse;
-  status: 200;
+  data: PpurioResponse
+  status: 200
+}
+    
+export type postApiPpurioCancelKakaoResponseSuccess = (postApiPpurioCancelKakaoResponse200) & {
+  headers: Headers;
 };
+;
 
-export type postApiPpurioCancelKakaoResponseSuccess =
-  postApiPpurioCancelKakaoResponse200 & {
-    headers: Headers;
-  };
-
-export type postApiPpurioCancelKakaoResponse =
-  postApiPpurioCancelKakaoResponseSuccess;
+export type postApiPpurioCancelKakaoResponse = (postApiPpurioCancelKakaoResponseSuccess)
 
 export const getPostApiPpurioCancelKakaoUrl = () => {
-  return `/api/ppurio/cancel/kakao`;
-};
 
-export const postApiPpurioCancelKakao = async (
-  postApiPpurioCancelKakaoBody: PostApiPpurioCancelKakaoBody,
-  options?: RequestInit,
-): Promise<postApiPpurioCancelKakaoResponse> => {
-  return customFetch<postApiPpurioCancelKakaoResponse>(
-    getPostApiPpurioCancelKakaoUrl(),
-    {
-      ...options,
-      method: "POST",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(postApiPpurioCancelKakaoBody),
-    },
-  );
-};
+
+  
+
+  return `/api/ppurio/cancel/kakao`
+}
+
+export const postApiPpurioCancelKakao = async (postApiPpurioCancelKakaoBody: PostApiPpurioCancelKakaoBody, options?: RequestInit): Promise<postApiPpurioCancelKakaoResponse> => {
+  
+  return customFetch<postApiPpurioCancelKakaoResponse>(getPostApiPpurioCancelKakaoUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiPpurioCancelKakaoBody,)
+  }
+);}
+
+
 
 /**
  * 템플릿을 이용해 카카오 알림톡을 발송합니다.
  * @summary 카카오 알림톡 발송
  */
 export type postApiPpurioKakaoResponse200 = {
-  data: PpurioResponse;
-  status: 200;
+  data: PpurioResponse
+  status: 200
+}
+    
+export type postApiPpurioKakaoResponseSuccess = (postApiPpurioKakaoResponse200) & {
+  headers: Headers;
 };
+;
 
-export type postApiPpurioKakaoResponseSuccess =
-  postApiPpurioKakaoResponse200 & {
-    headers: Headers;
-  };
-
-export type postApiPpurioKakaoResponse = postApiPpurioKakaoResponseSuccess;
+export type postApiPpurioKakaoResponse = (postApiPpurioKakaoResponseSuccess)
 
 export const getPostApiPpurioKakaoUrl = () => {
-  return `/api/ppurio/kakao`;
-};
 
-export const postApiPpurioKakao = async (
-  postApiPpurioKakaoBody: PostApiPpurioKakaoBody,
-  options?: RequestInit,
-): Promise<postApiPpurioKakaoResponse> => {
-  return customFetch<postApiPpurioKakaoResponse>(getPostApiPpurioKakaoUrl(), {
+
+  
+
+  return `/api/ppurio/kakao`
+}
+
+export const postApiPpurioKakao = async (postApiPpurioKakaoBody: PostApiPpurioKakaoBody, options?: RequestInit): Promise<postApiPpurioKakaoResponse> => {
+  
+  return customFetch<postApiPpurioKakaoResponse>(getPostApiPpurioKakaoUrl(),
+  {      
     ...options,
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(postApiPpurioKakaoBody),
-  });
-};
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiPpurioKakaoBody,)
+  }
+);}
+
+
 
 /**
  * SMS/LMS/MMS 발송을 위해 뿌리오 메시지 API를 호출합니다.
  * @summary 문자 발송
  */
 export type postApiPpurioMessageResponse200 = {
-  data: PpurioResponse;
-  status: 200;
+  data: PpurioResponse
+  status: 200
+}
+    
+export type postApiPpurioMessageResponseSuccess = (postApiPpurioMessageResponse200) & {
+  headers: Headers;
 };
+;
 
-export type postApiPpurioMessageResponseSuccess =
-  postApiPpurioMessageResponse200 & {
-    headers: Headers;
-  };
-
-export type postApiPpurioMessageResponse = postApiPpurioMessageResponseSuccess;
+export type postApiPpurioMessageResponse = (postApiPpurioMessageResponseSuccess)
 
 export const getPostApiPpurioMessageUrl = () => {
-  return `/api/ppurio/message`;
-};
 
-export const postApiPpurioMessage = async (
-  postApiPpurioMessageBody: PostApiPpurioMessageBody,
-  options?: RequestInit,
-): Promise<postApiPpurioMessageResponse> => {
-  return customFetch<postApiPpurioMessageResponse>(
-    getPostApiPpurioMessageUrl(),
-    {
-      ...options,
-      method: "POST",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(postApiPpurioMessageBody),
-    },
-  );
-};
+
+  
+
+  return `/api/ppurio/message`
+}
+
+export const postApiPpurioMessage = async (postApiPpurioMessageBody: PostApiPpurioMessageBody, options?: RequestInit): Promise<postApiPpurioMessageResponse> => {
+  
+  return customFetch<postApiPpurioMessageResponse>(getPostApiPpurioMessageUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiPpurioMessageBody,)
+  }
+);}
+
+
 
 /**
  * 메시지 발송 전 필요한 엑세스 토큰을 발급합니다.
  * @summary 뿌리오 토큰 갱신
  */
 export type postApiPpurioTokenResponse200 = {
-  data: PpurioTokenResponse;
-  status: 200;
+  data: PpurioTokenResponse
+  status: 200
+}
+    
+export type postApiPpurioTokenResponseSuccess = (postApiPpurioTokenResponse200) & {
+  headers: Headers;
 };
+;
 
-export type postApiPpurioTokenResponseSuccess =
-  postApiPpurioTokenResponse200 & {
-    headers: Headers;
-  };
-
-export type postApiPpurioTokenResponse = postApiPpurioTokenResponseSuccess;
+export type postApiPpurioTokenResponse = (postApiPpurioTokenResponseSuccess)
 
 export const getPostApiPpurioTokenUrl = () => {
-  return `/api/ppurio/token`;
-};
 
-export const postApiPpurioToken = async (
-  options?: RequestInit,
-): Promise<postApiPpurioTokenResponse> => {
-  return customFetch<postApiPpurioTokenResponse>(getPostApiPpurioTokenUrl(), {
+
+  
+
+  return `/api/ppurio/token`
+}
+
+export const postApiPpurioToken = async ( options?: RequestInit): Promise<postApiPpurioTokenResponse> => {
+  
+  return customFetch<postApiPpurioTokenResponse>(getPostApiPpurioTokenUrl(),
+  {      
     ...options,
-    method: "POST",
-  });
-};
+    method: 'POST'
+    
+    
+  }
+);}
+
+
 
 /**
  * 출시 알림을 위해 사용자의 연락처 정보를 저장합니다.
  * @summary 사전 등록 접수
  */
 export type postApiPreRegisterResponse200 = {
-  data: PreRegisterResponse;
-  status: 200;
+  data: PreRegisterResponse
+  status: 200
+}
+    
+export type postApiPreRegisterResponseSuccess = (postApiPreRegisterResponse200) & {
+  headers: Headers;
 };
+;
 
-export type postApiPreRegisterResponseSuccess =
-  postApiPreRegisterResponse200 & {
-    headers: Headers;
-  };
-
-export type postApiPreRegisterResponse = postApiPreRegisterResponseSuccess;
+export type postApiPreRegisterResponse = (postApiPreRegisterResponseSuccess)
 
 export const getPostApiPreRegisterUrl = () => {
-  return `/api/pre-register`;
-};
 
-export const postApiPreRegister = async (
-  postApiPreRegisterBody: PostApiPreRegisterBody,
-  options?: RequestInit,
-): Promise<postApiPreRegisterResponse> => {
-  return customFetch<postApiPreRegisterResponse>(getPostApiPreRegisterUrl(), {
+
+  
+
+  return `/api/pre-register`
+}
+
+export const postApiPreRegister = async (postApiPreRegisterBody: PostApiPreRegisterBody, options?: RequestInit): Promise<postApiPreRegisterResponse> => {
+  
+  return customFetch<postApiPreRegisterResponse>(getPostApiPreRegisterUrl(),
+  {      
     ...options,
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(postApiPreRegisterBody),
-  });
-};
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiPreRegisterBody,)
+  }
+);}
+
+
 
 /**
  * 클라이언트가 S3 객체를 다운로드할 수 있도록 단시간 유효한 프리사인드 URL을 생성합니다.
  * @summary 프리사인드 URL 발급
  */
 export type getApiS3PresignedResponse200 = {
-  data: PresignUrlResponse;
-  status: 200;
-};
-
-export type getApiS3PresignedResponseSuccess = getApiS3PresignedResponse200 & {
+  data: PresignUrlResponse
+  status: 200
+}
+    
+export type getApiS3PresignedResponseSuccess = (getApiS3PresignedResponse200) & {
   headers: Headers;
 };
+;
 
-export type getApiS3PresignedResponse = getApiS3PresignedResponseSuccess;
+export type getApiS3PresignedResponse = (getApiS3PresignedResponseSuccess)
 
-export const getGetApiS3PresignedUrl = (params: GetApiS3PresignedParams) => {
+export const getGetApiS3PresignedUrl = (params: GetApiS3PresignedParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value === undefined) return;
-    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       Object.entries(value).forEach(([k, v]) => {
         if (v === undefined) return;
-        if (Array.isArray(v)) {
-          v.forEach((item) =>
-            normalizedParams.append(k, item == null ? "null" : String(item)),
-          );
-        } else {
-          normalizedParams.append(k, v === null ? "null" : String(v));
-        }
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
       });
     } else if (Array.isArray(value)) {
-      value.forEach((v) =>
-        normalizedParams.append(key, v == null ? "null" : String(v)),
-      );
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
     } else {
-      normalizedParams.append(key, value === null ? "null" : String(value));
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/api/s3/presigned?${stringifiedParams}`
-    : `/api/s3/presigned`;
-};
+  return stringifiedParams.length > 0 ? `/api/s3/presigned?${stringifiedParams}` : `/api/s3/presigned`
+}
 
-export const getApiS3Presigned = async (
-  params: GetApiS3PresignedParams,
-  options?: RequestInit,
-): Promise<getApiS3PresignedResponse> => {
-  return customFetch<getApiS3PresignedResponse>(
-    getGetApiS3PresignedUrl(params),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
+export const getApiS3Presigned = async (params: GetApiS3PresignedParams, options?: RequestInit): Promise<getApiS3PresignedResponse> => {
+  
+  return customFetch<getApiS3PresignedResponse>(getGetApiS3PresignedUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 서버를 통해 바이너리 파일을 받아 지정된 S3 버킷으로 업로드합니다.
  * @summary 파일 업로드
  */
 export type postApiS3UploadResponse200 = {
-  data: PostApiS3Upload200;
-  status: 200;
-};
-
-export type postApiS3UploadResponseSuccess = postApiS3UploadResponse200 & {
+  data: PostApiS3Upload200
+  status: 200
+}
+    
+export type postApiS3UploadResponseSuccess = (postApiS3UploadResponse200) & {
   headers: Headers;
 };
+;
 
-export type postApiS3UploadResponse = postApiS3UploadResponseSuccess;
+export type postApiS3UploadResponse = (postApiS3UploadResponseSuccess)
 
 export const getPostApiS3UploadUrl = () => {
-  return `/api/s3/upload`;
-};
 
-export const postApiS3Upload = async (
-  postApiS3UploadBody: PostApiS3UploadBody,
-  options?: RequestInit,
-): Promise<postApiS3UploadResponse> => {
-  const formData = new FormData();
-  formData.append(`file`, postApiS3UploadBody.file);
 
-  return customFetch<postApiS3UploadResponse>(getPostApiS3UploadUrl(), {
+  
+
+  return `/api/s3/upload`
+}
+
+export const postApiS3Upload = async (postApiS3UploadBody: PostApiS3UploadBody, options?: RequestInit): Promise<postApiS3UploadResponse> => {
+    const formData = new FormData();
+formData.append(`file`, postApiS3UploadBody.file);
+
+  return customFetch<postApiS3UploadResponse>(getPostApiS3UploadUrl(),
+  {      
     ...options,
-    method: "POST",
-    body: formData,
-  });
-};
+    method: 'POST'
+    ,
+    body: 
+      formData,
+  }
+);}
+
+
 
 /**
  * @summary 판매 공고 목록 조회
  */
 export type getApiSalesResponse200 = {
-  data: PageSaleAnnouncementResponse;
-  status: 200;
-};
-
-export type getApiSalesResponseSuccess = getApiSalesResponse200 & {
+  data: PageSaleAnnouncementResponse
+  status: 200
+}
+    
+export type getApiSalesResponseSuccess = (getApiSalesResponse200) & {
   headers: Headers;
 };
+;
 
-export type getApiSalesResponse = getApiSalesResponseSuccess;
+export type getApiSalesResponse = (getApiSalesResponseSuccess)
 
-export const getGetApiSalesUrl = (params?: GetApiSalesParams) => {
+export const getGetApiSalesUrl = (params?: GetApiSalesParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value === undefined) return;
-    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       Object.entries(value).forEach(([k, v]) => {
         if (v === undefined) return;
-        if (Array.isArray(v)) {
-          v.forEach((item) =>
-            normalizedParams.append(k, item == null ? "null" : String(item)),
-          );
-        } else {
-          normalizedParams.append(k, v === null ? "null" : String(v));
-        }
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
       });
     } else if (Array.isArray(value)) {
-      value.forEach((v) =>
-        normalizedParams.append(key, v == null ? "null" : String(v)),
-      );
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
     } else {
-      normalizedParams.append(key, value === null ? "null" : String(value));
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/api/sales?${stringifiedParams}`
-    : `/api/sales`;
-};
+  return stringifiedParams.length > 0 ? `/api/sales?${stringifiedParams}` : `/api/sales`
+}
 
-export const getApiSales = async (
-  params?: GetApiSalesParams,
-  options?: RequestInit,
-): Promise<getApiSalesResponse> => {
-  return customFetch<getApiSalesResponse>(getGetApiSalesUrl(params), {
+export const getApiSales = async (params?: GetApiSalesParams, options?: RequestInit): Promise<getApiSalesResponse> => {
+  
+  return customFetch<getApiSalesResponse>(getGetApiSalesUrl(params),
+  {      
     ...options,
-    method: "GET",
-  });
-};
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * @summary 판매 공고 단건 조회
  */
 export type getApiSalesSaleidResponse200 = {
-  data: SaleAnnouncementResponse;
-  status: 200;
-};
-
-export type getApiSalesSaleidResponseSuccess = getApiSalesSaleidResponse200 & {
+  data: SaleAnnouncementResponse
+  status: 200
+}
+    
+export type getApiSalesSaleidResponseSuccess = (getApiSalesSaleidResponse200) & {
   headers: Headers;
 };
+;
 
-export type getApiSalesSaleidResponse = getApiSalesSaleidResponseSuccess;
+export type getApiSalesSaleidResponse = (getApiSalesSaleidResponseSuccess)
 
-export const getGetApiSalesSaleidUrl = (saleId: number) => {
-  return `/api/sales/${saleId}`;
+export const getGetApiSalesSaleidUrl = (saleId: number,) => {
+
+
+  
+
+  return `/api/sales/${saleId}`
+}
+
+export const getApiSalesSaleid = async (saleId: number, options?: RequestInit): Promise<getApiSalesSaleidResponse> => {
+  
+  return customFetch<getApiSalesSaleidResponse>(getGetApiSalesSaleidUrl(saleId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * @summary 업체 월별 세금계산서 PDF 다운로드
+ */
+export type getApiTaxInvoicesTaxInvoiceMonthlyPdfResponse200 = {
+  data: Blob
+  status: 200
+}
+    
+export type getApiTaxInvoicesTaxInvoiceMonthlyPdfResponseSuccess = (getApiTaxInvoicesTaxInvoiceMonthlyPdfResponse200) & {
+  headers: Headers;
 };
+;
 
-export const getApiSalesSaleid = async (
-  saleId: number,
-  options?: RequestInit,
-): Promise<getApiSalesSaleidResponse> => {
-  return customFetch<getApiSalesSaleidResponse>(
-    getGetApiSalesSaleidUrl(saleId),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
+export type getApiTaxInvoicesTaxInvoiceMonthlyPdfResponse = (getApiTaxInvoicesTaxInvoiceMonthlyPdfResponseSuccess)
+
+export const getGetApiTaxInvoicesTaxInvoiceMonthlyPdfUrl = (params: GetApiTaxInvoicesTaxInvoiceMonthlyPdfParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
+    } else {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/tax-invoices/tax-invoice/monthly/pdf?${stringifiedParams}` : `/api/tax-invoices/tax-invoice/monthly/pdf`
+}
+
+export const getApiTaxInvoicesTaxInvoiceMonthlyPdf = async (params: GetApiTaxInvoicesTaxInvoiceMonthlyPdfParams, options?: RequestInit): Promise<getApiTaxInvoicesTaxInvoiceMonthlyPdfResponse> => {
+  
+  return customFetch<getApiTaxInvoicesTaxInvoiceMonthlyPdfResponse>(getGetApiTaxInvoicesTaxInvoiceMonthlyPdfUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * @summary 업체 월별 부가세 신고 내역서 PDF 다운로드
+ */
+export type getApiTaxInvoicesVatReportMonthlyPdfResponse200 = {
+  data: Blob
+  status: 200
+}
+    
+export type getApiTaxInvoicesVatReportMonthlyPdfResponseSuccess = (getApiTaxInvoicesVatReportMonthlyPdfResponse200) & {
+  headers: Headers;
 };
+;
+
+export type getApiTaxInvoicesVatReportMonthlyPdfResponse = (getApiTaxInvoicesVatReportMonthlyPdfResponseSuccess)
+
+export const getGetApiTaxInvoicesVatReportMonthlyPdfUrl = (params: GetApiTaxInvoicesVatReportMonthlyPdfParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
+    } else {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/tax-invoices/vat-report/monthly/pdf?${stringifiedParams}` : `/api/tax-invoices/vat-report/monthly/pdf`
+}
+
+export const getApiTaxInvoicesVatReportMonthlyPdf = async (params: GetApiTaxInvoicesVatReportMonthlyPdfParams, options?: RequestInit): Promise<getApiTaxInvoicesVatReportMonthlyPdfResponse> => {
+  
+  return customFetch<getApiTaxInvoicesVatReportMonthlyPdfResponse>(getGetApiTaxInvoicesVatReportMonthlyPdfUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * NICE 표준창 결과 파라미터를 복호화해 인증 결과를 반환합니다.
  * @summary NICE 본인인증 결과 복호화
  */
 export type postApiUserNiceidResultResponse200 = {
-  data: NiceIdVerificationResultResponse;
-  status: 200;
+  data: NiceIdVerificationResultResponse
+  status: 200
+}
+    
+export type postApiUserNiceidResultResponseSuccess = (postApiUserNiceidResultResponse200) & {
+  headers: Headers;
 };
+;
 
-export type postApiUserNiceidResultResponseSuccess =
-  postApiUserNiceidResultResponse200 & {
-    headers: Headers;
-  };
+export type postApiUserNiceidResultResponse = (postApiUserNiceidResultResponseSuccess)
 
-export type postApiUserNiceidResultResponse =
-  postApiUserNiceidResultResponseSuccess;
-
-export const getPostApiUserNiceidResultUrl = (
-  params: PostApiUserNiceidResultParams,
-) => {
+export const getPostApiUserNiceidResultUrl = (params: PostApiUserNiceidResultParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value === undefined) return;
-    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       Object.entries(value).forEach(([k, v]) => {
         if (v === undefined) return;
-        if (Array.isArray(v)) {
-          v.forEach((item) =>
-            normalizedParams.append(k, item == null ? "null" : String(item)),
-          );
-        } else {
-          normalizedParams.append(k, v === null ? "null" : String(v));
-        }
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
       });
     } else if (Array.isArray(value)) {
-      value.forEach((v) =>
-        normalizedParams.append(key, v == null ? "null" : String(v)),
-      );
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
     } else {
-      normalizedParams.append(key, value === null ? "null" : String(value));
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/api/user/niceid/result?${stringifiedParams}`
-    : `/api/user/niceid/result`;
-};
+  return stringifiedParams.length > 0 ? `/api/user/niceid/result?${stringifiedParams}` : `/api/user/niceid/result`
+}
 
-export const postApiUserNiceidResult = async (
-  params: PostApiUserNiceidResultParams,
-  options?: RequestInit,
-): Promise<postApiUserNiceidResultResponse> => {
-  return customFetch<postApiUserNiceidResultResponse>(
-    getPostApiUserNiceidResultUrl(params),
-    {
-      ...options,
-      method: "POST",
-    },
-  );
-};
+export const postApiUserNiceidResult = async (params: PostApiUserNiceidResultParams, options?: RequestInit): Promise<postApiUserNiceidResultResponse> => {
+  
+  return customFetch<postApiUserNiceidResultResponse>(getPostApiUserNiceidResultUrl(params),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+);}
+
+
 
 /**
  * 표준창 호출을 위한 암호화 세션 데이터를 생성합니다.
  * @summary NICE 본인인증 세션 생성
  */
 export type postApiUserNiceidSessionResponse200 = {
-  data: NiceIdVerificationStartResponse;
-  status: 200;
+  data: NiceIdVerificationStartResponse
+  status: 200
+}
+    
+export type postApiUserNiceidSessionResponseSuccess = (postApiUserNiceidSessionResponse200) & {
+  headers: Headers;
 };
+;
 
-export type postApiUserNiceidSessionResponseSuccess =
-  postApiUserNiceidSessionResponse200 & {
-    headers: Headers;
-  };
-
-export type postApiUserNiceidSessionResponse =
-  postApiUserNiceidSessionResponseSuccess;
+export type postApiUserNiceidSessionResponse = (postApiUserNiceidSessionResponseSuccess)
 
 export const getPostApiUserNiceidSessionUrl = () => {
-  return `/api/user/niceid/session`;
-};
 
-export const postApiUserNiceidSession = async (
-  postApiUserNiceidSessionBody: PostApiUserNiceidSessionBody,
-  options?: RequestInit,
-): Promise<postApiUserNiceidSessionResponse> => {
-  return customFetch<postApiUserNiceidSessionResponse>(
-    getPostApiUserNiceidSessionUrl(),
-    {
-      ...options,
-      method: "POST",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(postApiUserNiceidSessionBody),
-    },
-  );
-};
+
+  
+
+  return `/api/user/niceid/session`
+}
+
+export const postApiUserNiceidSession = async (postApiUserNiceidSessionBody: PostApiUserNiceidSessionBody, options?: RequestInit): Promise<postApiUserNiceidSessionResponse> => {
+  
+  return customFetch<postApiUserNiceidSessionResponse>(getPostApiUserNiceidSessionUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiUserNiceidSessionBody,)
+  }
+);}
+
+
 
 /**
  * 사용자가 사업장 정보와 신청 서류를 함께 업로드하여 승인을 요청합니다.
  * @summary 비즈니스 등록 신청
  */
 export type postApiUsersBusinessesApplicationsResponse200 = {
-  data: UserBusinessApplicationSubmitResponse;
-  status: 200;
+  data: UserBusinessApplicationSubmitResponse
+  status: 200
+}
+    
+export type postApiUsersBusinessesApplicationsResponseSuccess = (postApiUsersBusinessesApplicationsResponse200) & {
+  headers: Headers;
 };
+;
 
-export type postApiUsersBusinessesApplicationsResponseSuccess =
-  postApiUsersBusinessesApplicationsResponse200 & {
-    headers: Headers;
-  };
+export type postApiUsersBusinessesApplicationsResponse = (postApiUsersBusinessesApplicationsResponseSuccess)
 
-export type postApiUsersBusinessesApplicationsResponse =
-  postApiUsersBusinessesApplicationsResponseSuccess;
-
-export const getPostApiUsersBusinessesApplicationsUrl = (
-  params: PostApiUsersBusinessesApplicationsParams,
-) => {
+export const getPostApiUsersBusinessesApplicationsUrl = (params: PostApiUsersBusinessesApplicationsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value === undefined) return;
-    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       Object.entries(value).forEach(([k, v]) => {
         if (v === undefined) return;
-        if (Array.isArray(v)) {
-          v.forEach((item) =>
-            normalizedParams.append(k, item == null ? "null" : String(item)),
-          );
-        } else {
-          normalizedParams.append(k, v === null ? "null" : String(v));
-        }
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
       });
     } else if (Array.isArray(value)) {
-      value.forEach((v) =>
-        normalizedParams.append(key, v == null ? "null" : String(v)),
-      );
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
     } else {
-      normalizedParams.append(key, value === null ? "null" : String(value));
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/api/users/businesses/applications?${stringifiedParams}`
-    : `/api/users/businesses/applications`;
-};
+  return stringifiedParams.length > 0 ? `/api/users/businesses/applications?${stringifiedParams}` : `/api/users/businesses/applications`
+}
 
-export const postApiUsersBusinessesApplications = async (
-  postApiUsersBusinessesApplicationsBody: PostApiUsersBusinessesApplicationsBody,
-  params: PostApiUsersBusinessesApplicationsParams,
-  options?: RequestInit,
-): Promise<postApiUsersBusinessesApplicationsResponse> => {
-  const formData = new FormData();
-  formData.append(`document`, postApiUsersBusinessesApplicationsBody.document);
+export const postApiUsersBusinessesApplications = async (postApiUsersBusinessesApplicationsBody: PostApiUsersBusinessesApplicationsBody,
+    params: PostApiUsersBusinessesApplicationsParams, options?: RequestInit): Promise<postApiUsersBusinessesApplicationsResponse> => {
+    const formData = new FormData();
+formData.append(`document`, postApiUsersBusinessesApplicationsBody.document);
 
-  return customFetch<postApiUsersBusinessesApplicationsResponse>(
-    getPostApiUsersBusinessesApplicationsUrl(params),
-    {
-      ...options,
-      method: "POST",
-      body: formData,
-    },
-  );
+  return customFetch<postApiUsersBusinessesApplicationsResponse>(getPostApiUsersBusinessesApplicationsUrl(params),
+  {      
+    ...options,
+    method: 'POST'
+    ,
+    body: 
+      formData,
+  }
+);}
+
+
+
+/**
+ * 사용자가 자신의 가장 최근 비즈니스 신청 상태를 조회합니다.
+ * @summary 내 최근 비즈니스 신청 조회
+ */
+export type getApiUsersBusinessesApplicationsMeResponse200 = {
+  data: UserBusinessApplicationResponse
+  status: 200
+}
+    
+export type getApiUsersBusinessesApplicationsMeResponseSuccess = (getApiUsersBusinessesApplicationsMeResponse200) & {
+  headers: Headers;
 };
+;
+
+export type getApiUsersBusinessesApplicationsMeResponse = (getApiUsersBusinessesApplicationsMeResponseSuccess)
+
+export const getGetApiUsersBusinessesApplicationsMeUrl = () => {
+
+
+  
+
+  return `/api/users/businesses/applications/me`
+}
+
+export const getApiUsersBusinessesApplicationsMe = async ( options?: RequestInit): Promise<getApiUsersBusinessesApplicationsMeResponse> => {
+  
+  return customFetch<getApiUsersBusinessesApplicationsMeResponse>(getGetApiUsersBusinessesApplicationsMeUrl(),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 사용자가 자신의 비즈니스 신청 이력을 최신순으로 조회합니다.
+ * @summary 내 비즈니스 신청 이력 조회
+ */
+export type getApiUsersBusinessesApplicationsMeHistoryResponse200 = {
+  data: PageUserBusinessApplicationResponse
+  status: 200
+}
+    
+export type getApiUsersBusinessesApplicationsMeHistoryResponseSuccess = (getApiUsersBusinessesApplicationsMeHistoryResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiUsersBusinessesApplicationsMeHistoryResponse = (getApiUsersBusinessesApplicationsMeHistoryResponseSuccess)
+
+export const getGetApiUsersBusinessesApplicationsMeHistoryUrl = (params?: GetApiUsersBusinessesApplicationsMeHistoryParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
+    } else {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/users/businesses/applications/me/history?${stringifiedParams}` : `/api/users/businesses/applications/me/history`
+}
+
+export const getApiUsersBusinessesApplicationsMeHistory = async (params?: GetApiUsersBusinessesApplicationsMeHistoryParams, options?: RequestInit): Promise<getApiUsersBusinessesApplicationsMeHistoryResponse> => {
+  
+  return customFetch<getApiUsersBusinessesApplicationsMeHistoryResponse>(getGetApiUsersBusinessesApplicationsMeHistoryUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 사용자가 대기중 신청 건을 취소합니다.
+ * @summary 비즈니스 신청 취소
+ */
+export type postApiUsersBusinessesApplicationsApplicationidCancelResponse200 = {
+  data: UserBusinessApplicationResponse
+  status: 200
+}
+    
+export type postApiUsersBusinessesApplicationsApplicationidCancelResponseSuccess = (postApiUsersBusinessesApplicationsApplicationidCancelResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiUsersBusinessesApplicationsApplicationidCancelResponse = (postApiUsersBusinessesApplicationsApplicationidCancelResponseSuccess)
+
+export const getPostApiUsersBusinessesApplicationsApplicationidCancelUrl = (applicationId: number,) => {
+
+
+  
+
+  return `/api/users/businesses/applications/${applicationId}/cancel`
+}
+
+export const postApiUsersBusinessesApplicationsApplicationidCancel = async (applicationId: number,
+    postApiUsersBusinessesApplicationsApplicationidCancelBody: PostApiUsersBusinessesApplicationsApplicationidCancelBody, options?: RequestInit): Promise<postApiUsersBusinessesApplicationsApplicationidCancelResponse> => {
+  
+  return customFetch<postApiUsersBusinessesApplicationsApplicationidCancelResponse>(getPostApiUsersBusinessesApplicationsApplicationidCancelUrl(applicationId),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiUsersBusinessesApplicationsApplicationidCancelBody,)
+  }
+);}
+
+
 
 /**
  * ROLE_PICK_UP_BUSINESS 권한을 가진 유저의 사업장 정보를 반환합니다.
  * @summary 픽업 가능 사업장 목록
  */
 export type getApiUsersBusinessesPickupLocationsResponse200 = {
-  data: PagePickupLocationResponse;
-  status: 200;
+  data: PagePickupLocationResponse
+  status: 200
+}
+    
+export type getApiUsersBusinessesPickupLocationsResponseSuccess = (getApiUsersBusinessesPickupLocationsResponse200) & {
+  headers: Headers;
 };
+;
 
-export type getApiUsersBusinessesPickupLocationsResponseSuccess =
-  getApiUsersBusinessesPickupLocationsResponse200 & {
-    headers: Headers;
-  };
+export type getApiUsersBusinessesPickupLocationsResponse = (getApiUsersBusinessesPickupLocationsResponseSuccess)
 
-export type getApiUsersBusinessesPickupLocationsResponse =
-  getApiUsersBusinessesPickupLocationsResponseSuccess;
-
-export const getGetApiUsersBusinessesPickupLocationsUrl = (
-  params?: GetApiUsersBusinessesPickupLocationsParams,
-) => {
+export const getGetApiUsersBusinessesPickupLocationsUrl = (params?: GetApiUsersBusinessesPickupLocationsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
     if (value === undefined) return;
-    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       Object.entries(value).forEach(([k, v]) => {
         if (v === undefined) return;
-        if (Array.isArray(v)) {
-          v.forEach((item) =>
-            normalizedParams.append(k, item == null ? "null" : String(item)),
-          );
-        } else {
-          normalizedParams.append(k, v === null ? "null" : String(v));
-        }
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
       });
     } else if (Array.isArray(value)) {
-      value.forEach((v) =>
-        normalizedParams.append(key, v == null ? "null" : String(v)),
-      );
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
     } else {
-      normalizedParams.append(key, value === null ? "null" : String(value));
+      normalizedParams.append(key, value === null ? 'null' : String(value));
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/api/users/businesses/pickup-locations?${stringifiedParams}`
-    : `/api/users/businesses/pickup-locations`;
-};
+  return stringifiedParams.length > 0 ? `/api/users/businesses/pickup-locations?${stringifiedParams}` : `/api/users/businesses/pickup-locations`
+}
 
-export const getApiUsersBusinessesPickupLocations = async (
-  params?: GetApiUsersBusinessesPickupLocationsParams,
-  options?: RequestInit,
-): Promise<getApiUsersBusinessesPickupLocationsResponse> => {
-  return customFetch<getApiUsersBusinessesPickupLocationsResponse>(
-    getGetApiUsersBusinessesPickupLocationsUrl(params),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
+export const getApiUsersBusinessesPickupLocations = async (params?: GetApiUsersBusinessesPickupLocationsParams, options?: RequestInit): Promise<getApiUsersBusinessesPickupLocationsResponse> => {
+  
+  return customFetch<getApiUsersBusinessesPickupLocationsResponse>(getGetApiUsersBusinessesPickupLocationsUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 로그인한 사용자의 프로필과 멤버십 상태를 반환합니다.
  * @summary 내 프로필 조회
  */
 export type getApiUsersMeResponse200 = {
-  data: UserSelfResponse;
-  status: 200;
-};
-
-export type getApiUsersMeResponseSuccess = getApiUsersMeResponse200 & {
+  data: UserSelfResponse
+  status: 200
+}
+    
+export type getApiUsersMeResponseSuccess = (getApiUsersMeResponse200) & {
   headers: Headers;
 };
+;
 
-export type getApiUsersMeResponse = getApiUsersMeResponseSuccess;
+export type getApiUsersMeResponse = (getApiUsersMeResponseSuccess)
 
 export const getGetApiUsersMeUrl = () => {
-  return `/api/users/me`;
-};
 
-export const getApiUsersMe = async (
-  options?: RequestInit,
-): Promise<getApiUsersMeResponse> => {
-  return customFetch<getApiUsersMeResponse>(getGetApiUsersMeUrl(), {
+
+  
+
+  return `/api/users/me`
+}
+
+export const getApiUsersMe = async ( options?: RequestInit): Promise<getApiUsersMeResponse> => {
+  
+  return customFetch<getApiUsersMeResponse>(getGetApiUsersMeUrl(),
+  {      
     ...options,
-    method: "GET",
-  });
-};
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 인증된 사용자 계정에 연동된 소셜 계정 목록을 조회합니다.
  * @summary 소셜 계정 연동 목록 조회
  */
 export type getApiUsersMeSocialLinksResponse200 = {
-  data: SocialLinkResponse[];
-  status: 200;
+  data: SocialLinkResponse[]
+  status: 200
+}
+    
+export type getApiUsersMeSocialLinksResponseSuccess = (getApiUsersMeSocialLinksResponse200) & {
+  headers: Headers;
 };
+;
 
-export type getApiUsersMeSocialLinksResponseSuccess =
-  getApiUsersMeSocialLinksResponse200 & {
-    headers: Headers;
-  };
-
-export type getApiUsersMeSocialLinksResponse =
-  getApiUsersMeSocialLinksResponseSuccess;
+export type getApiUsersMeSocialLinksResponse = (getApiUsersMeSocialLinksResponseSuccess)
 
 export const getGetApiUsersMeSocialLinksUrl = () => {
-  return `/api/users/me/social-links`;
-};
 
-export const getApiUsersMeSocialLinks = async (
-  options?: RequestInit,
-): Promise<getApiUsersMeSocialLinksResponse> => {
-  return customFetch<getApiUsersMeSocialLinksResponse>(
-    getGetApiUsersMeSocialLinksUrl(),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
+
+  
+
+  return `/api/users/me/social-links`
+}
+
+export const getApiUsersMeSocialLinks = async ( options?: RequestInit): Promise<getApiUsersMeSocialLinksResponse> => {
+  
+  return customFetch<getApiUsersMeSocialLinksResponse>(getGetApiUsersMeSocialLinksUrl(),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
 
 /**
  * 인증된 사용자 계정에서 소셜 계정 연동을 해제합니다.
  * @summary 소셜 계정 연동 해제
  */
 export type deleteApiUsersMeSocialLinksProviderResponse200 = {
-  data: boolean;
-  status: 200;
+  data: boolean
+  status: 200
+}
+    
+export type deleteApiUsersMeSocialLinksProviderResponseSuccess = (deleteApiUsersMeSocialLinksProviderResponse200) & {
+  headers: Headers;
 };
+;
 
-export type deleteApiUsersMeSocialLinksProviderResponseSuccess =
-  deleteApiUsersMeSocialLinksProviderResponse200 & {
-    headers: Headers;
-  };
+export type deleteApiUsersMeSocialLinksProviderResponse = (deleteApiUsersMeSocialLinksProviderResponseSuccess)
 
-export type deleteApiUsersMeSocialLinksProviderResponse =
-  deleteApiUsersMeSocialLinksProviderResponseSuccess;
+export const getDeleteApiUsersMeSocialLinksProviderUrl = (provider: string,) => {
 
-export const getDeleteApiUsersMeSocialLinksProviderUrl = (provider: string) => {
-  return `/api/users/me/social-links/${provider}`;
-};
 
-export const deleteApiUsersMeSocialLinksProvider = async (
-  provider: string,
-  options?: RequestInit,
-): Promise<deleteApiUsersMeSocialLinksProviderResponse> => {
-  return customFetch<deleteApiUsersMeSocialLinksProviderResponse>(
-    getDeleteApiUsersMeSocialLinksProviderUrl(provider),
-    {
-      ...options,
-      method: "DELETE",
-    },
-  );
-};
+  
+
+  return `/api/users/me/social-links/${provider}`
+}
+
+export const deleteApiUsersMeSocialLinksProvider = async (provider: string, options?: RequestInit): Promise<deleteApiUsersMeSocialLinksProviderResponse> => {
+  
+  return customFetch<deleteApiUsersMeSocialLinksProviderResponse>(getDeleteApiUsersMeSocialLinksProviderUrl(provider),
+  {      
+    ...options,
+    method: 'DELETE'
+    
+    
+  }
+);}
