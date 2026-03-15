@@ -1,0 +1,49 @@
+"use client";
+
+import { ChevronRight } from "lucide-react";
+import type { OrderResponse } from "@/apis/generated/api";
+import { getOrderStatusConfig, formatCurrency, formatDate } from "../_lib/utils";
+
+interface OrderCardProps {
+  order: OrderResponse;
+  onClick: () => void;
+}
+
+export default function OrderCard({ order, onClick }: OrderCardProps) {
+  const status = getOrderStatusConfig(order.orderStatus);
+
+  return (
+    <div
+      className="cursor-pointer border border-white/10 p-4 transition-colors hover:border-white/20 md:p-6"
+      onClick={onClick}
+    >
+      <div className="mb-3 flex items-start justify-between md:mb-4">
+        <div>
+          <p className="mb-1 text-xs text-gray-400 md:text-sm">
+            주문번호: {order.orderNumber}
+          </p>
+          <p className="text-xs text-gray-400 md:text-sm">
+            {formatDate(order.createdAt)}
+          </p>
+        </div>
+        <span
+          className={`px-2 py-0.5 text-xs font-semibold md:px-3 md:py-1 md:text-sm ${status.colorClass}`}
+        >
+          {status.label}
+        </span>
+      </div>
+      <h4 className="mb-2 text-sm font-bold text-white md:text-base">
+        {order.itemName || order.saleTitle || "상품명 없음"}
+      </h4>
+      <div className="flex items-center justify-between">
+        <p className="text-lg font-bold text-white md:text-xl">
+          {formatCurrency(order.totalPrice)}
+        </p>
+        <button className="flex items-center gap-1 text-xs text-gray-400 hover:text-white md:text-sm">
+          상세보기
+          <ChevronRight size={14} className="md:size-4" />
+        </button>
+      </div>
+    </div>
+  );
+}

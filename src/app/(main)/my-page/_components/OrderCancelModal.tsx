@@ -1,0 +1,83 @@
+"use client";
+
+import { useState, useTransition } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { cancelOrder } from "../actions";
+
+interface OrderCancelModalProps {
+  isOpen: boolean;
+  close: () => void;
+  orderId: number;
+  itemName?: string;
+}
+
+export default function OrderCancelModal({
+  isOpen,
+  close,
+  orderId,
+  itemName,
+}: OrderCancelModalProps) {
+  const [reason, setReason] = useState("");
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string>();
+
+  const handleCancel = () => {
+    startTransition(async () => {
+      const result = await cancelOrder(orderId, reason || undefined);
+      if (result.success) {
+        close();
+      } else {
+        setError(result.error);
+      }
+    });
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={close}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>주문 취소</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4 py-4">
+          <p className="text-sm text-gray-600">
+            <span className="font-semibold">{itemName}</span> 주문을
+            취소하시겠습니까?
+          </p>
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-gray-700">
+              취소 사유 (선택)
+            </label>
+            <textarea
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              maxLength={500}
+              rows={3}
+              placeholder="취소 사유를 입력해주세요"
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-gray-600 focus:outline-none"
+            />
+          </div>
+          {error && <p className="text-sm text-red-600">{error}</p>}
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={close} disabled={isPending}>
+            돌아가기
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={handleCancel}
+            disabled={isPending}
+          >
+            {isPending ? "취소 중..." : "주문 취소"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}

@@ -1,0 +1,46 @@
+import { getApiOrders, getApiUsersMe } from "@/apis/generated/api";
+import { withToken } from "@/apis/mutator";
+import { authOptions, getAuthToken } from "@/lib/auth";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+import MyPageClient from "./_components/MyPageClient";
+
+interface MyPageProps {
+  searchParams: Promise<{ page?: string; tab?: string }>;
+}
+
+export default async function MyPage({ searchParams }: MyPageProps) {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    redirect("/sign-in?callbackUrl=/my-page");
+  }
+
+  const token = await getAuthToken();
+
+  if (!token) {
+    redirect("/sign-in?callbackUrl=/my-page");
+  }
+
+  const params = await searchParams;
+  const page = Number(params.page) || 0;
+
+  const [userResult, ordersResult] = await Promise.all([
+    getApiUsersMe(withToken(token)).catch((e) => {
+      console.error("[my-page] getApiUsersMe failed:", e);
+      return null;
+    }),
+    getApiOrders(
+      { page, size: 10, sort: ["createdAt,desc"] },
+      withToken(token),
+    ).catch((e) => {
+      console.error("[my-page] getApiOrders failed:", e);
+      return null;
+    }),
+  ]);
+
+  const user = userResult?.data ?? {};
+  const orders = ordersResult?.data ?? { content: [], totalPages: 0 };
+
+  return <MyPageClient user={user} orders={orders} />;
+}
