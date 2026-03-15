@@ -1,6 +1,5 @@
 "use client";
 
-import type { BlacklistRequest } from "@/apis/apis";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,7 +15,10 @@ import DateTimePicker from "../../../_components/DateTimePicker";
 import { useBlacklistForm } from "../hooks/useBlacklistForm";
 import UserSearchInput from "../UserSearchInput";
 
-type BlacklistFormData = BlacklistRequest & {
+type BlacklistFormData = {
+  reason: string;
+  startAt: string;
+  endAt: string | null;
   userId: number;
   name: string;
 };
@@ -59,7 +61,7 @@ export default function BlacklistFormModal({
               onSelect={(user) =>
                 dispatch({
                   type: "SET_USER",
-                  payload: { userId: user.id.toString(), name: user.name },
+                  payload: { userId: user.id!.toString(), name: user.name ?? "" },
                 })
               }
               onClear={() => dispatch({ type: "CLEAR_USER" })}

@@ -6,7 +6,7 @@ import { overlay } from "overlay-kit";
 import { useMemo, useTransition } from "react";
 import { toast } from "sonner";
 
-import type { AdminUserResponse } from "@/apis/apis";
+import type { AdminUserResponse } from "@/apis/generated/api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -102,15 +102,15 @@ export default function BlacklistContent({
         close={close}
         mode="edit"
         initialData={{
-          userId: item.id,
-          name: item.name,
+          userId: item.id!,
+          name: item.name!,
           reason: item.userExt?.banReason || "",
           startAt: item.userExt?.banStartDate || "",
           endAt: item.userExt?.banEndDate || "",
         }}
         onSubmit={async (data) => {
           startTransition(async () => {
-            const result = await editUserBanAction(item.id, {
+            const result = await editUserBanAction(item.id!, {
               reason: data.reason,
               startAt: data.startAt,
               endAt: data.endAt,
@@ -134,7 +134,7 @@ export default function BlacklistContent({
         close={close}
         onConfirm={async () => {
           startTransition(async () => {
-            const result = await cancelUserBanAction(item.id);
+            const result = await cancelUserBanAction(item.id!);
             if (result.success) {
               close();
               router.refresh();

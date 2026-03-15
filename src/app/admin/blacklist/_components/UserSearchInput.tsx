@@ -2,7 +2,7 @@
 
 import { Loader2 } from "lucide-react";
 
-import type { AdminUserResponse } from "@/apis/apis";
+import type { AdminUserResponse } from "@/apis/generated/api";
 import { Label } from "@/components/ui/label";
 import { SearchInput } from "@/components/ui/search-input";
 import { useUserSearch } from "./hooks/useUserSearch";

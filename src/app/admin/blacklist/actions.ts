@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
-import type { AdminUserResponse } from "@/apis/apis";
+import type { AdminUserResponse } from "@/apis/generated/api";
 import {
   getApiAdminUsers,
   patchApiAdminUsersIdBan,

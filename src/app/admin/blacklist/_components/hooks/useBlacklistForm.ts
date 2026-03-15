@@ -4,7 +4,11 @@ import { useReducer, useTransition } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import type { BlacklistRequest } from "@/apis/apis";
+type BlacklistRequest = {
+  reason: string;
+  startAt: string;
+  endAt: string | null;
+};
 
 type BlacklistFormData = BlacklistRequest & {
   userId: number;

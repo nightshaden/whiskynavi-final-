@@ -1,4 +1,4 @@
-import type { AdminUserResponse } from "@/apis/apis";
+import type { AdminUserResponse } from "@/apis/generated/api";
 import { getApiAdminUsers } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";

@@ -1,8 +1,8 @@
 "use client";
 
-import { useDeferredValue, useEffect, useRef, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 
-import type { AdminUserResponse } from "@/apis/apis";
+import type { AdminUserResponse } from "@/apis/generated/api";
 import { searchUsersAction } from "../../actions";
 
 export function useUserSearch() {
@@ -16,42 +16,35 @@ export function useUserSearch() {
 
   const deferredQuery = useDeferredValue(searchQuery);
   const isSearching = searchQuery !== deferredQuery;
+  const trimmedQuery = deferredQuery.trim();
 
-  // deferredQuery 변경 시 API 호출
+  // 빈 쿼리 → 결과/드롭다운을 derived state로 처리
+  const visibleResults = useMemo(
+    () => (trimmedQuery ? searchResults : []),
+    [trimmedQuery, searchResults],
+  );
+  const isDropdownVisible = showDropdown && trimmedQuery.length > 0;
+
+  // deferredQuery 변경 시 API 호출 (비어있으면 skip)
   useEffect(() => {
-    if (!deferredQuery.trim()) {
-      setSearchResults([]);
-      setShowDropdown(false);
-      return;
-    }
+    if (!trimmedQuery) return;
 
     let cancelled = false;
 
-    async function search() {
-      try {
-        const result = await searchUsersAction(deferredQuery);
-        if (cancelled) return;
-        if (result.success && result.data) {
-          setSearchResults(result.data);
-          setShowDropdown(true);
-        } else {
-          console.error("사용자 검색 실패:", result.error);
-          setSearchResults([]);
-        }
-      } catch (error) {
-        if (!cancelled) {
-          console.error("사용자 검색 실패:", error);
-          setSearchResults([]);
-        }
+    searchUsersAction(trimmedQuery).then((result) => {
+      if (cancelled) return;
+      if (result.success && result.data) {
+        setSearchResults(result.data);
+        setShowDropdown(true);
+      } else {
+        setSearchResults([]);
       }
-    }
-
-    search();
+    });
 
     return () => {
       cancelled = true;
     };
-  }, [deferredQuery]);
+  }, [trimmedQuery]);
 
   // 외부 클릭 시 드롭다운 닫기
   useEffect(() => {
@@ -81,9 +74,9 @@ export function useUserSearch() {
   return {
     searchQuery,
     setSearchQuery,
-    searchResults,
+    searchResults: visibleResults,
     isSearching,
-    showDropdown,
+    showDropdown: isDropdownVisible,
     setShowDropdown,
     selectedUser,
     searchContainerRef,
