@@ -71,7 +71,7 @@ export function AgreementSection() {
           id="all-agree"
           checked={allAgreed}
           onCheckedChange={(checked) => handleAllAgree(checked === true)}
-          className="mt-0.5 size-5 rounded border-gray-200 data-[state=checked]:border-gray-200 data-[state=checked]:bg-transparent"
+          className="mt-0.5 size-5 rounded border-gray-200 data-[state=checked]:border-gray-900 data-[state=checked]:bg-gray-900 data-[state=checked]:text-white"
         />
         <div>
           <label

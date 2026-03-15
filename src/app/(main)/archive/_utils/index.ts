@@ -1,5 +1,4 @@
-import type { BottleQueries } from "@/apis/apis";
-import {
+import type {
   BottleSearchParameterValues,
   GetApiBottlesParams,
 } from "@/apis/generated/api";
@@ -54,17 +53,17 @@ export function extractAllValues(
 }
 
 /**
- * FilterState를 API BottleQueries 형식으로 변환
+ * FilterState를 API GetApiBottlesParams["filters"] 형식으로 변환
  */
 export function convertFiltersToQueries(
   filterState: FilterState,
-): BottleQueries {
-  const queries: BottleQueries = {};
+): GetApiBottlesParams["filters"] {
+  const queries: GetApiBottlesParams["filters"] = {};
 
   // 배열 필터를 쉼표로 구분된 문자열로 변환
   const arrayFilters: Array<{
     key: keyof FilterState;
-    queryKey: keyof BottleQueries;
+    queryKey: keyof GetApiBottlesParams["filters"];
   }> = [
     { key: "brands", queryKey: "brand" },
     { key: "distilleries", queryKey: "distillery" },
@@ -140,9 +139,9 @@ export function parseFiltersFromSearchParams(
 }
 
 /**
- * BottleQueries를 URLSearchParams 문자열로 변환
+ * GetApiBottlesParams["filters"]를 URLSearchParams 문자열로 변환
  */
-export function buildQueryString(queries: BottleQueries): string {
+export function buildQueryString(queries: GetApiBottlesParams["filters"]): string {
   const params = new URLSearchParams();
 
   for (const [key, value] of Object.entries(queries)) {

@@ -6,7 +6,9 @@ import { overlay } from "overlay-kit";
 import { useTransition } from "react";
 import { toast } from "sonner";
 
-import type { AdminUserResponse, UserRole } from "@/apis/apis";
+import type { AdminUserResponse } from "@/apis/generated/api";
+
+type UserRole = string;
 import { Badge } from "@/components/ui/badge";
 import {
   Select,
@@ -119,11 +121,11 @@ export default function MembershipContent({
       <RemoveMemberConfirmModal
         isOpen={isOpen}
         close={close}
-        userName={user.name}
-        username={user.username}
+        userName={user.name ?? ""}
+        username={user.username ?? ""}
         onConfirm={() => {
           startTransition(async () => {
-            const result = await removeMembershipAction(user.id, brand);
+            const result = await removeMembershipAction(user.id!, brand);
             if (!result.success) {
               toast.error(result.error);
             }
@@ -269,9 +271,10 @@ export default function MembershipContent({
                 ))
               ) : (
                 users.map((user) => {
-                  const memberType = getMemberType(user.roles);
+                  const roles = user.roles ?? [];
+                  const memberType = getMemberType(roles);
                   const membershipRoles = MEMBERSHIP_ROLES.filter((r) =>
-                    user.roles.includes(r),
+                    roles.includes(r),
                   );
 
                   return (
@@ -312,7 +315,7 @@ export default function MembershipContent({
                         </div>
                       </td>
                       <td className="px-3 py-2 text-xs text-gray-600">
-                        {formatDate(user.createdAt)}
+                        {formatDate(user.createdAt ?? "")}
                       </td>
                       <td className="px-3 py-2 text-xs">
                         <button

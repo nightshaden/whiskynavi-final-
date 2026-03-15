@@ -1,6 +1,7 @@
 "use server";
 
-import { api, type SignupRequest } from "@/apis/apis";
+import type { SignupRequest } from "@/apis/generated/api";
+import { postApiAuthSignup } from "@/apis/generated/api";
 import { redirect } from "next/navigation";
 import { signUpSchema } from "./schemas";
 
@@ -26,6 +27,7 @@ export async function signUpAction(
     confirmPassword: formData.get("confirmPassword") ?? "",
     name: formData.get("name") ?? "",
     username: formData.get("username") ?? "",
+    phone: formData.get("phone") ?? "",
     birthDate: formData.get("birthDate") ?? "",
     gender: formData.get("gender") ?? "",
     emailVerified: formData.get("emailVerified") ?? "",
@@ -77,6 +79,7 @@ export async function signUpAction(
     password: data.password,
     name: data.name,
     username: data.username,
+    phone: data.phone,
     privacyAgree: true,
     marketingAgree: data.marketingAgree === "true",
     emailAgree: data.emailAgree === "true",
@@ -86,14 +89,19 @@ export async function signUpAction(
 
   // 선택 항목 추가
   if (data.birthDate) {
-    signupData.birthDate = data.birthDate;
+    // "19950802" → "1995-08-02", 이미 하이픈 포함이면 그대로
+    const raw = data.birthDate.replace(/[\s-]/g, "");
+    signupData.birthDate =
+      raw.length === 8
+        ? `${raw.slice(0, 4)}-${raw.slice(4, 6)}-${raw.slice(6, 8)}`
+        : data.birthDate;
   }
   if (data.gender) {
     signupData.gender = data.gender;
   }
 
   try {
-    await api.signUp(signupData);
+    await postApiAuthSignup(signupData);
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "회원가입에 실패했습니다.";
@@ -104,5 +112,5 @@ export async function signUpAction(
   }
 
   // 회원가입 성공 시 로그인 페이지로 리다이렉트
-  redirect("/sign-in");
+  redirect("/sign-in?registered=true");
 }

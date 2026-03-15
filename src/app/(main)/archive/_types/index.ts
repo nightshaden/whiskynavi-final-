@@ -1,10 +1,14 @@
-import type { BottleParams } from "@/apis/apis";
-
 /**
  * 필터 상태 인터페이스
- * BottleParams를 확장하여 범위 필터(abv, vintage)를 추가
  */
-export interface FilterState extends BottleParams {
+export interface FilterState {
+  brands: string[];
+  distilleries: string[];
+  names: string[];
+  series: string[];
+  companies: string[];
+  maltTypes: string[];
+  caskTypes: string[];
   abv: [number, number];
   vintage: [number, number];
 }

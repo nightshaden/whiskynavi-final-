@@ -1,6 +1,6 @@
 "use client";
 
-import type { AdminUserResponse, OrderResponse } from "@/apis/apis";
+import type { AdminUserResponse, OrderResponse } from "@/apis/generated/api";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -106,11 +106,11 @@ export default function OrderHistoryModal({
                         </h4>
                         <span
                           className={`rounded px-2 py-1 text-xs font-medium ${
-                            ORDER_STATUS_COLOR[order.orderStatus] ??
+                            ORDER_STATUS_COLOR[order.orderStatus!] ??
                             "bg-gray-100 text-gray-700"
                           }`}
                         >
-                          {ORDER_STATUS_LABEL[order.orderStatus] ??
+                          {ORDER_STATUS_LABEL[order.orderStatus!] ??
                             order.orderStatus}
                         </span>
                       </div>
@@ -124,7 +124,7 @@ export default function OrderHistoryModal({
                         <p className="text-gray-600">
                           주문일:{" "}
                           <span className="font-medium text-gray-900">
-                            {new Date(order.createdAt)
+                            {new Date(order.createdAt!)
                               .toLocaleDateString("ko-KR", {
                                 year: "numeric",
                                 month: "2-digit",
@@ -151,13 +151,13 @@ export default function OrderHistoryModal({
                         <p className="text-gray-600">
                           단가:{" "}
                           <span className="font-medium text-gray-900">
-                            {order.unitPrice.toLocaleString()}원
+                            {order.unitPrice?.toLocaleString()}원
                           </span>
                         </p>
                         <p className="text-gray-600">
                           총 금액:{" "}
                           <span className="font-bold text-gray-900">
-                            {order.totalPrice.toLocaleString()}원
+                            {order.totalPrice?.toLocaleString()}원
                           </span>
                         </p>
                       </div>

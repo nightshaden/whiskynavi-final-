@@ -1,7 +1,14 @@
 import Image from "next/image";
 import { SignInForm } from "./SignInForm";
+import { RegisteredToast } from "./RegisteredToast";
 
-const Page = () => {
+type PageProps = {
+  searchParams: Promise<{ registered?: string }>;
+};
+
+const Page = async ({ searchParams }: PageProps) => {
+  const { registered } = await searchParams;
+
   return (
     <main className="flex min-h-screen items-center justify-center px-4">
       <section className="flex w-full max-w-[400px] flex-col items-center">
@@ -16,6 +23,7 @@ const Page = () => {
         </div>
 
         <SignInForm />
+        {registered === "true" && <RegisteredToast />}
       </section>
     </main>
   );

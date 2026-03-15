@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
-import type { AdminUserResponse } from "@/apis/apis";
+import type { AdminUserResponse } from "@/apis/generated/api";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -42,7 +42,7 @@ export default function AddMemberModal({
 
     startTransition(async () => {
       setError(null);
-      const result = await addMembershipAction(selectedUser.id, selectedBrand);
+      const result = await addMembershipAction(selectedUser.id!, selectedBrand);
       if (result.success) {
         close();
         router.refresh();

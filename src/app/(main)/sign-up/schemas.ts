@@ -28,6 +28,7 @@ export const signUpSchema = z
     confirmPassword: z.string().min(1, "비밀번호 확인을 입력해주세요."),
     name: nameSchema,
     username: usernameSchema,
+    phone: z.string().min(1, "전화번호를 입력해주세요.").max(20),
     birthDate: z.string().optional(),
     gender: z.string().optional(),
     emailVerified: z.literal("true", {

@@ -1,4 +1,4 @@
-import { api } from "@/apis/apis";
+import { postApiAuthLogin, postApiAuthRefresh } from "@/apis/generated/api";
 import type { NextAuthOptions } from "next-auth";
 import { getServerSession } from "next-auth";
 import type { JWT } from "next-auth/jwt";
@@ -11,11 +11,11 @@ const TOKEN_REFRESH_INTERVAL = 25 * 60 * 1000;
 
 async function refreshAccessToken(token: JWT): Promise<JWT> {
   try {
-    const res = await api.refreshToken(token.refreshToken!);
+    const res = await postApiAuthRefresh({ refreshToken: token.refreshToken! });
     return {
       ...token,
-      accessToken: res.accessToken,
-      refreshToken: res.refreshToken,
+      accessToken: res.data.accessToken,
+      refreshToken: res.data.refreshToken,
       tokenIssuedAt: Date.now(),
       error: undefined,
     };
@@ -75,18 +75,18 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
-          const res = await api.signIn({
+          const res = await postApiAuthLogin({
             email: credentials.email,
             password: credentials.password,
           });
 
           return {
-            id: String(res.userId),
-            name: res.username,
-            email: res.email,
-            roles: res.userInfo.roles,
-            accessToken: res.accessToken,
-            refreshToken: res.refreshToken,
+            id: String(res.data.userId),
+            name: res.data.username,
+            email: res.data.email,
+            roles: res.data.userInfo?.roles,
+            accessToken: res.data.accessToken,
+            refreshToken: res.data.refreshToken,
           };
         } catch (error) {
           const message =
