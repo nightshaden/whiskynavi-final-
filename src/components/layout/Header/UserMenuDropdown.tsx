@@ -4,16 +4,26 @@ import { LogoutButton } from "./shared";
 interface UserMenuDropdownProps {
   isAdmin: boolean;
   close: () => void;
+  anchorRect?: DOMRect;
 }
 
 export default function UserMenuDropdown({
   isAdmin,
   close,
+  anchorRect,
 }: UserMenuDropdownProps) {
+  const top = anchorRect ? anchorRect.bottom + 8 : 80;
+  const right = anchorRect
+    ? window.innerWidth - anchorRect.right
+    : 32;
+
   return (
     <>
       <div className="fixed inset-0 z-[60]" onClick={close} />
-      <div className="fixed right-4 top-16 z-[60] w-44 rounded-lg border border-white/20 bg-[#1d2429] py-2 shadow-2xl backdrop-blur-md lg:right-8 lg:top-20">
+      <div
+        className="fixed z-[60] w-44 rounded-lg border border-white/20 bg-[#1d2429] py-2 shadow-2xl backdrop-blur-md"
+        style={{ top, right }}
+      >
         <Link
           href="/my-page"
           onClick={close}

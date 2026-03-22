@@ -11,6 +11,7 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useRef } from "react";
 import { overlay } from "overlay-kit";
 import { AUTH_NAV_LINKS, NAV_LINKS } from "./constants";
 import DesktopAuthArea from "./DesktopAuthArea";
@@ -22,6 +23,7 @@ export default function Header() {
   const pathname = usePathname();
   const { data: session, status } = useSession();
   const isScrolled = useScrolled();
+  const authAreaRef = useRef<HTMLDivElement>(null);
 
   const isAdmin = session?.user?.roles?.includes("ROLE_ADMIN") ?? false;
 
@@ -30,8 +32,15 @@ export default function Header() {
   }
 
   const openUserMenu = () => {
+    const rect = authAreaRef.current?.getBoundingClientRect();
     overlay.open(({ isOpen, close }) =>
-      isOpen ? <UserMenuDropdown isAdmin={isAdmin} close={close} /> : null,
+      isOpen ? (
+        <UserMenuDropdown
+          isAdmin={isAdmin}
+          close={close}
+          anchorRect={rect}
+        />
+      ) : null,
     );
   };
 
@@ -83,7 +92,7 @@ export default function Header() {
             ))}
         </nav>
 
-        <div className="hidden items-center gap-4 lg:flex">
+        <div ref={authAreaRef} className="hidden items-center gap-4 lg:flex">
           {/* TODO: 다국어 지원 시 Globe 버튼 + overlay.open으로 언어 선택 드롭다운 구현 */}
           <DesktopAuthArea
             status={status}
