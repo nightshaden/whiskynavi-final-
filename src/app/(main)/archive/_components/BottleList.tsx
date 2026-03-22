@@ -12,7 +12,7 @@ interface BottleListProps {
 }
 
 export default async function BottleList({ params }: BottleListProps) {
-  const currentPage = params.page ? Number(params.page) : 1;
+  const currentPage = Math.max(Number(params.page) || 1, 1);
   const { sort, ...rest } = params;
 
   const { data: bottlesResponse } = await getApiBottles({
