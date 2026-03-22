@@ -49,7 +49,7 @@ export function findCategory(
 export function extractAllValues(
   params: BottleSearchParameterValues,
 ): string[] {
-  return Object.values(params).flatMap((value) => value ?? []);
+  return [...new Set(Object.values(params).flatMap((value) => value ?? []))];
 }
 
 /**
