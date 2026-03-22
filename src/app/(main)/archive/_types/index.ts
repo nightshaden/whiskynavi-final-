@@ -24,6 +24,7 @@ export const FILTER_DEFAULTS = {
   VINTAGE_MAX: 2025,
   DEFAULT_MALT_TYPE: "single malt",
   DEBOUNCE_MS: 300,
+  KEYWORD_DEBOUNCE_MS: 800,
 } as const;
 
 /**

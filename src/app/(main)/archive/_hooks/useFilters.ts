@@ -1,13 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  useTransition,
-} from "react";
+import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { FILTER_DEFAULTS, type FilterState } from "../_types";
 import {
   buildQueryString,
@@ -37,6 +31,8 @@ export function useFilters(): UseFiltersReturn {
   const searchParams = useSearchParams();
   const isInitialized = useRef(false);
   const [isPending, startTransition] = useTransition();
+  const initialKeyword = new URLSearchParams(searchParams.toString()).get("keyword") ?? "";
+  const prevKeywordRef = useRef(initialKeyword);
 
   // URL에서 초기 필터 상태 파싱
   const [filters, setFilters] = useState<FilterState>(() =>
@@ -50,7 +46,13 @@ export function useFilters(): UseFiltersReturn {
       return;
     }
 
+    const keywordChanged = filters.keyword !== prevKeywordRef.current;
+    const debounceMs = keywordChanged
+      ? FILTER_DEFAULTS.KEYWORD_DEBOUNCE_MS
+      : FILTER_DEFAULTS.DEBOUNCE_MS;
+
     const timeoutId = setTimeout(() => {
+      prevKeywordRef.current = filters.keyword;
       const queries = convertFiltersToQueries(filters);
       const queryString = buildQueryString(queries);
       startTransition(() => {
@@ -58,7 +60,7 @@ export function useFilters(): UseFiltersReturn {
           scroll: false,
         });
       });
-    }, FILTER_DEFAULTS.DEBOUNCE_MS);
+    }, debounceMs);
 
     return () => clearTimeout(timeoutId);
   }, [filters, router]);
