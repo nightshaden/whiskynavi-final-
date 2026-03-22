@@ -1,11 +1,11 @@
 "use client";
 
-import type { Brand } from "@/types/brand";
 import type { BottleResponse } from "@/apis/generated/api";
+import type { Brand } from "@/types/brand";
 import { useCallback, useRef } from "react";
-import BrandNavigation from "./BrandNavigation";
-import BrandList from "./BrandList";
 import { BrandRefs } from "../_types";
+import BrandList from "./BrandList";
+import BrandNavigation from "./BrandNavigation";
 
 interface Props {
   brands: Brand[];
@@ -20,12 +20,9 @@ const BrandContent = ({ brands, bottlesMap }: Props) => {
     투게더인스피릿: null,
   });
 
-  const registerBrandRef = useCallback(
-    (id: string, el: HTMLElement | null) => {
-      brandRefs.current[id] = el;
-    },
-    [],
-  );
+  const registerBrandRef = useCallback((id: string, el: HTMLElement | null) => {
+    brandRefs.current[id] = el;
+  }, []);
 
   const scrollToBrand = useCallback((brandId: string) => {
     const element = brandRefs.current[brandId];
