@@ -1,19 +1,20 @@
-import type { Session } from "next-auth";
 import Link from "next/link";
 import { LogoutButton, UserAvatar, UserName } from "./shared";
 
 interface MobileAuthSectionProps {
-  session: Session | null;
+  userName: string;
+  hasSession: boolean;
   isAdmin: boolean;
   close: () => void;
 }
 
 export default function MobileAuthSection({
-  session,
+  userName,
+  hasSession,
   isAdmin,
   close,
 }: MobileAuthSectionProps) {
-  if (!session) {
+  if (!hasSession) {
     return (
       <Link
         href="/sign-in"
@@ -29,7 +30,7 @@ export default function MobileAuthSection({
     <div className="flex flex-col gap-1">
       <div className="mb-2 flex items-center gap-3 px-3">
         <UserAvatar />
-        <UserName name={session.user?.name} />
+        <UserName name={userName} />
       </div>
 
       <Link

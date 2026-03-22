@@ -1,23 +1,18 @@
-import type { Session } from "next-auth";
-import Link from "next/link";
 import { ChevronDown } from "lucide-react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { FC } from "react";
 import { UserAvatar, UserName } from "./shared";
 
 interface DesktopAuthAreaProps {
-  status: string;
-  session: Session | null;
   onOpenUserMenu: () => void;
 }
 
-export default function DesktopAuthArea({
-  status,
-  session,
-  onOpenUserMenu,
-}: DesktopAuthAreaProps) {
+const DesktopAuthArea: FC<DesktopAuthAreaProps> = ({ onOpenUserMenu }) => {
+  const { data: session, status } = useSession();
+
   if (status === "loading") {
-    return (
-      <div className="h-10 w-10 animate-pulse rounded-full bg-white/10" />
-    );
+    return <div className="h-10 w-10 animate-pulse rounded-full bg-white/10" />;
   }
 
   if (!session) {
@@ -40,11 +35,13 @@ export default function DesktopAuthArea({
       <UserAvatar />
       <div className="flex flex-col items-start">
         <UserName name={session.user?.name} />
-        <span className="typo-regular-12 flex items-center gap-1 text-white/60 transition-colors group-hover:text-white/80">
+        <span className="typo-regular-12 mt-1.5 flex items-center gap-1 text-white/60 transition-colors group-hover:text-white/80">
           메뉴
           <ChevronDown size={10} />
         </span>
       </div>
     </button>
   );
-}
+};
+
+export default DesktopAuthArea;

@@ -1,5 +1,4 @@
 import "@/app/globals.css";
-import Header from "@/components/layout/Header";
 import { Toaster } from "@/components/ui/sonner";
 import { siteConfig } from "@/config/site";
 import { AuthProvider } from "@/providers/AuthProvider";

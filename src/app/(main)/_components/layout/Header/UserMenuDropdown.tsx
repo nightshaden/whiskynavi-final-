@@ -2,20 +2,18 @@ import Link from "next/link";
 import { LogoutButton } from "./shared";
 
 interface UserMenuDropdownProps {
-  isAdmin: boolean;
   close: () => void;
   anchorRect?: DOMRect;
+  isAdminUser: boolean;
 }
 
 export default function UserMenuDropdown({
-  isAdmin,
   close,
   anchorRect,
+  isAdminUser,
 }: UserMenuDropdownProps) {
   const top = anchorRect ? anchorRect.bottom + 8 : 80;
-  const right = anchorRect
-    ? window.innerWidth - anchorRect.right
-    : 32;
+  const right = anchorRect ? window.innerWidth - anchorRect.right : 32;
 
   return (
     <>
@@ -31,7 +29,7 @@ export default function UserMenuDropdown({
         >
           마이페이지
         </Link>
-        {isAdmin ? (
+        {isAdminUser ? (
           <Link
             href="/admin"
             onClick={close}
