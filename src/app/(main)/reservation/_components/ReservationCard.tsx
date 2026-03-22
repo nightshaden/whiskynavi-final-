@@ -49,7 +49,7 @@ export default function ReservationCard({
         <p className="mb-0.5 text-xs text-gray-400">
           {notice.bottleBrand ?? ""}
         </p>
-        <h3 className="mb-1 line-clamp-2 text-sm font-medium text-white group-hover:text-gray-300">
+        <h3 className="typo-medium-14 mb-1 line-clamp-2 text-white group-hover:text-gray-300">
           {notice.bottleName ?? ""}
         </h3>
         <div className="flex items-center justify-between">

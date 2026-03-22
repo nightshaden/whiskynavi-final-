@@ -62,7 +62,7 @@ export default function DashboardContent({ statsSlot }: DashboardContentProps) {
       <div className="p-8">
         {statsSlot}
 
-        <h2 className="mb-4 text-xl font-bold text-gray-900">빠른 링크</h2>
+        <h2 className="typo-bold-20 mb-4 text-gray-900">빠른 링크</h2>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {quickLinks.map((link) => {
             const Icon = link.icon;

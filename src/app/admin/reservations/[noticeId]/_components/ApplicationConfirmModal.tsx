@@ -62,7 +62,7 @@ export default function ApplicationConfirmModal({
         </DialogHeader>
 
         <div className="py-2">
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="typo-medium-14 mb-1 block text-gray-700">
             확정 수량
           </label>
           <input

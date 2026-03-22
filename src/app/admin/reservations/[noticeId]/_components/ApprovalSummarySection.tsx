@@ -31,7 +31,7 @@ export default function ApprovalSummarySection({
           <p className="mt-0.5 text-xs text-gray-600">총 {applied}건 신청</p>
         </div>
         <div className="text-right">
-          <p className={`text-2xl font-bold ${textColor}`}>
+          <p className={`typo-bold-24 ${textColor}`}>
             {approved}{" "}
             <span className="text-sm text-gray-500">/ {available}병</span>
           </p>

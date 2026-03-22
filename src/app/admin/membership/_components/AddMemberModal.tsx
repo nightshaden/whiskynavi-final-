@@ -59,7 +59,7 @@ export default function AddMemberModal({
     <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold">멤버십 추가</DialogTitle>
+          <DialogTitle className="typo-bold-20">멤버십 추가</DialogTitle>
           <p className="mt-1 text-sm text-gray-500">
             사용자를 검색하여 멤버십을 추가합니다.
           </p>
@@ -68,7 +68,7 @@ export default function AddMemberModal({
         <div className="space-y-5 py-2">
           {/* 브랜드 선택 */}
           <div className="space-y-1.5">
-            <label className="text-sm font-medium">브랜드 선택 *</label>
+            <label className="typo-medium-14">브랜드 선택 *</label>
             <div className="flex gap-2">
               <button
                 type="button"
@@ -107,7 +107,7 @@ export default function AddMemberModal({
           {/* 선택된 사용자 정보 요약 */}
           {selectedUser && (
             <div className="space-y-2 rounded-lg border border-gray-200 bg-gray-50 p-4">
-              <p className="text-sm font-medium text-gray-900">선택된 사용자</p>
+              <p className="typo-medium-14 text-gray-900">선택된 사용자</p>
               <div className="grid grid-cols-2 gap-2 text-sm">
                 <div>
                   <span className="text-gray-500">이름:</span>{" "}

@@ -34,7 +34,7 @@ export default function DeleteConfirmModal({
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
               <AlertTriangle size={24} className="text-red-600" />
             </div>
-            <DialogTitle className="text-xl font-bold">삭제 확인</DialogTitle>
+            <DialogTitle className="typo-bold-20">삭제 확인</DialogTitle>
           </div>
           <DialogDescription className="pt-2 text-gray-600">
             이 항목을 블랙리스트에서 삭제하시겠습니까?

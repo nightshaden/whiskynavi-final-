@@ -27,16 +27,16 @@ export default function OrderCard({ order, onClick }: OrderCardProps) {
           </p>
         </div>
         <span
-          className={`px-2 py-0.5 text-xs font-semibold md:px-3 md:py-1 md:text-sm ${status.colorClass}`}
+          className={`typo-bold-12 md:text-sm px-2 py-0.5 md:px-3 md:py-1 ${status.colorClass}`}
         >
           {status.label}
         </span>
       </div>
-      <h4 className="mb-2 text-sm font-bold text-white md:text-base">
+      <h4 className="typo-bold-14 md:text-base mb-2 text-white">
         {order.itemName || order.saleTitle || "상품명 없음"}
       </h4>
       <div className="flex items-center justify-between">
-        <p className="text-lg font-bold text-white md:text-xl">
+        <p className="typo-bold-18 md:text-xl text-white">
           {formatCurrency(order.totalPrice)}
         </p>
         <button className="flex items-center gap-1 text-xs text-gray-400 hover:text-white md:text-sm">

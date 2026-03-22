@@ -72,7 +72,7 @@ const MobileNavMenu: FC<Props> = ({ session, pathname }) => {
                   ))}
               </nav>
 
-              <div className="border-t border-white/10 px-4 pt-4">
+              <div className="border-t border-white/10 p-4">
                 <MobileAuthSection
                   userName={session?.user?.name ?? ""}
                   hasSession={hasSession(session)}

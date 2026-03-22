@@ -63,7 +63,7 @@ export default function AdminSidebar({ isOpen, statsSlot }: AdminSidebarProps) {
     >
       <div className="p-6">
         <Link href="/admin">
-          <h1 className="mb-2 text-2xl font-bold text-gray-900">관리자</h1>
+          <h1 className="typo-bold-24 mb-2 text-gray-900">관리자</h1>
         </Link>
         <p className="text-sm text-gray-600">위스키내비 운영 관리</p>
       </div>

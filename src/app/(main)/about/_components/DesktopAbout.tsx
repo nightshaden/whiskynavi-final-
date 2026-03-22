@@ -124,7 +124,7 @@ export default function DesktopAbout() {
               style={{ wordBreak: "keep-all" }}
             >
               <motion.p
-                className="mb-20 px-4 text-center text-2xl font-semibold text-white/90 xl:text-3xl"
+                className="typo-bold-24 xl:text-3xl mb-20 px-4 text-center text-white/90"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.6 }}
@@ -361,7 +361,7 @@ export default function DesktopAbout() {
                 <div className="absolute right-6 bottom-12 left-6 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-hover:delay-300 group-hover:duration-500">
                   <div className="max-w-md space-y-4">
                     <p
-                      className="text-base leading-relaxed font-medium text-white/90 xl:text-lg"
+                      className="typo-medium-16 xl:text-lg leading-relaxed text-white/90"
                       style={{ wordBreak: "keep-all" }}
                     >
                       현지 파트너와의 탄탄한 협력을 통해
@@ -401,7 +401,7 @@ export default function DesktopAbout() {
                 <div className="absolute right-6 bottom-12 left-6 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-hover:delay-300 group-hover:duration-500">
                   <div className="max-w-md space-y-4">
                     <p
-                      className="text-base leading-relaxed font-medium text-white/90 xl:text-lg"
+                      className="typo-medium-16 xl:text-lg leading-relaxed text-white/90"
                       style={{ wordBreak: "keep-all" }}
                     >
                       원액의 잠재력을 최고조로 끌어올릴 수 있는
@@ -438,7 +438,7 @@ export default function DesktopAbout() {
                 <div className="absolute right-6 bottom-12 left-6 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-hover:delay-300 group-hover:duration-500">
                   <div className="max-w-md space-y-4">
                     <p
-                      className="text-base leading-relaxed font-medium text-white/90 xl:text-lg"
+                      className="typo-medium-16 xl:text-lg leading-relaxed text-white/90"
                       style={{ wordBreak: "keep-all" }}
                     >
                       경쟁력 있는 해외 위스키 브랜드를
@@ -476,7 +476,7 @@ export default function DesktopAbout() {
                 <div className="absolute right-6 bottom-12 left-6 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-hover:delay-300 group-hover:duration-500">
                   <div className="max-w-md space-y-4">
                     <p
-                      className="text-base leading-relaxed font-medium text-white/90 xl:text-lg"
+                      className="typo-medium-16 xl:text-lg leading-relaxed text-white/90"
                       style={{ wordBreak: "keep-all" }}
                     >
                       기업 및 개인 고객을 위한

@@ -173,16 +173,16 @@ export default function UsersContent({
                 className="relative border-b border-gray-200 bg-gray-50"
               >
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
                     ID
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
                     이름
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
                     사용자명
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
                     이메일
                   </th>
                   <FilterHeader
@@ -207,7 +207,7 @@ export default function UsersContent({
                     onClose={closeFilter}
                     iconSize={10}
                     dropdownWidth="w-28"
-                    className="w-20 px-2 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase"
+                    className="typo-bold-10 w-20 px-2 py-2 text-left text-gray-700 uppercase"
                   />
                   <FilterHeader
                     label="테일즈"
@@ -220,7 +220,7 @@ export default function UsersContent({
                     onClose={closeFilter}
                     iconSize={10}
                     dropdownWidth="w-28"
-                    className="w-20 px-2 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase"
+                    className="typo-bold-10 w-20 px-2 py-2 text-left text-gray-700 uppercase"
                   />
                   <FilterHeader
                     label="업장"
@@ -243,10 +243,10 @@ export default function UsersContent({
                     onClose={closeFilter}
                     dropdownWidth="w-32"
                   />
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
                     가입일
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
                     관리
                   </th>
                 </tr>
@@ -272,7 +272,7 @@ export default function UsersContent({
                         <td className="px-4 py-3 text-sm text-gray-900">
                           {user.id}
                         </td>
-                        <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                        <td className="typo-medium-14 px-4 py-3 text-gray-900">
                           {user.name}
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-600">

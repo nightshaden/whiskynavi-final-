@@ -18,7 +18,7 @@ const Page = async ({ params }: { params: Promise<{ bottleId: string }> }) => {
         >
           <ArrowLeft size={18} className="lg:hidden" />
           <ArrowLeft size={20} className="hidden lg:block" />
-          <span className="text-sm font-semibold lg:text-base">
+          <span className="typo-bold-14 lg:text-base">
             목록으로 돌아가기
           </span>
         </Link>
@@ -46,7 +46,7 @@ const Page = async ({ params }: { params: Promise<{ bottleId: string }> }) => {
 
             {/* Column 2 - Basic Info */}
             <div className="flex flex-col">
-              <h3 className="mb-6 text-xl font-bold text-white lg:mb-8 lg:text-2xl">
+              <h3 className="typo-bold-20 lg:text-2xl mb-6 text-white lg:mb-8">
                 {bottle.name}
               </h3>
 
@@ -71,7 +71,7 @@ const Page = async ({ params }: { params: Promise<{ bottleId: string }> }) => {
                     <span className="text-sm text-gray-400 lg:text-base">
                       {item.label}
                     </span>
-                    <span className="text-sm font-medium text-white lg:text-base">
+                    <span className="typo-medium-14 lg:text-base text-white">
                       {item.value || "-"}
                     </span>
                   </div>
@@ -81,7 +81,7 @@ const Page = async ({ params }: { params: Promise<{ bottleId: string }> }) => {
 
             {/* Column 3 - Tasting Note */}
             <div className="flex flex-col">
-              <h3 className="mb-4 text-lg font-bold text-white lg:text-xl">
+              <h3 className="typo-bold-18 lg:text-xl mb-4 text-white">
                 테이스팅 노트
               </h3>
               <div className="max-h-[400px] overflow-y-auto border border-white/10 p-4 lg:max-h-[500px] lg:p-6">

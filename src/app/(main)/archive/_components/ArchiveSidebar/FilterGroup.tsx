@@ -79,7 +79,7 @@ function Section({ title, sectionKey, children }: SectionProps) {
     <div className="border-b border-white/10">
       <button
         type="button"
-        className="flex w-full items-center justify-between py-3 text-sm font-medium text-white"
+        className="typo-medium-14 flex w-full items-center justify-between py-3 text-white"
         onClick={() => toggleSection(sectionKey)}
       >
         {title}

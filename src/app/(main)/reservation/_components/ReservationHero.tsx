@@ -53,7 +53,7 @@ const ReservationHero = () => {
         <div className="mx-auto w-full max-w-[1440px]">
           <div className="mx-auto max-w-4xl text-center">
             <h1
-              className="mb-5 text-4xl leading-none font-bold tracking-tight text-white md:text-5xl lg:text-6xl"
+              className="typo-bold-36 md:text-5xl mb-5 tracking-tight text-white lg:text-6xl"
               style={{ textShadow: "0 0 40px rgba(255,255,255,0.15)" }}
             >
               예약하기

@@ -43,7 +43,7 @@ export default function OrderDetailClient({ order }: OrderDetailClientProps) {
             />
             <span className="font-semibold">돌아가기</span>
           </Link>
-          <h1 className="mb-2 text-2xl font-bold text-white sm:text-3xl">
+          <h1 className="typo-bold-24 sm:text-3xl mb-2 text-white">
             주문 상세
           </h1>
           <p className="text-sm text-gray-400 sm:text-base">
@@ -57,7 +57,7 @@ export default function OrderDetailClient({ order }: OrderDetailClientProps) {
         >
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <p className="mb-1 text-xl font-bold sm:text-2xl">
+              <p className="typo-bold-20 sm:text-2xl mb-1">
                 {status.label}
               </p>
               <p className="text-sm text-white/60">
@@ -77,7 +77,7 @@ export default function OrderDetailClient({ order }: OrderDetailClientProps) {
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.8fr_1fr] lg:gap-12">
             {/* 상품 정보 */}
             <div>
-              <h3 className="mb-4 border-b border-white/20 pb-3 text-lg font-bold text-white sm:mb-6 sm:pb-4 sm:text-xl lg:text-2xl">
+              <h3 className="typo-bold-18 sm:text-xl lg:text-2xl mb-4 border-b border-white/20 pb-3 text-white sm:mb-6 sm:pb-4">
                 상품 정보
               </h3>
               <div className="space-y-3 sm:space-y-4">
@@ -95,7 +95,7 @@ export default function OrderDetailClient({ order }: OrderDetailClientProps) {
 
             {/* 주문 정보 */}
             <div>
-              <h3 className="mb-4 border-b border-white/20 pb-3 text-lg font-bold text-white sm:mb-6 sm:pb-4 sm:text-xl lg:text-2xl">
+              <h3 className="typo-bold-18 sm:text-xl lg:text-2xl mb-4 border-b border-white/20 pb-3 text-white sm:mb-6 sm:pb-4">
                 주문 정보
               </h3>
               <div className="space-y-3 sm:space-y-4">

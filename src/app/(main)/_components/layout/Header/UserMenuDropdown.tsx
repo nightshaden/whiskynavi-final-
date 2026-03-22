@@ -17,9 +17,9 @@ export default function UserMenuDropdown({
 
   return (
     <>
-      <div className="fixed inset-0 z-[60]" onClick={close} />
+      <div className="fixed inset-0 z-60" onClick={close} />
       <div
-        className="fixed z-[60] w-44 rounded-lg border border-white/20 bg-[#1d2429] py-2 shadow-2xl backdrop-blur-md"
+        className="fixed z-60 w-44 rounded-lg border border-white/20 bg-[#1d2429] py-2 shadow-2xl backdrop-blur-md"
         style={{ top, right }}
       >
         <Link

@@ -16,7 +16,7 @@ function MembershipCard({
     <div className="border-2 border-white/10 p-4 md:p-6">
       <div className="mb-3 flex items-center justify-between md:mb-4">
         <div>
-          <h4 className="text-lg font-bold text-white md:text-xl">
+          <h4 className="typo-bold-18 md:text-xl text-white">
             {data.name}
           </h4>
           <p className="text-xs text-gray-400 md:text-sm">{data.subtitle}</p>
@@ -37,7 +37,7 @@ function MembershipCard({
           <div className="mb-3 border border-white/10 bg-white/5 p-3 md:mb-4 md:p-4">
             <div className="mb-2 flex items-center gap-2">
               <Crown size={16} className="text-white md:size-5" />
-              <span className="text-xs font-bold text-white md:text-sm">
+              <span className="typo-bold-12 md:text-sm text-white">
                 프리미엄 멤버
               </span>
             </div>
@@ -59,7 +59,7 @@ function MembershipCard({
           <p className="mb-3 text-xs whitespace-pre-line text-gray-400 md:mb-4 md:text-sm">
             {data.joinMessage}
           </p>
-          <button className="bg-white px-5 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-100 md:px-6 md:py-2.5">
+          <button className="typo-bold-14 bg-white px-5 py-2 text-gray-900 transition-colors hover:bg-gray-100 md:px-6 md:py-2.5">
             가입 신청하기
           </button>
         </div>
@@ -79,7 +79,7 @@ export default function MembershipTab({ user }: MembershipTabProps) {
 
   return (
     <div>
-      <h3 className="mb-4 text-xl font-bold text-white md:mb-6 md:text-2xl">
+      <h3 className="typo-bold-20 md:text-2xl mb-4 text-white md:mb-6">
         나의 멤버십
       </h3>
 
@@ -89,7 +89,7 @@ export default function MembershipTab({ user }: MembershipTabProps) {
       </div>
 
       <div className="mt-6 border border-white/10 bg-white/5 p-4 md:mt-8 md:p-6">
-        <h4 className="mb-2 text-sm font-bold text-white md:mb-3 md:text-base">
+        <h4 className="typo-bold-14 md:text-base mb-2 text-white md:mb-3">
           멤버십 안내
         </h4>
         <div className="space-y-1.5 text-xs text-gray-400 md:space-y-2 md:text-sm">

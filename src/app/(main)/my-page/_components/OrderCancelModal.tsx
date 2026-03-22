@@ -51,7 +51,7 @@ export default function OrderCancelModal({
             취소하시겠습니까?
           </p>
           <div>
-            <label className="mb-2 block text-sm font-semibold text-gray-700">
+            <label className="typo-bold-14 mb-2 block text-gray-700">
               취소 사유 (선택)
             </label>
             <textarea

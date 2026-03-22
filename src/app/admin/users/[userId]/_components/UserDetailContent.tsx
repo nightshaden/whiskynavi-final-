@@ -46,7 +46,7 @@ export default function UserDetailContent({
             <button
               type="button"
               onClick={() => router.push(`/admin/users/${user.id}/edit`)}
-              className="flex cursor-pointer items-center gap-1 rounded-lg bg-amber-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-amber-700"
+              className="typo-medium-14 flex cursor-pointer items-center gap-1 rounded-lg bg-amber-600 px-3 py-1.5 text-white transition-colors hover:bg-amber-700"
             >
               <Edit2 size={14} />
               수정
@@ -58,7 +58,7 @@ export default function UserDetailContent({
                   <UserDeleteModal {...props} id={user.id!} />
                 ))
               }
-              className="flex cursor-pointer items-center gap-1 rounded-lg bg-red-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-red-700"
+              className="typo-medium-14 flex cursor-pointer items-center gap-1 rounded-lg bg-red-600 px-3 py-1.5 text-white transition-colors hover:bg-red-700"
             >
               <Trash2 size={14} />
               삭제

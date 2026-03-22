@@ -223,28 +223,28 @@ export default function MembershipContent({
           <table className="w-full table-fixed">
             <thead className="border-b border-gray-200 bg-gray-50">
               <tr>
-                <th className="w-16 px-3 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase">
+                <th className="typo-bold-10 w-16 px-3 py-2 text-left text-gray-700 uppercase">
                   ID
                 </th>
-                <th className="w-40 px-3 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase">
+                <th className="typo-bold-10 w-40 px-3 py-2 text-left text-gray-700 uppercase">
                   이름
                 </th>
-                <th className="w-44 px-3 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase">
+                <th className="typo-bold-10 w-44 px-3 py-2 text-left text-gray-700 uppercase">
                   닉네임
                 </th>
-                <th className="w-44 px-3 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase">
+                <th className="typo-bold-10 w-44 px-3 py-2 text-left text-gray-700 uppercase">
                   전화번호
                 </th>
-                <th className="w-28 px-3 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase">
+                <th className="typo-bold-10 w-28 px-3 py-2 text-left text-gray-700 uppercase">
                   회원유형
                 </th>
-                <th className="w-32 px-3 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase">
+                <th className="typo-bold-10 w-32 px-3 py-2 text-left text-gray-700 uppercase">
                   멤버십
                 </th>
-                <th className="w-28 px-3 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase">
+                <th className="typo-bold-10 w-28 px-3 py-2 text-left text-gray-700 uppercase">
                   가입일
                 </th>
-                <th className="w-20 px-3 py-2 text-left text-[10px] font-semibold text-gray-700 uppercase">
+                <th className="typo-bold-10 w-20 px-3 py-2 text-left text-gray-700 uppercase">
                   관리
                 </th>
               </tr>
@@ -285,7 +285,7 @@ export default function MembershipContent({
                       <td className="px-3 py-2 text-xs text-gray-900">
                         {user.id}
                       </td>
-                      <td className="px-3 py-2 text-xs font-medium text-gray-900">
+                      <td className="typo-medium-12 px-3 py-2 text-gray-900">
                         {user.name}
                       </td>
                       <td className="px-3 py-2 text-xs text-gray-600">

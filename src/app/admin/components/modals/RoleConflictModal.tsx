@@ -36,7 +36,7 @@ export default function RoleConflictModal({
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-amber-100">
               <AlertTriangle size={24} className="text-amber-600" />
             </div>
-            <DialogTitle className="text-xl font-bold">
+            <DialogTitle className="typo-bold-20">
               권한 교체 확인
             </DialogTitle>
           </div>

@@ -101,7 +101,7 @@ export default function MobileAbout() {
               style={{ wordBreak: "keep-all" }}
             >
               <motion.p
-                className="mb-6 px-4 text-center text-base font-semibold text-white/90 sm:mb-10 sm:text-lg"
+                className="typo-bold-16 sm:text-lg mb-6 px-4 text-center text-white/90 sm:mb-10"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.6 }}

@@ -35,7 +35,7 @@ export default function FilterHeader({
   onClose,
   iconSize = 12,
   dropdownWidth = "w-36",
-  className = "px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase",
+  className = "typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase",
 }: FilterHeaderProps) {
   const isActive = currentValue !== "all";
 

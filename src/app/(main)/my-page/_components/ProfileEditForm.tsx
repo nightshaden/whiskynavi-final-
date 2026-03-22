@@ -35,7 +35,7 @@ export default function ProfileEditForm({ user, onClose }: ProfileEditFormProps)
           <h4 className="mb-3 font-bold text-gray-900 md:mb-4">기본 정보</h4>
           <div className="space-y-3 md:space-y-4">
             <div>
-              <Label className="mb-2 block text-sm font-semibold text-gray-700">
+              <Label className="typo-bold-14 mb-2 block text-gray-700">
                 닉네임
               </Label>
               <Input
@@ -45,7 +45,7 @@ export default function ProfileEditForm({ user, onClose }: ProfileEditFormProps)
               />
             </div>
             <div>
-              <Label className="mb-2 block text-sm font-semibold text-gray-700">
+              <Label className="typo-bold-14 mb-2 block text-gray-700">
                 이름
               </Label>
               <Input
@@ -58,7 +58,7 @@ export default function ProfileEditForm({ user, onClose }: ProfileEditFormProps)
               </p>
             </div>
             <div>
-              <Label className="mb-2 block text-sm font-semibold text-gray-700">
+              <Label className="typo-bold-14 mb-2 block text-gray-700">
                 이메일
               </Label>
               <Input
@@ -69,7 +69,7 @@ export default function ProfileEditForm({ user, onClose }: ProfileEditFormProps)
               />
             </div>
             <div>
-              <Label className="mb-2 block text-sm font-semibold text-gray-700">
+              <Label className="typo-bold-14 mb-2 block text-gray-700">
                 전화번호
               </Label>
               <Input
@@ -81,7 +81,7 @@ export default function ProfileEditForm({ user, onClose }: ProfileEditFormProps)
             </div>
             <div className="grid grid-cols-2 gap-3 md:gap-4">
               <div>
-                <Label className="mb-2 block text-sm font-semibold text-gray-700">
+                <Label className="typo-bold-14 mb-2 block text-gray-700">
                   생년월일
                 </Label>
                 <div className="relative">
@@ -98,7 +98,7 @@ export default function ProfileEditForm({ user, onClose }: ProfileEditFormProps)
                 </div>
               </div>
               <div>
-                <Label className="mb-2 block text-sm font-semibold text-gray-700">
+                <Label className="typo-bold-14 mb-2 block text-gray-700">
                   성별
                 </Label>
                 <select
@@ -164,7 +164,7 @@ export default function ProfileEditForm({ user, onClose }: ProfileEditFormProps)
         <h4 className="mb-3 font-bold text-gray-900 md:mb-4">비밀번호 변경</h4>
         <div className="space-y-3 md:space-y-4">
           <div>
-            <Label className="mb-2 block text-sm font-semibold text-gray-700">
+            <Label className="typo-bold-14 mb-2 block text-gray-700">
               현재 비밀번호
             </Label>
             <Input
@@ -175,7 +175,7 @@ export default function ProfileEditForm({ user, onClose }: ProfileEditFormProps)
             />
           </div>
           <div>
-            <Label className="mb-2 block text-sm font-semibold text-gray-700">
+            <Label className="typo-bold-14 mb-2 block text-gray-700">
               새 비밀번호
             </Label>
             <Input
@@ -188,7 +188,7 @@ export default function ProfileEditForm({ user, onClose }: ProfileEditFormProps)
             />
           </div>
           <div>
-            <Label className="mb-2 block text-sm font-semibold text-gray-700">
+            <Label className="typo-bold-14 mb-2 block text-gray-700">
               새 비밀번호 확인
             </Label>
             <Input

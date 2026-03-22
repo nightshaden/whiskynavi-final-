@@ -234,7 +234,7 @@ export default function AdminProductDetailEdit({
 
           {/* 추가 정보 */}
           <div className="border-t pt-2">
-            <Label className="mb-2 block text-sm font-semibold text-gray-700">
+            <Label className="typo-bold-14 mb-2 block text-gray-700">
               추가 정보
             </Label>
             <div className="space-y-2">
@@ -328,7 +328,7 @@ export default function AdminProductDetailEdit({
               unoptimized={currentImage.startsWith("blob:")}
             />
             <div className="bg-opacity-50 absolute inset-0 flex items-center justify-center rounded bg-black opacity-0 transition-opacity group-hover:opacity-100">
-              <Label className="flex cursor-pointer items-center gap-2 rounded bg-white px-4 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-100">
+              <Label className="typo-bold-14 flex cursor-pointer items-center gap-2 rounded bg-white px-4 py-2 text-gray-900 transition-colors hover:bg-gray-100">
                 <Upload size={18} />
                 이미지 추가
                 <input

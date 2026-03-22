@@ -85,7 +85,7 @@ export default function ApplicationsTableSection({
       <div className="border-b border-gray-200 bg-gray-50 px-6 py-4">
         <h3 className="font-bold text-gray-900">
           신청 목록{" "}
-          <span className="text-sm font-normal text-gray-500">
+          <span className="typo-regular-14 text-gray-500">
             ({totalElements}건)
           </span>
         </h3>
@@ -95,31 +95,31 @@ export default function ApplicationsTableSection({
         <table className="w-full">
           <thead className="border-b border-gray-200 bg-gray-50">
             <tr>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+              <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
                 ID
               </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+              <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
                 신청자
               </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+              <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
                 연락처
               </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+              <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
                 픽업 업장
               </th>
-              <th className="px-4 py-3 text-center text-xs font-semibold text-gray-700 uppercase">
+              <th className="typo-bold-12 px-4 py-3 text-center text-gray-700 uppercase">
                 신청수량
               </th>
-              <th className="px-4 py-3 text-center text-xs font-semibold text-gray-700 uppercase">
+              <th className="typo-bold-12 px-4 py-3 text-center text-gray-700 uppercase">
                 확정수량
               </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+              <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
                 상태
               </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+              <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
                 신청일
               </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+              <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
                 관리
               </th>
             </tr>
@@ -135,7 +135,7 @@ export default function ApplicationsTableSection({
               applications.map((app) => (
                 <tr key={app.id} className="transition-colors hover:bg-gray-50">
                   <td className="px-4 py-3 text-sm text-gray-900">{app.id}</td>
-                  <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                  <td className="typo-medium-14 px-4 py-3 text-gray-900">
                     {app.applicantUser?.name ?? "-"}
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-600">
@@ -147,7 +147,7 @@ export default function ApplicationsTableSection({
                   <td className="px-4 py-3 text-center text-sm text-gray-900">
                     {app.quantity}
                   </td>
-                  <td className="px-4 py-3 text-center text-sm font-medium text-amber-600">
+                  <td className="typo-medium-14 px-4 py-3 text-center text-amber-600">
                     {app.confirmedQuantity ?? "-"}
                   </td>
                   <td className="px-4 py-3 text-sm">

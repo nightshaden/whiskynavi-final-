@@ -39,7 +39,7 @@ export default function RecentEndedSection({
 
   return (
     <div className="lg:px-8">
-      <h2 className="mb-4 text-xl font-bold text-white lg:text-2xl">
+      <h2 className="typo-bold-20 lg:text-2xl mb-4 text-white">
         종료된 예약
       </h2>
       <div className="grid grid-cols-2 gap-5 lg:grid-cols-5">

@@ -42,7 +42,7 @@ export default function AdminHeader({
             >
               <Menu size={24} className="text-gray-600" />
             </button>
-            <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
+            <h2 className="typo-bold-24 text-gray-900">{title}</h2>
           </div>
         </div>
 

@@ -26,7 +26,7 @@ export default function LoginPromptModal({
     <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold">
+          <DialogTitle className="typo-bold-20">
             로그인이 필요합니다
           </DialogTitle>
           <DialogDescription className="pt-2 text-gray-600">

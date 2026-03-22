@@ -75,7 +75,7 @@ export default function ReservationsContent({
           <button
             type="button"
             onClick={() => router.push("/admin/reservations/new")}
-            className="flex cursor-pointer items-center gap-1.5 rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-amber-700"
+            className="typo-medium-14 flex cursor-pointer items-center gap-1.5 rounded-lg bg-amber-600 px-4 py-2 text-white transition-colors hover:bg-amber-700"
           >
             <Plus size={16} />
             예약 공고 등록
@@ -87,28 +87,28 @@ export default function ReservationsContent({
             <table className="w-full">
               <thead className="border-b border-gray-200 bg-gray-50">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
                     ID
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
                     제품명
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
                     브랜드
                   </th>
-                  <th className="px-4 py-3 text-right text-xs font-semibold text-gray-700 uppercase">
+                  <th className="typo-bold-12 px-4 py-3 text-right text-gray-700 uppercase">
                     가격
                   </th>
-                  <th className="px-4 py-3 text-center text-xs font-semibold text-gray-700 uppercase">
+                  <th className="typo-bold-12 px-4 py-3 text-center text-gray-700 uppercase">
                     신청/가용
                   </th>
-                  <th className="px-4 py-3 text-center text-xs font-semibold text-gray-700 uppercase">
+                  <th className="typo-bold-12 px-4 py-3 text-center text-gray-700 uppercase">
                     승인
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
                     예약기간
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
                     관리
                   </th>
                 </tr>
@@ -135,7 +135,7 @@ export default function ReservationsContent({
                       <td className="px-4 py-3 text-sm text-gray-900">
                         {notice.id}
                       </td>
-                      <td className="max-w-[200px] truncate px-4 py-3 text-sm font-medium text-gray-900">
+                      <td className="typo-medium-14 max-w-[200px] truncate px-4 py-3 text-gray-900">
                         {notice.bottleName}
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-600">

@@ -45,7 +45,7 @@ const UserDeleteModal: FC<Props> = ({ isOpen, close, id }) => {
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
               <AlertTriangle size={24} className="text-red-600" />
             </div>
-            <DialogTitle className="text-xl font-bold">회원 삭제</DialogTitle>
+            <DialogTitle className="typo-bold-20">회원 삭제</DialogTitle>
           </div>
           <DialogDescription className="pt-2 text-gray-600">
             이 회원을 삭제하시겠습니까? 회원 상태가 DELETED로 변경됩니다.

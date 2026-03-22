@@ -18,7 +18,7 @@ export default function InfoList({ notice }: InfoListProps) {
           <span className="text-sm text-gray-400 lg:text-base">
             {item.label}
           </span>
-          <span className="text-sm font-medium text-white lg:text-base">
+          <span className="typo-medium-14 lg:text-base text-white">
             {item.value}
           </span>
         </div>

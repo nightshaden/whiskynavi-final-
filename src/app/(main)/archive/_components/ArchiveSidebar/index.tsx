@@ -48,7 +48,7 @@ export function ArchiveSidebar({ params }: ArchiveSidebarProps) {
   return (
     <aside className="hidden w-80 shrink-0 lg:mr-8 lg:block">
       <div className="mb-6">
-        <h3 className="mb-3 text-lg font-bold text-white">보틀 검색</h3>
+        <h3 className="typo-bold-18 mb-3 text-white">보틀 검색</h3>
         <div className="flex h-9 items-center gap-2 rounded-md border border-white/20 bg-popover px-3">
           <IconSearch className="size-4 shrink-0" />
           <input

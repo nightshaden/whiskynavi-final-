@@ -38,7 +38,7 @@ export default function AdminConfirmModal({
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
               <AlertTriangle size={24} className="text-red-600" />
             </div>
-            <DialogTitle className="text-xl font-bold">
+            <DialogTitle className="typo-bold-20">
               관리자 권한 추가
             </DialogTitle>
           </div>

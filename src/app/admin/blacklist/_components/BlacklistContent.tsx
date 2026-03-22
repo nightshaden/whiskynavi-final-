@@ -196,25 +196,25 @@ export default function BlacklistContent({
             <table className="w-full">
               <thead className="border-b border-gray-200 bg-gray-50">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
                     ID
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
                     이름
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
                     이메일
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
                     사유
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
                     제재 시작일
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
                     제재 종료일
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
                     관리
                   </th>
                 </tr>
@@ -248,7 +248,7 @@ export default function BlacklistContent({
                       <td className="px-4 py-3 text-sm text-gray-900">
                         {item.id}
                       </td>
-                      <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                      <td className="typo-medium-14 px-4 py-3 text-gray-900">
                         {item.name}
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-600">

@@ -82,7 +82,7 @@ export default function NoticeFormFields({
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="typo-medium-14 mb-1 block text-gray-700">
             제품 <span className="text-red-500">*</span>
           </label>
           <Select
@@ -108,7 +108,7 @@ export default function NoticeFormFields({
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="typo-medium-14 mb-1 block text-gray-700">
             가격 <span className="text-red-500">*</span>
           </label>
           <CurrencyInput
@@ -121,7 +121,7 @@ export default function NoticeFormFields({
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="typo-medium-14 mb-1 block text-gray-700">
             예약 시작일 <span className="text-red-500">*</span>
           </label>
           <DateTimePicker
@@ -132,7 +132,7 @@ export default function NoticeFormFields({
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="typo-medium-14 mb-1 block text-gray-700">
             예약 종료일 <span className="text-red-500">*</span>
           </label>
           <DateTimePicker
@@ -146,13 +146,13 @@ export default function NoticeFormFields({
       {/* 등급 조건 */}
       <div className="mt-6 border-t border-gray-200 pt-6">
         <div className="mb-3 flex items-center justify-between">
-          <label className="text-sm font-medium text-gray-700">
+          <label className="typo-medium-14 text-gray-700">
             등급 조건 (선택)
           </label>
           <button
             type="button"
             onClick={addCondition}
-            className="flex cursor-pointer items-center gap-1 rounded-lg bg-amber-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-amber-700"
+            className="typo-medium-12 flex cursor-pointer items-center gap-1 rounded-lg bg-amber-600 px-3 py-1.5 text-white transition-colors hover:bg-amber-700"
           >
             <Plus size={14} />
             조건 추가

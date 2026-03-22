@@ -76,7 +76,7 @@ export default function ReservationDetailModal({
             </div>
 
             <div className="flex flex-col justify-center">
-              <h3 className="mb-3 text-xl font-bold text-white lg:mb-6 lg:text-3xl">
+              <h3 className="typo-bold-20 lg:text-3xl mb-3 text-white lg:mb-6">
                 {notice.bottleName}
               </h3>
               <InfoList notice={notice} />
@@ -105,7 +105,7 @@ export default function ReservationDetailModal({
                   <button
                     type="button"
                     disabled
-                    className="w-full cursor-not-allowed bg-gray-600 px-4 py-2.5 text-base font-bold text-gray-400 transition-colors lg:px-6 lg:py-4 lg:text-xl"
+                    className="typo-bold-16 lg:text-xl w-full cursor-not-allowed bg-gray-600 px-4 py-2.5 text-gray-400 transition-colors lg:px-6 lg:py-4"
                   >
                     예약 대기 중
                   </button>

@@ -24,7 +24,7 @@ export default function RestOfPage() {
               href="/brand"
               className="group flex aspect-square flex-col items-center justify-center border border-white/10 bg-white/5 p-3 text-center transition-all hover:border-white/30 hover:bg-white/10 md:p-4"
             >
-              <div className="mb-2 text-sm font-bold text-white md:mb-3 md:text-xl lg:text-2xl">
+              <div className="typo-bold-14 md:text-xl lg:text-2xl mb-2 text-white md:mb-3">
                 OUR BRANDS
               </div>
               <div className="mb-3 text-[10px] leading-relaxed text-gray-400 md:mb-6 md:text-sm">
@@ -40,7 +40,7 @@ export default function RestOfPage() {
                   다양한 브랜드들을 만나보세요.
                 </span>
               </div>
-              <div className="flex items-center gap-1 text-xs font-semibold text-white/60 transition-colors group-hover:text-white md:text-sm">
+              <div className="typo-bold-12 md:text-sm flex items-center gap-1 text-white/60 transition-colors group-hover:text-white">
                 바로가기 <ArrowRight size={12} className="md:size-4" />
               </div>
             </Link>
@@ -50,7 +50,7 @@ export default function RestOfPage() {
               href="/archive"
               className="group flex aspect-square flex-col items-center justify-center border border-white/10 bg-white/5 p-3 text-center transition-all hover:border-white/30 hover:bg-white/10 md:p-4"
             >
-              <div className="mb-2 text-sm font-bold text-white md:mb-3 md:text-xl lg:text-2xl">
+              <div className="typo-bold-14 md:text-xl lg:text-2xl mb-2 text-white md:mb-3">
                 ARCHIVE
               </div>
               <div className="mb-3 text-[10px] leading-relaxed text-gray-400 md:mb-6 md:text-sm">
@@ -66,7 +66,7 @@ export default function RestOfPage() {
                   제품들을 둘러보세요.
                 </span>
               </div>
-              <div className="flex items-center gap-1 text-xs font-semibold text-white/60 transition-colors group-hover:text-white md:text-sm">
+              <div className="typo-bold-12 md:text-sm flex items-center gap-1 text-white/60 transition-colors group-hover:text-white">
                 바로가기 <ArrowRight size={12} className="md:size-4" />
               </div>
             </Link>
@@ -76,7 +76,7 @@ export default function RestOfPage() {
               href="/shop"
               className="group flex aspect-square flex-col items-center justify-center border border-white/10 bg-white/5 p-3 text-center transition-all hover:border-white/30 hover:bg-white/10 md:p-4"
             >
-              <div className="mb-2 text-sm font-bold text-white md:mb-3 md:text-xl lg:text-2xl">
+              <div className="typo-bold-14 md:text-xl lg:text-2xl mb-2 text-white md:mb-3">
                 SHOP
               </div>
               <div className="mb-3 text-[10px] leading-relaxed text-gray-400 md:mb-6 md:text-sm">
@@ -92,7 +92,7 @@ export default function RestOfPage() {
                   제품군을 만나보실 수 있습니다.
                 </span>
               </div>
-              <div className="flex items-center gap-1 text-xs font-semibold text-white/60 transition-colors group-hover:text-white md:text-sm">
+              <div className="typo-bold-12 md:text-sm flex items-center gap-1 text-white/60 transition-colors group-hover:text-white">
                 바로가기 <ArrowRight size={12} className="md:size-4" />
               </div>
             </Link>
@@ -105,7 +105,7 @@ export default function RestOfPage() {
                     <Dialog open={isOpen} onOpenChange={close}>
                       <DialogContent className="sm:max-w-sm">
                         <DialogHeader>
-                          <DialogTitle className="text-xl font-bold">
+                          <DialogTitle className="typo-bold-20">
                             아직 준비중입니다.
                           </DialogTitle>
 
@@ -127,7 +127,7 @@ export default function RestOfPage() {
               }
               className="group flex aspect-square flex-col items-center justify-center border border-white/10 bg-white/5 p-3 text-center transition-all hover:border-white/30 hover:bg-white/10 md:p-4"
             >
-              <div className="mb-2 text-sm font-bold text-white md:mb-3 md:text-xl lg:text-2xl">
+              <div className="typo-bold-14 md:text-xl lg:text-2xl mb-2 text-white md:mb-3">
                 COMMUNITY
               </div>
               <div className="mb-3 text-[10px] leading-relaxed text-gray-400 md:mb-6 md:text-sm">
@@ -143,7 +143,7 @@ export default function RestOfPage() {
                   다양한 소식들을 만나보세요.
                 </span>
               </div>
-              <div className="flex items-center gap-1 text-xs font-semibold text-white/60 transition-colors group-hover:text-white md:text-sm">
+              <div className="typo-bold-12 md:text-sm flex items-center gap-1 text-white/60 transition-colors group-hover:text-white">
                 바로가기 <ArrowRight size={12} className="md:size-4" />
               </div>
             </div>

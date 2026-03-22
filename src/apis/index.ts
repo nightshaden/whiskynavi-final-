@@ -1,5 +1,6 @@
 import qs from "qs";
 import { AuthError } from "./errors";
+import { handleAuthError } from "./handle-auth-error";
 
 /** 직렬화 가능한 JSON 값 */
 export type JsonValue =
@@ -59,6 +60,60 @@ export type FetchOptions<TJson extends JsonValue = JsonValue> =
   | MethodOptionsJson<TJson>
   | MethodOptionsBody
   | MethodOptionsNoBody;
+
+/**
+ * 클라이언트에서 리프레시 토큰으로 새 access token을 발급받는다.
+ */
+async function refreshSessionToken(): Promise<string | null> {
+  if (typeof window === "undefined") return null;
+  try {
+    const { getSession } = await import("next-auth/react");
+    const session = await getSession();
+    if (!session?.refreshToken) return null;
+
+    const refreshRes = await fetch(
+      `${DEFAULT_BASE_URL}/api/auth/refresh`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refreshToken: session.refreshToken }),
+      },
+    );
+    if (!refreshRes.ok) return null;
+
+    const data = await refreshRes.json();
+    return data.accessToken ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/** 응답 본문 파싱 */
+async function parseHttpResponse<T>(res: Response): Promise<T> {
+  if (res.status === 204 || res.status === 205) {
+    return undefined as unknown as T;
+  }
+  const ctype = res.headers.get("content-type") ?? "";
+  if (ctype.includes("application/json")) {
+    return (await res.json()) as T;
+  }
+  const text = await res.text();
+  return text as unknown as T;
+}
+
+/** 에러 응답에서 상세 메시지 추출 */
+async function extractHttpErrorDetail(res: Response): Promise<string> {
+  try {
+    const ctype = res.headers.get("content-type") ?? "";
+    if (ctype.includes("application/json")) {
+      const json = await res.json();
+      return typeof json === "string" ? json : JSON.stringify(json);
+    }
+    return await res.text();
+  } catch {
+    return "";
+  }
+}
 
 /** 절대 URL 여부 */
 function isAbsoluteUrl(path: string) {
@@ -149,36 +204,45 @@ export async function http<
     ...rest,
   });
 
-  if (res.status === 403) {
+  // 401/403: 토큰 만료 → 리프레시 시도 후 재요청
+  if (res.status === 401 || res.status === 403) {
+    const newToken = await refreshSessionToken();
+
+    if (newToken) {
+      // 새 토큰으로 재요청
+      h.set("Authorization", `Bearer ${newToken}`);
+      const retryRes = await fetch(url, {
+        method,
+        headers: h,
+        body: finalBody,
+        cache,
+        ...rest,
+      });
+
+      if (retryRes.ok) {
+        return parseHttpResponse<TResponse>(retryRes);
+      }
+
+      if (retryRes.status === 401 || retryRes.status === 403) {
+        await handleAuthError();
+        throw new AuthError();
+      }
+
+      const detail = await extractHttpErrorDetail(retryRes);
+      const suffix = detail ? ` - ${detail}` : "";
+      throw new Error(`[${retryRes.status}] ${retryRes.statusText}${suffix}`);
+    }
+
+    // 리프레시 실패 → 로그인 페이지로
+    await handleAuthError();
     throw new AuthError();
   }
+
   if (!res.ok) {
-    // 에러 본문을 최대한 읽어서 메시지에 담아주기
-    let detail = "";
-    try {
-      const ctype = res.headers.get("content-type") ?? "";
-      if (ctype.includes("application/json")) {
-        const json = await res.json();
-        detail = typeof json === "string" ? json : JSON.stringify(json);
-      } else {
-        detail = await res.text();
-      }
-    } catch {
-      /* ignore */
-    }
+    const detail = await extractHttpErrorDetail(res);
     const suffix = detail ? ` - ${detail}` : "";
     throw new Error(`[${res.status}] ${res.statusText}${suffix}`);
   }
 
-  if (res.status === 204 || res.status === 205) {
-    return undefined as unknown as TResponse;
-  }
-
-  const ctype = res.headers.get("content-type") ?? "";
-  if (ctype.includes("application/json")) {
-    return (await res.json()) as TResponse;
-  }
-  // JSON 외 응답 fallback
-  const text = await res.text();
-  return text as unknown as TResponse;
+  return parseHttpResponse<TResponse>(res);
 }

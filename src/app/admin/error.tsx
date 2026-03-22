@@ -29,7 +29,7 @@ export default function AdminErrorPage({ error, reset }: AdminErrorPageProps) {
           <ShieldX className="size-12 text-red-600" />
         </div>
 
-        <h1 className="mb-2 text-2xl font-bold text-gray-900">
+        <h1 className="typo-bold-24 mb-2 text-gray-900">
           {isAuthError ? "접근 권한이 없습니다" : "오류가 발생했습니다"}
         </h1>
 

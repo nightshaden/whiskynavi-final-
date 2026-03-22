@@ -45,7 +45,7 @@ export default function TimerDisplay({
     return (
       <div className={`border ${config.borderClass} ${config.bgClass} p-3 lg:p-4`}>
         <div className="flex items-center justify-between">
-          <p className={`text-sm font-bold lg:text-base ${config.labelClass}`}>
+          <p className={`typo-bold-14 lg:text-base ${config.labelClass}`}>
             {config.label}
           </p>
           <p className={`text-xs ${config.subClass}`}>
@@ -59,7 +59,7 @@ export default function TimerDisplay({
   return (
     <div className={`border ${config.borderClass} ${config.bgClass} p-3 lg:p-4`}>
       <div className="mb-2 flex flex-col items-start gap-1 lg:flex-row lg:items-start lg:justify-between">
-        <p className={`text-sm font-bold lg:text-base ${config.labelClass}`}>
+        <p className={`typo-bold-14 lg:text-base ${config.labelClass}`}>
           {config.label}
         </p>
         <p className={`text-xs ${config.subClass}`}>
@@ -67,7 +67,7 @@ export default function TimerDisplay({
         </p>
       </div>
       <div className="flex items-center justify-end">
-        <p className="text-lg font-bold tracking-wide text-white lg:text-2xl">
+        <p className="typo-bold-18 lg:text-2xl tracking-wide text-white">
           {timeRemaining}
         </p>
       </div>

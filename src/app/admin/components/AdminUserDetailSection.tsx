@@ -187,7 +187,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
     <div className="space-y-6">
       {/* 기본 정보 섹션 */}
       <div className="rounded-xl border border-gray-200 bg-white p-6">
-        <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-gray-900">
+        <h3 className="typo-bold-18 mb-4 flex items-center gap-2 text-gray-900">
           <User size={20} className="text-amber-600" />
           기본 정보
         </h3>
@@ -195,7 +195,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
           <div>
             <Label
               htmlFor="name"
-              className="mb-2 block text-sm font-semibold text-gray-700"
+              className="typo-bold-14 mb-2 block text-gray-700"
             >
               이름
             </Label>
@@ -204,7 +204,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
           <div>
             <Label
               htmlFor="username"
-              className="mb-2 block text-sm font-semibold text-gray-700"
+              className="typo-bold-14 mb-2 block text-gray-700"
             >
               사용자명
             </Label>
@@ -213,7 +213,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
           <div>
             <Label
               htmlFor="email"
-              className="mb-2 block flex items-center gap-1 text-sm font-semibold text-gray-700"
+              className="typo-bold-14 mb-2 block flex items-center gap-1 text-gray-700"
             >
               <Mail size={14} />
               이메일
@@ -223,7 +223,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
           <div>
             <Label
               htmlFor="phone"
-              className="mb-2 block flex items-center gap-1 text-sm font-semibold text-gray-700"
+              className="typo-bold-14 mb-2 block flex items-center gap-1 text-gray-700"
             >
               <Phone size={14} />
               전화번호
@@ -233,7 +233,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
           <div>
             <Label
               htmlFor="status"
-              className="mb-2 block text-sm font-semibold text-gray-700"
+              className="typo-bold-14 mb-2 block text-gray-700"
             >
               계정 상태
             </Label>
@@ -296,7 +296,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
             <div className="space-y-0">
               {/* 활동 정보 */}
               <div>
-                <h4 className="mb-4 flex items-center gap-2 text-base font-bold text-gray-900">
+                <h4 className="typo-bold-16 mb-4 flex items-center gap-2 text-gray-900">
                   <Calendar size={18} className="text-amber-600" />
                   활동 정보
                 </h4>
@@ -304,7 +304,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                   <div>
                     <Label
                       htmlFor="createdAt"
-                      className="mb-2 block text-sm font-semibold text-gray-700"
+                      className="typo-bold-14 mb-2 block text-gray-700"
                     >
                       가입일
                     </Label>
@@ -313,7 +313,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                   <div>
                     <Label
                       htmlFor="lastLoginAt"
-                      className="mb-2 block text-sm font-semibold text-gray-700"
+                      className="typo-bold-14 mb-2 block text-gray-700"
                     >
                       마지막 로그인
                     </Label>
@@ -328,7 +328,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                   <div className="mt-6">
                     <Label
                       htmlFor="socialConnections"
-                      className="mb-3 block text-sm font-semibold text-gray-700"
+                      className="typo-bold-14 mb-3 block text-gray-700"
                     >
                       소셜 로그인 연동
                     </Label>
@@ -337,7 +337,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                         ?.google && (
                         <div className="flex items-center gap-2 rounded-lg border-2 border-red-200 bg-white px-3 py-2">
                           <IconGoogle size={20} />
-                          <span className="text-sm font-medium text-gray-700">
+                          <span className="typo-medium-14 text-gray-700">
                             Google
                           </span>
                         </div>
@@ -346,7 +346,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                         ?.kakao && (
                         <div className="flex items-center gap-2 rounded-lg bg-[#FEE500] px-3 py-2">
                           <IconKakao size={20} />
-                          <span className="text-sm font-medium text-gray-900">
+                          <span className="typo-medium-14 text-gray-900">
                             Kakao
                           </span>
                         </div>
@@ -355,7 +355,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                         ?.naver && (
                         <div className="flex items-center gap-2 rounded-lg bg-[#03C75A] px-3 py-2">
                           <IconNaver size={20} />
-                          <span className="text-sm font-medium text-white">
+                          <span className="typo-medium-14 text-white">
                             Naver
                           </span>
                         </div>
@@ -369,7 +369,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
               <div className="mt-6 border-t border-gray-200 pt-6">
                 {/* 권한 및 멤버십 */}
                 <div className="mb-4 flex items-center justify-between">
-                  <h4 className="flex items-center gap-2 text-base font-bold text-gray-900">
+                  <h4 className="typo-bold-16 flex items-center gap-2 text-gray-900">
                     <Shield size={18} className="text-amber-600" />
                     권한 및 멤버십
                   </h4>
@@ -379,7 +379,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                         <button
                           type="button"
                           onClick={() => setIsEditingRoles(true)}
-                          className="flex cursor-pointer items-center gap-1 rounded-lg bg-amber-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-amber-700"
+                          className="typo-medium-14 flex cursor-pointer items-center gap-1 rounded-lg bg-amber-600 px-3 py-1.5 text-white transition-colors hover:bg-amber-700"
                         >
                           <Edit2 size={14} />
                           권한 수정
@@ -391,7 +391,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                             setIsEditingRoles(false);
                             setNewRole("");
                           }}
-                          className="cursor-pointer rounded-lg bg-gray-200 px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-300"
+                          className="typo-medium-14 cursor-pointer rounded-lg bg-gray-200 px-3 py-1.5 text-gray-700 transition-colors hover:bg-gray-300"
                         >
                           완료
                         </button>
@@ -403,7 +403,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                   <div>
                     <Label
                       htmlFor="roles"
-                      className="mb-3 block text-sm font-semibold text-gray-700"
+                      className="typo-bold-14 mb-3 block text-gray-700"
                     >
                       보유 권한
                     </Label>
@@ -411,7 +411,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                       {userDetails.roles?.map((role) => (
                         <span
                           key={role}
-                          className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium ${ROLE_COLOR_MAP[role]}`}
+                          className={`typo-medium-14 flex items-center gap-2 rounded-lg px-3 py-1.5 ${ROLE_COLOR_MAP[role]}`}
                         >
                           {ROLE_LABEL_MAP[role]}
                           {isEditingRoles && (
@@ -451,7 +451,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                           type="button"
                           onClick={handleAddRole}
                           disabled={!newRole || isSaving}
-                          className="flex cursor-pointer items-center gap-1 rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-amber-700 disabled:cursor-not-allowed disabled:opacity-50"
+                          className="typo-medium-14 flex cursor-pointer items-center gap-1 rounded-lg bg-amber-600 px-4 py-2 text-white transition-colors hover:bg-amber-700 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           <Plus size={14} />
                           {isSaving ? "처리중..." : "추가"}
@@ -465,7 +465,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
               {/* divider */}
               <div className="mt-6 border-t border-gray-200 pt-6">
                 {/* 약관 동의 정보 */}
-                <h4 className="mb-4 flex items-center gap-2 text-base font-bold text-gray-900">
+                <h4 className="typo-bold-16 mb-4 flex items-center gap-2 text-gray-900">
                   <CheckCircle size={18} className="text-amber-600" />
                   약관 동의 정보
                 </h4>
@@ -520,18 +520,18 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                   <div className="mb-6 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 p-5">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-medium text-amber-100">
+                        <p className="typo-medium-14 text-amber-100">
                           총 구매 금액
                         </p>
-                        <p className="mt-1 text-2xl font-bold text-white">
+                        <p className="typo-bold-24 mt-1 text-white">
                           {(orderSummary.totalAmount ?? 0).toLocaleString()}원
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-medium text-amber-100">
+                        <p className="typo-medium-14 text-amber-100">
                           총 주문 수
                         </p>
-                        <p className="mt-1 text-2xl font-bold text-white">
+                        <p className="typo-bold-24 mt-1 text-white">
                           {orderSummary.totalElements}건
                         </p>
                       </div>
@@ -652,7 +652,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
       {/* 제재 정보 섹션 */}
       {userDetails.userExt?.isBanned && (
         <div className="rounded-xl border border-red-200 bg-red-50 p-6">
-          <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-red-900">
+          <h3 className="typo-bold-18 mb-4 flex items-center gap-2 text-red-900">
             <Ban size={20} className="text-red-600" />
             제재 정보
           </h3>
@@ -660,7 +660,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
             <div>
               <Label
                 htmlFor="banReason"
-                className="mb-1 block text-sm font-semibold text-red-700"
+                className="typo-bold-14 mb-1 block text-red-700"
               >
                 제재 사유
               </Label>
@@ -670,7 +670,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
               <div>
                 <Label
                   htmlFor="banStartDate"
-                  className="mb-1 block text-sm font-semibold text-red-700"
+                  className="typo-bold-14 mb-1 block text-red-700"
                 >
                   제재 시작일
                 </Label>
@@ -681,7 +681,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
               <div>
                 <Label
                   htmlFor="banEndDate"
-                  className="mb-1 block text-sm font-semibold text-red-700"
+                  className="typo-bold-14 mb-1 block text-red-700"
                 >
                   제재 종료일
                 </Label>

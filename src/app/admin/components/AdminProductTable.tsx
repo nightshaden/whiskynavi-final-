@@ -41,16 +41,16 @@ export const AdminProductTable: React.FC<AdminProductTableProps> = ({
       <table className="w-full">
         <thead className="border-b border-gray-200 bg-gray-50">
           <tr>
-            <th className="px-2 py-2 text-left text-[10px] font-semibold whitespace-nowrap text-gray-700 uppercase">
+            <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">
               ID
             </th>
-            <th className="px-2 py-2 text-left text-[10px] font-semibold whitespace-nowrap text-gray-700 uppercase">
+            <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">
               이미지
             </th>
-            <th className="px-2 py-2 text-left text-[10px] font-semibold whitespace-nowrap text-gray-700 uppercase">
+            <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">
               제품명
             </th>
-            <th className="relative px-2 py-2 text-left text-[10px] font-semibold whitespace-nowrap text-gray-700 uppercase">
+            <th className="typo-bold-10 relative px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">
               <button
                 type="button"
                 onClick={() => setShowBrandFilter(!showBrandFilter)}
@@ -119,7 +119,7 @@ export const AdminProductTable: React.FC<AdminProductTableProps> = ({
                 </div>
               )}
             </th>
-            <th className="relative px-2 py-2 text-left text-[10px] font-semibold whitespace-nowrap text-gray-700 uppercase">
+            <th className="typo-bold-10 relative px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">
               <button
                 type="button"
                 onClick={() => setShowDistilleryFilter(!showDistilleryFilter)}
@@ -158,28 +158,28 @@ export const AdminProductTable: React.FC<AdminProductTableProps> = ({
                 </div>
               )}
             </th>
-            <th className="px-2 py-2 text-left text-[10px] font-semibold whitespace-nowrap text-gray-700 uppercase">
+            <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">
               시리즈
             </th>
-            <th className="px-2 py-2 text-left text-[10px] font-semibold whitespace-nowrap text-gray-700 uppercase">
+            <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">
               캐스크타입
             </th>
-            <th className="px-2 py-2 text-left text-[10px] font-semibold whitespace-nowrap text-gray-700 uppercase">
+            <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">
               캐스크번호
             </th>
-            <th className="px-2 py-2 text-left text-[10px] font-semibold whitespace-nowrap text-gray-700 uppercase">
+            <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">
               도수
             </th>
-            <th className="px-2 py-2 text-left text-[10px] font-semibold whitespace-nowrap text-gray-700 uppercase">
+            <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">
               용량
             </th>
-            <th className="px-2 py-2 text-left text-[10px] font-semibold whitespace-nowrap text-gray-700 uppercase">
+            <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">
               증류일
             </th>
-            <th className="px-2 py-2 text-left text-[10px] font-semibold whitespace-nowrap text-gray-700 uppercase">
+            <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">
               병입일
             </th>
-            <th className="px-2 py-2 text-left text-[10px] font-semibold whitespace-nowrap text-gray-700 uppercase">
+            <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">
               관리
             </th>
           </tr>
@@ -200,7 +200,7 @@ export const AdminProductTable: React.FC<AdminProductTableProps> = ({
                   }}
                 />
               </td>
-              <td className="max-w-[200px] truncate px-2 py-1.5 text-xs font-medium text-gray-900">
+              <td className="typo-medium-12 max-w-[200px] truncate px-2 py-1.5 text-gray-900">
                 {product.name}
               </td>
               <td className="px-2 py-1.5 text-xs whitespace-nowrap text-gray-600">

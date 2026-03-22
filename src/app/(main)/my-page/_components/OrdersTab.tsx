@@ -37,7 +37,7 @@ export default function OrdersTab({ orders }: OrdersTabProps) {
 
   return (
     <div>
-      <h3 className="mb-4 text-xl font-bold text-white md:mb-6 md:text-2xl">
+      <h3 className="typo-bold-20 md:text-2xl mb-4 text-white md:mb-6">
         주문내역
       </h3>
 

@@ -82,7 +82,7 @@ export default function ApplyForm({
             type="button"
             onClick={() => onApply(quantity, Number(selectedLocationId))}
             disabled={!canSubmit}
-            className="flex-1 bg-white px-4 py-2.5 text-base font-bold text-gray-900 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 lg:px-6 lg:text-xl"
+            className="typo-bold-16 lg:text-xl flex-1 bg-white px-4 py-2.5 text-gray-900 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 lg:px-6"
           >
             {isPending ? "신청 중..." : "예약하기"}
           </button>

@@ -160,7 +160,7 @@ export default function AdminProductDetailView({
           {productDetails.extraInfos &&
             Object.keys(productDetails.extraInfos).length > 0 && (
               <div className="border-t pt-2">
-                <div className="mb-2 text-sm font-semibold text-gray-600">
+                <div className="typo-bold-14 mb-2 text-gray-600">
                   추가 정보
                 </div>
                 {Object.entries(productDetails.extraInfos).map(

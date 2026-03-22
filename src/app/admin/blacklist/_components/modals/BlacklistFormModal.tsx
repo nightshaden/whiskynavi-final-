@@ -50,7 +50,7 @@ export default function BlacklistFormModal({
     <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold">
+          <DialogTitle className="typo-bold-20">
             블랙리스트 {isAdd ? "추가" : "수정"}
           </DialogTitle>
         </DialogHeader>

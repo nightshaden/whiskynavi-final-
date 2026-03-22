@@ -67,7 +67,7 @@ export default function OrderHistoryModal({
     <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
       <DialogContent className="flex max-h-[90vh] flex-col sm:max-w-5xl">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold">주문 내역</DialogTitle>
+          <DialogTitle className="typo-bold-20">주문 내역</DialogTitle>
           <p className="mt-1 text-sm text-gray-600">
             {user.name} ({user.username}) - 총 {orders.length}건 / 총 금액{" "}
             {totalAmount.toLocaleString()}원

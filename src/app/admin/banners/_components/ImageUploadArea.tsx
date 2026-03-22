@@ -51,7 +51,7 @@ export default function ImageUploadArea({
 
   return (
     <div>
-      <label className="mb-2 block text-sm font-medium text-gray-700">
+      <label className="typo-medium-14 mb-2 block text-gray-700">
         {label}
       </label>
       <input
@@ -86,14 +86,14 @@ export default function ImageUploadArea({
             <button
               type="button"
               onClick={() => inputRef.current?.click()}
-              className="cursor-pointer rounded-lg bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+              className="typo-medium-14 cursor-pointer rounded-lg bg-white px-3 py-2 text-gray-700 hover:bg-gray-100"
             >
               변경
             </button>
             <button
               type="button"
               onClick={onRemove}
-              className="cursor-pointer rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700"
+              className="typo-medium-14 cursor-pointer rounded-lg bg-red-600 px-3 py-2 text-white hover:bg-red-700"
             >
               <Trash2 size={16} />
             </button>

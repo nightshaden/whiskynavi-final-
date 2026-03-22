@@ -56,7 +56,7 @@ export default function OrderDetailModal({
               </p>
             </div>
             <span
-              className={`rounded px-3 py-1 text-sm font-semibold ${status.colorClass}`}
+              className={`typo-bold-14 rounded px-3 py-1 ${status.colorClass}`}
             >
               {status.label}
             </span>

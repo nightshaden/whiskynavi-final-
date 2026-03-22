@@ -12,7 +12,7 @@ export default function StatusBadge({ status, className }: StatusBadgeProps) {
   return (
     <div
       className={cn(
-        "px-2 py-1 text-xs font-bold text-white lg:px-4 lg:py-2 lg:text-sm",
+        "typo-bold-12 lg:text-sm px-2 py-1 text-white lg:px-4 lg:py-2",
         badge.className,
         className,
       )}

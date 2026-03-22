@@ -41,7 +41,7 @@ export default async function ReservationDetailPage({ params }: PageProps) {
         >
           <ArrowLeft size={18} className="lg:hidden" />
           <ArrowLeft size={20} className="hidden lg:block" />
-          <span className="text-sm font-semibold lg:text-base">
+          <span className="typo-bold-14 lg:text-base">
             목록으로 돌아가기
           </span>
         </Link>

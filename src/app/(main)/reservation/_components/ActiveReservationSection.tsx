@@ -45,7 +45,7 @@ export default function ActiveReservationSection({
 
   return (
     <div className="mb-10 lg:border lg:border-white/10 lg:px-8 lg:pt-6 lg:pb-8">
-      <h2 className="mb-4 text-xl font-bold text-white lg:text-2xl">
+      <h2 className="typo-bold-20 lg:text-2xl mb-4 text-white">
         현재 진행 중인 예약
       </h2>
       <div className="grid grid-cols-2 gap-5 lg:grid-cols-5">

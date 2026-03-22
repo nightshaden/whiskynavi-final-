@@ -1,13 +1,23 @@
 "use client";
 
-import { Crown, LogOut, User } from "lucide-react";
-import { signOut } from "next-auth/react";
 import type { UserSelfResponse } from "@/apis/generated/api";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 import { useIsDesktop } from "@/hooks/use-media-query";
+import { Crown, User } from "lucide-react";
 import { overlay } from "overlay-kit";
 import { hasNaviMembership, hasTalesMembership } from "../_lib/utils";
-import ProfileEditDrawer from "./ProfileEditDrawer";
-import ProfileEditModal from "./ProfileEditModal";
+import ProfileEditForm from "./ProfileEditForm";
 
 interface UserProfileCardProps {
   user: UserSelfResponse;
@@ -17,19 +27,33 @@ export default function UserProfileCard({ user }: UserProfileCardProps) {
   const isDesktop = useIsDesktop();
 
   const handleEditProfile = () => {
-    if (isDesktop) {
-      overlay.open(({ isOpen, close }) => (
-        <ProfileEditModal isOpen={isOpen} close={close} user={user} />
-      ));
-    } else {
-      overlay.open(({ isOpen, close }) => (
-        <ProfileEditDrawer isOpen={isOpen} close={close} user={user} />
-      ));
-    }
-  };
-
-  const handleLogout = () => {
-    signOut({ callbackUrl: "/" });
+    overlay.open(({ isOpen, close }) => {
+      if (isDesktop) {
+        return (
+          <Dialog open={isOpen} onOpenChange={close}>
+            <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>내 정보 수정</DialogTitle>
+              </DialogHeader>
+              <ProfileEditForm user={user} onClose={close} />
+            </DialogContent>
+          </Dialog>
+        );
+      } else {
+        return (
+          <Drawer open={isOpen} onOpenChange={(open) => !open && close()}>
+            <DrawerContent className="max-h-[85vh]">
+              <DrawerHeader>
+                <DrawerTitle>내 정보 수정</DrawerTitle>
+              </DrawerHeader>
+              <div className="overflow-y-auto px-4 pb-4">
+                <ProfileEditForm user={user} onClose={close} />
+              </div>
+            </DrawerContent>
+          </Drawer>
+        );
+      }
+    });
   };
 
   return (
@@ -38,19 +62,15 @@ export default function UserProfileCard({ user }: UserProfileCardProps) {
         <div className="w-full md:w-auto">
           <div className="mb-2 flex items-center gap-3">
             <User size={28} className="md:size-8" />
-            <h2 className="text-2xl font-bold md:text-3xl">
-              {user.name}님
-            </h2>
+            <h2 className="typo-bold-24 md:text-3xl">{user.name}님</h2>
             <button
               onClick={handleEditProfile}
-              className="border border-white/20 bg-white/10 px-2.5 py-1 text-xs font-semibold transition-colors hover:bg-white/20 md:px-3 md:py-1.5 md:text-sm"
+              className="typo-bold-12 md:text-sm border border-white/20 bg-white/10 px-2.5 py-1 transition-colors hover:bg-white/20 md:px-3 md:py-1.5"
             >
               내 정보
             </button>
           </div>
-          <p className="text-sm text-white/90 md:text-base">
-            @{user.username}
-          </p>
+          <p className="text-sm text-white/90 md:text-base">@{user.username}</p>
           <p className="text-xs text-white/60 md:text-sm">{user.email}</p>
         </div>
         <div className="w-full md:w-auto md:text-right">
@@ -58,22 +78,15 @@ export default function UserProfileCard({ user }: UserProfileCardProps) {
             {hasNaviMembership(user.roles) && (
               <div className="inline-flex items-center gap-1.5 bg-white px-2.5 py-1 text-gray-900 md:px-3 md:py-1.5">
                 <Crown size={14} className="md:size-4" />
-                <span className="text-xs font-bold">NAVI</span>
+                <span className="typo-bold-12">NAVI</span>
               </div>
             )}
             {hasTalesMembership(user.roles) && (
               <div className="inline-flex items-center gap-1.5 bg-white px-2.5 py-1 text-gray-900 md:px-3 md:py-1.5">
                 <Crown size={14} className="md:size-4" />
-                <span className="text-xs font-bold">TALES</span>
+                <span className="typo-bold-12">TALES</span>
               </div>
             )}
-            <button
-              onClick={handleLogout}
-              className="inline-flex items-center gap-2 border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold transition-colors hover:bg-white/20"
-            >
-              <LogOut size={16} className="md:size-[18px]" />
-              <span className="hidden md:inline">로그아웃</span>
-            </button>
           </div>
         </div>
       </div>
