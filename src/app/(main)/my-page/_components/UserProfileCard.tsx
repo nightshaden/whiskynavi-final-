@@ -6,6 +6,7 @@ import type { UserSelfResponse } from "@/apis/generated/api";
 import { useIsDesktop } from "@/hooks/use-media-query";
 import { overlay } from "overlay-kit";
 import { hasNaviMembership, hasTalesMembership } from "../_lib/utils";
+import ProfileEditDrawer from "./ProfileEditDrawer";
 import ProfileEditModal from "./ProfileEditModal";
 
 interface UserProfileCardProps {
@@ -21,9 +22,8 @@ export default function UserProfileCard({ user }: UserProfileCardProps) {
         <ProfileEditModal isOpen={isOpen} close={close} user={user} />
       ));
     } else {
-      // 모바일에서도 모달로 처리 (별도 페이지 미존재)
       overlay.open(({ isOpen, close }) => (
-        <ProfileEditModal isOpen={isOpen} close={close} user={user} />
+        <ProfileEditDrawer isOpen={isOpen} close={close} user={user} />
       ));
     }
   };

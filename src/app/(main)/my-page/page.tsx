@@ -2,6 +2,7 @@ import { getApiOrders, getApiUsersMe } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { authOptions, getAuthToken } from "@/lib/auth";
 import { getServerSession } from "next-auth";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
 import MyPageClient from "./_components/MyPageClient";
 
@@ -27,6 +28,7 @@ export default async function MyPage({ searchParams }: MyPageProps) {
 
   const [userResult, ordersResult] = await Promise.all([
     getApiUsersMe(withToken(token)).catch((e) => {
+      if (isRedirectError(e)) throw e;
       console.error("[my-page] getApiUsersMe failed:", e);
       return null;
     }),
@@ -34,6 +36,7 @@ export default async function MyPage({ searchParams }: MyPageProps) {
       { page, size: 10, sort: ["createdAt,desc"] },
       withToken(token),
     ).catch((e) => {
+      if (isRedirectError(e)) throw e;
       console.error("[my-page] getApiOrders failed:", e);
       return null;
     }),
