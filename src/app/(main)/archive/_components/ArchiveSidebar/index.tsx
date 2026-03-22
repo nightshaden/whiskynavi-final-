@@ -1,11 +1,10 @@
 "use client";
 
 import { BottleSearchParameterValues } from "@/apis/generated/api";
-import SearchableDropdown from "@/components/ui/searchable-dropdown";
-import { useCallback, useMemo } from "react";
-import { useFilters } from "../../_hooks/useFilters";
+import { IconSearch } from "@/icons";
+import { useCallback } from "react";
+import { useFilterContext } from "../../_context/FilterContext";
 import { INITIAL_FILTER_STATE } from "../../_types";
-import { extractAllValues } from "../../_utils";
 import { AbvFilter } from "./AbvFilter";
 import CurrentFilters from "./ActiveFilters";
 import { BrandFilter } from "./BrandFilter";
@@ -29,21 +28,18 @@ const DEFAULT_EXPANDED = [
 ];
 
 export function ArchiveSidebar({ params }: ArchiveSidebarProps) {
-  const allValues = useMemo(() => extractAllValues(params), [params]);
-
   const {
     filters,
-    allSelectedValues,
     setFilters,
     toggleBrand,
     toggleMaltType,
     removeActiveFilter,
-    handleGlobalSearchChange,
+    updateKeyword,
     updateDistilleries,
     updateCaskTypes,
     updateAbv,
     updateVintage,
-  } = useFilters({ params });
+  } = useFilterContext();
 
   const clearAllFilters = useCallback(() => {
     setFilters(INITIAL_FILTER_STATE);
@@ -53,13 +49,15 @@ export function ArchiveSidebar({ params }: ArchiveSidebarProps) {
     <aside className="hidden w-80 shrink-0 lg:mr-8 lg:block">
       <div className="mb-6">
         <h3 className="mb-3 text-lg font-bold text-white">보틀 검색</h3>
-        <SearchableDropdown
-          placeholder="보틀 이름, 시리즈명으로 검색하기"
-          value={allSelectedValues}
-          onChange={handleGlobalSearchChange}
-          containerClassName="mb-3"
-          items={allValues}
-        />
+        <div className="flex h-9 items-center gap-2 rounded-md border border-white/20 bg-popover px-3">
+          <IconSearch className="size-4 shrink-0" />
+          <input
+            placeholder="보틀 이름, 시리즈명으로 검색하기"
+            value={filters.keyword}
+            onChange={(e) => updateKeyword(e.target.value)}
+            className="flex h-full w-full bg-transparent text-sm text-popover-foreground outline-hidden placeholder:text-[#4C4C4C]"
+          />
+        </div>
       </div>
 
       <CurrentFilters

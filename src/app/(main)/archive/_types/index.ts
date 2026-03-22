@@ -2,6 +2,7 @@
  * 필터 상태 인터페이스
  */
 export interface FilterState {
+  keyword: string;
   brands: string[];
   distilleries: string[];
   names: string[];
@@ -29,6 +30,7 @@ export const FILTER_DEFAULTS = {
  * 초기 필터 상태
  */
 export const INITIAL_FILTER_STATE: FilterState = {
+  keyword: "",
   brands: [],
   distilleries: [],
   names: [],

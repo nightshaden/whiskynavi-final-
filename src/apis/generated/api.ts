@@ -40,7 +40,7 @@ export interface AdminBusinessApplicationAuditLogResponse {
 }
 
 /**
- * 관리자가 비즈니스 신청을 반려할 때 사유와 내부 메모를 입력합니다.
+ * 관리자가 비즈니스 신청을 반려할 때 반려 사유와 내부 메모를 입력합니다.
  */
 export interface AdminBusinessApplicationDecisionRequest {
   /** 관리자 내부 메모(사용자 비노출) */
@@ -502,10 +502,10 @@ export interface AuthResponse {
 }
 
 /**
- * 랜딩 페이지 히어로 영역에 노출되는 배너 정보를 나타내는 응답입니다.
+ * 랜딩 페이지 히어로 영역에 노출되는 배너 정보를 담은 응답입니다.
  */
 export interface BannerResponse {
-  /** 업로드된 배경 이미지 URL입니다. */
+  /** 업로드한 배경 이미지 URL입니다. */
   backgroundUrl?: string;
   /** 보조 설명 문구입니다. */
   description?: string;
@@ -513,7 +513,7 @@ export interface BannerResponse {
   id?: number;
   /** 배너 클릭 시 이동할 수 있는 선택 링크입니다. */
   link?: string;
-  /** 업로드된 전경 이미지 URL입니다. */
+  /** 업로드한 전경 이미지 URL입니다. */
   mainUrl?: string;
   /** 배너 상단에 노출되는 제목입니다. */
   title?: string;
@@ -900,18 +900,27 @@ export interface BottleSearchRequest {
   abvTo?: number;
   bottledDateFrom?: string;
   bottledDateTo?: string;
+  /** 브랜드명 필터 */
   brand?: string;
+  /** 캐스크 타입 필터 */
   caskType?: string;
+  /** 회사명 필터 */
   company?: string;
   distillationDateFrom?: string;
   distillationDateTo?: string;
+  /** 증류소 필터 */
   distillery?: string;
+  /** 통합검색어. 이름, 회사, 브랜드, 시리즈, 몰트 타입, 증류소, 캐스크 정보, 설명, 빈티지를 함께 검색합니다. */
+  keyword?: string;
+  /** 몰트 타입 필터 */
   maltType?: string;
+  /** 병 이름 필터 */
   name?: string;
   pageNumber?: number;
   pageSize?: number;
   /** 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값 */
   reservationStatus?: BottleSearchRequestReservationStatus;
+  /** 시리즈명 필터 */
   series?: string;
   sortBy?: string;
   sortDirection?: string;
@@ -956,7 +965,7 @@ export interface EmailAvailabilityResponse {
  */
 export interface EmailRequest {
   /**
-   * 사용자를 식별할 이메일 주소입니다.
+   * 사용자의 계정용 이메일 주소입니다.
    * @minLength 1
    */
   email?: string;
@@ -1140,6 +1149,8 @@ export interface OrderCreateRequest {
   productId?: number;
   /** 판매 상품 유형 */
   productType?: OrderCreateRequestProductType;
+  /** 대기열 입장 토큰 */
+  queueToken?: string;
   /** 요청 수량 */
   requestedQuantity: number;
   /** 판매 공고 ID */
@@ -1148,10 +1159,73 @@ export interface OrderCreateRequest {
   saleTitle?: string;
   /** 판매 공고 유형 */
   saleType?: OrderCreateRequestSaleType;
+  /** 사전 발급된 주문 티켓 ID */
+  ticketId?: string;
   /** 단가 */
   unitPrice?: number;
   /** 주문자 사용자 ID */
   userId?: number;
+}
+
+export interface OrderPaymentConfirmRequest {
+  /** 토스페이먼츠 승인 금액 */
+  amount: number;
+  /** 사업자 ID */
+  businessId?: number;
+  /** 수입사 ID */
+  importerId?: number;
+  /**
+   * 주문 메모
+   * @minLength 0
+   * @maxLength 500
+   */
+  orderNote?: string;
+  /**
+   * 토스페이먼츠 paymentKey
+   * @minLength 1
+   */
+  paymentKey?: string;
+  /**
+   * 토스페이먼츠 주문 ID
+   * @minLength 1
+   */
+  pgOrderId?: string;
+}
+
+export interface OrderPaymentConfirmResponse {
+  order?: OrderResponse;
+  /** 승인 금액 */
+  paidAmount?: number;
+  /** 결제 승인 시각 */
+  paidAt?: string;
+  /** 토스페이먼츠 paymentKey */
+  paymentKey?: string;
+  /** 결제 수단 */
+  paymentMethod?: string;
+  /** 결제 상태 */
+  paymentStatus?: string;
+  /** PG 주문 ID */
+  pgOrderId?: string;
+}
+
+export interface OrderQueueJoinRequest {
+  /** 판매 공고 ID */
+  saleAnnouncementId: number;
+}
+
+export interface OrderQueueStatusResponse {
+  /** 입장 토큰 발급 여부 */
+  entryGranted?: boolean;
+  /** 현재 대기 순번. 입장 가능 상태면 0, 미등록이면 -1 */
+  position?: number;
+  /** 입장 토큰 */
+  queueToken?: string;
+  /** 입장 토큰 만료 시각 */
+  queueTokenExpiresAt?: string;
+  /** 현재 사용자가 대기열에 올라가 있는지 여부 */
+  queued?: boolean;
+  /** 판매 공고 ID */
+  saleAnnouncementId?: number;
 }
 
 /**
@@ -1185,6 +1259,66 @@ export interface OrderStatusUpdateRequest {
    * @maxLength 500
    */
   reason?: string;
+}
+
+export interface OrderTicketIssueRequest {
+  /** 사업자 ID */
+  businessId?: number;
+  /** 수입사 ID */
+  importerId?: number;
+  /**
+   * 주문 메모
+   * @minLength 0
+   * @maxLength 500
+   */
+  orderNote?: string;
+  /** 입장 토큰 */
+  queueToken?: string;
+  /** 요청 수량 */
+  requestedQuantity: number;
+  /** 판매 공고 ID */
+  saleAnnouncementId: number;
+}
+
+/**
+ * 주문 시도 상태
+ */
+export type OrderTicketResponseStatus = typeof OrderTicketResponseStatus[keyof typeof OrderTicketResponseStatus];
+
+
+export const OrderTicketResponseStatus = {
+  QUEUED: 'QUEUED',
+  ENTRY_GRANTED: 'ENTRY_GRANTED',
+  TICKET_ISSUED: 'TICKET_ISSUED',
+  PAYMENT_PENDING: 'PAYMENT_PENDING',
+  PAID: 'PAID',
+  FAILED: 'FAILED',
+  EXPIRED: 'EXPIRED',
+} as const;
+
+export interface OrderTicketResponse {
+  /** 결제 요청 금액 */
+  amount?: number;
+  /** 주문 시도 ID */
+  attemptId?: number;
+  /** 멱등 시도 키 */
+  attemptKey?: string;
+  /** 토스페이먼츠 클라이언트 키 */
+  clientKey?: string;
+  /** 티켓 만료 시각 */
+  expiresAt?: string;
+  /** 결제 실패 리다이렉트 URL */
+  failUrl?: string;
+  /** 결제 요청 주문명 */
+  orderName?: string;
+  /** PG 주문 ID */
+  pgOrderId?: string;
+  /** 주문 시도 상태 */
+  status?: OrderTicketResponseStatus;
+  /** 결제 성공 리다이렉트 URL */
+  successUrl?: string;
+  /** 주문 티켓 ID */
+  ticketId?: string;
 }
 
 export interface SortObject {
@@ -2237,6 +2371,52 @@ export interface SocialLinkResponse {
 }
 
 /**
+ * 이벤트 대상 결제 데이터
+ */
+export interface TossPaymentResponse {
+  approvedAt?: string;
+  method?: string;
+  orderId?: string;
+  paymentKey?: string;
+  status?: string;
+  totalAmount?: number;
+}
+
+/**
+ * 이벤트 대상 결제 데이터
+ */
+export type TossWebhookRequestData = {
+  approvedAt?: string;
+  method?: string;
+  orderId?: string;
+  paymentKey?: string;
+  status?: string;
+  totalAmount?: number;
+};
+
+export interface TossWebhookRequest {
+  /** 이벤트 대상 결제 데이터 */
+  data?: TossWebhookRequestData;
+  /** 토스 웹훅 이벤트 타입 */
+  eventType?: string;
+}
+
+export interface TossWebhookResponse {
+  /** 토스 웹훅 이벤트 타입 */
+  eventType?: string;
+  /** 처리 결과 메시지 */
+  message?: string;
+  /** 내부 주문 ID */
+  orderId?: number;
+  /** 토스 결제 상태 */
+  paymentStatus?: string;
+  /** PG 주문 ID */
+  pgOrderId?: string;
+  /** 실제 후처리 수행 여부 */
+  processed?: boolean;
+}
+
+/**
  * 기존 게시글을 수정할 때 사용하는 요청 본문입니다.
  */
 export interface UpdatePostRequest {
@@ -2386,18 +2566,27 @@ filters: {
   abvTo?: number;
   bottledDateFrom?: string;
   bottledDateTo?: string;
+  /** 브랜드명 필터 */
   brand?: string;
+  /** 캐스크 타입 필터 */
   caskType?: string;
+  /** 회사명 필터 */
   company?: string;
   distillationDateFrom?: string;
   distillationDateTo?: string;
+  /** 증류소 필터 */
   distillery?: string;
+  /** 통합검색어. 이름, 회사, 브랜드, 시리즈, 몰트 타입, 증류소, 캐스크 정보, 설명, 빈티지를 함께 검색합니다. */
+  keyword?: string;
+  /** 몰트 타입 필터 */
   maltType?: string;
+  /** 병 이름 필터 */
   name?: string;
   pageNumber?: number;
   pageSize?: number;
   /** 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값 */
   reservationStatus?: GetApiAdminBottlesFiltersReservationStatus;
+  /** 시리즈명 필터 */
   series?: string;
   sortBy?: string;
   sortDirection?: string;
@@ -2604,7 +2793,7 @@ export const GetApiAdminBusinessesApplicationsStatus = {
 } as const;
 
 /**
- * 관리자가 비즈니스 신청을 반려할 때 사유와 내부 메모를 입력합니다.
+ * 관리자가 비즈니스 신청을 반려할 때 반려 사유와 내부 메모를 입력합니다.
  */
 export type PostApiAdminBusinessesApplicationsApplicationidRejectBody = {
   /** 관리자 내부 메모(사용자 비노출) */
@@ -2976,7 +3165,7 @@ export type PutApiAuthChangePasswordBody = {
  */
 export type PostApiAuthCheckEmailBody = {
   /**
-   * 사용자를 식별할 이메일 주소입니다.
+   * 사용자의 계정용 이메일 주소입니다.
    * @minLength 1
    */
   email?: string;
@@ -3105,7 +3294,7 @@ export type PostApiAuthRefreshBody = {
  */
 export type PostApiAuthResetPasswordBody = {
   /**
-   * 사용자를 식별할 이메일 주소입니다.
+   * 사용자의 계정용 이메일 주소입니다.
    * @minLength 1
    */
   email?: string;
@@ -3311,18 +3500,27 @@ filters: {
   abvTo?: number;
   bottledDateFrom?: string;
   bottledDateTo?: string;
+  /** 브랜드명 필터 */
   brand?: string;
+  /** 캐스크 타입 필터 */
   caskType?: string;
+  /** 회사명 필터 */
   company?: string;
   distillationDateFrom?: string;
   distillationDateTo?: string;
+  /** 증류소 필터 */
   distillery?: string;
+  /** 통합검색어. 이름, 회사, 브랜드, 시리즈, 몰트 타입, 증류소, 캐스크 정보, 설명, 빈티지를 함께 검색합니다. */
+  keyword?: string;
+  /** 몰트 타입 필터 */
   maltType?: string;
+  /** 병 이름 필터 */
   name?: string;
   pageNumber?: number;
   pageSize?: number;
   /** 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값 */
   reservationStatus?: GetApiBottlesFiltersReservationStatus;
+  /** 시리즈명 필터 */
   series?: string;
   sortBy?: string;
   sortDirection?: string;
@@ -3464,6 +3662,8 @@ export type PostApiOrdersBody = {
   productId?: number;
   /** 판매 상품 유형 */
   productType?: PostApiOrdersBodyProductType;
+  /** 대기열 입장 토큰 */
+  queueToken?: string;
   /** 요청 수량 */
   requestedQuantity: number;
   /** 판매 공고 ID */
@@ -3472,10 +3672,65 @@ export type PostApiOrdersBody = {
   saleTitle?: string;
   /** 판매 공고 유형 */
   saleType?: PostApiOrdersBodySaleType;
+  /** 사전 발급된 주문 티켓 ID */
+  ticketId?: string;
   /** 단가 */
   unitPrice?: number;
   /** 주문자 사용자 ID */
   userId?: number;
+};
+
+export type PostApiOrdersPaymentsConfirmBody = {
+  /** 토스페이먼츠 승인 금액 */
+  amount: number;
+  /** 사업자 ID */
+  businessId?: number;
+  /** 수입사 ID */
+  importerId?: number;
+  /**
+   * 주문 메모
+   * @minLength 0
+   * @maxLength 500
+   */
+  orderNote?: string;
+  /**
+   * 토스페이먼츠 paymentKey
+   * @minLength 1
+   */
+  paymentKey?: string;
+  /**
+   * 토스페이먼츠 주문 ID
+   * @minLength 1
+   */
+  pgOrderId?: string;
+};
+
+export type PostApiOrdersQueueJoinBody = {
+  /** 판매 공고 ID */
+  saleAnnouncementId: number;
+};
+
+export type GetApiOrdersQueueStatusParams = {
+saleAnnouncementId: number;
+};
+
+export type PostApiOrdersTicketsBody = {
+  /** 사업자 ID */
+  businessId?: number;
+  /** 수입사 ID */
+  importerId?: number;
+  /**
+   * 주문 메모
+   * @minLength 0
+   * @maxLength 500
+   */
+  orderNote?: string;
+  /** 입장 토큰 */
+  queueToken?: string;
+  /** 요청 수량 */
+  requestedQuantity: number;
+  /** 판매 공고 ID */
+  saleAnnouncementId: number;
 };
 
 /**
@@ -3821,6 +4076,25 @@ yearMonth: string;
 
 export type GetApiTaxInvoicesVatReportMonthlyPdfParams = {
 yearMonth: string;
+};
+
+/**
+ * 이벤트 대상 결제 데이터
+ */
+export type PostApiTossPaymentsWebhookBodyData = {
+  approvedAt?: string;
+  method?: string;
+  orderId?: string;
+  paymentKey?: string;
+  status?: string;
+  totalAmount?: number;
+};
+
+export type PostApiTossPaymentsWebhookBody = {
+  /** 이벤트 대상 결제 데이터 */
+  data?: PostApiTossPaymentsWebhookBodyData;
+  /** 토스 웹훅 이벤트 타입 */
+  eventType?: string;
 };
 
 export type PostApiUserNiceidResultParams = {
@@ -4864,7 +5138,7 @@ export const getApiAdminBusinessesApplicationsApplicationid = async (application
 
 
 /**
- * 관리자가 신청을 승인하고 픽업 사업장으로 등록합니다.
+ * 관리자가 신청을 승인하고 영업 사업장으로 등록합니다.
  * @summary 비즈니스 신청 승인(관리자)
  */
 export type postApiAdminBusinessesApplicationsApplicationidApproveResponse200 = {
@@ -4977,7 +5251,7 @@ export const postApiAdminBusinessesApplicationsApplicationidReject = async (appl
 
 
 /**
- * 비즈니스 등급 회원 목록을 조회합니다.
+ * 비즈니스 권한을 가진 회원 목록을 조회합니다.
  * @summary 비즈니스 회원 목록 조회(관리자)
  */
 export type getApiAdminBusinessesMembersResponse200 = {
@@ -5029,7 +5303,7 @@ export const getApiAdminBusinessesMembers = async (params?: GetApiAdminBusinesse
 
 
 /**
- * 비즈니스 등급 회원의 기본 정보와 사업장 정보를 조회합니다.
+ * 비즈니스 권한 회원의 기본 정보와 사업장 정보를 조회합니다.
  * @summary 비즈니스 회원 상세 조회(관리자)
  */
 export type getApiAdminBusinessesMembersUseridResponse200 = {
@@ -5066,7 +5340,7 @@ export const getApiAdminBusinessesMembersUserid = async (userId: number, options
 
 
 /**
- * 비즈니스 등급 회원에게 픽업 권한을 부여합니다.
+ * 비즈니스 권한 회원에게 픽업 권한을 부여합니다.
  * @summary 픽업 권한 부여(관리자)
  */
 export type postApiAdminBusinessesMembersUseridPickupGrantResponse200 = {
@@ -5103,8 +5377,8 @@ export const postApiAdminBusinessesMembersUseridPickupGrant = async (userId: num
 
 
 /**
- * 비즈니스 등급 회원에게서 픽업 권한을 박탈합니다.
- * @summary 픽업 권한 박탈(관리자)
+ * 비즈니스 권한 회원에게서 픽업 권한을 회수합니다.
+ * @summary 픽업 권한 회수(관리자)
  */
 export type postApiAdminBusinessesMembersUseridPickupRevokeResponse200 = {
   data: AdminBusinessUserResponse
@@ -7462,7 +7736,169 @@ export const postApiOrders = async (postApiOrdersBody: PostApiOrdersBody, option
 
 
 /**
- * @summary 주문 단건 조회
+ * @summary 토스페이먼츠 결제 승인 확정
+ */
+export type postApiOrdersPaymentsConfirmResponse200 = {
+  data: OrderPaymentConfirmResponse
+  status: 200
+}
+    
+export type postApiOrdersPaymentsConfirmResponseSuccess = (postApiOrdersPaymentsConfirmResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiOrdersPaymentsConfirmResponse = (postApiOrdersPaymentsConfirmResponseSuccess)
+
+export const getPostApiOrdersPaymentsConfirmUrl = () => {
+
+
+  
+
+  return `/api/orders/payments/confirm`
+}
+
+export const postApiOrdersPaymentsConfirm = async (postApiOrdersPaymentsConfirmBody: PostApiOrdersPaymentsConfirmBody, options?: RequestInit): Promise<postApiOrdersPaymentsConfirmResponse> => {
+  
+  return customFetch<postApiOrdersPaymentsConfirmResponse>(getPostApiOrdersPaymentsConfirmUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiOrdersPaymentsConfirmBody,)
+  }
+);}
+
+
+
+/**
+ * @summary 주문 대기열 진입
+ */
+export type postApiOrdersQueueJoinResponse200 = {
+  data: OrderQueueStatusResponse
+  status: 200
+}
+    
+export type postApiOrdersQueueJoinResponseSuccess = (postApiOrdersQueueJoinResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiOrdersQueueJoinResponse = (postApiOrdersQueueJoinResponseSuccess)
+
+export const getPostApiOrdersQueueJoinUrl = () => {
+
+
+  
+
+  return `/api/orders/queue/join`
+}
+
+export const postApiOrdersQueueJoin = async (postApiOrdersQueueJoinBody: PostApiOrdersQueueJoinBody, options?: RequestInit): Promise<postApiOrdersQueueJoinResponse> => {
+  
+  return customFetch<postApiOrdersQueueJoinResponse>(getPostApiOrdersQueueJoinUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiOrdersQueueJoinBody,)
+  }
+);}
+
+
+
+/**
+ * @summary 주문 대기열 상태 조회
+ */
+export type getApiOrdersQueueStatusResponse200 = {
+  data: OrderQueueStatusResponse
+  status: 200
+}
+    
+export type getApiOrdersQueueStatusResponseSuccess = (getApiOrdersQueueStatusResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiOrdersQueueStatusResponse = (getApiOrdersQueueStatusResponseSuccess)
+
+export const getGetApiOrdersQueueStatusUrl = (params: GetApiOrdersQueueStatusParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
+    } else {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/orders/queue/status?${stringifiedParams}` : `/api/orders/queue/status`
+}
+
+export const getApiOrdersQueueStatus = async (params: GetApiOrdersQueueStatusParams, options?: RequestInit): Promise<getApiOrdersQueueStatusResponse> => {
+  
+  return customFetch<getApiOrdersQueueStatusResponse>(getGetApiOrdersQueueStatusUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * @summary 주문 티켓 발급
+ */
+export type postApiOrdersTicketsResponse200 = {
+  data: OrderTicketResponse
+  status: 200
+}
+    
+export type postApiOrdersTicketsResponseSuccess = (postApiOrdersTicketsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiOrdersTicketsResponse = (postApiOrdersTicketsResponseSuccess)
+
+export const getPostApiOrdersTicketsUrl = () => {
+
+
+  
+
+  return `/api/orders/tickets`
+}
+
+export const postApiOrdersTickets = async (postApiOrdersTicketsBody: PostApiOrdersTicketsBody, options?: RequestInit): Promise<postApiOrdersTicketsResponse> => {
+  
+  return customFetch<postApiOrdersTicketsResponse>(getPostApiOrdersTicketsUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiOrdersTicketsBody,)
+  }
+);}
+
+
+
+/**
+ * @summary 주문 상세 조회
  */
 export type getApiOrdersOrderidResponse200 = {
   data: OrderResponse
@@ -8038,6 +8474,43 @@ export const getApiTaxInvoicesVatReportMonthlyPdf = async (params: GetApiTaxInvo
     method: 'GET'
     
     
+  }
+);}
+
+
+
+/**
+ * @summary 토스 웹훅 수신
+ */
+export type postApiTossPaymentsWebhookResponse200 = {
+  data: TossWebhookResponse
+  status: 200
+}
+    
+export type postApiTossPaymentsWebhookResponseSuccess = (postApiTossPaymentsWebhookResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiTossPaymentsWebhookResponse = (postApiTossPaymentsWebhookResponseSuccess)
+
+export const getPostApiTossPaymentsWebhookUrl = () => {
+
+
+  
+
+  return `/api/toss-payments/webhook`
+}
+
+export const postApiTossPaymentsWebhook = async (postApiTossPaymentsWebhookBody: PostApiTossPaymentsWebhookBody, options?: RequestInit): Promise<postApiTossPaymentsWebhookResponse> => {
+  
+  return customFetch<postApiTossPaymentsWebhookResponse>(getPostApiTossPaymentsWebhookUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiTossPaymentsWebhookBody,)
   }
 );}
 

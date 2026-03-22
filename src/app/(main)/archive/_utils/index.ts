@@ -60,6 +60,11 @@ export function convertFiltersToQueries(
 ): GetApiBottlesParams["filters"] {
   const queries: GetApiBottlesParams["filters"] = {};
 
+  // 통합검색어
+  if (filterState.keyword) {
+    queries.keyword = filterState.keyword;
+  }
+
   // 배열 필터를 쉼표로 구분된 문자열로 변환
   const arrayFilters: Array<{
     key: keyof FilterState;
@@ -117,6 +122,7 @@ export function parseFiltersFromSearchParams(
   };
 
   return {
+    keyword: searchParams.get("keyword") ?? "",
     brands: parseStringArray("brand"),
     distilleries: parseStringArray("distillery"),
     names: parseStringArray("name"),

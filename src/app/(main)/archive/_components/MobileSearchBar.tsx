@@ -1,10 +1,11 @@
 "use client";
 
 import { Search } from "lucide-react";
-import { useState } from "react";
+import { useFilterContext } from "../_context/FilterContext";
 
 const MobileSearchBar = () => {
-  const [searchQuery, setSearchQuery] = useState("");
+  const { filters, updateKeyword } = useFilterContext();
+
   return (
     <div className="mx-auto -mt-8 max-w-[1440px] px-4 py-4 lg:hidden">
       <div className="relative">
@@ -15,8 +16,8 @@ const MobileSearchBar = () => {
         <input
           type="text"
           placeholder="보틀명, 증류소로 검색하세요"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          value={filters.keyword}
+          onChange={(e) => updateKeyword(e.target.value)}
           className="w-full border border-white/10 bg-white/5 py-3 pr-3 pl-10 text-sm text-white placeholder-gray-400 transition-all focus:border-white/30 focus:outline-none"
         />
       </div>
