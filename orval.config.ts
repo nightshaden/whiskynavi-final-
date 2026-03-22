@@ -10,6 +10,11 @@ export default defineConfig({
       mode: "single",
       client: "fetch",
       baseUrl: "",
+      tsconfig: {
+        compilerOptions: {
+          target: "es2020",
+        },
+      },
       override: {
         mutator: {
           path: "./src/apis/mutator.ts",

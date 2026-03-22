@@ -46,14 +46,11 @@ async function refreshSessionToken(): Promise<string | null> {
     if (!session?.refreshToken) return null;
 
     // 백엔드 refresh API 직접 호출
-    const refreshRes = await fetch(
-      `${BASE_URL}/api/auth/refresh`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ refreshToken: session.refreshToken }),
-      },
-    );
+    const refreshRes = await fetch(`${BASE_URL}/api/auth/refresh`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refreshToken: session.refreshToken }),
+    });
 
     if (!refreshRes.ok) return null;
 
@@ -96,7 +93,11 @@ export const customFetch = async <T>(
 
       if (retryRes.ok) {
         const data = await parseResponse(retryRes);
-        return { data, status: retryRes.status, headers: retryRes.headers } as T;
+        return {
+          data,
+          status: retryRes.status,
+          headers: retryRes.headers,
+        } as T;
       }
 
       // 재시도도 401/403이면 리프레시 토큰도 만료된 것

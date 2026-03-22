@@ -66,14 +66,20 @@ export interface AdminBusinessApplicationResponse {
   adminMemo?: string;
   businessName?: string;
   businessRegistrationNumber?: string;
+  businessStatus?: string;
+  businessStatusCode?: string;
   contact?: string;
   createdAt?: string;
   documentDownloadUrl?: string;
   documentOriginalFilename?: string;
   id?: number;
+  openingDate?: string;
   pickupAddress?: string;
   rejectReason?: string;
+  representativeName?: string;
   status?: AdminBusinessApplicationResponseStatus;
+  taxType?: string;
+  taxTypeCode?: string;
   updatedAt?: string;
   userId?: number;
 }
@@ -1676,12 +1682,18 @@ export const UserBusinessApplicationResponseStatus = {
 export interface UserBusinessApplicationResponse {
   businessName?: string;
   businessRegistrationNumber?: string;
+  businessStatus?: string;
+  businessStatusCode?: string;
   contact?: string;
   createdAt?: string;
   id?: number;
+  openingDate?: string;
   pickupAddress?: string;
   rejectReason?: string;
+  representativeName?: string;
   status?: UserBusinessApplicationResponseStatus;
+  taxType?: string;
+  taxTypeCode?: string;
   updatedAt?: string;
 }
 
@@ -2451,11 +2463,17 @@ export const UserBusinessApplicationSubmitResponseStatus = {
 export interface UserBusinessApplicationSubmitResponse {
   businessName?: string;
   businessRegistrationNumber?: string;
+  businessStatus?: string;
+  businessStatusCode?: string;
   contact?: string;
   createdAt?: string;
   id?: number;
+  openingDate?: string;
   pickupAddress?: string;
+  representativeName?: string;
   status?: UserBusinessApplicationSubmitResponseStatus;
+  taxType?: string;
+  taxTypeCode?: string;
   updatedAt?: string;
   userId?: number;
 }
@@ -4118,6 +4136,8 @@ businessName: string;
 pickupAddress: string;
 contact: string;
 businessRegistrationNumber: string;
+openingDate: string;
+representativeName: string;
 };
 
 export type PostApiUsersBusinessesApplicationsBody = {
@@ -8607,7 +8627,7 @@ export const postApiUserNiceidSession = async (postApiUserNiceidSessionBody: Pos
 
 
 /**
- * 사용자가 사업장 정보와 신청 서류를 함께 업로드하여 승인을 요청합니다.
+ * 신청서 한 번 제출 안에서 사업장 정보와 증빙서류를 받고, 사업자등록번호·개업일자·대표자명으로 국세청 진위확인을 수행한 뒤 저장합니다.
  * @summary 비즈니스 등록 신청
  */
 export type postApiUsersBusinessesApplicationsResponse200 = {
