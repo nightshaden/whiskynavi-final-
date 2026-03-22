@@ -1,14 +1,38 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Upload } from "lucide-react";
-import { FC } from "react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { format } from "date-fns";
+import { ko } from "date-fns/locale";
+import { CalendarDays, Loader2, Upload } from "lucide-react";
+import { useActionState, useRef, useState } from "react";
+import { submitBusinessApplication } from "../actions";
 
-interface Props {}
+export default function BusinessApplyForm({
+  onClose,
+}: {
+  onClose?: () => void;
+}) {
+  const [state, formAction, pending] = useActionState(
+    submitBusinessApplication,
+    { success: false },
+  );
+  const [isPickupStore, setIsPickupStore] = useState(false);
+  const [fileName, setFileName] = useState<string | null>(null);
+  const [openingDate, setOpeningDate] = useState<Date>();
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-const BusinessRegisterForm: FC<Props> = () => {
   return (
-    <form onSubmit={handleBusinessSubmit} className="space-y-4 md:space-y-6">
+    <form action={formAction} className="space-y-4 md:space-y-6">
       <div>
         <Label
           htmlFor="businessName"
@@ -18,15 +42,9 @@ const BusinessRegisterForm: FC<Props> = () => {
         </Label>
         <Input
           id="businessName"
+          name="businessName"
           type="text"
           required
-          value={businessFormData.businessName}
-          onChange={(e) =>
-            setBusinessFormData({
-              ...businessFormData,
-              businessName: e.target.value,
-            })
-          }
           placeholder="사업자명을 입력하세요"
           className="w-full"
         />
@@ -56,15 +74,9 @@ const BusinessRegisterForm: FC<Props> = () => {
           </Label>
           <Input
             id="pickupAddress"
+            name="pickupAddress"
             type="text"
             required
-            value={businessFormData.pickupAddress}
-            onChange={(e) =>
-              setBusinessFormData({
-                ...businessFormData,
-                pickupAddress: e.target.value,
-              })
-            }
             placeholder="픽업매장 주소를 입력하세요"
             className="w-full"
           />
@@ -80,16 +92,75 @@ const BusinessRegisterForm: FC<Props> = () => {
         </Label>
         <Input
           id="contact"
+          name="contact"
           type="text"
           required
-          value={businessFormData.contact}
-          onChange={(e) =>
-            setBusinessFormData({
-              ...businessFormData,
-              contact: e.target.value,
-            })
-          }
           placeholder="이메일 또는 전화번호를 입력하세요"
+          className="w-full"
+        />
+      </div>
+
+      <div>
+        <Label className="typo-bold-14 mb-2 block text-gray-900">
+          개업일 *
+        </Label>
+        <input
+          type="hidden"
+          name="openingDate"
+          value={openingDate ? format(openingDate, "yyyy-MM-dd") : ""}
+        />
+        <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              type="button"
+              variant="outline"
+              className={`h-auto w-full justify-start px-3 py-2 text-left text-sm font-normal ${
+                !openingDate ? "text-gray-400" : "text-gray-900"
+              }`}
+            >
+              <CalendarDays className="mr-2 size-4 text-gray-400" />
+              {openingDate
+                ? format(openingDate, "yyyy년 MM월 dd일", { locale: ko })
+                : "개업일을 선택하세요"}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={openingDate}
+              onSelect={(day) => {
+                setOpeningDate(day);
+                setCalendarOpen(false);
+              }}
+              locale={ko}
+            />
+          </PopoverContent>
+        </Popover>
+        {/* required 검증용 숨김 input */}
+        {!openingDate && (
+          <input
+            tabIndex={-1}
+            className="absolute h-0 w-0 opacity-0"
+            required
+            value=""
+            onChange={() => {}}
+          />
+        )}
+      </div>
+
+      <div>
+        <Label
+          htmlFor="representativeName"
+          className="typo-bold-14 mb-2 block text-gray-900"
+        >
+          대표자 이름 *
+        </Label>
+        <Input
+          id="representativeName"
+          name="representativeName"
+          type="text"
+          required
+          placeholder="대표자 이름을 입력하세요"
           className="w-full"
         />
       </div>
@@ -103,15 +174,9 @@ const BusinessRegisterForm: FC<Props> = () => {
         </Label>
         <Input
           id="businessRegistrationNumber"
+          name="businessRegistrationNumber"
           type="text"
           required
-          value={businessFormData.businessRegistrationNumber}
-          onChange={(e) =>
-            setBusinessFormData({
-              ...businessFormData,
-              businessRegistrationNumber: e.target.value,
-            })
-          }
           placeholder="사업자 등록번호를 입력하세요 (예: 123-45-67890)"
           className="w-full"
         />
@@ -126,23 +191,23 @@ const BusinessRegisterForm: FC<Props> = () => {
         </Label>
         <div className="rounded-lg border-2 border-dashed border-gray-300 p-6 text-center transition-colors hover:border-gray-400">
           <input
+            ref={fileInputRef}
             id="document"
+            name="document"
             type="file"
             required
             accept=".pdf,.jpg,.jpeg,.png"
             onChange={(e) => {
-              const file = e.target.files?.[0] || null;
-              setBusinessFormData({ ...businessFormData, document: file });
+              const file = e.target.files?.[0];
+              setFileName(file?.name ?? null);
             }}
             className="hidden"
           />
           <label htmlFor="document" className="block cursor-pointer">
             <Upload className="mx-auto mb-2 text-gray-400" size={32} />
-            {businessFormData.document ? (
+            {fileName ? (
               <div className="space-y-1">
-                <p className="typo-medium-14 text-gray-900">
-                  {businessFormData.document.name}
-                </p>
+                <p className="typo-medium-14 text-gray-900">{fileName}</p>
                 <p className="text-xs text-gray-500">
                   파일을 다시 선택하려면 클릭하세요
                 </p>
@@ -161,23 +226,40 @@ const BusinessRegisterForm: FC<Props> = () => {
         </div>
       </div>
 
+      {state.error && (
+        <p className="text-sm text-red-600">{state.error}</p>
+      )}
+      {state.success && (
+        <p className="text-sm text-green-600">
+          사업자 등록 신청이 완료되었습니다.
+        </p>
+      )}
+
       <div className="flex gap-3 pt-4">
         <button
           type="submit"
-          className="flex-1 bg-gray-900 px-6 py-3 font-semibold text-white transition-colors hover:bg-gray-800"
+          disabled={pending}
+          className="flex-1 bg-gray-900 px-6 py-3 font-semibold text-white transition-colors hover:bg-gray-800 disabled:opacity-50"
         >
-          등록 신청
+          {pending ? (
+            <span className="inline-flex items-center gap-2">
+              <Loader2 className="size-4 animate-spin" />
+              신청 중...
+            </span>
+          ) : (
+            "등록 신청"
+          )}
         </button>
-        <button
-          type="button"
-          onClick={() => setShowBusinessRegister(false)}
-          className="border border-gray-300 px-6 py-3 font-semibold text-gray-700 transition-colors hover:bg-gray-50"
-        >
-          취소
-        </button>
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            className="border border-gray-300 px-6 py-3 font-semibold text-gray-700 transition-colors hover:bg-gray-50"
+          >
+            취소
+          </button>
+        )}
       </div>
     </form>
   );
-};
-
-export default BusinessRegisterForm;
+}

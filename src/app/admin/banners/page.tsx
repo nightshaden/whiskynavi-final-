@@ -18,7 +18,7 @@ export default async function BannersPage({ searchParams }: BannersPageProps) {
   const size = params.limit ? Number(params.limit) : 12;
 
   const res = await getApiBanners({ page, size }, withToken(token));
-  console.log('===123=>',res)
+
   return (
     <BannersContent
       searchParams={params}

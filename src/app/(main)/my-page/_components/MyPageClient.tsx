@@ -54,7 +54,7 @@ export default function MyPageClient({ user, orders }: MyPageClientProps) {
               <DialogHeader>
                 <DialogTitle>내 정보 수정</DialogTitle>
               </DialogHeader>
-              <BusinessApplyForm />
+              <BusinessApplyForm onClose={close} />
             </DialogContent>
           </Dialog>
         );
@@ -66,7 +66,7 @@ export default function MyPageClient({ user, orders }: MyPageClientProps) {
                 <DrawerTitle>내 정보 수정</DrawerTitle>
               </DrawerHeader>
               <div className="overflow-y-auto px-4 pb-4">
-                <BusinessApplyForm />
+                <BusinessApplyForm onClose={close} />
               </div>
             </DrawerContent>
           </Drawer>

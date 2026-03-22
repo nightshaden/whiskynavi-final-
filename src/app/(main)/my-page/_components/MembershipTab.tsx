@@ -16,9 +16,7 @@ function MembershipCard({
     <div className="border-2 border-white/10 p-4 md:p-6">
       <div className="mb-3 flex items-center justify-between md:mb-4">
         <div>
-          <h4 className="typo-bold-18 md:text-xl text-white">
-            {data.name}
-          </h4>
+          <h4 className="typo-bold-18 text-white md:text-xl">{data.name}</h4>
           <p className="text-xs text-gray-400 md:text-sm">{data.subtitle}</p>
         </div>
         <div
@@ -37,7 +35,7 @@ function MembershipCard({
           <div className="mb-3 border border-white/10 bg-white/5 p-3 md:mb-4 md:p-4">
             <div className="mb-2 flex items-center gap-2">
               <Crown size={16} className="text-white md:size-5" />
-              <span className="typo-bold-12 md:text-sm text-white">
+              <span className="typo-bold-12 text-white md:text-sm">
                 프리미엄 멤버
               </span>
             </div>
@@ -73,13 +71,12 @@ interface MembershipTabProps {
 }
 
 export default function MembershipTab({ user }: MembershipTabProps) {
-  console.log("???", user);
   const naviActive = hasNaviMembership(user.roles);
   const talesActive = hasTalesMembership(user.roles);
 
   return (
     <div>
-      <h3 className="typo-bold-20 md:text-2xl mb-4 text-white md:mb-6">
+      <h3 className="typo-bold-20 mb-4 text-white md:mb-6 md:text-2xl">
         나의 멤버십
       </h3>
 
@@ -89,7 +86,7 @@ export default function MembershipTab({ user }: MembershipTabProps) {
       </div>
 
       <div className="mt-6 border border-white/10 bg-white/5 p-4 md:mt-8 md:p-6">
-        <h4 className="typo-bold-14 md:text-base mb-2 text-white md:mb-3">
+        <h4 className="typo-bold-14 mb-2 text-white md:mb-3 md:text-base">
           멤버십 안내
         </h4>
         <div className="space-y-1.5 text-xs text-gray-400 md:space-y-2 md:text-sm">
