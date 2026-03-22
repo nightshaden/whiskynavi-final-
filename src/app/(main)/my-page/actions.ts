@@ -3,6 +3,7 @@
 import {
   patchApiOrdersOrderidCancel,
   postApiUsersBusinessesApplications,
+  postApiUsersBusinessesApplicationsApplicationidCancel,
   putApiAuthChangePassword,
 } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
@@ -167,6 +168,33 @@ export async function submitBusinessApplication(
       error instanceof Error
         ? error.message
         : "사업자 등록 신청에 실패했습니다.";
+    return { success: false, error: message };
+  }
+}
+
+export async function cancelBusinessApplication(
+  applicationId: number,
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const token = await getAuthToken();
+    if (!token) {
+      return { success: false, error: "로그인이 필요합니다." };
+    }
+
+    await postApiUsersBusinessesApplicationsApplicationidCancel(
+      applicationId,
+      { cancelReason: "사용자 직접 취소" },
+      withToken(token),
+    );
+
+    revalidatePath("/my-page");
+    return { success: true };
+  } catch (error) {
+    if (isRedirectError(error)) throw error;
+    const message =
+      error instanceof Error
+        ? error.message
+        : "사업자 등록 취소에 실패했습니다.";
     return { success: false, error: message };
   }
 }
