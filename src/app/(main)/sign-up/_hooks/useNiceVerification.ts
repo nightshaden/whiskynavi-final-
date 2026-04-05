@@ -82,9 +82,7 @@ export function useNiceVerification(options?: UseNiceVerificationOptions) {
   });
 
   useEffect(() => {
-    const channel = new BroadcastChannel(
-      getNiceChannelName(state.sessionId),
-    );
+    const channel = new BroadcastChannel(getNiceChannelName(state.sessionId));
 
     channel.onmessage = async (event: MessageEvent<NiceMessage>) => {
       const data = event.data;
@@ -146,8 +144,8 @@ export function useNiceVerification(options?: UseNiceVerificationOptions) {
     dispatch({ type: "START_VERIFICATION" });
 
     try {
-      // const returnUrl = `${window.location.origin}/nice/callback?niceSessionId=${state.sessionId}`;
-      const returnUrl = `https://6db8-2a09-bac0-1001-40f-00-20b-b8.ngrok-free.app/nice/callback?niceSessionId=${state.sessionId}`;
+      const returnUrl = `${window.location.origin}/nice/callback?niceSessionId=${state.sessionId}`;
+      // const returnUrl = `https://6db8-2a09-bac0-1001-40f-00-20b-b8.ngrok-free.app/nice/callback?niceSessionId=${state.sessionId}`;
       const { data } = await postApiUserNiceidSession({ returnUrl });
       if (!data.authUrl || !data.requestNo) {
         throw new Error("본인인증 시작 정보를 받아오지 못했습니다.");
