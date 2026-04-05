@@ -116,13 +116,13 @@ const BrandIntroduce = ({ brand, bottles, registerBrandRef }: Props) => {
                 {/* Navigation Buttons */}
                 <button
                   onClick={prevProduct}
-                  className="absolute top-1/2 left-0 z-40 -translate-y-1/2 bg-white/10 p-3 text-white transition-colors hover:bg-white/20"
+                  className="absolute top-1/2 left-0 z-40 -translate-y-1/2 cursor-pointer bg-white/10 p-3 text-white transition-colors hover:bg-white/20"
                 >
                   <ChevronLeft size={24} />
                 </button>
                 <button
                   onClick={nextProduct}
-                  className="absolute top-1/2 right-0 z-40 -translate-y-1/2 bg-white/10 p-3 text-white transition-colors hover:bg-white/20"
+                  className="absolute top-1/2 right-0 z-40 -translate-y-1/2 cursor-pointer bg-white/10 p-3 text-white transition-colors hover:bg-white/20"
                 >
                   <ChevronRight size={24} />
                 </button>

@@ -1,5 +1,6 @@
 import {
-  getApiBottlesReservationsNoticesLatestActive,
+  type BottleReservationNoticePublicResponse,
+  getApiBottlesReservationsNotices,
   getApiBottlesReservationsNoticesRecentEnded,
 } from "@/apis/generated/api";
 import { authOptions } from "@/lib/auth";
@@ -10,6 +11,31 @@ import EmptyState from "./_components/EmptyState";
 import RecentEndedSection from "./_components/RecentEndedSection";
 import ReservationHero from "./_components/ReservationHero";
 import UnauthenticatedGuard from "./_components/UnauthenticatedGuard";
+
+function normalizeActiveNotices(
+  data: unknown,
+): BottleReservationNoticePublicResponse[] {
+  if (Array.isArray(data)) {
+    return data as BottleReservationNoticePublicResponse[];
+  }
+
+  if (data && typeof data === "object") {
+    const page = data as {
+      content?: BottleReservationNoticePublicResponse[];
+      id?: number;
+    };
+
+    if (Array.isArray(page.content)) {
+      return page.content;
+    }
+
+    if (typeof page.id === "number") {
+      return [page as BottleReservationNoticePublicResponse];
+    }
+  }
+
+  return [];
+}
 
 export default async function ReservationPage() {
   const session = await getServerSession(authOptions);
@@ -29,14 +55,16 @@ export default async function ReservationPage() {
   // 병렬 API 호출
   const [activeResult, recentEndedResult, pickupLocations] =
     await Promise.all([
-      getApiBottlesReservationsNoticesLatestActive().catch(() => null),
+      getApiBottlesReservationsNotices({
+        page: 0,
+        size: 100,
+        sort: ["reservationStartAt,desc"],
+      }).catch(() => null),
       getApiBottlesReservationsNoticesRecentEnded().catch(() => null),
       fetchPickupLocations(),
     ]);
 
-  // latest-active는 단일 객체 → 배열로 변환
-  const activeNotices =
-    activeResult?.data ? [activeResult.data] : [];
+  const activeNotices = normalizeActiveNotices(activeResult?.data);
 
   const recentEndedNotices =
     recentEndedResult?.data ?? [];
@@ -53,7 +81,10 @@ export default async function ReservationPage() {
             <EmptyState />
           ) : (
             <>
-              <ActiveReservationSection notices={activeNotices} pickupLocations={pickupLocations} />
+              <ActiveReservationSection
+                notices={activeNotices}
+                pickupLocations={pickupLocations}
+              />
               <RecentEndedSection notices={recentEndedNotices} />
             </>
           )}

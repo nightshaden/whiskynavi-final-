@@ -1,6 +1,7 @@
 "use client";
 
 import { getNiceChannelName } from "@/app/(main)/sign-up/nice";
+import { NiceVerificationSuccessMessage } from "@/types/auth";
 import { useEffect } from "react";
 
 export default function NiceCallbackPage() {
@@ -27,11 +28,12 @@ export default function NiceCallbackPage() {
       window.close();
       return;
     }
-
-    channel.postMessage({
+    const message: NiceVerificationSuccessMessage = {
       type: "nice-verification-success",
       webTransactionId,
-    });
+    };
+
+    channel.postMessage(message);
 
     channel.close();
     window.close();

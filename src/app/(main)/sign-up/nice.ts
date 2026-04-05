@@ -72,19 +72,14 @@ export interface DuplicateAccountInfo {
   existingAuthType: string;
 }
 
+export type { NiceVerificationSuccessMessage } from "@/types/auth";
+
 export type NiceMessage =
-  | {
-      type: "nice-verification-success";
-      payload: VerifiedSignupProfile;
-    }
+  | import("@/types/auth").NiceVerificationSuccessMessage
   | {
       type: "nice-verification-error";
       error?: string;
     }
   | {
       type: "nice-verification-close";
-    }
-  | {
-      type: "nice-verification-duplicate";
-      existingAuthType: string;
     };

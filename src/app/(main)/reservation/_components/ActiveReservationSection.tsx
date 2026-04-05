@@ -26,8 +26,6 @@ export default function ActiveReservationSection({
   const router = useRouter();
   const isDesktop = useIsDesktop();
 
-  if (notices.length === 0) return null;
-
   const handleCardClick = (notice: BottleReservationNoticePublicResponse) => {
     if (isDesktop) {
       overlay.open(({ isOpen, close }) => (
@@ -45,19 +43,25 @@ export default function ActiveReservationSection({
 
   return (
     <div className="mb-10 lg:border lg:border-white/10 lg:px-8 lg:pt-6 lg:pb-8">
-      <h2 className="typo-bold-20 lg:text-2xl mb-4 text-white">
+      <h2 className="typo-bold-20 mb-4 text-white lg:text-2xl">
         현재 진행 중인 예약
       </h2>
-      <div className="grid grid-cols-2 gap-5 lg:grid-cols-5">
-        {notices.map((notice) => (
-          <ReservationCard
-            key={notice.id}
-            notice={notice}
-            status="active"
-            onClick={() => handleCardClick(notice)}
-          />
-        ))}
-      </div>
+      {notices.length === 0 ? (
+        <div className="border border-dashed border-white/10 bg-white/5 px-4 py-8 text-center text-sm text-gray-400">
+          현재 진행 중인 예약 공고가 없습니다.
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 gap-5 lg:grid-cols-5">
+          {notices.map((notice) => (
+            <ReservationCard
+              key={notice.id}
+              notice={notice}
+              status="active"
+              onClick={() => handleCardClick(notice)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

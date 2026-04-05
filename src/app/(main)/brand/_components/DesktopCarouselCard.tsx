@@ -22,7 +22,7 @@ const DesktopCarouselCard = ({
   onSelect,
 }: Props) => {
   const position = getProductPosition(currentIndex, bottleIndex, totalBottles);
-
+  console.log("bottle.name", bottle.name);
   if (!position) return null;
 
   const isCenter = bottleIndex === currentIndex;
@@ -61,8 +61,14 @@ const DesktopCarouselCard = ({
           <ImageWithFallback
             src={bottle.imgUrl ?? "/default-bottle-v2.png"}
             alt={bottle.name ?? ""}
-            width={Math.round(cardWidth - (isCenter ? 40 : position.scale === 0.85 ? 32 : 24))}
-            height={Math.round((cardWidth - (isCenter ? 40 : position.scale === 0.85 ? 32 : 24)) * 1.2)}
+            width={Math.round(
+              cardWidth - (isCenter ? 40 : position.scale === 0.85 ? 32 : 24),
+            )}
+            height={Math.round(
+              (cardWidth -
+                (isCenter ? 40 : position.scale === 0.85 ? 32 : 24)) *
+                1.2,
+            )}
             className="h-full w-full object-contain"
           />
         </div>
@@ -71,15 +77,10 @@ const DesktopCarouselCard = ({
             {brandName}
           </span>
           <h4
-            className={`mb-2 text-white ${isCenter ? "text-base" : "text-sm"}`}
+            className={`mb-2 line-clamp-2 break-all text-white ${isCenter ? "text-base" : "text-sm"}`}
           >
             {bottle.name}
           </h4>
-          <p
-            className={`text-white/70 ${isCenter ? "text-sm" : "text-xs"}`}
-          >
-            {bottle.description}
-          </p>
         </div>
       </div>
     </div>
