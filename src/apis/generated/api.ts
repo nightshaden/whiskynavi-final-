@@ -167,6 +167,7 @@ export const OrderResponseOrderStatus = {
   ORDER_REQUESTED: 'ORDER_REQUESTED',
   PAYMENT_PENDING: 'PAYMENT_PENDING',
   ORDER_PREPARING: 'ORDER_PREPARING',
+  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
   SHIPPING: 'SHIPPING',
   DELIVERY_COMPLETED: 'DELIVERY_COMPLETED',
   RECEIPT_PENDING: 'RECEIPT_PENDING',
@@ -657,6 +658,7 @@ export const BottleReservationApplicationPublicResponseStatus = {
   APPLIED: 'APPLIED',
   CANCELLED: 'CANCELLED',
   CONFIRMED: 'CONFIRMED',
+  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
   WAITING_PICKUP: 'WAITING_PICKUP',
   RECEIVED: 'RECEIVED',
   REJECTED: 'REJECTED',
@@ -690,6 +692,7 @@ export const BottleReservationApplicationResponseStatus = {
   APPLIED: 'APPLIED',
   CANCELLED: 'CANCELLED',
   CONFIRMED: 'CONFIRMED',
+  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
   WAITING_PICKUP: 'WAITING_PICKUP',
   RECEIVED: 'RECEIVED',
   REJECTED: 'REJECTED',
@@ -716,6 +719,18 @@ export interface BottleReservationApplicationResponse {
   quantity?: number;
   status?: BottleReservationApplicationResponseStatus;
   updatedAt?: string;
+}
+
+export interface BottleReservationAutoConfirmResponse {
+  applications?: BottleReservationApplicationResponse[];
+  availableQuantityAfterConfirm?: number;
+  availableQuantityBeforeConfirm?: number;
+  confirmedApplicationCount?: number;
+  noticeId?: number;
+  rejectedApplicationCount?: number;
+  targetApplicationCount?: number;
+  totalConfirmedQuantity?: number;
+  totalRequestedQuantity?: number;
 }
 
 export interface BottleReservationDecisionRequest {
@@ -830,6 +845,71 @@ export interface BottleReservationNoticeResponse {
   reservationEndAt?: string;
   reservationStartAt?: string;
   updatedAt?: string;
+}
+
+export interface BottleReservationPickupApplicantResponse {
+  email?: string;
+  name?: string;
+  nickname?: string;
+  phone?: string;
+}
+
+export type BottleReservationPickupApplicationResponseStatus = typeof BottleReservationPickupApplicationResponseStatus[keyof typeof BottleReservationPickupApplicationResponseStatus];
+
+
+export const BottleReservationPickupApplicationResponseStatus = {
+  APPLIED: 'APPLIED',
+  CANCELLED: 'CANCELLED',
+  CONFIRMED: 'CONFIRMED',
+  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
+  WAITING_PICKUP: 'WAITING_PICKUP',
+  RECEIVED: 'RECEIVED',
+  REJECTED: 'REJECTED',
+} as const;
+
+export interface BottleReservationPickupApplicationResponse {
+  applicantUser?: BottleReservationPickupApplicantResponse;
+  bottleId?: number;
+  bottleName?: string;
+  confirmedQuantity?: number;
+  createdAt?: string;
+  id?: number;
+  noticeId?: number;
+  quantity?: number;
+  status?: BottleReservationPickupApplicationResponseStatus;
+  updatedAt?: string;
+}
+
+export type BottleReservationPickupBulkUpdateResponseStatus = typeof BottleReservationPickupBulkUpdateResponseStatus[keyof typeof BottleReservationPickupBulkUpdateResponseStatus];
+
+
+export const BottleReservationPickupBulkUpdateResponseStatus = {
+  APPLIED: 'APPLIED',
+  CANCELLED: 'CANCELLED',
+  CONFIRMED: 'CONFIRMED',
+  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
+  WAITING_PICKUP: 'WAITING_PICKUP',
+  RECEIVED: 'RECEIVED',
+  REJECTED: 'REJECTED',
+} as const;
+
+export interface BottleReservationPickupBulkUpdateResponse {
+  applicationIds?: number[];
+  bottleId?: number;
+  noticeId?: number;
+  status?: BottleReservationPickupBulkUpdateResponseStatus;
+  updatedCount?: number;
+}
+
+export interface BottleReservationPickupWaitingPickupRequest {
+  /** 단건 변경 시 사용하는 예약 신청 ID */
+  applicationId?: number;
+  /** 여러 건을 한 번에 변경할 때 사용하는 예약 신청 ID 목록 */
+  applicationIds?: number[];
+  /** 특정 아이템(병) 기준으로 일괄 변경할 때 사용하는 병 ID */
+  bottleId?: number;
+  /** 같은 병이 여러 공고에 걸쳐 있을 때 범위를 좁히는 예약 공고 ID */
+  noticeId?: number;
 }
 
 /**
@@ -1020,51 +1100,38 @@ export interface LoginRequest {
   password?: string;
 }
 
-export interface NiceIdDecryptedPayload {
-  authtype?: string;
-  birthdate?: string;
-  businessno?: string;
-  ci?: string;
-  di?: string;
-  enctime?: string;
-  gender?: string;
-  mobileco?: string;
-  mobileno?: string;
-  name?: string;
-  nationalinfo?: string;
-  receivedata?: string;
-  requestno?: string;
-  responseno?: string;
-  resultcode?: string;
-  sitecode?: string;
-  utf8_name?: string;
+export interface NiceIdAdminSessionStatusResponse {
+  requestNo?: string;
+  status?: string;
+  transactionId?: string;
+}
+
+export interface NiceIdVerificationResultRequest {
+  /** @minLength 1 */
+  requestNo?: string;
+  /** @minLength 1 */
+  webTransactionId?: string;
 }
 
 export interface NiceIdVerificationResultResponse {
-  message?: string;
-  payload?: NiceIdDecryptedPayload;
-  raw?: string;
-  status?: string;
+  birthDate?: string;
+  gender?: string;
+  name?: string;
+  niceRequestNo?: string;
+  niceWebTransactionId?: string;
+  phone?: string;
 }
 
 export interface NiceIdVerificationStartRequest {
-  /** @minLength 1 */
-  authType?: string;
-  closeUiType?: string;
-  methodType?: string;
-  popupYn?: string;
-  receivedData?: string;
+  /** NICE 인증 완료 후 이동할 return_url. 비어 있으면 서버 기본값을 사용합니다. */
   returnUrl?: string;
 }
 
 export interface NiceIdVerificationStartResponse {
-  encData?: string;
-  formAction?: string;
-  integrityValue?: string;
+  authUrl?: string;
   message?: string;
   requestNo?: string;
-  siteCode?: string;
-  tokenVersionId?: string;
+  transactionId?: string;
 }
 
 /**
@@ -1244,6 +1311,7 @@ export const OrderStatusUpdateRequestOrderStatus = {
   ORDER_REQUESTED: 'ORDER_REQUESTED',
   PAYMENT_PENDING: 'PAYMENT_PENDING',
   ORDER_PREPARING: 'ORDER_PREPARING',
+  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
   SHIPPING: 'SHIPPING',
   DELIVERY_COMPLETED: 'DELIVERY_COMPLETED',
   RECEIPT_PENDING: 'RECEIPT_PENDING',
@@ -1484,6 +1552,20 @@ export interface PageBottleReservationNoticePublicResponse {
 
 export interface PageBottleReservationNoticeResponse {
   content?: BottleReservationNoticeResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+export interface PageBottleReservationPickupApplicationResponse {
+  content?: BottleReservationPickupApplicationResponse[];
   empty?: boolean;
   first?: boolean;
   last?: boolean;
@@ -2327,6 +2409,16 @@ export interface SignupRequest {
    */
   name?: string;
   /**
+   * NICE 인증 요청 번호
+   * @minLength 1
+   */
+  niceRequestNo?: string;
+  /**
+   * NICE 웹 트랜잭션 아이디
+   * @minLength 1
+   */
+  niceWebTransactionId?: string;
+  /**
    * 비밀번호
    * @minLength 6
    * @maxLength 100
@@ -2840,10 +2932,6 @@ size?: number;
 sort?: string[];
 };
 
-export type PostApiAdminNiceidRevokeBody = {[key: string]: string};
-
-export type PostApiAdminNiceidRevoke200 = {[key: string]: string};
-
 export type GetApiAdminOrdersParams = {
 /**
  * Zero-based page index (0..N)
@@ -2879,6 +2967,7 @@ export const GetApiAdminOrdersOrderStatus = {
   ORDER_REQUESTED: 'ORDER_REQUESTED',
   PAYMENT_PENDING: 'PAYMENT_PENDING',
   ORDER_PREPARING: 'ORDER_PREPARING',
+  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
   SHIPPING: 'SHIPPING',
   DELIVERY_COMPLETED: 'DELIVERY_COMPLETED',
   RECEIPT_PENDING: 'RECEIPT_PENDING',
@@ -2923,6 +3012,7 @@ export const PatchApiAdminOrdersOrderidStatusBodyOrderStatus = {
   ORDER_REQUESTED: 'ORDER_REQUESTED',
   PAYMENT_PENDING: 'PAYMENT_PENDING',
   ORDER_PREPARING: 'ORDER_PREPARING',
+  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
   SHIPPING: 'SHIPPING',
   DELIVERY_COMPLETED: 'DELIVERY_COMPLETED',
   RECEIPT_PENDING: 'RECEIPT_PENDING',
@@ -3347,6 +3437,16 @@ export type PostApiAuthSignupBody = {
    */
   name?: string;
   /**
+   * NICE 인증 요청 번호
+   * @minLength 1
+   */
+  niceRequestNo?: string;
+  /**
+   * NICE 웹 트랜잭션 아이디
+   * @minLength 1
+   */
+  niceWebTransactionId?: string;
+  /**
    * 비밀번호
    * @minLength 6
    * @maxLength 100
@@ -3561,6 +3661,18 @@ export const GetApiBottlesFiltersReservationStatus = {
 
 export type GetApiBottlesReservationsApplicationsMeParams = {
 /**
+ * 예약 신청 상태 필터
+ */
+status?: GetApiBottlesReservationsApplicationsMeStatus;
+/**
+ * 특정 예약 공고의 신청 내역만 조회할 때 사용하는 공고 ID
+ */
+noticeId?: number;
+/**
+ * 특정 병의 신청 내역만 조회할 때 사용하는 병 ID
+ */
+bottleId?: number;
+/**
  * Zero-based page index (0..N)
  * @minimum 0
  */
@@ -3575,6 +3687,19 @@ size?: number;
  */
 sort?: string[];
 };
+
+export type GetApiBottlesReservationsApplicationsMeStatus = typeof GetApiBottlesReservationsApplicationsMeStatus[keyof typeof GetApiBottlesReservationsApplicationsMeStatus];
+
+
+export const GetApiBottlesReservationsApplicationsMeStatus = {
+  APPLIED: 'APPLIED',
+  CANCELLED: 'CANCELLED',
+  CONFIRMED: 'CONFIRMED',
+  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
+  WAITING_PICKUP: 'WAITING_PICKUP',
+  RECEIVED: 'RECEIVED',
+  REJECTED: 'REJECTED',
+} as const;
 
 export type PutApiBottlesReservationsApplicationsApplicationidBody = {
   /** @minimum 1 */
@@ -3584,6 +3709,14 @@ export type PutApiBottlesReservationsApplicationsApplicationidBody = {
 
 export type GetApiBottlesReservationsNoticesParams = {
 /**
+ * 공고 상태 필터. 미입력 시 현재 진행 중인 공고만 조회합니다.
+ */
+status?: GetApiBottlesReservationsNoticesStatus;
+/**
+ * 특정 병의 예약 공고만 조회할 때 사용하는 병 ID
+ */
+bottleId?: number;
+/**
  * Zero-based page index (0..N)
  * @minimum 0
  */
@@ -3598,6 +3731,16 @@ size?: number;
  */
 sort?: string[];
 };
+
+export type GetApiBottlesReservationsNoticesStatus = typeof GetApiBottlesReservationsNoticesStatus[keyof typeof GetApiBottlesReservationsNoticesStatus];
+
+
+export const GetApiBottlesReservationsNoticesStatus = {
+  UPCOMING: 'UPCOMING',
+  ACTIVE: 'ACTIVE',
+  ENDED: 'ENDED',
+  ALL: 'ALL',
+} as const;
 
 export type PostApiBottlesReservationsNoticesNoticeidApplicationsBody = {
   /** @minimum 1 */
@@ -4115,19 +4258,27 @@ export type PostApiTossPaymentsWebhookBody = {
   eventType?: string;
 };
 
-export type PostApiUserNiceidResultParams = {
-token_version_id: string;
-enc_data: string;
-integrity_value: string;
+export type GetApiUserNiceidCallbackParams = {
+params: {[key: string]: string};
+};
+
+export type CallbackPostParams = {
+params: {[key: string]: string};
+};
+
+export type PostApiUserNiceidResultBody = {
+  /** @minLength 1 */
+  requestNo?: string;
+  /** @minLength 1 */
+  webTransactionId?: string;
+};
+
+export type GetApiUserNiceidSessionParams = {
+returnUrl?: string;
 };
 
 export type PostApiUserNiceidSessionBody = {
-  /** @minLength 1 */
-  authType?: string;
-  closeUiType?: string;
-  methodType?: string;
-  popupYn?: string;
-  receivedData?: string;
+  /** NICE 인증 완료 후 이동할 return_url. 비어 있으면 서버 기본값을 사용합니다. */
   returnUrl?: string;
 };
 
@@ -4184,6 +4335,59 @@ size?: number;
  * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
  */
 sort?: string[];
+};
+
+export type GetApiUsersBusinessesPickupReservationsApplicationsParams = {
+/**
+ * 예약 상태 필터
+ */
+status?: GetApiUsersBusinessesPickupReservationsApplicationsStatus;
+/**
+ * 특정 예약 공고만 조회할 때 사용하는 공고 ID
+ */
+noticeId?: number;
+/**
+ * 특정 병만 조회할 때 사용하는 병 ID
+ */
+bottleId?: number;
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
+};
+
+export type GetApiUsersBusinessesPickupReservationsApplicationsStatus = typeof GetApiUsersBusinessesPickupReservationsApplicationsStatus[keyof typeof GetApiUsersBusinessesPickupReservationsApplicationsStatus];
+
+
+export const GetApiUsersBusinessesPickupReservationsApplicationsStatus = {
+  APPLIED: 'APPLIED',
+  CANCELLED: 'CANCELLED',
+  CONFIRMED: 'CONFIRMED',
+  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
+  WAITING_PICKUP: 'WAITING_PICKUP',
+  RECEIVED: 'RECEIVED',
+  REJECTED: 'REJECTED',
+} as const;
+
+export type PostApiUsersBusinessesPickupReservationsApplicationsWaitingPickupBody = {
+  /** 단건 변경 시 사용하는 예약 신청 ID */
+  applicationId?: number;
+  /** 여러 건을 한 번에 변경할 때 사용하는 예약 신청 ID 목록 */
+  applicationIds?: number[];
+  /** 특정 아이템(병) 기준으로 일괄 변경할 때 사용하는 병 ID */
+  bottleId?: number;
+  /** 같은 병이 여러 공고에 걸쳐 있을 때 범위를 좁히는 예약 공고 ID */
+  noticeId?: number;
 };
 
 /**
@@ -4567,7 +4771,7 @@ export const getApiAdminBottlesParameters = async ( options?: RequestInit): Prom
 
 
 /**
- * 모든 신청 목록을 조회하며 사용자 혹은 공고 ID로 필터링합니다.
+ * 모든 신청 목록을 조회하고 사용자와 공고 ID로 필터링할 수 있습니다.
  * @summary 예약 신청 목록(관리자)
  */
 export type getApiAdminBottlesReservationsApplicationsResponse200 = {
@@ -4693,7 +4897,7 @@ export const postApiAdminBottlesReservationsApplicationsApplicationidCancel = as
 
 
 /**
- * 관리자가 신청을 승인하고 최종 수량을 입력합니다.
+ * 관리자가 신청을 확인하고 최종 승인 수량을 입력합니다.
  * @summary 예약 신청 확정
  */
 export type postApiAdminBottlesReservationsApplicationsApplicationidConfirmResponse200 = {
@@ -4732,7 +4936,7 @@ export const postApiAdminBottlesReservationsApplicationsApplicationidConfirm = a
 
 
 /**
- * 관리자가 신청을 임의로 거절합니다.
+ * 관리자가 신청을 거절 처리합니다.
  * @summary 예약 신청 거절
  */
 export type postApiAdminBottlesReservationsApplicationsApplicationidRejectResponse200 = {
@@ -4896,7 +5100,7 @@ export const getApiAdminBottlesReservationsNoticesNoticeid = async (noticeId: nu
 
 
 /**
- * 등록된 예약 공고의 기간 및 가격 정보를 수정합니다.
+ * 등록된 예약 공고의 기간과 가격 정보를 수정합니다.
  * @summary 예약 공고 수정(관리자)
  */
 export type putApiAdminBottlesReservationsNoticesNoticeidResponse200 = {
@@ -4929,6 +5133,43 @@ export const putApiAdminBottlesReservationsNoticesNoticeid = async (noticeId: nu
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
       putApiAdminBottlesReservationsNoticesNoticeidBody,)
+  }
+);}
+
+
+
+/**
+ * 공고 하나에 연결된 대기 중 예약 신청을 최대 다수·균등 배정 원칙으로 자동 확정합니다.
+ * @summary 예약 공고 자동 확정
+ */
+export type postApiAdminBottlesReservationsNoticesNoticeidAutoConfirmResponse200 = {
+  data: BottleReservationAutoConfirmResponse
+  status: 200
+}
+    
+export type postApiAdminBottlesReservationsNoticesNoticeidAutoConfirmResponseSuccess = (postApiAdminBottlesReservationsNoticesNoticeidAutoConfirmResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiAdminBottlesReservationsNoticesNoticeidAutoConfirmResponse = (postApiAdminBottlesReservationsNoticesNoticeidAutoConfirmResponseSuccess)
+
+export const getPostApiAdminBottlesReservationsNoticesNoticeidAutoConfirmUrl = (noticeId: number,) => {
+
+
+  
+
+  return `/api/admin/bottles/reservations/notices/${noticeId}/auto-confirm`
+}
+
+export const postApiAdminBottlesReservationsNoticesNoticeidAutoConfirm = async (noticeId: number, options?: RequestInit): Promise<postApiAdminBottlesReservationsNoticesNoticeidAutoConfirmResponse> => {
+  
+  return customFetch<postApiAdminBottlesReservationsNoticesNoticeidAutoConfirmResponse>(getPostApiAdminBottlesReservationsNoticesNoticeidAutoConfirmUrl(noticeId),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
   }
 );}
 
@@ -5434,38 +5675,37 @@ export const postApiAdminBusinessesMembersUseridPickupRevoke = async (userId: nu
 
 
 /**
- * 관리자가 NICE 기관 액세스 토큰을 폐기합니다.
- * @summary NICE 기관 토큰 폐기(관리자)
+ * 요청번호 기준 NICE 인증 세션의 현재 상태를 조회합니다.
+ * @summary NICE 인증 세션 상태 조회(관리자)
  */
-export type postApiAdminNiceidRevokeResponse200 = {
-  data: PostApiAdminNiceidRevoke200
+export type getApiAdminNiceidStatusResponse200 = {
+  data: NiceIdAdminSessionStatusResponse
   status: 200
 }
     
-export type postApiAdminNiceidRevokeResponseSuccess = (postApiAdminNiceidRevokeResponse200) & {
+export type getApiAdminNiceidStatusResponseSuccess = (getApiAdminNiceidStatusResponse200) & {
   headers: Headers;
 };
 ;
 
-export type postApiAdminNiceidRevokeResponse = (postApiAdminNiceidRevokeResponseSuccess)
+export type getApiAdminNiceidStatusResponse = (getApiAdminNiceidStatusResponseSuccess)
 
-export const getPostApiAdminNiceidRevokeUrl = () => {
+export const getGetApiAdminNiceidStatusUrl = (requestNo: string,) => {
 
 
   
 
-  return `/api/admin/niceid/revoke`
+  return `/api/admin/niceid/session/${requestNo}`
 }
 
-export const postApiAdminNiceidRevoke = async (postApiAdminNiceidRevokeBody: PostApiAdminNiceidRevokeBody, options?: RequestInit): Promise<postApiAdminNiceidRevokeResponse> => {
+export const getApiAdminNiceidStatus = async (requestNo: string, options?: RequestInit): Promise<getApiAdminNiceidStatusResponse> => {
   
-  return customFetch<postApiAdminNiceidRevokeResponse>(getPostApiAdminNiceidRevokeUrl(),
+  return customFetch<getApiAdminNiceidStatusResponse>(getGetApiAdminNiceidStatusUrl(requestNo),
   {      
     ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      postApiAdminNiceidRevokeBody,)
+    method: 'GET'
+    
+    
   }
 );}
 
@@ -8537,22 +8777,22 @@ export const postApiTossPaymentsWebhook = async (postApiTossPaymentsWebhookBody:
 
 
 /**
- * NICE 표준창 결과 파라미터를 복호화해 인증 결과를 반환합니다.
- * @summary NICE 본인인증 결과 복호화
+ * NICE 표준창 인증 완료 후 전달되는 콜백 파라미터를 수신합니다.
+ * @summary NICE 콜백 수신
  */
-export type postApiUserNiceidResultResponse200 = {
-  data: NiceIdVerificationResultResponse
+export type getApiUserNiceidCallbackResponse200 = {
+  data: string
   status: 200
 }
     
-export type postApiUserNiceidResultResponseSuccess = (postApiUserNiceidResultResponse200) & {
+export type getApiUserNiceidCallbackResponseSuccess = (getApiUserNiceidCallbackResponse200) & {
   headers: Headers;
 };
 ;
 
-export type postApiUserNiceidResultResponse = (postApiUserNiceidResultResponseSuccess)
+export type getApiUserNiceidCallbackResponse = (getApiUserNiceidCallbackResponseSuccess)
 
-export const getPostApiUserNiceidResultUrl = (params: PostApiUserNiceidResultParams,) => {
+export const getGetApiUserNiceidCallbackUrl = (params: GetApiUserNiceidCallbackParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -8572,12 +8812,60 @@ export const getPostApiUserNiceidResultUrl = (params: PostApiUserNiceidResultPar
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/user/niceid/result?${stringifiedParams}` : `/api/user/niceid/result`
+  return stringifiedParams.length > 0 ? `/api/user/niceid/callback?${stringifiedParams}` : `/api/user/niceid/callback`
 }
 
-export const postApiUserNiceidResult = async (params: PostApiUserNiceidResultParams, options?: RequestInit): Promise<postApiUserNiceidResultResponse> => {
+export const getApiUserNiceidCallback = async (params: GetApiUserNiceidCallbackParams, options?: RequestInit): Promise<getApiUserNiceidCallbackResponse> => {
   
-  return customFetch<postApiUserNiceidResultResponse>(getPostApiUserNiceidResultUrl(params),
+  return customFetch<getApiUserNiceidCallbackResponse>(getGetApiUserNiceidCallbackUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+export type callbackPostResponse200 = {
+  data: string
+  status: 200
+}
+    
+export type callbackPostResponseSuccess = (callbackPostResponse200) & {
+  headers: Headers;
+};
+;
+
+export type callbackPostResponse = (callbackPostResponseSuccess)
+
+export const getCallbackPostUrl = (params: CallbackPostParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
+    } else {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/user/niceid/callback?${stringifiedParams}` : `/api/user/niceid/callback`
+}
+
+export const callbackPost = async (params: CallbackPostParams, options?: RequestInit): Promise<callbackPostResponse> => {
+  
+  return customFetch<callbackPostResponse>(getCallbackPostUrl(params),
   {      
     ...options,
     method: 'POST'
@@ -8589,8 +8877,98 @@ export const postApiUserNiceidResult = async (params: PostApiUserNiceidResultPar
 
 
 /**
- * 표준창 호출을 위한 암호화 세션 데이터를 생성합니다.
- * @summary NICE 본인인증 세션 생성
+ * web_transaction_id를 전달받아 NICE 인증결과를 조회하고 회원가입에 필요한 정보만 반환합니다.
+ * @summary NICE 본인인증 결과 조회
+ */
+export type postApiUserNiceidResultResponse200 = {
+  data: NiceIdVerificationResultResponse
+  status: 200
+}
+    
+export type postApiUserNiceidResultResponseSuccess = (postApiUserNiceidResultResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiUserNiceidResultResponse = (postApiUserNiceidResultResponseSuccess)
+
+export const getPostApiUserNiceidResultUrl = () => {
+
+
+  
+
+  return `/api/user/niceid/result`
+}
+
+export const postApiUserNiceidResult = async (postApiUserNiceidResultBody: PostApiUserNiceidResultBody, options?: RequestInit): Promise<postApiUserNiceidResultResponse> => {
+  
+  return customFetch<postApiUserNiceidResultResponse>(getPostApiUserNiceidResultUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiUserNiceidResultBody,)
+  }
+);}
+
+
+
+/**
+ * NICE 표준창 인증을 위한 URL과 트랜잭션 정보를 생성합니다.
+ * @summary NICE 본인인증 URL 생성
+ */
+export type getApiUserNiceidSessionResponse200 = {
+  data: NiceIdVerificationStartResponse
+  status: 200
+}
+    
+export type getApiUserNiceidSessionResponseSuccess = (getApiUserNiceidSessionResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiUserNiceidSessionResponse = (getApiUserNiceidSessionResponseSuccess)
+
+export const getGetApiUserNiceidSessionUrl = (params?: GetApiUserNiceidSessionParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
+    } else {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/user/niceid/session?${stringifiedParams}` : `/api/user/niceid/session`
+}
+
+export const getApiUserNiceidSession = async (params?: GetApiUserNiceidSessionParams, options?: RequestInit): Promise<getApiUserNiceidSessionResponse> => {
+  
+  return customFetch<getApiUserNiceidSessionResponse>(getGetApiUserNiceidSessionUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * NICE 표준창 인증을 위한 URL과 트랜잭션 정보를 생성합니다.
+ * @summary NICE 본인인증 URL 생성
  */
 export type postApiUserNiceidSessionResponse200 = {
   data: NiceIdVerificationStartResponse
@@ -8855,6 +9233,244 @@ export const getApiUsersBusinessesPickupLocations = async (params?: GetApiUsersB
   {      
     ...options,
     method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 현재 로그인한 픽업 사업장에 배정된 예약 신청 목록을 조회합니다.
+ * @summary 픽업 사업장 예약 목록 조회
+ */
+export type getApiUsersBusinessesPickupReservationsApplicationsResponse200 = {
+  data: PageBottleReservationPickupApplicationResponse
+  status: 200
+}
+    
+export type getApiUsersBusinessesPickupReservationsApplicationsResponseSuccess = (getApiUsersBusinessesPickupReservationsApplicationsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiUsersBusinessesPickupReservationsApplicationsResponse = (getApiUsersBusinessesPickupReservationsApplicationsResponseSuccess)
+
+export const getGetApiUsersBusinessesPickupReservationsApplicationsUrl = (params?: GetApiUsersBusinessesPickupReservationsApplicationsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
+    } else {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/users/businesses/pickup-reservations/applications?${stringifiedParams}` : `/api/users/businesses/pickup-reservations/applications`
+}
+
+export const getApiUsersBusinessesPickupReservationsApplications = async (params?: GetApiUsersBusinessesPickupReservationsApplicationsParams, options?: RequestInit): Promise<getApiUsersBusinessesPickupReservationsApplicationsResponse> => {
+  
+  return customFetch<getApiUsersBusinessesPickupReservationsApplicationsResponse>(getGetApiUsersBusinessesPickupReservationsApplicationsUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 단건, 여러 예약 ID, 혹은 특정 병 기준으로 결제 완료 상태 예약을 수령 대기 상태로 일괄 변경합니다.
+ * @summary 픽업 사업장 수령 대기 일괄 처리
+ */
+export type postApiUsersBusinessesPickupReservationsApplicationsWaitingPickupResponse200 = {
+  data: BottleReservationPickupBulkUpdateResponse
+  status: 200
+}
+    
+export type postApiUsersBusinessesPickupReservationsApplicationsWaitingPickupResponseSuccess = (postApiUsersBusinessesPickupReservationsApplicationsWaitingPickupResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiUsersBusinessesPickupReservationsApplicationsWaitingPickupResponse = (postApiUsersBusinessesPickupReservationsApplicationsWaitingPickupResponseSuccess)
+
+export const getPostApiUsersBusinessesPickupReservationsApplicationsWaitingPickupUrl = () => {
+
+
+  
+
+  return `/api/users/businesses/pickup-reservations/applications/waiting-pickup`
+}
+
+export const postApiUsersBusinessesPickupReservationsApplicationsWaitingPickup = async (postApiUsersBusinessesPickupReservationsApplicationsWaitingPickupBody: PostApiUsersBusinessesPickupReservationsApplicationsWaitingPickupBody, options?: RequestInit): Promise<postApiUsersBusinessesPickupReservationsApplicationsWaitingPickupResponse> => {
+  
+  return customFetch<postApiUsersBusinessesPickupReservationsApplicationsWaitingPickupResponse>(getPostApiUsersBusinessesPickupReservationsApplicationsWaitingPickupUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiUsersBusinessesPickupReservationsApplicationsWaitingPickupBody,)
+  }
+);}
+
+
+
+/**
+ * 현재 로그인한 픽업 사업장에 배정된 예약 신청 상세를 조회합니다.
+ * @summary 픽업 사업장 예약 상세 조회
+ */
+export type getApiUsersBusinessesPickupReservationsApplicationsApplicationidResponse200 = {
+  data: BottleReservationPickupApplicationResponse
+  status: 200
+}
+    
+export type getApiUsersBusinessesPickupReservationsApplicationsApplicationidResponseSuccess = (getApiUsersBusinessesPickupReservationsApplicationsApplicationidResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiUsersBusinessesPickupReservationsApplicationsApplicationidResponse = (getApiUsersBusinessesPickupReservationsApplicationsApplicationidResponseSuccess)
+
+export const getGetApiUsersBusinessesPickupReservationsApplicationsApplicationidUrl = (applicationId: number,) => {
+
+
+  
+
+  return `/api/users/businesses/pickup-reservations/applications/${applicationId}`
+}
+
+export const getApiUsersBusinessesPickupReservationsApplicationsApplicationid = async (applicationId: number, options?: RequestInit): Promise<getApiUsersBusinessesPickupReservationsApplicationsApplicationidResponse> => {
+  
+  return customFetch<getApiUsersBusinessesPickupReservationsApplicationsApplicationidResponse>(getGetApiUsersBusinessesPickupReservationsApplicationsApplicationidUrl(applicationId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 예약 확정 상태의 신청을 픽업 사업장 결제 완료 상태로 변경합니다.
+ * @summary 픽업 사업장 결제 완료 처리
+ */
+export type postApiUsersBusinessesPickupReservationsApplicationsApplicationidPaymentCompleteResponse200 = {
+  data: BottleReservationPickupApplicationResponse
+  status: 200
+}
+    
+export type postApiUsersBusinessesPickupReservationsApplicationsApplicationidPaymentCompleteResponseSuccess = (postApiUsersBusinessesPickupReservationsApplicationsApplicationidPaymentCompleteResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiUsersBusinessesPickupReservationsApplicationsApplicationidPaymentCompleteResponse = (postApiUsersBusinessesPickupReservationsApplicationsApplicationidPaymentCompleteResponseSuccess)
+
+export const getPostApiUsersBusinessesPickupReservationsApplicationsApplicationidPaymentCompleteUrl = (applicationId: number,) => {
+
+
+  
+
+  return `/api/users/businesses/pickup-reservations/applications/${applicationId}/payment-complete`
+}
+
+export const postApiUsersBusinessesPickupReservationsApplicationsApplicationidPaymentComplete = async (applicationId: number, options?: RequestInit): Promise<postApiUsersBusinessesPickupReservationsApplicationsApplicationidPaymentCompleteResponse> => {
+  
+  return customFetch<postApiUsersBusinessesPickupReservationsApplicationsApplicationidPaymentCompleteResponse>(getPostApiUsersBusinessesPickupReservationsApplicationsApplicationidPaymentCompleteUrl(applicationId),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 수령 대기 상태의 신청을 수령 완료 상태로 변경합니다.
+ * @summary 픽업 사업장 수령 완료 처리
+ */
+export type postApiUsersBusinessesPickupReservationsApplicationsApplicationidReceiveCompleteResponse200 = {
+  data: BottleReservationPickupApplicationResponse
+  status: 200
+}
+    
+export type postApiUsersBusinessesPickupReservationsApplicationsApplicationidReceiveCompleteResponseSuccess = (postApiUsersBusinessesPickupReservationsApplicationsApplicationidReceiveCompleteResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiUsersBusinessesPickupReservationsApplicationsApplicationidReceiveCompleteResponse = (postApiUsersBusinessesPickupReservationsApplicationsApplicationidReceiveCompleteResponseSuccess)
+
+export const getPostApiUsersBusinessesPickupReservationsApplicationsApplicationidReceiveCompleteUrl = (applicationId: number,) => {
+
+
+  
+
+  return `/api/users/businesses/pickup-reservations/applications/${applicationId}/receive-complete`
+}
+
+export const postApiUsersBusinessesPickupReservationsApplicationsApplicationidReceiveComplete = async (applicationId: number, options?: RequestInit): Promise<postApiUsersBusinessesPickupReservationsApplicationsApplicationidReceiveCompleteResponse> => {
+  
+  return customFetch<postApiUsersBusinessesPickupReservationsApplicationsApplicationidReceiveCompleteResponse>(getPostApiUsersBusinessesPickupReservationsApplicationsApplicationidReceiveCompleteUrl(applicationId),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 결제 완료 상태의 신청을 수령 대기 상태로 변경합니다.
+ * @summary 픽업 사업장 수령 대기 처리
+ */
+export type postApiUsersBusinessesPickupReservationsApplicationsApplicationidWaitingPickupResponse200 = {
+  data: BottleReservationPickupApplicationResponse
+  status: 200
+}
+    
+export type postApiUsersBusinessesPickupReservationsApplicationsApplicationidWaitingPickupResponseSuccess = (postApiUsersBusinessesPickupReservationsApplicationsApplicationidWaitingPickupResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiUsersBusinessesPickupReservationsApplicationsApplicationidWaitingPickupResponse = (postApiUsersBusinessesPickupReservationsApplicationsApplicationidWaitingPickupResponseSuccess)
+
+export const getPostApiUsersBusinessesPickupReservationsApplicationsApplicationidWaitingPickupUrl = (applicationId: number,) => {
+
+
+  
+
+  return `/api/users/businesses/pickup-reservations/applications/${applicationId}/waiting-pickup`
+}
+
+export const postApiUsersBusinessesPickupReservationsApplicationsApplicationidWaitingPickup = async (applicationId: number, options?: RequestInit): Promise<postApiUsersBusinessesPickupReservationsApplicationsApplicationidWaitingPickupResponse> => {
+  
+  return customFetch<postApiUsersBusinessesPickupReservationsApplicationsApplicationidWaitingPickupResponse>(getPostApiUsersBusinessesPickupReservationsApplicationsApplicationidWaitingPickupUrl(applicationId),
+  {      
+    ...options,
+    method: 'POST'
     
     
   }

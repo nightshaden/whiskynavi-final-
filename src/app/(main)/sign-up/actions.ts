@@ -12,7 +12,7 @@ export type SignUpState = {
     email?: string;
     username?: string;
     password?: string;
-    name?: string;
+    nice?: string;
   };
 };
 
@@ -30,6 +30,8 @@ export async function signUpAction(
     phone: formData.get("phone") ?? "",
     birthDate: formData.get("birthDate") ?? "",
     gender: formData.get("gender") ?? "",
+    niceRequestNo: formData.get("niceRequestNo") ?? "",
+    niceWebTransactionId: formData.get("niceWebTransactionId") ?? "",
     emailVerified: formData.get("emailVerified") ?? "",
     usernameVerified: formData.get("usernameVerified") ?? "",
     privacyAgree: formData.get("privacyAgree") ?? "",
@@ -56,8 +58,15 @@ export async function signUpAction(
         fieldErrors.username = issue.message;
       } else if (field === "password" || field === "confirmPassword") {
         fieldErrors.password = issue.message;
-      } else if (field === "name") {
-        fieldErrors.name = issue.message;
+      } else if (
+        field === "name" ||
+        field === "phone" ||
+        field === "birthDate" ||
+        field === "gender" ||
+        field === "niceRequestNo" ||
+        field === "niceWebTransactionId"
+      ) {
+        fieldErrors.nice = issue.message;
       } else if (field === "privacyAgree") {
         generalError = issue.message;
       }
@@ -80,6 +89,10 @@ export async function signUpAction(
     name: data.name,
     username: data.username,
     phone: data.phone,
+    birthDate: data.birthDate,
+    gender: data.gender,
+    niceRequestNo: data.niceRequestNo,
+    niceWebTransactionId: data.niceWebTransactionId,
     privacyAgree: true,
     marketingAgree: data.marketingAgree === "true",
     emailAgree: data.emailAgree === "true",
@@ -87,27 +100,25 @@ export async function signUpAction(
     snsAgree: data.snsAgree === "true",
   };
 
-  // 선택 항목 추가
-  if (data.birthDate) {
-    // "19950802" → "1995-08-02", 이미 하이픈 포함이면 그대로
-    const raw = data.birthDate.replace(/[\s-]/g, "");
-    signupData.birthDate =
-      raw.length === 8
-        ? `${raw.slice(0, 4)}-${raw.slice(4, 6)}-${raw.slice(6, 8)}`
-        : data.birthDate;
-  }
-  if (data.gender) {
-    signupData.gender = data.gender;
-  }
-
   try {
     await postApiAuthSignup(signupData);
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "회원가입에 실패했습니다.";
+    const message = error instanceof Error ? error.message : "";
+
+    if (
+      message.includes("NICE") ||
+      message.includes("niceRequestNo") ||
+      message.includes("niceWebTransactionId")
+    ) {
+      return {
+        success: false,
+        error: "본인인증 정보가 만료되었거나 유효하지 않습니다. 다시 인증해주세요.",
+      };
+    }
+
     return {
       success: false,
-      error: message,
+      error: message || "회원가입에 실패했습니다.",
     };
   }
 
