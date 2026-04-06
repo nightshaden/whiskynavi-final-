@@ -7,8 +7,6 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import DesktopCarouselCard from "./DesktopCarouselCard";
-import MobileCarouselCard from "./MobileCarouselCard";
-import MobileCarouselNavigation from "./MobileCarouselNavigation";
 
 interface Props {
   brand: Brand;
@@ -75,9 +73,10 @@ const BrandIntroduce = ({ brand, bottles, registerBrandRef }: Props) => {
 
         {/* Products Carousel */}
         {bottles.length > 0 && (
-          <div className="px-6">
+          // <div className="px-6">
+          <div className="overflow-x-clip px-6">
             <div className="mx-auto max-w-[1200px]">
-              <div className="lg:hidden">
+              {/* <div className="lg:hidden">
                 {currentBottle && (
                   <MobileCarouselCard
                     currentBottle={currentBottle}
@@ -91,10 +90,11 @@ const BrandIntroduce = ({ brand, bottles, registerBrandRef }: Props) => {
                   currentIndex={currentIndex}
                   setCurrentIndex={setCurrentIndex}
                 />
-              </div>
+              </div> */}
 
               {/* Desktop: Carousel */}
-              <div className="relative hidden lg:block">
+              {/* <div className="relative hidden lg:block"> */}
+              <div className="relative">
                 <div
                   className="relative flex h-[480px] items-center justify-center overflow-visible"
                   style={{ perspective: "2000px" }}
