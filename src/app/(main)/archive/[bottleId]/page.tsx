@@ -1,6 +1,6 @@
 import { getApiBottlesId } from "@/apis/generated/api";
-import { ArrowLeft } from "lucide-react";
 import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 const Page = async ({ params }: { params: Promise<{ bottleId: string }> }) => {
@@ -14,13 +14,11 @@ const Page = async ({ params }: { params: Promise<{ bottleId: string }> }) => {
         {/* Back Button */}
         <Link
           href="/archive"
-          className="mb-3 mt-4 flex items-center gap-2 text-white/70 transition-colors hover:text-white lg:mb-8 lg:mt-0"
+          className="mt-4 mb-3 flex items-center gap-2 text-white/70 transition-colors hover:text-white lg:mt-0 lg:mb-8"
         >
           <ArrowLeft size={18} className="lg:hidden" />
           <ArrowLeft size={20} className="hidden lg:block" />
-          <span className="typo-bold-14 lg:text-base">
-            목록으로 돌아가기
-          </span>
+          <span className="typo-bold-14 lg:text-base">목록으로 돌아가기</span>
         </Link>
 
         {/* Main Content - 3 Column Grid */}
@@ -46,7 +44,7 @@ const Page = async ({ params }: { params: Promise<{ bottleId: string }> }) => {
 
             {/* Column 2 - Basic Info */}
             <div className="flex flex-col">
-              <h3 className="typo-bold-20 lg:text-2xl mb-6 text-white lg:mb-8">
+              <h3 className="typo-bold-20 mb-6 text-white lg:mb-8 lg:text-2xl">
                 {bottle.name}
               </h3>
 
@@ -55,12 +53,21 @@ const Page = async ({ params }: { params: Promise<{ bottleId: string }> }) => {
                   { label: "브랜드", value: bottle.brand },
                   { label: "증류소", value: bottle.distillery },
                   { label: "몰트 타입", value: bottle.maltType },
-                  { label: "도수", value: bottle.abv != null ? `${bottle.abv}%` : undefined },
+                  {
+                    label: "도수",
+                    value: bottle.abv != null ? `${bottle.abv}%` : undefined,
+                  },
                   { label: "캐스크", value: bottle.caskType },
                   { label: "캐스크 No.", value: bottle.caskNumber },
                   { label: "증류일", value: bottle.distillationDate },
                   { label: "병입일", value: bottle.bottledDate },
-                  { label: "용량", value: bottle.capacity != null ? `${bottle.capacity}ml` : undefined },
+                  {
+                    label: "용량",
+                    value:
+                      bottle.capacity != null
+                        ? `${bottle.capacity}ml`
+                        : undefined,
+                  },
                 ].map((item, index, arr) => (
                   <div
                     key={item.label}
@@ -71,7 +78,7 @@ const Page = async ({ params }: { params: Promise<{ bottleId: string }> }) => {
                     <span className="text-sm text-gray-400 lg:text-base">
                       {item.label}
                     </span>
-                    <span className="typo-medium-14 lg:text-base text-white">
+                    <span className="typo-medium-14 text-white lg:text-base">
                       {item.value || "-"}
                     </span>
                   </div>
@@ -81,11 +88,11 @@ const Page = async ({ params }: { params: Promise<{ bottleId: string }> }) => {
 
             {/* Column 3 - Tasting Note */}
             <div className="flex flex-col">
-              <h3 className="typo-bold-18 lg:text-xl mb-4 text-white">
+              <h3 className="typo-bold-18 mb-4 text-white lg:text-xl">
                 테이스팅 노트
               </h3>
-              <div className="max-h-[400px] overflow-y-auto border border-white/10 p-4 lg:max-h-[500px] lg:p-6">
-                <p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-300 lg:text-base">
+              <div className="overflow-y-auto border border-white/10 p-4 lg:max-h-[500px] lg:p-6">
+                <p className="text-sm leading-relaxed whitespace-pre-wrap text-gray-300 lg:text-base">
                   {bottle.description || "테이스팅 노트가 제공되지 않았습니다."}
                 </p>
               </div>

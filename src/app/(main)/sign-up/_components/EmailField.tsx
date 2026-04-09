@@ -6,6 +6,7 @@ import {
   postApiAuthEmailVerificationVerify,
 } from "@/apis/generated/api";
 import { Button } from "@/components/ui/button";
+import { FormMessage } from "@/components/ui/form-message";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useCallback, useRef, useState, useTransition } from "react";
@@ -153,18 +154,23 @@ export function EmailField({ onValidationChange, error }: EmailFieldProps) {
         </div>
       )}
 
-      {displayError && (
-        <p className="typo-regular-12 mt-2 text-red-500">* {displayError}</p>
-      )}
+      <FormMessage
+        message={displayError}
+        className="typo-regular-12 mt-2"
+      />
       {step === "code-sent" && !displayError && (
-        <p className="typo-regular-12 mt-2 text-blue-600">
-          인증 코드가 발송되었습니다. 이메일을 확인해주세요.
-        </p>
+        <FormMessage
+          message="인증 코드가 발송되었습니다. 이메일을 확인해주세요."
+          variant="info"
+          className="typo-regular-12 mt-2"
+        />
       )}
       {isVerified && !displayError && (
-        <p className="typo-regular-12 mt-2 text-green-600">
-          ✓ 이메일 인증이 완료되었습니다.
-        </p>
+        <FormMessage
+          message="이메일 인증이 완료되었습니다."
+          variant="success"
+          className="typo-regular-12 mt-2"
+        />
       )}
 
       <input type="hidden" name="emailVerified" value={String(isVerified)} />

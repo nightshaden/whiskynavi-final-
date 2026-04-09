@@ -6,6 +6,7 @@ import {
   postApiUsersBusinessesApplicationsApplicationidCancel,
   putApiAuthChangePassword,
 } from "@/apis/generated/api";
+import { getUserErrorMessage } from "@/apis/errors";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
@@ -54,9 +55,10 @@ export async function changePassword(
     return { success: true };
   } catch (error) {
     if (isRedirectError(error)) throw error;
-    const message =
-      error instanceof Error ? error.message : "비밀번호 변경에 실패했습니다.";
-    return { success: false, error: message };
+    return {
+      success: false,
+      error: getUserErrorMessage(error, "비밀번호 변경에 실패했습니다."),
+    };
   }
 }
 
@@ -90,9 +92,10 @@ export async function cancelOrder(
     return { success: true };
   } catch (error) {
     if (isRedirectError(error)) throw error;
-    const message =
-      error instanceof Error ? error.message : "주문 취소에 실패했습니다.";
-    return { success: false, error: message };
+    return {
+      success: false,
+      error: getUserErrorMessage(error, "주문 취소에 실패했습니다."),
+    };
   }
 }
 
@@ -164,11 +167,10 @@ export async function submitBusinessApplication(
     return { success: true };
   } catch (error) {
     if (isRedirectError(error)) throw error;
-    const message =
-      error instanceof Error
-        ? error.message
-        : "사업자 등록 신청에 실패했습니다.";
-    return { success: false, error: message };
+    return {
+      success: false,
+      error: getUserErrorMessage(error, "사업자 등록 신청에 실패했습니다."),
+    };
   }
 }
 
@@ -191,10 +193,9 @@ export async function cancelBusinessApplication(
     return { success: true };
   } catch (error) {
     if (isRedirectError(error)) throw error;
-    const message =
-      error instanceof Error
-        ? error.message
-        : "사업자 등록 취소에 실패했습니다.";
-    return { success: false, error: message };
+    return {
+      success: false,
+      error: getUserErrorMessage(error, "사업자 등록 취소에 실패했습니다."),
+    };
   }
 }

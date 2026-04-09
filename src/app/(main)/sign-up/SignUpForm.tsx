@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { FormMessage } from "@/components/ui/form-message";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useActionState, useState } from "react";
@@ -79,9 +80,7 @@ function VerificationStep({
         )}
       </section>
 
-      {nice.error && (
-        <p className="text-center text-sm text-red-500">{nice.error}</p>
-      )}
+      <FormMessage message={nice.error} className="text-center" />
     </div>
   );
 }
@@ -190,11 +189,10 @@ function InfoFormStep({
           placeholder="8~16자, 영문 대소문자/숫자/특수문자 중 2가지 이상 조합"
           className="typo-regular-14 rounded-none border-0 border-b border-gray-200 bg-transparent px-0 py-3 text-black placeholder:text-gray-400 focus-visible:border-black focus-visible:ring-0"
         />
-        {state.fieldErrors?.password && (
-          <p className="typo-regular-12 mt-2 text-red-500">
-            * {state.fieldErrors.password}
-          </p>
-        )}
+        <FormMessage
+          message={state.fieldErrors?.password}
+          className="typo-regular-12 mt-2"
+        />
       </div>
 
       <div className="w-full">
@@ -224,15 +222,11 @@ function InfoFormStep({
 
       <AgreementSection />
 
-      {state.fieldErrors?.nice && (
-        <p className="text-center text-sm text-red-500">
-          {state.fieldErrors.nice}
-        </p>
-      )}
-
-      {state.error && (
-        <p className="text-center text-sm text-red-500">{state.error}</p>
-      )}
+      <FormMessage
+        message={state.fieldErrors?.nice}
+        className="text-center"
+      />
+      <FormMessage message={state.error} className="text-center" />
 
       <Button
         type="submit"

@@ -2,6 +2,7 @@
 
 import type { SignupRequest } from "@/apis/generated/api";
 import { postApiAuthSignup } from "@/apis/generated/api";
+import { ApiError, getUserErrorMessage } from "@/apis/errors";
 import { redirect } from "next/navigation";
 import { signUpSchema } from "./schemas";
 
@@ -103,22 +104,24 @@ export async function signUpAction(
   try {
     await postApiAuthSignup(signupData);
   } catch (error) {
-    const message = error instanceof Error ? error.message : "";
-
-    if (
-      message.includes("NICE") ||
-      message.includes("niceRequestNo") ||
-      message.includes("niceWebTransactionId")
-    ) {
-      return {
-        success: false,
-        error: "본인인증 정보가 만료되었거나 유효하지 않습니다. 다시 인증해주세요.",
-      };
+    // NICE 관련 400 에러는 별도 안내
+    if (error instanceof ApiError && error.status === 400) {
+      const msg = error.userMessage;
+      if (
+        msg.includes("본인인증") ||
+        msg.includes("NICE") ||
+        msg.includes("niceRequestNo")
+      ) {
+        return {
+          success: false,
+          error: "본인인증 정보가 만료되었거나 유효하지 않습니다. 다시 인증해주세요.",
+        };
+      }
     }
 
     return {
       success: false,
-      error: message || "회원가입에 실패했습니다.",
+      error: getUserErrorMessage(error, "회원가입에 실패했습니다."),
     };
   }
 

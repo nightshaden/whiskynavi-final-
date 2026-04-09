@@ -2,10 +2,11 @@
 
 import { useActionState, useState } from "react";
 import type { UserSelfResponse } from "@/apis/generated/api";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { FormMessage } from "@/components/ui/form-message";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { CalendarDays } from "lucide-react";
 import { changePassword, updateProfile } from "../actions";
 
@@ -139,14 +140,12 @@ export default function ProfileEditForm({ user, onClose }: ProfileEditFormProps)
             </div>
           </div>
 
-          {profileState.error && (
-            <p className="mt-3 text-sm text-red-600">{profileState.error}</p>
-          )}
-          {profileState.success && (
-            <p className="mt-3 text-sm text-green-600">
-              프로필이 수정되었습니다.
-            </p>
-          )}
+          <FormMessage message={profileState.error} className="mt-3" />
+          <FormMessage
+            message={profileState.success ? "프로필이 수정되었습니다." : undefined}
+            variant="success"
+            className="mt-3"
+          />
 
           <div className="mt-4 flex gap-3">
             <Button type="submit" disabled={profilePending} className="flex-1">
@@ -207,14 +206,12 @@ export default function ProfileEditForm({ user, onClose }: ProfileEditFormProps)
           </div>
         </div>
 
-        {pwState.error && (
-          <p className="mt-3 text-sm text-red-600">{pwState.error}</p>
-        )}
-        {pwState.success && (
-          <p className="mt-3 text-sm text-green-600">
-            비밀번호가 변경되었습니다.
-          </p>
-        )}
+        <FormMessage message={pwState.error} className="mt-3" />
+        <FormMessage
+          message={pwState.success ? "비밀번호가 변경되었습니다." : undefined}
+          variant="success"
+          className="mt-3"
+        />
 
         <div className="mt-4">
           <Button type="submit" disabled={pwPending || !passwordMatch}>

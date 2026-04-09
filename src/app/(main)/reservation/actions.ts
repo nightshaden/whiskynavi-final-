@@ -1,6 +1,7 @@
 "use server";
 
 import { postApiBottlesReservationsNoticesNoticeidApplications } from "@/apis/generated/api";
+import { getUserErrorMessage } from "@/apis/errors";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
@@ -29,8 +30,9 @@ export async function applyReservation(
     return { success: true };
   } catch (error) {
     if (isRedirectError(error)) throw error;
-    const message =
-      error instanceof Error ? error.message : "예약 신청에 실패했습니다.";
-    return { success: false, error: message };
+    return {
+      success: false,
+      error: getUserErrorMessage(error, "예약 신청에 실패했습니다."),
+    };
   }
 }

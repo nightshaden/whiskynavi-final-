@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -8,7 +9,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { FormMessage } from "@/components/ui/form-message";
 import { cancelOrder } from "../actions";
 
 interface OrderCancelModalProps {
@@ -63,7 +64,7 @@ export default function OrderCancelModal({
               className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-gray-600 focus:outline-none"
             />
           </div>
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          <FormMessage message={error} />
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={close} disabled={isPending}>

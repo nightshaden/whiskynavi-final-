@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
+import { FormMessage } from "@/components/ui/form-message";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -226,14 +227,11 @@ export default function BusinessApplyForm({
         </div>
       </div>
 
-      {state.error && (
-        <p className="text-sm text-red-600">{state.error}</p>
-      )}
-      {state.success && (
-        <p className="text-sm text-green-600">
-          사업자 등록 신청이 완료되었습니다.
-        </p>
-      )}
+      <FormMessage message={state.error} />
+      <FormMessage
+        message={state.success ? "사업자 등록 신청이 완료되었습니다." : undefined}
+        variant="success"
+      />
 
       <div className="flex gap-3 pt-4">
         <button

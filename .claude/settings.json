@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ACCESS_TOKEN=*)",
+      "WebFetch(domain:api.whiskynavi.com)",
+      "WebFetch(domain:orval.dev)"
+    ]
+  }
+}

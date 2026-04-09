@@ -1,4 +1,4 @@
-import { AuthError } from "./errors";
+import { ApiError, AuthError } from "./errors";
 import { handleAuthError } from "./handle-auth-error";
 import { refreshSessionToken } from "./refresh-token";
 
@@ -67,8 +67,7 @@ export const customFetch = async <T>(
 
       // 다른 에러
       const detail = await extractErrorDetail(retryRes);
-      const suffix = detail ? ` - ${detail}` : "";
-      throw new Error(`[${retryRes.status}] ${retryRes.statusText}${suffix}`);
+      throw new ApiError(retryRes.status, detail);
     }
 
     // 리프레시 실패 → 로그인 페이지로
@@ -78,8 +77,7 @@ export const customFetch = async <T>(
 
   if (!res.ok) {
     const detail = await extractErrorDetail(res);
-    const suffix = detail ? ` - ${detail}` : "";
-    throw new Error(`[${res.status}] ${res.statusText}${suffix}`);
+    throw new ApiError(res.status, detail);
   }
 
   const data = await parseResponse(res);

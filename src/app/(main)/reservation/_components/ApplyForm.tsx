@@ -1,6 +1,7 @@
 "use client";
 
 import type { PickupLocationResponse } from "@/apis/generated/api";
+import { FormMessage } from "@/components/ui/form-message";
 import {
   Select,
   SelectContent,
@@ -91,7 +92,7 @@ export default function ApplyForm({
           * 예약 신청 병수와 실제 배정 병수는 총 신청 수에 따라 달라질 수
           있습니다.
         </p>
-        {error ? <p className="mt-2 text-sm text-red-400">{error}</p> : null}
+        <FormMessage message={error} className="mt-2" />
       </div>
     </div>
   );

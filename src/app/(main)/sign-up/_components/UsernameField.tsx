@@ -2,6 +2,7 @@
 
 import { postApiAuthCheckUsername } from "@/apis/generated/api";
 import { Button } from "@/components/ui/button";
+import { FormMessage } from "@/components/ui/form-message";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useCallback, useRef, useState, useTransition } from "react";
@@ -97,13 +98,16 @@ export function UsernameField({
           {isPending ? "확인 중..." : isVerified ? "확인완료" : "중복확인"}
         </Button>
       </div>
-      {displayError && (
-        <p className="typo-regular-12 mt-2 text-red-500">* {displayError}</p>
-      )}
+      <FormMessage
+        message={displayError}
+        className="typo-regular-12 mt-2"
+      />
       {isVerified && !displayError && (
-        <p className="typo-regular-12 mt-2 text-green-600">
-          ✓ 사용 가능한 닉네임입니다.
-        </p>
+        <FormMessage
+          message="사용 가능한 닉네임입니다."
+          variant="success"
+          className="typo-regular-12 mt-2"
+        />
       )}
       {/* Hidden input for form submission */}
       <input type="hidden" name="usernameVerified" value={String(isVerified)} />
