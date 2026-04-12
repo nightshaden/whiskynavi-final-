@@ -27,6 +27,15 @@ export class ApiError extends Error {
  * - 'plain text error'
  * - '' (빈 문자열)
  */
+const knownErrorMessages: Record<string, string> = {
+  "Reservation window is not active.":
+    "현재 예약 가능한 기간이 아닙니다.",
+  "Already applied to this notice.":
+    "이미 신청한 예약 공고입니다.",
+  "Insufficient available quantity.":
+    "남은 수량이 부족합니다.",
+};
+
 function extractUserMessage(status: number, detail: string): string {
   // 1) detail에서 JSON의 error / message 필드 추출 시도
   if (detail) {
@@ -34,11 +43,14 @@ function extractUserMessage(status: number, detail: string): string {
       const json = JSON.parse(detail);
       const msg = json?.error ?? json?.message;
       if (typeof msg === "string" && msg.trim()) {
-        return msg.trim();
+        return knownErrorMessages[msg.trim()] ?? msg.trim();
       }
     } catch {
       // JSON이 아닌 경우 plain text 그대로 사용 (단, 기술적 내용이 아닌 경우)
       const trimmed = detail.trim();
+      if (trimmed && knownErrorMessages[trimmed]) {
+        return knownErrorMessages[trimmed];
+      }
       if (trimmed && !looksLikeTechnicalMessage(trimmed)) {
         return trimmed;
       }
