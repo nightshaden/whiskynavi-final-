@@ -1,6 +1,7 @@
 "use server";
 
 import {
+  getApiAdminBottles,
   postApiAdminBottlesReservationsApplicationsApplicationidCancel,
   postApiAdminBottlesReservationsApplicationsApplicationidConfirm,
   postApiAdminBottlesReservationsApplicationsApplicationidReject,
@@ -29,6 +30,26 @@ const noticeFormSchema = z.object({
       throw new Error("price must be >= 0");
     return n;
   }),
+  availableQuantity: z
+    .string()
+    .transform((v) => {
+      if (!v.trim()) return undefined;
+      const n = Number(v);
+      if (Number.isNaN(n) || n < 0)
+        throw new Error("availableQuantity must be >= 0");
+      return n;
+    })
+    .optional(),
+  maxOrderQuantity: z
+    .string()
+    .transform((v) => {
+      if (!v.trim()) return undefined;
+      const n = Number(v);
+      if (Number.isNaN(n) || n < 0)
+        throw new Error("maxOrderQuantity must be >= 0");
+      return n;
+    })
+    .optional(),
   reservationStartAt: z.string().min(1, "예약 시작일은 필수입니다."),
   reservationEndAt: z.string().min(1, "예약 종료일은 필수입니다."),
   gradeConditions: z
@@ -75,6 +96,35 @@ function parseNoticeFormData(formData: FormData) {
   return { success: true as const, data: result.data };
 }
 
+// ─── Bottle Search ───────────────────────────────────────
+
+export async function searchBottlesAction(keyword: string) {
+  const token = await getAuthToken();
+  if (!token) return [];
+
+  try {
+    const res = await getApiAdminBottles(
+      {
+        filters: {
+          reservationStatus: "NO_RESERVATION",
+          keyword: keyword || undefined,
+          pageSize: 20,
+        },
+      },
+      withToken(token),
+    );
+    return (
+      res.data.content?.map((b) => ({
+        id: b.id as number,
+        name: b.name as string,
+        stockQuantity: b.stockQuantity ?? null,
+      })) ?? []
+    );
+  } catch {
+    return [];
+  }
+}
+
 // ─── Notice CRUD ──────────────────────────────────────────
 
 export async function createNoticeFormAction(
@@ -93,6 +143,8 @@ export async function createNoticeFormAction(
     reservationStartAt,
     reservationEndAt,
     gradeConditions,
+    availableQuantity,
+    maxOrderQuantity,
   } = parsed.data;
 
   try {
@@ -103,6 +155,8 @@ export async function createNoticeFormAction(
         reservationStartAt: new Date(reservationStartAt).toISOString(),
         reservationEndAt: new Date(reservationEndAt).toISOString(),
         gradeConditions: gradeConditions as any,
+        availableQuantity,
+        maxOrderQuantity,
       },
       withToken(token),
     );
@@ -133,6 +187,8 @@ export async function updateNoticeFormAction(
     reservationStartAt,
     reservationEndAt,
     gradeConditions,
+    availableQuantity,
+    maxOrderQuantity,
   } = parsed.data;
 
   try {
@@ -144,6 +200,8 @@ export async function updateNoticeFormAction(
         reservationStartAt: new Date(reservationStartAt).toISOString(),
         reservationEndAt: new Date(reservationEndAt).toISOString(),
         gradeConditions: gradeConditions as any,
+        availableQuantity,
+        maxOrderQuantity,
       },
       withToken(token),
     );

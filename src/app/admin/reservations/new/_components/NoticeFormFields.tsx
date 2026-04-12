@@ -1,9 +1,6 @@
 "use client";
 
-import type {
-  BottleAdminResponse,
-  BottleReservationNoticeResponse,
-} from "@/apis/generated/api";
+import type { BottleReservationNoticeResponse } from "@/apis/generated/api";
 import {
   Select,
   SelectContent,
@@ -16,6 +13,7 @@ import { useState } from "react";
 import CurrencyInput from "../../../_components/CurrencyInput";
 import DateTimePicker from "../../../_components/DateTimePicker";
 import { ROLE_LABEL_MAP } from "../../../constants";
+import BottleSearchCombobox from "./BottleSearchCombobox";
 
 const ROLE_OPTIONS = Object.entries(ROLE_LABEL_MAP) as [string, string][];
 
@@ -26,12 +24,10 @@ interface GradeCondition {
 
 interface NoticeFormFieldsProps {
   defaultValues?: BottleReservationNoticeResponse;
-  bottles: BottleAdminResponse[];
 }
 
 export default function NoticeFormFields({
   defaultValues,
-  bottles,
 }: NoticeFormFieldsProps) {
   const [gradeConditions, setGradeConditions] = useState<GradeCondition[]>(
     defaultValues?.gradeConditions?.map((gc) => ({
@@ -85,26 +81,10 @@ export default function NoticeFormFields({
           <label className="typo-medium-14 mb-1 block text-gray-700">
             제품 <span className="text-red-500">*</span>
           </label>
-          <Select
-            name="bottleId"
-            defaultValue={
-              defaultValues?.bottleId != null
-                ? String(defaultValues.bottleId)
-                : undefined
-            }
-            required
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="제품을 선택하세요" />
-            </SelectTrigger>
-            <SelectContent>
-              {bottles.map((bottle) => (
-                <SelectItem key={bottle.id} value={String(bottle.id)}>
-                  {bottle.name} (ID: {bottle.id})
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <BottleSearchCombobox
+            defaultBottleId={defaultValues?.bottleId ?? undefined}
+            defaultBottleName={defaultValues?.bottleName ?? undefined}
+          />
         </div>
 
         <div>
@@ -117,6 +97,34 @@ export default function NoticeFormFields({
             required
             className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none"
             placeholder="가격을 입력하세요"
+          />
+        </div>
+
+        <div>
+          <label className="typo-medium-14 mb-1 block text-gray-700">
+            예약 받을 병수
+          </label>
+          <input
+            type="number"
+            name="availableQuantity"
+            min={0}
+            defaultValue={defaultValues?.availableQuantity ?? ""}
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none"
+            placeholder="예: 100"
+          />
+        </div>
+
+        <div>
+          <label className="typo-medium-14 mb-1 block text-gray-700">
+            인당 최대 예약 가능 병수
+          </label>
+          <input
+            type="number"
+            name="maxOrderQuantity"
+            min={0}
+            defaultValue={defaultValues?.maxOrderQuantity ?? ""}
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none"
+            placeholder="예: 2"
           />
         </div>
 

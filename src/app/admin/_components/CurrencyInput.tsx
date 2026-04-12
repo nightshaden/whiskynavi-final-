@@ -12,7 +12,7 @@ interface CurrencyInputProps extends Omit<
 }
 
 function formatNumber(value: string | number | undefined): string {
-  if (value === undefined || value === "") return "";
+  if (value == null || value === "") return "";
   const num =
     typeof value === "string" ? Number(value.replace(/,/g, "")) : value;
   if (isNaN(num)) return "";

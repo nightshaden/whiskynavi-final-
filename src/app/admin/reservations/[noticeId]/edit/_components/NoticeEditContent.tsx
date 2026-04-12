@@ -1,9 +1,6 @@
 "use client";
 
-import type {
-  BottleAdminResponse,
-  BottleReservationNoticeResponse,
-} from "@/apis/generated/api";
+import type { BottleReservationNoticeResponse } from "@/apis/generated/api";
 import { ArrowLeft, Save, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useActionState } from "react";
@@ -14,13 +11,9 @@ import NoticeFormFields from "../../../new/_components/NoticeFormFields";
 
 interface NoticeEditContentProps {
   notice: BottleReservationNoticeResponse;
-  bottles: BottleAdminResponse[];
 }
 
-export default function NoticeEditContent({
-  notice,
-  bottles,
-}: NoticeEditContentProps) {
+export default function NoticeEditContent({ notice }: NoticeEditContentProps) {
   const { toggle } = useSidebar();
   const router = useRouter();
 
@@ -75,7 +68,7 @@ export default function NoticeEditContent({
           </div>
         )}
 
-        <NoticeFormFields defaultValues={notice} bottles={bottles} />
+        <NoticeFormFields defaultValues={notice} />
       </form>
     </>
   );

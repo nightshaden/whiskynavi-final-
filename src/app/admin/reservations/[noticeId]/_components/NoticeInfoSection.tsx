@@ -30,7 +30,8 @@ export default function NoticeInfoSection({ notice }: NoticeInfoSectionProps) {
     },
     { label: "예약 시작", value: formatDateTime(notice.reservationStartAt) },
     { label: "예약 종료", value: formatDateTime(notice.reservationEndAt) },
-    { label: "가용 수량", value: notice.availableQuantity ?? 0 },
+    { label: "예약 받을 병수", value: notice.availableQuantity ?? "-" },
+    { label: "인당 최대 예약", value: notice.maxOrderQuantity ?? "-" },
     { label: "생성일", value: formatDateTime(notice.createdAt) },
   ];
 

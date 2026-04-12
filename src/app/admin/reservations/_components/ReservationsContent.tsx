@@ -100,7 +100,7 @@ export default function ReservationsContent({
                     가격
                   </th>
                   <th className="typo-bold-12 px-4 py-3 text-center text-gray-700 uppercase">
-                    신청/가용
+                    신청 / total
                   </th>
                   <th className="typo-bold-12 px-4 py-3 text-center text-gray-700 uppercase">
                     승인

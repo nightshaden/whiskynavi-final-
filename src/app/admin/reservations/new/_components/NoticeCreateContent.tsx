@@ -1,6 +1,5 @@
 "use client";
 
-import type { BottleAdminResponse } from "@/apis/generated/api";
 import { ArrowLeft, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useActionState } from "react";
@@ -9,13 +8,7 @@ import { useSidebar } from "../../../_components/AdminLayoutClient";
 import { createNoticeFormAction } from "../../actions";
 import NoticeFormFields from "./NoticeFormFields";
 
-interface NoticeCreateContentProps {
-  bottles: BottleAdminResponse[];
-}
-
-export default function NoticeCreateContent({
-  bottles,
-}: NoticeCreateContentProps) {
+export default function NoticeCreateContent() {
   const { toggle } = useSidebar();
   const router = useRouter();
 
@@ -59,7 +52,7 @@ export default function NoticeCreateContent({
           </div>
         )}
 
-        <NoticeFormFields bottles={bottles} />
+        <NoticeFormFields />
       </form>
     </>
   );
