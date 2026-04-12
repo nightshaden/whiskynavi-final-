@@ -82,6 +82,15 @@ function defaultMessageForStatus(status: number): string {
   }
 }
 
+export class NetworkError extends Error {
+  constructor(
+    message = "네트워크 연결에 실패했습니다. 인터넷 연결을 확인해주세요.",
+  ) {
+    super(message);
+    this.name = "NetworkError";
+  }
+}
+
 /**
  * catch 블록에서 사용할 헬퍼.
  * ApiError면 userMessage, 그 외 unknown 에러는 fallback 메시지 반환.
@@ -92,5 +101,6 @@ export function getUserErrorMessage(
 ): string {
   if (error instanceof ApiError) return error.userMessage;
   if (error instanceof AuthError) return error.message;
+  if (error instanceof NetworkError) return error.message;
   return fallback;
 }

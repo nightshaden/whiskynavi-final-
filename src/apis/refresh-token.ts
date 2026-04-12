@@ -1,10 +1,24 @@
-import { decode } from "next-auth/jwt";
-
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://api.whiskynavi.com";
 
-// 백엔드 refresh API를 raw fetch로 호출 (customFetch 사용 시 재귀 발생)
-async function callRefreshApi(refreshToken: string): Promise<string | null> {
+/**
+ * refresh API 호출 결과.
+ * - success: 새 accessToken + refreshToken
+ * - auth_failed: refresh token이 만료/무효 (401/400) → 세션 파기 정당
+ * - server_error: 서버 장애/네트워크 에러 (5xx, 연결 실패) → 세션 보존
+ */
+export type RefreshResult =
+  | { status: "success"; accessToken: string; refreshToken: string }
+  | { status: "auth_failed" }
+  | { status: "server_error" };
+
+/**
+ * 백엔드 refresh API를 raw fetch로 호출한다.
+ * customFetch를 사용하면 재귀가 발생하므로 반드시 raw fetch 사용.
+ */
+export async function callRefreshApi(
+  refreshToken: string,
+): Promise<RefreshResult> {
   try {
     const res = await fetch(`${BASE_URL}/api/auth/refresh`, {
       method: "POST",
@@ -12,56 +26,30 @@ async function callRefreshApi(refreshToken: string): Promise<string | null> {
       body: JSON.stringify({ refreshToken }),
     });
 
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data.accessToken ?? null;
+    if (res.ok) {
+      const data = await res.json();
+      const newAccessToken = data.accessToken;
+      const newRefreshToken = data.refreshToken ?? refreshToken;
+      if (typeof newAccessToken === "string" && newAccessToken) {
+        return {
+          status: "success",
+          accessToken: newAccessToken,
+          refreshToken: newRefreshToken,
+        };
+      }
+      // 응답은 200이지만 토큰이 없는 경우 → 서버 오류로 취급
+      return { status: "server_error" };
+    }
+
+    // 401/400/403: refresh token 자체가 만료/무효
+    if (res.status === 401 || res.status === 400 || res.status === 403) {
+      return { status: "auth_failed" };
+    }
+
+    // 5xx, 429 등: 서버 일시 장애 → 세션 보존
+    return { status: "server_error" };
   } catch {
-    return null;
+    // 네트워크 연결 실패, DNS 에러, 타임아웃 등
+    return { status: "server_error" };
   }
-}
-
-// 서버: next-auth JWT 쿠키에서 refreshToken을 디코딩하여 리프레시
-async function refreshOnServer(): Promise<string | null> {
-  try {
-    const { cookies } = await import("next/headers");
-
-    const cookieStore = await cookies();
-
-    // next-auth v4 쿠키명 (dev: next-auth.session-token, prod: __Secure-next-auth.session-token)
-    const sessionToken =
-      cookieStore.get("next-auth.session-token")?.value ??
-      cookieStore.get("__Secure-next-auth.session-token")?.value;
-
-    if (!sessionToken) return null;
-
-    const decoded = await decode({
-      token: sessionToken,
-      secret: process.env.NEXTAUTH_SECRET!,
-    });
-    if (!decoded?.refreshToken) return null;
-    return callRefreshApi(decoded.refreshToken as string);
-  } catch {
-    return null;
-  }
-}
-
-// 클라이언트: next-auth/react getSession으로 refreshToken을 가져와 리프레시
-async function refreshOnClient(): Promise<string | null> {
-  try {
-    const { getSession } = await import("next-auth/react");
-    const session = await getSession();
-    if (!session?.refreshToken) return null;
-
-    return callRefreshApi(session.refreshToken);
-  } catch {
-    return null;
-  }
-}
-
-// 서버/클라이언트 환경에 따라 적절한 리프레시 로직 실행
-export async function refreshSessionToken(): Promise<string | null> {
-  if (typeof window === "undefined") {
-    return refreshOnServer();
-  }
-  return refreshOnClient();
 }

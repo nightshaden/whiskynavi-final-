@@ -1,13 +1,9 @@
-import { AuthError } from "./errors";
-
-import { ApiError } from "./errors";
-import { handleAuthError } from "./handle-auth-error";
-import { refreshSessionToken } from "./refresh-token";
+import { ApiError, AuthError, NetworkError } from "./errors";
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://api.whiskynavi.com";
 
-function parseResponse(res: Response) {
+function parseResponse(res: Response): Promise<unknown> | undefined {
   if (res.status === 204 || res.status === 205) {
     return undefined;
   }
@@ -28,52 +24,34 @@ async function extractErrorDetail(res: Response): Promise<string> {
   }
 }
 
+/**
+ * Orval custom mutator.
+ * - 401: AuthError throw → 호출자(Server Action / error boundary)에서 처리
+ * - 403: ApiError throw → 권한 부족으로 처리 (로그아웃하지 않음)
+ * - 5xx: ApiError throw
+ * - 네트워크 에러: NetworkError throw
+ *
+ * 토큰 리프레시는 이 함수에서 하지 않음.
+ * NextAuth jwt callback이 getServerSession/getSession 호출 시 자동으로 처리.
+ */
 export const customFetch = async <T>(
   url: string,
   options: RequestInit,
 ): Promise<T> => {
   const fullUrl = url.startsWith("http") ? url : `${BASE_URL}${url}`;
-  const res = await fetch(fullUrl, {
-    ...options,
-    cache: "no-store",
-  });
 
-  // 401/403: 토큰 만료 → 리프레시 시도 후 재요청
-  if (res.status === 401 || res.status === 403) {
-    const newToken = await refreshSessionToken();
+  let res: Response;
+  try {
+    res = await fetch(fullUrl, {
+      ...options,
+      cache: "no-store",
+    });
+  } catch {
+    throw new NetworkError();
+  }
 
-    if (newToken) {
-      // 새 토큰으로 재요청
-      const retryHeaders = new Headers(options.headers);
-      retryHeaders.set("Authorization", newToken);
-      const retryRes = await fetch(fullUrl, {
-        ...options,
-        headers: retryHeaders,
-        cache: "no-store",
-      });
-
-      if (retryRes.ok) {
-        const data = await parseResponse(retryRes);
-        return {
-          data,
-          status: retryRes.status,
-          headers: retryRes.headers,
-        } as T;
-      }
-
-      // 재시도도 401/403이면 리프레시 토큰도 만료된 것
-      if (retryRes.status === 401 || retryRes.status === 403) {
-        await handleAuthError();
-        throw new AuthError();
-      }
-
-      // 다른 에러
-      const detail = await extractErrorDetail(retryRes);
-      throw new ApiError(retryRes.status, detail);
-    }
-
-    // 리프레시 실패 → 로그인 페이지로
-    await handleAuthError();
+  // 401: 인증 만료 — AuthError throw (호출자에서 로그인 페이지 이동 결정)
+  if (res.status === 401) {
     throw new AuthError();
   }
 
@@ -90,9 +68,10 @@ export default customFetch;
 
 /**
  * 서버 컴포넌트에서 인증 토큰을 RequestInit headers로 변환하는 헬퍼.
+ * @param token - Bearer access token. undefined이면 인증 헤더 없이 요청.
+ * @returns RequestInit with Authorization header, or undefined if no token
  *
  * @example
- * // 서버 컴포넌트에서:
  * const token = await getAuthToken();
  * const res = await listUsers(params, withToken(token));
  */

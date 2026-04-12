@@ -75,7 +75,7 @@ export function SignInForm() {
             type="email"
             placeholder="ex) whiskynavi@whiskynavi.com"
             required
-            className="typo-medium-13 typo-medium-13 mt-2 rounded-none border-0 border-b border-gray-200 bg-transparent px-0 py-3 font-semibold text-white placeholder:text-gray-200 focus-visible:border-white focus-visible:ring-0"
+            className="typo-medium-13 mt-2 rounded-none border-0 border-b border-gray-200 bg-transparent px-0 py-3 font-semibold text-white placeholder:text-gray-200 focus-visible:border-white focus-visible:ring-0"
           />
         </div>
 
@@ -92,7 +92,7 @@ export function SignInForm() {
             name="password"
             type="password"
             required
-            className="typo-medium-13 typo-medium-13 mt-2 rounded-none border-0 border-b border-gray-200 bg-transparent px-0 py-3 font-semibold text-white placeholder:text-gray-200 focus-visible:border-white focus-visible:ring-0"
+            className="typo-medium-13 mt-2 rounded-none border-0 border-b border-gray-200 bg-transparent px-0 py-3 font-semibold text-white placeholder:text-gray-200 focus-visible:border-white focus-visible:ring-0"
           />
         </div>
 
@@ -130,42 +130,4 @@ export function SignInForm() {
       </div>
     </>
   );
-}
-
-{
-  /* <div className="mt-9 flex w-full flex-col gap-3">
-  <Button
-    type="button"
-    variant="outline"
-    onClick={() => signIn("google", { callbackUrl: "/" })}
-    className="relative h-14 w-full rounded-[10px] border-0 bg-white"
-  >
-    <span className="absolute left-6.5">
-      <IconGoogle size={24} />
-    </span>
-    <p className="typo-medium-16 font-semibold text-black">구글로 로그인</p>
-  </Button>
-
-  <Button
-    type="button"
-    onClick={() => signIn("naver", { callbackUrl: "/" })}
-    className="relative h-14 w-full rounded-[10px] border-0 bg-[#03C75A]"
-  >
-    <span className="absolute left-4">
-      <IconNaver size={44} />
-    </span>
-    <p className="typo-medium-16 font-semibold text-[#FFF]">네이버로 로그인</p>
-  </Button>
-
-  <Button
-    type="button"
-    onClick={() => signIn("kakao", { callbackUrl: "/" })}
-    className="relative h-14 w-full rounded-[10px] border-0 bg-[#FEE500]"
-  >
-    <span className="absolute left-4">
-      <IconKakao size={44} />
-    </span>
-    <p className="typo-medium-16 font-semibold text-black">카카오로 로그인</p>
-  </Button>
-</div>; */
 }

@@ -1,4 +1,5 @@
-import { postApiAuthLogin, postApiAuthRefresh } from "@/apis/generated/api";
+import { postApiAuthLogin } from "@/apis/generated/api";
+import { callRefreshApi } from "@/apis/refresh-token";
 import type { NextAuthOptions } from "next-auth";
 import { getServerSession } from "next-auth";
 import type { JWT } from "next-auth/jwt";
@@ -6,26 +7,48 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import KakaoProvider from "next-auth/providers/kakao";
 
-/** access token 선제 리프레시 간격 (25분) */
+/**
+ * access token 선제 리프레시 간격.
+ * 백엔드 access token TTL(30분)보다 5분 앞서 갱신하여 만료 전에 교체.
+ */
 const TOKEN_REFRESH_INTERVAL = 25 * 60 * 1000;
 
+/**
+ * raw fetch 기반 토큰 리프레시.
+ * - 성공: 새 accessToken + refreshToken 반환
+ * - 인증 실패(401/400): 토큰 삭제 + error 설정 → 클라이언트에서 signOut 유도
+ * - 서버 장애: 기존 토큰 보존 → 다음 요청에서 재시도
+ */
 async function refreshAccessToken(token: JWT): Promise<JWT> {
-  try {
-    const res = await postApiAuthRefresh({ refreshToken: token.refreshToken! });
-    return {
-      ...token,
-      accessToken: res.data.accessToken,
-      refreshToken: res.data.refreshToken,
-      tokenIssuedAt: Date.now(),
-      error: undefined,
-    };
-  } catch {
-    return {
-      ...token,
-      accessToken: undefined,
-      refreshToken: undefined,
-      error: "RefreshTokenError",
-    };
+  if (!token.refreshToken) {
+    return { ...token, accessToken: undefined, error: "RefreshTokenError" };
+  }
+
+  const result = await callRefreshApi(token.refreshToken);
+
+  switch (result.status) {
+    case "success":
+      return {
+        ...token,
+        accessToken: result.accessToken,
+        refreshToken: result.refreshToken,
+        tokenIssuedAt: Date.now(),
+        error: undefined,
+      };
+    case "auth_failed":
+      // refresh token 자체가 무효 → 토큰 삭제, 클라이언트에서 signOut 유도
+      return {
+        ...token,
+        accessToken: undefined,
+        refreshToken: undefined,
+        error: "RefreshTokenError",
+      };
+    case "server_error":
+      // 서버 일시 장애 → 기존 토큰 보존, 다음 요청에서 재시도
+      return {
+        ...token,
+        error: "RefreshTemporaryError",
+      };
   }
 }
 
@@ -62,7 +85,6 @@ const NaverProvider = {
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
-    // 이메일/비밀번호 로그인
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -80,10 +102,18 @@ export const authOptions: NextAuthOptions = {
             password: credentials.password,
           });
 
+          if (
+            !res.data.accessToken ||
+            !res.data.refreshToken ||
+            !res.data.userId
+          ) {
+            throw new Error("서버 응답에 필수 인증 정보가 누락되었습니다.");
+          }
+
           return {
             id: String(res.data.userId),
-            name: res.data.username,
-            email: res.data.email,
+            name: res.data.username ?? "",
+            email: res.data.email ?? "",
             roles: res.data.userInfo?.roles,
             accessToken: res.data.accessToken,
             refreshToken: res.data.refreshToken,
@@ -95,26 +125,20 @@ export const authOptions: NextAuthOptions = {
         }
       },
     }),
-
-    // Google
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID ?? "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
     }),
-
-    // Kakao
     KakaoProvider({
       clientId: process.env.KAKAO_CLIENT_ID ?? "",
       clientSecret: process.env.KAKAO_CLIENT_SECRET ?? "",
     }),
-
-    // Naver
     NaverProvider,
   ],
 
   pages: {
     signIn: "/sign-in",
-    error: "/sign-in", // 에러 시 로그인 페이지로
+    error: "/sign-in",
   },
 
   session: {
@@ -132,7 +156,6 @@ export const authOptions: NextAuthOptions = {
         token.refreshToken = user.refreshToken;
         token.tokenIssuedAt = Date.now();
 
-        // 소셜 로그인의 경우 provider 정보 저장
         if (account) {
           token.provider = account.provider;
           token.providerAccountId = account.providerAccountId;
@@ -150,38 +173,20 @@ export const authOptions: NextAuthOptions = {
     },
 
     async session({ session, token }) {
-      // token 정보를 session에 전달
       if (session.user) {
-        session.user.id = token.id as string;
+        session.user.id = token.id ?? "";
         session.user.roles = token.roles;
       }
       session.accessToken = token.accessToken;
-      session.refreshToken = token.refreshToken;
+      // refreshToken은 서버(JWT) 내부에서만 사용 — 클라이언트에 노출하지 않음
       session.error = token.error;
       return session;
     },
 
-    async signIn({ user, account }) {
-      // 소셜 로그인 시 백엔드에 유저 정보 전달 (회원가입/로그인 처리)
+    async signIn({ account }) {
       if (account?.provider !== "credentials") {
-        try {
-          // TODO: 백엔드 소셜 로그인 API 호출
-          // await api.socialLogin({
-          //   provider: account.provider,
-          //   providerId: account.providerAccountId,
-          //   email: user.email,
-          //   name: user.name,
-          // });
-          console.log("소셜 로그인:", {
-            provider: account?.provider,
-            providerId: account?.providerAccountId,
-            email: user.email,
-            name: user.name,
-          });
-        } catch (error) {
-          console.error("소셜 로그인 백엔드 연동 실패:", error);
-          // 필요에 따라 false 반환하여 로그인 차단 가능
-        }
+        // TODO: 백엔드 소셜 로그인 API 호출
+        // 구현 전까지 소셜 로그인은 허용하되, 토큰이 없는 상태임에 유의
       }
       return true;
     },
@@ -191,7 +196,8 @@ export const authOptions: NextAuthOptions = {
 };
 
 /**
- * 서버 컴포넌트에서 인증 토큰을 가져오는 헬퍼 함수
+ * 서버 컴포넌트에서 인증 토큰을 가져오는 헬퍼 함수.
+ * getServerSession 호출 시 jwt callback이 트리거되어 만료된 토큰은 자동 갱신됨.
  * @returns accessToken 또는 undefined
  */
 export async function getAuthToken(): Promise<string | undefined> {

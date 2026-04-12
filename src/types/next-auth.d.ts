@@ -8,8 +8,8 @@ declare module "next-auth" {
       roles?: string[];
     } & DefaultSession["user"];
     accessToken?: string;
-    refreshToken?: string;
-    error?: string;
+    // refreshToken은 서버(JWT) 내부에서만 사용 — 클라이언트에 노출하지 않음
+    error?: "RefreshTokenError" | "RefreshTemporaryError";
   }
 
   interface User extends DefaultUser {
@@ -28,6 +28,6 @@ declare module "next-auth/jwt" {
     accessToken?: string;
     refreshToken?: string;
     tokenIssuedAt?: number;
-    error?: string;
+    error?: "RefreshTokenError" | "RefreshTemporaryError";
   }
 }

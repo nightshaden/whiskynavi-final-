@@ -14,12 +14,14 @@ interface AdminErrorPageProps {
 export default function AdminErrorPage({ error, reset }: AdminErrorPageProps) {
   const router = useRouter();
 
-  const is403 = error.message.includes("[403]");
-  const is401 = error.message.includes("[401]");
-  const isAuthError = is403 || is401;
+  const isAuthError =
+    error.message === "인증이 만료되었습니다. 다시 로그인해주세요." ||
+    error.digest?.includes("AUTH_ERROR") === true;
 
   useEffect(() => {
-    console.error("Admin Error:", error);
+    if (process.env.NODE_ENV === "development") {
+      console.error("Admin Error:", error);
+    }
   }, [error]);
 
   return (

@@ -1,7 +1,8 @@
+import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
-import { getAuthToken } from "@/lib/auth";
+import { authOptions } from "@/lib/auth";
 
 import AdminLayoutClient from "./_components/AdminLayoutClient";
 import SidebarStatsSection from "./_components/SidebarStatsSection";
@@ -17,10 +18,14 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const token = await getAuthToken();
+  const session = await getServerSession(authOptions);
 
-  if (!token) {
+  if (!session?.accessToken) {
     redirect("/sign-in");
+  }
+
+  if (!session.user.roles?.includes("ADMIN")) {
+    redirect("/");
   }
 
   return (
