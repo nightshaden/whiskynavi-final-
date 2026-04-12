@@ -1,12 +1,16 @@
 "use server";
 
+import { getUserErrorMessage } from "@/apis/errors";
 import {
   patchApiOrdersOrderidCancel,
   postApiUsersBusinessesApplications,
   postApiUsersBusinessesApplicationsApplicationidCancel,
+  postApiUsersMeEmailVerificationSend,
+  postApiUsersMeEmailVerificationVerify,
   putApiAuthChangePassword,
+  putApiUsersMeEmail,
+  putApiUsersMeNickname,
 } from "@/apis/generated/api";
-import { getUserErrorMessage } from "@/apis/errors";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
@@ -99,12 +103,111 @@ export async function cancelOrder(
   }
 }
 
+export async function sendEmailVerification(
+  email: string,
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const token = await getAuthToken();
+    if (!token) {
+      return { success: false, error: "로그인이 필요합니다." };
+    }
+
+    await postApiUsersMeEmailVerificationSend({ email }, withToken(token));
+    return { success: true };
+  } catch (error) {
+    if (isRedirectError(error)) throw error;
+    return {
+      success: false,
+      error: getUserErrorMessage(error, "인증 코드 발송에 실패했습니다."),
+    };
+  }
+}
+
+export async function verifyEmailCode(
+  email: string,
+  code: string,
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const token = await getAuthToken();
+    if (!token) {
+      return { success: false, error: "로그인이 필요합니다." };
+    }
+
+    await postApiUsersMeEmailVerificationVerify(
+      { email, code },
+      withToken(token),
+    );
+    return { success: true };
+  } catch (error) {
+    if (isRedirectError(error)) throw error;
+    return {
+      success: false,
+      error: getUserErrorMessage(error, "인증 코드가 올바르지 않습니다."),
+    };
+  }
+}
+
+const updateProfileSchema = z.object({
+  username: z.string().min(2, "닉네임은 2자 이상이어야 합니다.").max(15),
+  email: z.string().email("올바른 이메일을 입력해주세요.").max(100),
+  originalUsername: z.string(),
+  originalEmail: z.string(),
+  emailVerified: z.string(),
+});
+
 export async function updateProfile(
   _prevState: { success: boolean; error?: string },
   formData: FormData,
 ): Promise<{ success: boolean; error?: string }> {
-  // 프로필 수정 API가 아직 없으므로 stub
-  return { success: false, error: "프로필 수정 기능은 준비 중입니다." };
+  try {
+    const token = await getAuthToken();
+    if (!token) {
+      return { success: false, error: "로그인이 필요합니다." };
+    }
+
+    const parsed = updateProfileSchema.safeParse({
+      username: formData.get("username"),
+      email: formData.get("email"),
+      originalUsername: formData.get("originalUsername"),
+      originalEmail: formData.get("originalEmail"),
+      emailVerified: formData.get("emailVerified"),
+    });
+    
+    if (!parsed.success) {
+      return { success: false, error: parsed.error.issues[0].message };
+    }
+
+    const { username, email, originalUsername, originalEmail, emailVerified } =
+      parsed.data;
+
+    const nicknameChanged = username !== originalUsername;
+    const emailChanged = email !== originalEmail;
+
+    if (!nicknameChanged && !emailChanged) {
+      return { success: false, error: "변경된 정보가 없습니다." };
+    }
+
+    if (emailChanged && emailVerified !== "true") {
+      return { success: false, error: "이메일 인증을 완료해주세요." };
+    }
+
+    if (nicknameChanged) {
+      await putApiUsersMeNickname({ nickname: username }, withToken(token));
+    }
+
+    if (emailChanged) {
+      await putApiUsersMeEmail({ newEmail: email }, withToken(token));
+    }
+
+    revalidatePath("/my-page");
+    return { success: true };
+  } catch (error) {
+    if (isRedirectError(error)) throw error;
+    return {
+      success: false,
+      error: getUserErrorMessage(error, "프로필 수정에 실패했습니다."),
+    };
+  }
 }
 
 const businessApplySchema = z.object({

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { FormMessage } from "@/components/ui/form-message";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { changePassword } from "../actions";
 
 interface PasswordChangeFormProps {
@@ -17,6 +17,12 @@ export default function PasswordChangeForm({
   const [pwState, pwAction, pwPending] = useActionState(changePassword, {
     success: false,
   });
+
+  useEffect(() => {
+    if (pwState.success) {
+      onClose();
+    }
+  }, [pwState.success, onClose]);
 
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
