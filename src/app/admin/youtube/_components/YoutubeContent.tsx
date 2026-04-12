@@ -1,6 +1,12 @@
 "use client";
 
-import { useActionState, useEffect, useMemo, useState } from "react";
+import {
+  useActionState,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import AdminHeader from "../../_components/AdminHeader";
 import { useSidebar } from "../../_components/AdminLayoutClient";
 import { type FormState, updateYoutubeAction } from "../actions";
@@ -14,23 +20,30 @@ export default function YoutubeContent({
   defaultEmbedUrl,
 }: YoutubeContentProps) {
   const { toggle } = useSidebar();
+  const [showSuccess, setShowSuccess] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleAction = useCallback(
+    async (prev: FormState, formData: FormData) => {
+      const result = await updateYoutubeAction(prev, formData);
+      if (result.success) {
+        if (timerRef.current) clearTimeout(timerRef.current);
+        setShowSuccess(true);
+        timerRef.current = setTimeout(() => setShowSuccess(false), 3000);
+      }
+      return result;
+    },
+    [],
+  );
+
   const [state, formAction, isPending] = useActionState<FormState, FormData>(
-    updateYoutubeAction,
+    handleAction,
     { success: false },
   );
 
   const [url, setUrl] = useState(defaultEmbedUrl);
-  const [showSuccess, setShowSuccess] = useState(false);
 
   const previewUrl = useMemo(() => toEmbedUrl(url), [url]);
-
-  useEffect(() => {
-    if (state.success) {
-      setShowSuccess(true);
-      const timer = setTimeout(() => setShowSuccess(false), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [state.success, state.error]);
 
   return (
     <div className="flex-1">
