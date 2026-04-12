@@ -1,5 +1,5 @@
-import { signOut } from "next-auth/react";
 import { User } from "lucide-react";
+import { signOut } from "next-auth/react";
 
 export function UserAvatar({ size = 20 }: { size?: number }) {
   return (
@@ -10,9 +10,7 @@ export function UserAvatar({ size = 20 }: { size?: number }) {
 }
 
 export function UserName({ name }: { name: string | null | undefined }) {
-  return (
-    <span className="typo-bold-14 text-white">{name ?? "사용자"}님</span>
-  );
+  return <span className="typo-bold-14 text-white">{name ?? "사용자"}님</span>;
 }
 
 export function LogoutButton({

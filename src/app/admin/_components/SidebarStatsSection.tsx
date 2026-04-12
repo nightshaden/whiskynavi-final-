@@ -11,15 +11,11 @@ export default async function SidebarStatsSection() {
       <div className="space-y-3">
         <div>
           <p className="text-xs text-gray-500">전체 회원</p>
-          <p className="typo-bold-18 text-gray-900">
-            {fmt(stats.totalUsers)}
-          </p>
+          <p className="typo-bold-18 text-gray-900">{fmt(stats.totalUsers)}</p>
         </div>
         <div>
           <p className="text-xs text-gray-500">총 주문</p>
-          <p className="typo-bold-18 text-gray-900">
-            {fmt(stats.totalOrders)}
-          </p>
+          <p className="typo-bold-18 text-gray-900">{fmt(stats.totalOrders)}</p>
         </div>
         <div>
           <p className="text-xs text-gray-500">등록 제품</p>

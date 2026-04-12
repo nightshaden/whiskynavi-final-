@@ -229,7 +229,9 @@ export default function BusinessApplyForm({
 
       <FormMessage message={state.error} />
       <FormMessage
-        message={state.success ? "사업자 등록 신청이 완료되었습니다." : undefined}
+        message={
+          state.success ? "사업자 등록 신청이 완료되었습니다." : undefined
+        }
         variant="success"
       />
 

@@ -154,10 +154,7 @@ export function EmailField({ onValidationChange, error }: EmailFieldProps) {
         </div>
       )}
 
-      <FormMessage
-        message={displayError}
-        className="typo-regular-12 mt-2"
-      />
+      <FormMessage message={displayError} className="typo-regular-12 mt-2" />
       {step === "code-sent" && !displayError && (
         <FormMessage
           message="인증 코드가 발송되었습니다. 이메일을 확인해주세요."

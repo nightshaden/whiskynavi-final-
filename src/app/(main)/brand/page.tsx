@@ -1,7 +1,4 @@
-import {
-  getApiBottles,
-  type BottleResponse,
-} from "@/apis/generated/api";
+import { getApiBottles, type BottleResponse } from "@/apis/generated/api";
 import type { Brand } from "@/types/brand";
 import Hero from "../_components/Hero";
 import BrandContent from "./_components/BrandContent";

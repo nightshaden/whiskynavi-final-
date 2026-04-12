@@ -1,7 +1,7 @@
 "use client";
 
-import type { Brand } from "@/types/brand";
 import type { BottleResponse } from "@/apis/generated/api";
+import type { Brand } from "@/types/brand";
 import BrandIntroduce from "./BrandIntroduce";
 
 interface Props {

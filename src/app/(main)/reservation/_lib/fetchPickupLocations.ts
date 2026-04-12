@@ -1,9 +1,11 @@
-import { getApiUsersBusinessesPickupLocations } from "@/apis/generated/api";
 import type { PickupLocationResponse } from "@/apis/generated/api";
+import { getApiUsersBusinessesPickupLocations } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
 
-export async function fetchPickupLocations(): Promise<PickupLocationResponse[]> {
+export async function fetchPickupLocations(): Promise<
+  PickupLocationResponse[]
+> {
   const token = await getAuthToken();
   if (!token) return [];
 

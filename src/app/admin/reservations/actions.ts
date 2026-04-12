@@ -44,19 +44,17 @@ const noticeFormSchema = z.object({
   maxOrderQuantity: optionalPositiveInt("인당 최대 예약 가능 병수"),
   reservationStartAt: z.string().min(1, "예약 시작일은 필수입니다."),
   reservationEndAt: z.string().min(1, "예약 종료일은 필수입니다."),
-  gradeConditions: z
-    .string()
-    .transform((v) => {
-      if (!v.trim()) return undefined;
-      try {
-        return JSON.parse(v) as {
-          applicableFrom: string;
-          requiredRole: string;
-        }[];
-      } catch {
-        throw new Error("등급 조건의 형식이 올바르지 않습니다.");
-      }
-    }),
+  gradeConditions: z.string().transform((v) => {
+    if (!v.trim()) return undefined;
+    try {
+      return JSON.parse(v) as {
+        applicableFrom: string;
+        requiredRole: string;
+      }[];
+    } catch {
+      throw new Error("등급 조건의 형식이 올바르지 않습니다.");
+    }
+  }),
 });
 
 function parseNoticeFormData(formData: FormData) {

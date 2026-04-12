@@ -31,9 +31,7 @@ export default function BottleSearchCombobox({
 }: BottleSearchComboboxProps) {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<BottleOption | null>(
-    defaultBottle
-      ? { ...defaultBottle, stockQuantity: null }
-      : null,
+    defaultBottle ? { ...defaultBottle, stockQuantity: null } : null,
   );
   const [options, setOptions] = useState<BottleOption[]>([]);
   const [search, setSearch] = useState("");
@@ -57,8 +55,7 @@ export default function BottleSearchCombobox({
     setLoading(true);
     setError(null);
     try {
-      const result: SearchBottlesResult =
-        await searchBottlesAction(keyword);
+      const result: SearchBottlesResult = await searchBottlesAction(keyword);
       // stale 응답 무시
       if (currentRequestId !== requestIdRef.current) return;
 
@@ -131,9 +128,7 @@ export default function BottleSearchCombobox({
       ? [selected, ...options]
       : options;
 
-  const displayValue = selected
-    ? `${selected.name} (ID: ${selected.id})`
-    : "";
+  const displayValue = selected ? `${selected.name} (ID: ${selected.id})` : "";
 
   return (
     <div ref={containerRef} className="relative">

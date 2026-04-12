@@ -83,9 +83,7 @@ export default function BannerDetailContent({
 
         {/* 메타데이터 */}
         <div className="rounded-lg border border-gray-200 bg-white p-6">
-          <h3 className="typo-bold-18 mb-4 text-gray-900">
-            배너 정보
-          </h3>
+          <h3 className="typo-bold-18 mb-4 text-gray-900">배너 정보</h3>
           <dl className="grid gap-4 sm:grid-cols-2">
             <div>
               <dt className="typo-medium-14 text-gray-500">ID</dt>
@@ -93,9 +91,7 @@ export default function BannerDetailContent({
             </div>
             <div>
               <dt className="typo-medium-14 text-gray-500">제목</dt>
-              <dd className="mt-1 text-gray-900">
-                {banner.title ?? "(없음)"}
-              </dd>
+              <dd className="mt-1 text-gray-900">{banner.title ?? "(없음)"}</dd>
             </div>
             <div className="sm:col-span-2">
               <dt className="typo-medium-14 text-gray-500">설명</dt>
@@ -127,9 +123,7 @@ export default function BannerDetailContent({
         {/* 이미지 상세 */}
         <div className="mt-6 grid gap-6 md:grid-cols-2">
           <div className="rounded-lg border border-gray-200 bg-white p-4">
-            <h4 className="typo-bold-14 mb-3 text-gray-700">
-              배경 이미지
-            </h4>
+            <h4 className="typo-bold-14 mb-3 text-gray-700">배경 이미지</h4>
             <div className="relative h-48 w-full overflow-hidden rounded-lg bg-gray-100">
               {banner.backgroundUrl ? (
                 <ImageWithFallback
@@ -146,9 +140,7 @@ export default function BannerDetailContent({
             </div>
           </div>
           <div className="rounded-lg border border-gray-200 bg-white p-4">
-            <h4 className="typo-bold-14 mb-3 text-gray-700">
-              메인 이미지
-            </h4>
+            <h4 className="typo-bold-14 mb-3 text-gray-700">메인 이미지</h4>
             <div className="relative h-48 w-full overflow-hidden rounded-lg bg-gray-100">
               {banner.mainUrl ? (
                 <ImageWithFallback

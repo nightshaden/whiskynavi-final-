@@ -147,12 +147,9 @@ export default function RestOfPage({ youtubeEmbedUrl }: RestOfPageProps) {
         <section className="py-6 md:py-12">
           <div className="mx-auto max-w-[1440px] px-4 lg:px-10">
             <div className="mb-4 md:mb-8">
-              <h2 className="mb-1 text-lg text-white md:mb-2 md:text-2xl">
+              <h2 className="mb-1 text-lg font-bold text-white md:mb-2 md:text-2xl">
                 YOUTUBE
               </h2>
-              <p className="text-xs text-gray-400 md:text-sm">
-                위스키내비의 다양한 콘텐츠를 만나보세요
-              </p>
             </div>
 
             <div className="relative mb-4 aspect-video overflow-hidden border border-white/10 bg-gray-900 md:mb-6">

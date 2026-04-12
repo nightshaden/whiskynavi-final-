@@ -1,12 +1,12 @@
 "use client";
 
+import type { BottleReservationNoticePublicResponse } from "@/apis/generated/api";
 import { useEffect, useState } from "react";
 import {
   calculateTimeRemaining,
   getNoticeStatus,
   type NoticeStatus,
 } from "./utils";
-import type { BottleReservationNoticePublicResponse } from "@/apis/generated/api";
 
 interface CountdownTimerResult {
   timeRemaining: string;

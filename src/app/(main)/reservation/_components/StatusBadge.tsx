@@ -1,6 +1,6 @@
+import { cn } from "@/lib/utils";
 import type { NoticeStatus } from "../_lib/utils";
 import { getStatusBadge } from "../_lib/utils";
-import { cn } from "@/lib/utils";
 
 interface StatusBadgeProps {
   status: NoticeStatus;
@@ -12,7 +12,7 @@ export default function StatusBadge({ status, className }: StatusBadgeProps) {
   return (
     <div
       className={cn(
-        "typo-bold-12 lg:text-sm px-2 py-1 text-white lg:px-4 lg:py-2",
+        "typo-bold-12 px-2 py-1 text-white lg:px-4 lg:py-2 lg:text-sm",
         badge.className,
         className,
       )}

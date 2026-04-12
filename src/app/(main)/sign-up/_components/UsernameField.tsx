@@ -98,10 +98,7 @@ export function UsernameField({
           {isPending ? "확인 중..." : isVerified ? "확인완료" : "중복확인"}
         </Button>
       </div>
-      <FormMessage
-        message={displayError}
-        className="typo-regular-12 mt-2"
-      />
+      <FormMessage message={displayError} className="typo-regular-12 mt-2" />
       {isVerified && !displayError && (
         <FormMessage
           message="사용 가능한 닉네임입니다."

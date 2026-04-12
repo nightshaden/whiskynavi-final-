@@ -1,8 +1,8 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
 import type { OrderResponse, PageOrderResponse } from "@/apis/generated/api";
 import { useIsDesktop } from "@/hooks/use-media-query";
+import { useRouter, useSearchParams } from "next/navigation";
 import { overlay } from "overlay-kit";
 import OrderCard from "./OrderCard";
 import OrderDetailModal from "./OrderDetailModal";
@@ -37,7 +37,7 @@ export default function OrdersTab({ orders }: OrdersTabProps) {
 
   return (
     <div>
-      <h3 className="typo-bold-20 md:text-2xl mb-4 text-white md:mb-6">
+      <h3 className="typo-bold-20 mb-4 text-white md:mb-6 md:text-2xl">
         주문내역
       </h3>
 

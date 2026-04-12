@@ -61,7 +61,10 @@ export default function BlacklistFormModal({
               onSelect={(user) =>
                 dispatch({
                   type: "SET_USER",
-                  payload: { userId: user.id!.toString(), name: user.name ?? "" },
+                  payload: {
+                    userId: user.id!.toString(),
+                    name: user.name ?? "",
+                  },
                 })
               }
               onClear={() => dispatch({ type: "CLEAR_USER" })}

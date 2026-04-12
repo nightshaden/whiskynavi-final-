@@ -55,17 +55,14 @@ const BrandIntroduce = ({ brand, bottles, registerBrandRef }: Props) => {
     };
   }, []);
 
-  const throttledSetIndex = useCallback(
-    (getNext: (prev: number) => number) => {
-      if (isAnimatingRef.current) return;
-      isAnimatingRef.current = true;
-      setCurrentIndex(getNext);
-      timerRef.current = setTimeout(() => {
-        isAnimatingRef.current = false;
-      }, ANIMATION_DURATION);
-    },
-    [],
-  );
+  const throttledSetIndex = useCallback((getNext: (prev: number) => number) => {
+    if (isAnimatingRef.current) return;
+    isAnimatingRef.current = true;
+    setCurrentIndex(getNext);
+    timerRef.current = setTimeout(() => {
+      isAnimatingRef.current = false;
+    }, ANIMATION_DURATION);
+  }, []);
 
   const nextProduct = () => {
     if (bottles.length === 0) return;
@@ -74,16 +71,12 @@ const BrandIntroduce = ({ brand, bottles, registerBrandRef }: Props) => {
 
   const prevProduct = () => {
     if (bottles.length === 0) return;
-    throttledSetIndex(
-      (prev) => (prev - 1 + bottles.length) % bottles.length,
-    );
+    throttledSetIndex((prev) => (prev - 1 + bottles.length) % bottles.length);
   };
 
   const goToIndex = useCallback(
     (index: number) => {
-      throttledSetIndex((prev) =>
-        prev === index ? prev : index,
-      );
+      throttledSetIndex((prev) => (prev === index ? prev : index));
     },
     [throttledSetIndex],
   );

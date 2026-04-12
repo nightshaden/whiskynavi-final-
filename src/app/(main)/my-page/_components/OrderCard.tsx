@@ -1,8 +1,12 @@
 "use client";
 
-import { ChevronRight } from "lucide-react";
 import type { OrderResponse } from "@/apis/generated/api";
-import { getOrderStatusConfig, formatCurrency, formatDate } from "../_lib/utils";
+import { ChevronRight } from "lucide-react";
+import {
+  formatCurrency,
+  formatDate,
+  getOrderStatusConfig,
+} from "../_lib/utils";
 
 interface OrderCardProps {
   order: OrderResponse;
@@ -27,16 +31,16 @@ export default function OrderCard({ order, onClick }: OrderCardProps) {
           </p>
         </div>
         <span
-          className={`typo-bold-12 md:text-sm px-2 py-0.5 md:px-3 md:py-1 ${status.colorClass}`}
+          className={`typo-bold-12 px-2 py-0.5 md:px-3 md:py-1 md:text-sm ${status.colorClass}`}
         >
           {status.label}
         </span>
       </div>
-      <h4 className="typo-bold-14 md:text-base mb-2 text-white">
+      <h4 className="typo-bold-14 mb-2 text-white md:text-base">
         {order.itemName || order.saleTitle || "상품명 없음"}
       </h4>
       <div className="flex items-center justify-between">
-        <p className="typo-bold-18 md:text-xl text-white">
+        <p className="typo-bold-18 text-white md:text-xl">
           {formatCurrency(order.totalPrice)}
         </p>
         <button className="flex items-center gap-1 text-xs text-gray-400 hover:text-white md:text-sm">

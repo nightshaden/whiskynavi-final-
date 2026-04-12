@@ -160,9 +160,7 @@ export default function AdminProductDetailView({
           {productDetails.extraInfos &&
             Object.keys(productDetails.extraInfos).length > 0 && (
               <div className="border-t pt-2">
-                <div className="typo-bold-14 mb-2 text-gray-600">
-                  추가 정보
-                </div>
+                <div className="typo-bold-14 mb-2 text-gray-600">추가 정보</div>
                 {Object.entries(productDetails.extraInfos).map(
                   ([key, value]) => (
                     <div key={key} className="flex gap-3">

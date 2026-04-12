@@ -1,9 +1,9 @@
 import { getApiBottlesParameters } from "@/apis/generated/api";
 import { Suspense } from "react";
+import Hero from "../_components/Hero";
 import ArchiveClientShell from "./_components/ArchiveClientShell";
 import BottleList from "./_components/BottleList";
 import BottleListSkeleton from "./_components/BottleListSkeleton";
-import Hero from "../_components/Hero";
 import { SearchParams } from "./_utils";
 
 type PageProps = {

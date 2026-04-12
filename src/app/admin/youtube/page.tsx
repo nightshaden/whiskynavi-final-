@@ -1,9 +1,9 @@
-import { getApiAdminKvStore } from "@/apis/generated/api";
 import { ApiError } from "@/apis/errors";
+import { getApiAdminKvStore } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
-import { YOUTUBE_KEY } from "./constants";
 import YoutubeContent from "./_components/YoutubeContent";
+import { YOUTUBE_KEY } from "./constants";
 
 export default async function YoutubePage() {
   const token = await getAuthToken();

@@ -4,9 +4,9 @@ import type { BottleSearchParameterValues } from "@/apis/generated/api";
 import type { ReactNode } from "react";
 import { FilterContext } from "../_context/FilterContext";
 import { useFilters } from "../_hooks/useFilters";
+import { ArchiveSidebar } from "./ArchiveSidebar";
 import BottleListSkeleton from "./BottleListSkeleton";
 import MobileSearchBar from "./MobileSearchBar";
-import { ArchiveSidebar } from "./ArchiveSidebar";
 
 interface ArchiveClientShellProps {
   bottleParams: BottleSearchParameterValues;

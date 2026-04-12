@@ -1,13 +1,17 @@
 "use client";
 
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
 import type { OrderResponse } from "@/apis/generated/api";
 import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import { overlay } from "overlay-kit";
-import { getOrderStatusConfig, formatCurrency, formatDate } from "../../_lib/utils";
-import { CANCELABLE_STATUSES } from "../../_lib/constants";
 import OrderCancelModal from "../../_components/OrderCancelModal";
+import { CANCELABLE_STATUSES } from "../../_lib/constants";
+import {
+  formatCurrency,
+  formatDate,
+  getOrderStatusConfig,
+} from "../../_lib/utils";
 
 interface OrderDetailClientProps {
   order: OrderResponse;
@@ -43,7 +47,7 @@ export default function OrderDetailClient({ order }: OrderDetailClientProps) {
             />
             <span className="font-semibold">돌아가기</span>
           </Link>
-          <h1 className="typo-bold-24 sm:text-3xl mb-2 text-white">
+          <h1 className="typo-bold-24 mb-2 text-white sm:text-3xl">
             주문 상세
           </h1>
           <p className="text-sm text-gray-400 sm:text-base">
@@ -52,14 +56,10 @@ export default function OrderDetailClient({ order }: OrderDetailClientProps) {
         </div>
 
         {/* Order Status */}
-        <div
-          className={`mb-4 border p-4 sm:mb-6 sm:p-6 ${status.colorClass}`}
-        >
+        <div className={`mb-4 border p-4 sm:mb-6 sm:p-6 ${status.colorClass}`}>
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <p className="typo-bold-20 sm:text-2xl mb-1">
-                {status.label}
-              </p>
+              <p className="typo-bold-20 mb-1 sm:text-2xl">{status.label}</p>
               <p className="text-sm text-white/60">
                 {formatDate(order.createdAt)}
               </p>
@@ -77,13 +77,22 @@ export default function OrderDetailClient({ order }: OrderDetailClientProps) {
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.8fr_1fr] lg:gap-12">
             {/* 상품 정보 */}
             <div>
-              <h3 className="typo-bold-18 sm:text-xl lg:text-2xl mb-4 border-b border-white/20 pb-3 text-white sm:mb-6 sm:pb-4">
+              <h3 className="typo-bold-18 mb-4 border-b border-white/20 pb-3 text-white sm:mb-6 sm:pb-4 sm:text-xl lg:text-2xl">
                 상품 정보
               </h3>
               <div className="space-y-3 sm:space-y-4">
-                <InfoRow label="상품명" value={order.itemName || order.saleTitle || "상품명 없음"} />
-                <InfoRow label="신청 수량" value={`${order.requestedQuantity ?? 0}병`} />
-                <InfoRow label="배정 수량" value={`${order.approvedQuantity ?? 0}병`} />
+                <InfoRow
+                  label="상품명"
+                  value={order.itemName || order.saleTitle || "상품명 없음"}
+                />
+                <InfoRow
+                  label="신청 수량"
+                  value={`${order.requestedQuantity ?? 0}병`}
+                />
+                <InfoRow
+                  label="배정 수량"
+                  value={`${order.approvedQuantity ?? 0}병`}
+                />
                 <InfoRow label="단가" value={formatCurrency(order.unitPrice)} />
                 <InfoRow
                   label="총 금액"
@@ -95,7 +104,7 @@ export default function OrderDetailClient({ order }: OrderDetailClientProps) {
 
             {/* 주문 정보 */}
             <div>
-              <h3 className="typo-bold-18 sm:text-xl lg:text-2xl mb-4 border-b border-white/20 pb-3 text-white sm:mb-6 sm:pb-4">
+              <h3 className="typo-bold-18 mb-4 border-b border-white/20 pb-3 text-white sm:mb-6 sm:pb-4 sm:text-xl lg:text-2xl">
                 주문 정보
               </h3>
               <div className="space-y-3 sm:space-y-4">

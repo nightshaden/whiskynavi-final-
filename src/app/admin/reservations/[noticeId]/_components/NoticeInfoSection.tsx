@@ -45,9 +45,7 @@ export default function NoticeInfoSection({ notice }: NoticeInfoSectionProps) {
             <span className="mb-1 block text-xs text-gray-500">
               {field.label}
             </span>
-            <span className="typo-medium-14 text-gray-900">
-              {field.value}
-            </span>
+            <span className="typo-medium-14 text-gray-900">{field.value}</span>
           </div>
         ))}
       </div>

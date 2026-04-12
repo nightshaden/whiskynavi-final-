@@ -1,6 +1,6 @@
 import Image from "next/image";
-import { SignInForm } from "./SignInForm";
 import { RegisteredToast } from "./RegisteredToast";
+import { SignInForm } from "./SignInForm";
 
 type PageProps = {
   searchParams: Promise<{ registered?: string }>;

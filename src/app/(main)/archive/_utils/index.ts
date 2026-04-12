@@ -147,7 +147,9 @@ export function parseFiltersFromSearchParams(
 /**
  * GetApiBottlesParams["filters"]를 URLSearchParams 문자열로 변환
  */
-export function buildQueryString(queries: GetApiBottlesParams["filters"]): string {
+export function buildQueryString(
+  queries: GetApiBottlesParams["filters"],
+): string {
   const params = new URLSearchParams();
 
   for (const [key, value] of Object.entries(queries)) {

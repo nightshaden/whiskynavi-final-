@@ -22,7 +22,8 @@ const FilterGroupContext = createContext<FilterGroupContextValue | null>(null);
 
 function useFilterGroup() {
   const ctx = useContext(FilterGroupContext);
-  if (!ctx) throw new Error("FilterGroup.Section must be used within FilterGroup");
+  if (!ctx)
+    throw new Error("FilterGroup.Section must be used within FilterGroup");
   return ctx;
 }
 
@@ -35,15 +36,10 @@ interface FilterGroupProps {
   children: React.ReactNode;
 }
 
-function FilterGroupRoot({
-  defaultExpanded = [],
-  children,
-}: FilterGroupProps) {
+function FilterGroupRoot({ defaultExpanded = [], children }: FilterGroupProps) {
   const [expandedSections, setExpandedSections] = useState<
     Record<string, boolean>
-  >(() =>
-    Object.fromEntries(defaultExpanded.map((key) => [key, true])),
-  );
+  >(() => Object.fromEntries(defaultExpanded.map((key) => [key, true])));
 
   const toggleSection = useCallback((key: string) => {
     setExpandedSections((prev) => ({ ...prev, [key]: !prev[key] }));

@@ -9,6 +9,7 @@ export const FilterContext = createContext<FilterContextValue | null>(null);
 
 export function useFilterContext() {
   const ctx = use(FilterContext);
-  if (!ctx) throw new Error("useFilterContext must be used within FilterProvider");
+  if (!ctx)
+    throw new Error("useFilterContext must be used within FilterProvider");
   return ctx;
 }

@@ -8,9 +8,7 @@ interface BannerEditPageProps {
   params: Promise<{ bannerId: string }>;
 }
 
-export default async function BannerEditPage({
-  params,
-}: BannerEditPageProps) {
+export default async function BannerEditPage({ params }: BannerEditPageProps) {
   const { bannerId } = await params;
   const token = await getAuthToken();
 

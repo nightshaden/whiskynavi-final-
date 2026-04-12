@@ -51,9 +51,7 @@ export default function ImageUploadArea({
 
   return (
     <div>
-      <label className="typo-medium-14 mb-2 block text-gray-700">
-        {label}
-      </label>
+      <label className="typo-medium-14 mb-2 block text-gray-700">{label}</label>
       <input
         ref={inputRef}
         type="file"
@@ -69,7 +67,9 @@ export default function ImageUploadArea({
       {previewUrl ? (
         <div
           className={`group relative h-48 w-full overflow-hidden rounded-lg border ${
-            isDragOver ? "border-amber-400 ring-2 ring-amber-200" : "border-gray-200"
+            isDragOver
+              ? "border-amber-400 ring-2 ring-amber-200"
+              : "border-gray-200"
           }`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
@@ -120,8 +120,12 @@ export default function ImageUploadArea({
             size={32}
             className={`mb-2 ${isDragOver ? "text-amber-500" : "text-gray-400"}`}
           />
-          <span className={`text-sm ${isDragOver ? "text-amber-600" : "text-gray-500"}`}>
-            {isDragOver ? "여기에 놓으세요" : "클릭 또는 드래그하여 이미지 업로드"}
+          <span
+            className={`text-sm ${isDragOver ? "text-amber-600" : "text-gray-500"}`}
+          >
+            {isDragOver
+              ? "여기에 놓으세요"
+              : "클릭 또는 드래그하여 이미지 업로드"}
           </span>
         </div>
       )}

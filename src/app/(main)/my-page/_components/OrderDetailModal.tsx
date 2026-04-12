@@ -1,16 +1,20 @@
 "use client";
 
 import type { OrderResponse } from "@/apis/generated/api";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { overlay } from "overlay-kit";
-import { getOrderStatusConfig, formatCurrency, formatDate } from "../_lib/utils";
 import { CANCELABLE_STATUSES } from "../_lib/constants";
+import {
+  formatCurrency,
+  formatDate,
+  getOrderStatusConfig,
+} from "../_lib/utils";
 import OrderCancelModal from "./OrderCancelModal";
 
 interface OrderDetailModalProps {
@@ -74,15 +78,11 @@ export default function OrderDetailModal({
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">신청 수량</span>
-                <span className="font-medium">
-                  {order.requestedQuantity}병
-                </span>
+                <span className="font-medium">{order.requestedQuantity}병</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">배정 수량</span>
-                <span className="font-medium">
-                  {order.approvedQuantity}병
-                </span>
+                <span className="font-medium">{order.approvedQuantity}병</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">단가</span>

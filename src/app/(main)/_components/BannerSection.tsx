@@ -64,12 +64,12 @@ export default function BannerSection({ banners }: BannerSectionProps) {
               {currentBanner.link ? (
                 <a
                   href={currentBanner.link}
-                  className="typo-medium-14 md:text-base lg:text-lg inline-block bg-white/90 px-5 py-2 text-black transition-all hover:bg-white md:px-8 md:py-3 lg:px-10 lg:py-4"
+                  className="typo-medium-14 inline-block bg-white/90 px-5 py-2 text-black transition-all hover:bg-white md:px-8 md:py-3 md:text-base lg:px-10 lg:py-4 lg:text-lg"
                 >
                   자세히 보기
                 </a>
               ) : (
-                <span className="typo-medium-14 md:text-base lg:text-lg inline-block bg-white/90 px-5 py-2 text-black md:px-8 md:py-3 lg:px-10 lg:py-4">
+                <span className="typo-medium-14 inline-block bg-white/90 px-5 py-2 text-black md:px-8 md:py-3 md:text-base lg:px-10 lg:py-4 lg:text-lg">
                   자세히 보기
                 </span>
               )}

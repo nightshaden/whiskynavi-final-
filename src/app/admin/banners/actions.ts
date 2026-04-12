@@ -63,8 +63,15 @@ export async function createBannerFormAction(
 
   try {
     await postApiAdminBanners(
-      { backgroundImg: shortenFile(backgroundImg), mainImg: shortenFile(mainImg) },
-      { title: parsed.data.title, description: parsed.data.description, link: parsed.data.link },
+      {
+        backgroundImg: shortenFile(backgroundImg),
+        mainImg: shortenFile(mainImg),
+      },
+      {
+        title: parsed.data.title,
+        description: parsed.data.description,
+        link: parsed.data.link,
+      },
       withToken(token),
     );
   } catch (error) {
@@ -111,7 +118,11 @@ export async function updateBannerFormAction(
         backgroundImg: hasBackground ? shortenFile(backgroundImg) : undefined,
         mainImg: hasMain ? shortenFile(mainImg) : undefined,
       },
-      { title: parsed.data.title, description: parsed.data.description, link: parsed.data.link },
+      {
+        title: parsed.data.title,
+        description: parsed.data.description,
+        link: parsed.data.link,
+      },
       withToken(token),
     );
   } catch (error) {

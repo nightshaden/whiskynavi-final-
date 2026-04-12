@@ -1,8 +1,8 @@
 "use server";
 
+import { ApiError, getUserErrorMessage } from "@/apis/errors";
 import type { SignupRequest } from "@/apis/generated/api";
 import { postApiAuthSignup } from "@/apis/generated/api";
-import { ApiError, getUserErrorMessage } from "@/apis/errors";
 import { redirect } from "next/navigation";
 import { signUpSchema } from "./schemas";
 
@@ -114,7 +114,8 @@ export async function signUpAction(
       ) {
         return {
           success: false,
-          error: "본인인증 정보가 만료되었거나 유효하지 않습니다. 다시 인증해주세요.",
+          error:
+            "본인인증 정보가 만료되었거나 유효하지 않습니다. 다시 인증해주세요.",
         };
       }
     }

@@ -75,5 +75,7 @@ export function buildInfoItems(notice: BottleReservationNoticePublicResponse) {
           ? `${notice.availableQuantity}병`
           : null,
     },
-  ].filter((item): item is { label: string; value: string } => item.value != null);
+  ].filter(
+    (item): item is { label: string; value: string } => item.value != null,
+  );
 }
