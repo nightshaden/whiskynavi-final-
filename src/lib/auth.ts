@@ -9,9 +9,11 @@ import KakaoProvider from "next-auth/providers/kakao";
 
 /**
  * access token 선제 리프레시 간격.
- * 백엔드 access token TTL(30분)보다 5분 앞서 갱신하여 만료 전에 교체.
+ * 백엔드 access token TTL(30분)보다 10분 앞서 갱신하여 만료 전에 교체.
+ * SessionProvider refetchInterval(5분)과의 worst-case 정렬에서도
+ * 최대 24분 시점에 갱신되어 6분 여유를 확보.
  */
-const TOKEN_REFRESH_INTERVAL = 25 * 60 * 1000;
+const TOKEN_REFRESH_INTERVAL = 20 * 60 * 1000;
 
 /**
  * raw fetch 기반 토큰 리프레시.
