@@ -4,7 +4,7 @@ import {
   type BottleResponse,
   type GetApiBottlesParams,
 } from "@/apis/generated/api";
-import BrandHero from "./_components/BrandHero";
+import Hero from "../_components/Hero";
 import BrandContent from "./_components/BrandContent";
 import { NAVI, TAILS, TOGETHER_IN_SPIRIT, TRAIL_AND_TAIL } from "./_constants";
 
@@ -29,7 +29,11 @@ const Page = async () => {
 
   return (
     <main className="min-h-screen bg-[#1d2429]">
-      <BrandHero />
+      <Hero
+        backgroundText="BRANDS"
+        title="브랜드"
+        subtitle="위스키내비의 브랜드 라인을 만나보세요."
+      />
       <BrandContent brands={BRANDS} bottlesMap={bottlesMap} />
       <div className="h-[114px]" />
     </main>

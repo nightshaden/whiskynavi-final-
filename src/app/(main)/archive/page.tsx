@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import ArchiveClientShell from "./_components/ArchiveClientShell";
 import BottleList from "./_components/BottleList";
 import BottleListSkeleton from "./_components/BottleListSkeleton";
-import ListHero from "./_components/ListHero";
+import Hero from "../_components/Hero";
 import { SearchParams } from "./_utils";
 
 type PageProps = {
@@ -17,7 +17,11 @@ const Page = async ({ searchParams }: PageProps) => {
 
   return (
     <div className="min-h-screen bg-[#1d2429]">
-      <ListHero />
+      <Hero
+        backgroundText="ARCHIVE"
+        title="아카이브"
+        subtitle="위스키내비에서 발매한 모든 제품을 둘러보세요."
+      />
       <ArchiveClientShell bottleParams={bottleParams.data}>
         <Suspense key={suspenseKey} fallback={<BottleListSkeleton />}>
           <BottleList params={params} />
