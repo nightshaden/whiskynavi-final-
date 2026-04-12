@@ -57,9 +57,9 @@ function MembershipCard({
           <p className="mb-3 text-xs whitespace-pre-line text-gray-400 md:mb-4 md:text-sm">
             {data.joinMessage}
           </p>
-          <button className="typo-bold-14 bg-white px-5 py-2 text-gray-900 transition-colors hover:bg-gray-100 md:px-6 md:py-2.5">
+          {/* <button className="typo-bold-14 bg-white px-5 py-2 text-gray-900 transition-colors hover:bg-gray-100 md:px-6 md:py-2.5">
             가입 신청하기
-          </button>
+          </button> */}
         </div>
       )}
     </div>

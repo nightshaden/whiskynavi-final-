@@ -66,6 +66,7 @@ export const MEMBERSHIP_INFO = {
       "연 2회 증류소 탐방 이벤트 참여",
       "멤버 전용 테이스팅 노트 제공",
     ],
+    // TODO: 문구 바꾸기
     joinMessage:
       "프리미엄 멤버십에 가입하시면\n특별한 혜택을 누리실 수 있습니다.",
   },

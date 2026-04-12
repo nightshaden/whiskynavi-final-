@@ -172,7 +172,7 @@ export async function updateProfile(
       originalEmail: formData.get("originalEmail"),
       emailVerified: formData.get("emailVerified"),
     });
-    
+
     if (!parsed.success) {
       return { success: false, error: parsed.error.issues[0].message };
     }
@@ -192,7 +192,10 @@ export async function updateProfile(
     }
 
     if (nicknameChanged) {
-      await putApiUsersMeNickname({ nickname: username }, withToken(token));
+      await putApiUsersMeNickname(
+        { nickname: username },
+        withToken(token),
+      );
     }
 
     if (emailChanged) {
