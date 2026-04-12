@@ -7,8 +7,6 @@ import { useTransition } from "react";
 import { toast } from "sonner";
 
 import type { AdminUserResponse } from "@/apis/generated/api";
-
-type UserRole = string;
 import { Badge } from "@/components/ui/badge";
 import {
   Select,
@@ -25,6 +23,8 @@ import { ROLE_COLOR_MAP, ROLE_LABEL_MAP } from "../../constants";
 import { removeMembershipAction } from "../actions";
 import AddMemberModal from "./AddMemberModal";
 import RemoveMemberConfirmModal from "./RemoveMemberConfirmModal";
+
+type UserRole = string;
 
 type MembershipBrand = "navi" | "tales";
 

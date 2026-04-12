@@ -101,7 +101,7 @@ function InfoFormStep({
   const [isUsernameVerified, setIsUsernameVerified] = useState(false);
 
   const canSubmit = isEmailVerified && isUsernameVerified && !isPending;
-  console.log("verifiedProfile", verifiedProfile);
+
   return (
     <form action={formAction} className="flex w-full flex-col gap-6">
       <section className="rounded-2xl border border-gray-200 bg-gray-50 p-5">
@@ -222,10 +222,7 @@ function InfoFormStep({
 
       <AgreementSection />
 
-      <FormMessage
-        message={state.fieldErrors?.nice}
-        className="text-center"
-      />
+      <FormMessage message={state.fieldErrors?.nice} className="text-center" />
       <FormMessage message={state.error} className="text-center" />
 
       <Button
