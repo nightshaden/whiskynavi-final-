@@ -7,7 +7,7 @@ export const emailSchema = z
 
 export const usernameSchema = z
   .string()
-  .min(3, "닉네임은 3자 이상이어야 합니다.")
+  .min(1, "닉네임을 입력해주세요.")
   .max(50, "닉네임은 50자 이하여야 합니다.");
 
 export const passwordSchema = z
