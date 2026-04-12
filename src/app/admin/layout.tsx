@@ -24,7 +24,7 @@ export default async function AdminLayout({
     redirect("/sign-in");
   }
 
-  if (!session.user.roles?.includes("ADMIN")) {
+  if (!session.user.roles?.includes("ROLE_ADMIN")) {
     redirect("/");
   }
 
