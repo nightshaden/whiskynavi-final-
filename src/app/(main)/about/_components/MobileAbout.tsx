@@ -97,11 +97,11 @@ export default function MobileAbout() {
             </motion.div>
 
             <div
-              className="mt-4 flex flex-col items-center text-sm leading-relaxed text-white/70 sm:text-base"
+              className="typo-regular-14 sm:typo-regular-16 mt-4 flex flex-col items-center leading-relaxed text-white/70"
               style={{ wordBreak: "keep-all" }}
             >
               <motion.p
-                className="typo-bold-16 sm:text-lg mb-6 px-4 text-center text-white/90 sm:mb-10"
+                className="typo-bold-16 sm:typo-bold-18 mb-6 px-4 text-center text-white/90 sm:mb-10"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.6 }}
@@ -110,7 +110,7 @@ export default function MobileAbout() {
               </motion.p>
               <div className="flex flex-col items-center space-y-2 px-4 sm:space-y-3">
                 <motion.p
-                  className="max-w-3xl text-center text-sm sm:text-base"
+                  className="typo-regular-14 sm:typo-regular-16 max-w-3xl text-center"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.9 }}
@@ -119,7 +119,7 @@ export default function MobileAbout() {
                   병입하여 국내외 시장에 선보이고 있습니다.
                 </motion.p>
                 <motion.p
-                  className="max-w-3xl text-center text-sm sm:text-base"
+                  className="typo-regular-14 sm:typo-regular-16 max-w-3xl text-center"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 1.2 }}
@@ -181,12 +181,15 @@ export default function MobileAbout() {
                   <div className="mb-4 h-0.5 w-12 bg-white sm:mb-6 sm:w-16"></div>
                   <h2
                     className="mb-6 text-4xl tracking-wider text-white sm:mb-8 sm:text-5xl"
-                    style={{ fontFamily: "D-DIN Condensed, sans-serif" }}
+                    style={{
+                      fontFamily: "D-DIN Condensed, sans-serif",
+                      WebkitTextStroke: "2px white",
+                    }}
                   >
                     DISCOVER
                   </h2>
                   <p
-                    className="pr-4 text-base leading-relaxed text-white/80 sm:text-lg"
+                    className="typo-regular-16 sm:typo-regular-18 pr-4 leading-relaxed text-white/80"
                     style={{ wordBreak: "keep-all" }}
                   >
                     신생 증류소 탐색 부터 원액 소싱, 캐스크 블렌딩까지 다채로운
@@ -223,12 +226,15 @@ export default function MobileAbout() {
                   <div className="mb-4 ml-auto h-0.5 w-12 bg-white sm:mb-6 sm:w-16"></div>
                   <h2
                     className="mb-6 text-4xl tracking-wider text-white sm:mb-8 sm:text-5xl"
-                    style={{ fontFamily: "D-DIN Condensed, sans-serif" }}
+                    style={{
+                      fontFamily: "D-DIN Condensed, sans-serif",
+                      WebkitTextStroke: "2px white",
+                    }}
                   >
                     TASTE
                   </h2>
                   <p
-                    className="pl-4 text-base leading-relaxed text-white/80 sm:text-lg"
+                    className="typo-regular-16 sm:typo-regular-18 pl-4 leading-relaxed text-white/80"
                     style={{ wordBreak: "keep-all" }}
                   >
                     소비자의 취향에 맞는 위스키를 제공하는 것, 위스키내비의
@@ -266,12 +272,15 @@ export default function MobileAbout() {
                   <div className="mx-auto mb-4 h-0.5 w-12 bg-white sm:mb-6 sm:w-16"></div>
                   <h2
                     className="mb-6 text-4xl tracking-wider text-white sm:mb-8 sm:text-5xl"
-                    style={{ fontFamily: "D-DIN Condensed, sans-serif" }}
+                    style={{
+                      fontFamily: "D-DIN Condensed, sans-serif",
+                      WebkitTextStroke: "2px white",
+                    }}
                   >
                     NAVIGATE
                   </h2>
                   <p
-                    className="px-4 text-base leading-relaxed text-white/80 sm:text-lg"
+                    className="typo-regular-16 sm:typo-regular-18 px-4 leading-relaxed text-white/80"
                     style={{ wordBreak: "keep-all" }}
                   >
                     위스키 초심자부터 매니아까지,
@@ -305,7 +314,10 @@ export default function MobileAbout() {
             <div className="mb-6 h-0.5 w-12 bg-white sm:mb-8 sm:w-16"></div>
             <h2
               className="text-3xl tracking-wider text-white sm:text-4xl"
-              style={{ fontFamily: "D-DIN Condensed, sans-serif" }}
+              style={{
+                fontFamily: "D-DIN Condensed, sans-serif",
+                WebkitTextStroke: "2px white",
+              }}
             >
               WHAT WE DO
             </h2>
@@ -319,14 +331,17 @@ export default function MobileAbout() {
                   <Droplet className="mb-4 h-10 w-10 text-white/70" />
                   <h3
                     className="mb-3 text-xl tracking-wider text-white"
-                    style={{ fontFamily: "D-DIN Condensed, sans-serif" }}
+                    style={{
+                      fontFamily: "D-DIN Condensed, sans-serif",
+                      WebkitTextStroke: "2px white",
+                    }}
                   >
                     SPIRIT SOURCING
                   </h3>
                 </div>
                 <div className="space-y-3">
                   <p
-                    className="text-sm leading-relaxed text-white/90"
+                    className="typo-regular-14 leading-relaxed text-white/90"
                     style={{ wordBreak: "keep-all" }}
                   >
                     현지 파트너와의 탄탄한 협력을 통해 우수한 품질의 원액을 선별
@@ -344,14 +359,17 @@ export default function MobileAbout() {
                   <ClipboardCheck className="mb-4 h-10 w-10 text-white/70" />
                   <h3
                     className="mb-3 text-xl tracking-wider text-white"
-                    style={{ fontFamily: "D-DIN Condensed, sans-serif" }}
+                    style={{
+                      fontFamily: "D-DIN Condensed, sans-serif",
+                      WebkitTextStroke: "2px white",
+                    }}
                   >
                     CASK CURATION
                   </h3>
                 </div>
                 <div className="space-y-3">
                   <p
-                    className="text-sm leading-relaxed text-white/90"
+                    className="typo-regular-14 leading-relaxed text-white/90"
                     style={{ wordBreak: "keep-all" }}
                   >
                     원액의 잠재력을 최고조로 끌어올릴 수 있는 최적의 캐스크를
@@ -369,14 +387,17 @@ export default function MobileAbout() {
                   <Ship className="mb-4 h-10 w-10 text-white/70" />
                   <h3
                     className="mb-3 text-xl tracking-wider text-white"
-                    style={{ fontFamily: "D-DIN Condensed, sans-serif" }}
+                    style={{
+                      fontFamily: "D-DIN Condensed, sans-serif",
+                      WebkitTextStroke: "2px white",
+                    }}
                   >
                     IMPORT
                   </h3>
                 </div>
                 <div className="space-y-3">
                   <p
-                    className="text-sm leading-relaxed text-white/90"
+                    className="typo-regular-14 leading-relaxed text-white/90"
                     style={{ wordBreak: "keep-all" }}
                   >
                     경쟁력 있는 해외 위스키 브랜드를 공식 수입 및 유통합니다.
@@ -395,14 +416,17 @@ export default function MobileAbout() {
                   <Users className="mb-4 h-10 w-10 text-white/70" />
                   <h3
                     className="mb-3 text-xl tracking-wider text-white"
-                    style={{ fontFamily: "D-DIN Condensed, sans-serif" }}
+                    style={{
+                      fontFamily: "D-DIN Condensed, sans-serif",
+                      WebkitTextStroke: "2px white",
+                    }}
                   >
                     OEM
                   </h3>
                 </div>
                 <div className="space-y-3">
                   <p
-                    className="text-sm leading-relaxed text-white/90"
+                    className="typo-regular-14 leading-relaxed text-white/90"
                     style={{ wordBreak: "keep-all" }}
                   >
                     기업 및 개인 고객을 위한 맞춤형 위스키 제조 솔루션을

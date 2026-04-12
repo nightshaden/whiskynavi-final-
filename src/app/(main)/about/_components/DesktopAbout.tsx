@@ -124,7 +124,7 @@ export default function DesktopAbout() {
               style={{ wordBreak: "keep-all" }}
             >
               <motion.p
-                className="typo-bold-24 xl:text-3xl mb-20 px-4 text-center text-white/90"
+                className="typo-bold-24 xl:typo-bold-30 mb-20 px-4 text-center text-white/90"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.6 }}
@@ -133,7 +133,7 @@ export default function DesktopAbout() {
               </motion.p>
               <div className="flex flex-col items-center space-y-2 px-4">
                 <motion.p
-                  className="max-w-5xl text-center text-lg xl:text-xl"
+                  className="typo-regular-18 xl:typo-regular-20 max-w-5xl text-center"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.9 }}
@@ -142,7 +142,7 @@ export default function DesktopAbout() {
                   병입하여 국내외 시장에 선보이고 있습니다.
                 </motion.p>
                 <motion.p
-                  className="max-w-5xl text-center text-lg xl:text-xl"
+                  className="typo-regular-18 xl:typo-regular-20 max-w-5xl text-center"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 1.2 }}
@@ -204,12 +204,15 @@ export default function DesktopAbout() {
                   <div className="mb-8 h-0.5 w-20 bg-white"></div>
                   <h2
                     className="mb-10 text-7xl tracking-wider text-white xl:text-8xl"
-                    style={{ fontFamily: "D-DIN Condensed, sans-serif" }}
+                    style={{
+                      fontFamily: "D-DIN Condensed, sans-serif",
+                      WebkitTextStroke: "2px white",
+                    }}
                   >
                     DISCOVER
                   </h2>
                   <p
-                    className="pr-4 text-2xl leading-relaxed text-white/80 xl:text-3xl"
+                    className="typo-regular-24 xl:typo-regular-30 pr-4 leading-relaxed text-white/80"
                     style={{ wordBreak: "keep-all" }}
                   >
                     신생 증류소 탐색 부터 원액 소싱, 캐스크 블렌딩까지
@@ -247,12 +250,15 @@ export default function DesktopAbout() {
                   <div className="mb-8 ml-auto h-0.5 w-20 bg-white"></div>
                   <h2
                     className="mb-10 text-7xl tracking-wider text-white xl:text-8xl"
-                    style={{ fontFamily: "D-DIN Condensed, sans-serif" }}
+                    style={{
+                      fontFamily: "D-DIN Condensed, sans-serif",
+                      WebkitTextStroke: "2px white",
+                    }}
                   >
                     TASTE
                   </h2>
                   <p
-                    className="pl-4 text-2xl leading-relaxed text-white/80 xl:text-3xl"
+                    className="typo-regular-24 xl:typo-regular-30 pl-4 leading-relaxed text-white/80"
                     style={{ wordBreak: "keep-all" }}
                   >
                     소비자의 취향에 맞는 위스키를 제공하는 것,
@@ -291,12 +297,15 @@ export default function DesktopAbout() {
                   <div className="mx-auto mb-8 h-0.5 w-20 bg-white"></div>
                   <h2
                     className="mb-10 text-7xl tracking-wider text-white xl:text-8xl"
-                    style={{ fontFamily: "D-DIN Condensed, sans-serif" }}
+                    style={{
+                      fontFamily: "D-DIN Condensed, sans-serif",
+                      WebkitTextStroke: "2px white",
+                    }}
                   >
                     NAVIGATE
                   </h2>
                   <p
-                    className="px-4 text-2xl leading-relaxed text-white/80 xl:text-3xl"
+                    className="typo-regular-24 xl:typo-regular-30 px-4 leading-relaxed text-white/80"
                     style={{ wordBreak: "keep-all" }}
                   >
                     위스키 초심자부터 매니아까지,
@@ -329,8 +338,11 @@ export default function DesktopAbout() {
           <div className="mb-16">
             <div className="mb-8 h-0.5 w-16 bg-white"></div>
             <h2
-              className="text-6xl tracking-wider text-white"
-              style={{ fontFamily: "D-DIN Condensed, sans-serif" }}
+              className="mb-10 text-7xl tracking-wider text-white xl:text-8xl"
+              style={{
+                fontFamily: "D-DIN Condensed, sans-serif",
+                WebkitTextStroke: "2px white",
+              }}
             >
               WHAT WE DO
             </h2>
@@ -361,7 +373,7 @@ export default function DesktopAbout() {
                 <div className="absolute right-6 bottom-12 left-6 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-hover:delay-300 group-hover:duration-500">
                   <div className="max-w-md space-y-4">
                     <p
-                      className="typo-medium-16 xl:text-lg leading-relaxed text-white/90"
+                      className="typo-medium-16 leading-relaxed text-white/90 xl:text-lg"
                       style={{ wordBreak: "keep-all" }}
                     >
                       현지 파트너와의 탄탄한 협력을 통해
@@ -401,7 +413,7 @@ export default function DesktopAbout() {
                 <div className="absolute right-6 bottom-12 left-6 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-hover:delay-300 group-hover:duration-500">
                   <div className="max-w-md space-y-4">
                     <p
-                      className="typo-medium-16 xl:text-lg leading-relaxed text-white/90"
+                      className="typo-medium-16 leading-relaxed text-white/90 xl:text-lg"
                       style={{ wordBreak: "keep-all" }}
                     >
                       원액의 잠재력을 최고조로 끌어올릴 수 있는
@@ -438,7 +450,7 @@ export default function DesktopAbout() {
                 <div className="absolute right-6 bottom-12 left-6 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-hover:delay-300 group-hover:duration-500">
                   <div className="max-w-md space-y-4">
                     <p
-                      className="typo-medium-16 xl:text-lg leading-relaxed text-white/90"
+                      className="typo-medium-16 leading-relaxed text-white/90 xl:text-lg"
                       style={{ wordBreak: "keep-all" }}
                     >
                       경쟁력 있는 해외 위스키 브랜드를
@@ -476,7 +488,7 @@ export default function DesktopAbout() {
                 <div className="absolute right-6 bottom-12 left-6 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-hover:delay-300 group-hover:duration-500">
                   <div className="max-w-md space-y-4">
                     <p
-                      className="typo-medium-16 xl:text-lg leading-relaxed text-white/90"
+                      className="typo-medium-16 leading-relaxed text-white/90 xl:text-lg"
                       style={{ wordBreak: "keep-all" }}
                     >
                       기업 및 개인 고객을 위한
