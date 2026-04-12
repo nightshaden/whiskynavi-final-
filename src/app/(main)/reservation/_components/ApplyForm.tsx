@@ -43,7 +43,7 @@ export default function ApplyForm({
           <SelectTrigger className="w-full border-white/20 bg-white/10 text-sm text-white lg:text-base [&>svg]:text-white/60">
             <SelectValue placeholder="업장을 선택해주세요" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent position="popper" className="max-h-60 w-[var(--radix-select-trigger-width)]">
             {pickupLocations.map((loc) => (
               <SelectItem key={loc.id} value={String(loc.id)}>
                 {loc.businessName}
@@ -83,7 +83,7 @@ export default function ApplyForm({
             type="button"
             onClick={() => onApply(quantity, Number(selectedLocationId))}
             disabled={!canSubmit}
-            className="typo-bold-16 lg:text-xl flex-1 bg-white px-4 py-2.5 text-gray-900 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 lg:px-6"
+            className="typo-bold-16 flex-1 bg-white px-4 py-2.5 text-gray-900 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 lg:px-6 lg:text-xl"
           >
             {isPending ? "신청 중..." : "예약하기"}
           </button>

@@ -5,11 +5,10 @@ import {
 } from "@/apis/generated/api";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
-import { fetchPickupLocations } from "./_lib/fetchPickupLocations";
+import Hero from "../_components/Hero";
 import ActiveReservationSection from "./_components/ActiveReservationSection";
 import EmptyState from "./_components/EmptyState";
 import RecentEndedSection from "./_components/RecentEndedSection";
-import Hero from "../_components/Hero";
 import UnauthenticatedGuard from "./_components/UnauthenticatedGuard";
 
 function normalizeActiveNotices(
@@ -57,21 +56,17 @@ export default async function ReservationPage() {
   }
 
   // 병렬 API 호출
-  const [activeResult, recentEndedResult, pickupLocations] =
-    await Promise.all([
-      getApiBottlesReservationsNotices({
-        page: 0,
-        size: 100,
-        sort: ["reservationStartAt,desc"],
-      }).catch(() => null),
-      getApiBottlesReservationsNoticesRecentEnded().catch(() => null),
-      fetchPickupLocations(),
-    ]);
+  const [activeResult, recentEndedResult] = await Promise.all([
+    getApiBottlesReservationsNotices({
+      page: 0,
+      size: 100,
+    }).catch(() => null),
+    getApiBottlesReservationsNoticesRecentEnded().catch(() => null),
+  ]);
 
   const activeNotices = normalizeActiveNotices(activeResult?.data);
 
-  const recentEndedNotices =
-    recentEndedResult?.data ?? [];
+  const recentEndedNotices = recentEndedResult?.data ?? [];
 
   const hasNoData =
     activeNotices.length === 0 && recentEndedNotices.length === 0;
@@ -89,10 +84,7 @@ export default async function ReservationPage() {
             <EmptyState />
           ) : (
             <>
-              <ActiveReservationSection
-                notices={activeNotices}
-                pickupLocations={pickupLocations}
-              />
+              <ActiveReservationSection notices={activeNotices} />
               <RecentEndedSection notices={recentEndedNotices} />
             </>
           )}

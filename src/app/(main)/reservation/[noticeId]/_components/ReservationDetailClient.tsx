@@ -6,12 +6,12 @@ import type {
 } from "@/apis/generated/api";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { applyReservation } from "../../actions";
-import { useCountdownTimer } from "../../_lib/useCountdownTimer";
 import ApplyForm from "../../_components/ApplyForm";
 import InfoList from "../../_components/InfoList";
 import StatusBadge from "../../_components/StatusBadge";
 import TimerDisplay from "../../_components/TimerDisplay";
+import { useCountdownTimer } from "../../_lib/useCountdownTimer";
+import { applyReservation } from "../../actions";
 
 interface ReservationDetailClientProps {
   notice: BottleReservationNoticePublicResponse;
@@ -30,7 +30,11 @@ export default function ReservationDetailClient({
   const handleApply = (quantity: number, userBusinessId: number) => {
     setError(null);
     startTransition(async () => {
-      const result = await applyReservation(notice.id!, quantity, userBusinessId);
+      const result = await applyReservation(
+        notice.id!,
+        quantity,
+        userBusinessId,
+      );
       if (result.success) {
         router.push("/reservation");
         router.refresh();
@@ -57,7 +61,7 @@ export default function ReservationDetailClient({
 
         {/* Info */}
         <div className="flex flex-col justify-center">
-          <h3 className="typo-bold-20 lg:text-3xl mb-4 text-white lg:mb-6">
+          <h3 className="typo-bold-20 mb-4 text-white lg:mb-6 lg:text-3xl">
             {notice.bottleName}
           </h3>
           <InfoList notice={notice} />
@@ -85,7 +89,7 @@ export default function ReservationDetailClient({
             <button
               type="button"
               disabled
-              className="typo-bold-16 lg:text-xl w-full cursor-not-allowed bg-gray-600 px-4 py-2.5 text-gray-400 transition-colors lg:px-6 lg:py-4"
+              className="typo-bold-16 w-full cursor-not-allowed bg-gray-600 px-4 py-2.5 text-gray-400 transition-colors lg:px-6 lg:py-4 lg:text-xl"
             >
               예약 대기 중
             </button>

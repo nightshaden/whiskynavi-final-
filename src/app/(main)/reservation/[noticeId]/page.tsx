@@ -1,10 +1,10 @@
 import { getApiBottlesReservationsNoticesNoticeid } from "@/apis/generated/api";
 import { authOptions } from "@/lib/auth";
-import { fetchPickupLocations } from "../_lib/fetchPickupLocations";
 import { ArrowLeft } from "lucide-react";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { fetchPickupLocations } from "../_lib/fetchPickupLocations";
 import ReservationDetailClient from "./_components/ReservationDetailClient";
 
 type PageProps = {
@@ -32,7 +32,7 @@ export default async function ReservationDetailPage({ params }: PageProps) {
   const pickupLocations = await fetchPickupLocations();
 
   return (
-    <div className="min-h-screen bg-[#1d2429]">
+    <div className="mt-20 min-h-screen bg-[#1d2429]">
       <div className="mx-auto max-w-[1440px] px-4 py-6 lg:px-10 lg:py-12">
         {/* Back Button */}
         <Link
@@ -41,12 +41,13 @@ export default async function ReservationDetailPage({ params }: PageProps) {
         >
           <ArrowLeft size={18} className="lg:hidden" />
           <ArrowLeft size={20} className="hidden lg:block" />
-          <span className="typo-bold-14 lg:text-base">
-            목록으로 돌아가기
-          </span>
+          <span className="typo-bold-14 lg:text-base">목록으로 돌아가기</span>
         </Link>
 
-        <ReservationDetailClient notice={notice} pickupLocations={pickupLocations} />
+        <ReservationDetailClient
+          notice={notice}
+          pickupLocations={pickupLocations}
+        />
       </div>
     </div>
   );
