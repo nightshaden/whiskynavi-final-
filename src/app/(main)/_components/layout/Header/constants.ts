@@ -5,5 +5,5 @@ export const NAV_LINKS = [
 ] as const;
 
 export const AUTH_NAV_LINKS = [
-  { href: "/reservation", label: "예약" },
+  // { href: "/reservation", label: "예약" },
 ] as const;
