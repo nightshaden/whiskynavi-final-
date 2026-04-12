@@ -47,54 +47,56 @@ export function ArchiveSidebar({ params }: ArchiveSidebarProps) {
 
   return (
     <aside className="hidden w-80 shrink-0 lg:mr-8 lg:block">
-      <div className="mb-6">
-        <h3 className="typo-bold-18 mb-3 text-white">보틀 검색</h3>
-        <div className="flex h-9 items-center gap-2 rounded-md border border-white/20 bg-popover px-3">
-          <IconSearch className="size-4 shrink-0" />
-          <input
-            placeholder="보틀 이름, 시리즈명으로 검색하기"
-            value={filters.keyword}
-            onChange={(e) => updateKeyword(e.target.value)}
-            className="flex h-full w-full bg-transparent text-sm text-popover-foreground outline-hidden placeholder:text-[#4C4C4C]"
-          />
+      <div className="border border-white/10 bg-white/5 p-6">
+        <div className="mb-6">
+          <h3 className="typo-bold-18 mb-3 text-white">보틀 검색</h3>
+          <div className="bg-popover flex h-9 items-center gap-2 rounded-md border border-white/20 px-3">
+            <IconSearch className="size-4 shrink-0" />
+            <input
+              placeholder="보틀 이름, 시리즈명으로 검색하기"
+              value={filters.keyword}
+              onChange={(e) => updateKeyword(e.target.value)}
+              className="text-popover-foreground flex h-full w-full bg-transparent text-sm outline-hidden placeholder:text-[#4C4C4C]"
+            />
+          </div>
         </div>
+
+        <CurrentFilters
+          filters={filters}
+          onRemove={removeActiveFilter}
+          onClearAll={clearAllFilters}
+        />
+
+        <FilterGroup defaultExpanded={DEFAULT_EXPANDED}>
+          <BrandFilter
+            brands={params.brands ?? []}
+            selectedBrands={filters.brands}
+            onToggle={toggleBrand}
+          />
+
+          <MaltTypeFilter
+            maltTypes={params.maltTypes ?? []}
+            selectedMaltTypes={filters.maltTypes}
+            onToggle={toggleMaltType}
+          />
+
+          <DistilleryFilter
+            distilleries={params.distilleries ?? []}
+            selectedDistilleries={filters.distilleries}
+            onChange={updateDistilleries}
+          />
+
+          <CaskTypeFilter
+            caskTypes={params.caskTypes ?? []}
+            selectedCaskTypes={filters.caskTypes}
+            onChange={updateCaskTypes}
+          />
+
+          <AbvFilter value={filters.abv} onChange={updateAbv} />
+
+          <VintageFilter value={filters.vintage} onChange={updateVintage} />
+        </FilterGroup>
       </div>
-
-      <CurrentFilters
-        filters={filters}
-        onRemove={removeActiveFilter}
-        onClearAll={clearAllFilters}
-      />
-
-      <FilterGroup defaultExpanded={DEFAULT_EXPANDED}>
-        <BrandFilter
-          brands={params.brands ?? []}
-          selectedBrands={filters.brands}
-          onToggle={toggleBrand}
-        />
-
-        <MaltTypeFilter
-          maltTypes={params.maltTypes ?? []}
-          selectedMaltTypes={filters.maltTypes}
-          onToggle={toggleMaltType}
-        />
-
-        <DistilleryFilter
-          distilleries={params.distilleries ?? []}
-          selectedDistilleries={filters.distilleries}
-          onChange={updateDistilleries}
-        />
-
-        <CaskTypeFilter
-          caskTypes={params.caskTypes ?? []}
-          selectedCaskTypes={filters.caskTypes}
-          onChange={updateCaskTypes}
-        />
-
-        <AbvFilter value={filters.abv} onChange={updateAbv} />
-
-        <VintageFilter value={filters.vintage} onChange={updateVintage} />
-      </FilterGroup>
     </aside>
   );
 }

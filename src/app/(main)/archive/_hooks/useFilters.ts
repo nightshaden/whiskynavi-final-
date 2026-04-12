@@ -29,20 +29,22 @@ export interface UseFiltersReturn {
 export function useFilters(): UseFiltersReturn {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const isInitialized = useRef(false);
   const [isPending, startTransition] = useTransition();
-  const initialKeyword = new URLSearchParams(searchParams.toString()).get("keyword") ?? "";
-  const prevKeywordRef = useRef(initialKeyword);
 
   // URL에서 초기 필터 상태 파싱
   const [filters, setFilters] = useState<FilterState>(() =>
     parseFiltersFromSearchParams(new URLSearchParams(searchParams.toString())),
   );
 
+  // 이전 필터를 추적하여 실제 변경 시에만 URL push
+  const prevFiltersRef = useRef(filters);
+  const prevKeywordRef = useRef(filters.keyword);
+
   // 필터 변경 시 URL 업데이트 (디바운스 적용)
   useEffect(() => {
-    if (!isInitialized.current) {
-      isInitialized.current = true;
+    if (
+      JSON.stringify(prevFiltersRef.current) === JSON.stringify(filters)
+    ) {
       return;
     }
 
@@ -52,6 +54,7 @@ export function useFilters(): UseFiltersReturn {
       : FILTER_DEFAULTS.DEBOUNCE_MS;
 
     const timeoutId = setTimeout(() => {
+      prevFiltersRef.current = filters;
       prevKeywordRef.current = filters.keyword;
       const queries = convertFiltersToQueries(filters);
       const queryString = buildQueryString(queries);

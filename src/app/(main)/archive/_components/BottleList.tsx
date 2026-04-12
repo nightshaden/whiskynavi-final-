@@ -1,7 +1,4 @@
-import {
-  getApiBottles,
-  type GetApiBottlesParams,
-} from "@/apis/generated/api";
+import { getApiBottles, type GetApiBottlesParams } from "@/apis/generated/api";
 import BottleCard from "../../_components/BottleCard";
 import type { SearchParams } from "../_utils";
 import { buildPageUrl } from "../_utils";
@@ -28,7 +25,7 @@ export default async function BottleList({ params }: BottleListProps) {
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-3 md:gap-6 lg:grid-cols-4 lg:gap-8">
+      <div className="grid grid-cols-2 gap-3 md:gap-6 lg:grid-cols-3 lg:gap-8">
         {bottlesResponse.content?.map((bottle) => (
           <BottleCard key={bottle.id} bottle={bottle} />
         ))}
