@@ -1,4 +1,5 @@
-import { ApiError, AuthError, NetworkError } from "./errors";
+import { AuthError, ApiError, NetworkError } from "./errors";
+import { refreshSessionToken } from "./refresh-token";
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://api.whiskynavi.com";
@@ -26,13 +27,14 @@ async function extractErrorDetail(res: Response): Promise<string> {
 
 /**
  * Orval custom mutator.
- * - 401: AuthError throw → 호출자(Server Action / error boundary)에서 처리
- * - 403: ApiError throw → 권한 부족으로 처리 (로그아웃하지 않음)
+ * - 401: 세션 기반 토큰 갱신 시도 후 재요청. 실패 시 AuthError throw.
+ * - 403: ApiError throw (권한 부족, 로그아웃하지 않음)
  * - 5xx: ApiError throw
  * - 네트워크 에러: NetworkError throw
  *
- * 토큰 리프레시는 이 함수에서 하지 않음.
- * NextAuth jwt callback이 getServerSession/getSession 호출 시 자동으로 처리.
+ * 토큰 갱신은 refreshSessionToken()을 통해 수행.
+ * - 서버: JWT 쿠키에서 refreshToken 추출 → callRefreshApi (raw fetch)
+ * - 클라이언트: getSession() → jwt callback 트리거 → 최신 accessToken 반환
  */
 export const customFetch = async <T>(
   url: string,
@@ -50,8 +52,40 @@ export const customFetch = async <T>(
     throw new NetworkError();
   }
 
-  // 401: 인증 만료 — AuthError throw (호출자에서 로그인 페이지 이동 결정)
+  // 401: 토큰 만료 → 세션 기반 refresh 시도 후 재요청
   if (res.status === 401) {
+    const newToken = await refreshSessionToken();
+
+    if (newToken) {
+      const retryHeaders = new Headers(options.headers);
+      retryHeaders.set("Authorization", `Bearer ${newToken}`);
+
+      let retryRes: Response;
+      try {
+        retryRes = await fetch(fullUrl, {
+          ...options,
+          headers: retryHeaders,
+          cache: "no-store",
+        });
+      } catch {
+        throw new NetworkError();
+      }
+
+      if (retryRes.ok) {
+        const data = await parseResponse(retryRes);
+        return { data, status: retryRes.status, headers: retryRes.headers } as T;
+      }
+
+      // 재시도도 401이면 refresh token도 만료된 것
+      if (retryRes.status === 401) {
+        throw new AuthError();
+      }
+
+      const detail = await extractErrorDetail(retryRes);
+      throw new ApiError(retryRes.status, detail);
+    }
+
+    // refresh 실패 → AuthError (SessionErrorHandler가 signOut 처리)
     throw new AuthError();
   }
 
