@@ -1,9 +1,8 @@
-import type { Brand } from "@/types/brand";
 import {
   getApiBottles,
   type BottleResponse,
-  type GetApiBottlesParams,
 } from "@/apis/generated/api";
+import type { Brand } from "@/types/brand";
 import Hero from "../_components/Hero";
 import BrandContent from "./_components/BrandContent";
 import { NAVI, TAILS, TOGETHER_IN_SPIRIT, TRAIL_AND_TAIL } from "./_constants";
@@ -13,14 +12,18 @@ const BRANDS: Brand[] = [NAVI, TAILS, TRAIL_AND_TAIL, TOGETHER_IN_SPIRIT];
 const Page = async () => {
   const brandBottlesEntries = await Promise.all(
     BRANDS.map(async (brand) => {
-      const { data } = await getApiBottles({
-        filters: {
-          brand: brand.id,
-          pageNumber: 0,
-          pageSize: 6,
-        } as GetApiBottlesParams["filters"],
-      });
-      return [brand.id, data.content ?? []] as const;
+      try {
+        const { data } = await getApiBottles({
+          filters: {
+            brand: [brand.id],
+            pageNumber: 0,
+            pageSize: 6,
+          },
+        });
+        return [brand.id, data.content ?? []] as const;
+      } catch {
+        return [brand.id, []] as const;
+      }
     }),
   );
 

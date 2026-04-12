@@ -1,5 +1,6 @@
 import type { BottleResponse } from "@/apis/generated/api";
 import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
+import { memo } from "react";
 import { getProductPosition } from "../_utils";
 
 interface Props {
@@ -12,7 +13,7 @@ interface Props {
   onSelect: (index: number) => void;
 }
 
-const DesktopCarouselCard = ({
+const DesktopCarouselCard = memo(function DesktopCarouselCard({
   bottle,
   bottleIndex,
   currentIndex,
@@ -20,9 +21,8 @@ const DesktopCarouselCard = ({
   brandId,
   brandName,
   onSelect,
-}: Props) => {
+}: Props) {
   const position = getProductPosition(currentIndex, bottleIndex, totalBottles);
-  console.log("bottle.name", bottle.name);
   if (!position) return null;
 
   const isCenter = bottleIndex === currentIndex;
@@ -32,7 +32,6 @@ const DesktopCarouselCard = ({
 
   return (
     <div
-      key={`${brandId}-bottle-${bottleIndex}`}
       className={`absolute transition-all duration-700 ease-in-out ${!isCenter ? "cursor-pointer" : ""}`}
       style={{
         transform: `
@@ -85,6 +84,6 @@ const DesktopCarouselCard = ({
       </div>
     </div>
   );
-};
+});
 
 export default DesktopCarouselCard;
