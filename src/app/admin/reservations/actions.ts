@@ -1,6 +1,7 @@
 "use server";
 
 import {
+  type PostApiAdminBottlesReservationsNoticesBodyGradeConditionsItem,
   getApiAdminBottles,
   postApiAdminBottlesReservationsApplicationsApplicationidCancel,
   postApiAdminBottlesReservationsApplicationsApplicationidConfirm,
@@ -18,6 +19,15 @@ export type FormState = { success: boolean; error?: string };
 
 // ─── Zod 스키마 ──────────────────────────────────────────
 
+const optionalPositiveInt = (fieldName: string) =>
+  z.string().transform((v): number | undefined => {
+    if (!v.trim()) return undefined;
+    const n = Number(v);
+    if (Number.isNaN(n) || n < 0 || !Number.isInteger(n))
+      throw new Error(`${fieldName}은(는) 0 이상의 정수여야 합니다.`);
+    return n;
+  });
+
 const noticeFormSchema = z.object({
   bottleId: z.string().transform((v) => {
     const n = Number(v);
@@ -30,26 +40,8 @@ const noticeFormSchema = z.object({
       throw new Error("price must be >= 0");
     return n;
   }),
-  availableQuantity: z
-    .string()
-    .transform((v) => {
-      if (!v.trim()) return undefined;
-      const n = Number(v);
-      if (Number.isNaN(n) || n < 0)
-        throw new Error("availableQuantity must be >= 0");
-      return n;
-    })
-    .optional(),
-  maxOrderQuantity: z
-    .string()
-    .transform((v) => {
-      if (!v.trim()) return undefined;
-      const n = Number(v);
-      if (Number.isNaN(n) || n < 0)
-        throw new Error("maxOrderQuantity must be >= 0");
-      return n;
-    })
-    .optional(),
+  availableQuantity: optionalPositiveInt("예약 받을 병수"),
+  maxOrderQuantity: optionalPositiveInt("인당 최대 예약 가능 병수"),
   reservationStartAt: z.string().min(1, "예약 시작일은 필수입니다."),
   reservationEndAt: z.string().min(1, "예약 종료일은 필수입니다."),
   gradeConditions: z
@@ -62,10 +54,9 @@ const noticeFormSchema = z.object({
           requiredRole: string;
         }[];
       } catch {
-        return undefined;
+        throw new Error("등급 조건의 형식이 올바르지 않습니다.");
       }
-    })
-    .optional(),
+    }),
 });
 
 function parseNoticeFormData(formData: FormData) {
@@ -78,13 +69,39 @@ function parseNoticeFormData(formData: FormData) {
     return { success: false as const, error: result.error.message };
   }
 
-  const { reservationStartAt, reservationEndAt, gradeConditions } = result.data;
+  const {
+    reservationStartAt,
+    reservationEndAt,
+    gradeConditions,
+    availableQuantity,
+    maxOrderQuantity,
+  } = result.data;
+
+  const start = new Date(reservationStartAt).getTime();
+  const end = new Date(reservationEndAt).getTime();
+
+  if (Number.isNaN(start) || Number.isNaN(end)) {
+    return {
+      success: false as const,
+      error: "예약 시작일 또는 종료일이 유효하지 않습니다.",
+    };
+  }
+
+  if (
+    availableQuantity != null &&
+    maxOrderQuantity != null &&
+    maxOrderQuantity > availableQuantity
+  ) {
+    return {
+      success: false as const,
+      error: "인당 최대 예약 병수는 전체 예약 받을 병수를 초과할 수 없습니다.",
+    };
+  }
+
   if (gradeConditions?.length) {
-    const start = new Date(reservationStartAt).getTime();
-    const end = new Date(reservationEndAt).getTime();
     for (const gc of gradeConditions) {
       const t = new Date(gc.applicableFrom).getTime();
-      if (t < start || t > end) {
+      if (Number.isNaN(t) || t < start || t > end) {
         return {
           success: false as const,
           error: "등급 조건의 적용 시작일은 예약 기간 내에 있어야 합니다.",
@@ -96,32 +113,65 @@ function parseNoticeFormData(formData: FormData) {
   return { success: true as const, data: result.data };
 }
 
+function buildNoticeBody(data: z.infer<typeof noticeFormSchema>) {
+  return {
+    bottleId: data.bottleId,
+    price: data.price,
+    reservationStartAt: new Date(data.reservationStartAt).toISOString(),
+    reservationEndAt: new Date(data.reservationEndAt).toISOString(),
+    gradeConditions:
+      data.gradeConditions as PostApiAdminBottlesReservationsNoticesBodyGradeConditionsItem[],
+    availableQuantity: data.availableQuantity,
+    maxOrderQuantity: data.maxOrderQuantity,
+  };
+}
+
 // ─── Bottle Search ───────────────────────────────────────
 
-export async function searchBottlesAction(keyword: string) {
+export interface BottleOption {
+  id: number;
+  name: string;
+  stockQuantity: number | null;
+}
+
+export type SearchBottlesResult =
+  | { success: true; data: BottleOption[] }
+  | { success: false; error: string };
+
+export async function searchBottlesAction(
+  keyword: string,
+): Promise<SearchBottlesResult> {
   const token = await getAuthToken();
-  if (!token) return [];
+  if (!token) return { success: false, error: "인증이 필요합니다." };
 
   try {
+    const trimmed = keyword.trim().slice(0, 100);
     const res = await getApiAdminBottles(
       {
         filters: {
           reservationStatus: "NO_RESERVATION",
-          keyword: keyword || undefined,
+          keyword: trimmed || undefined,
           pageSize: 20,
         },
       },
       withToken(token),
     );
-    return (
-      res.data.content?.map((b) => ({
-        id: b.id as number,
-        name: b.name as string,
-        stockQuantity: b.stockQuantity ?? null,
-      })) ?? []
-    );
-  } catch {
-    return [];
+    const data: BottleOption[] =
+      res.data.content
+        ?.filter(
+          (b): b is typeof b & { id: number; name: string } =>
+            b.id != null && b.name != null,
+        )
+        .map((b) => ({
+          id: b.id,
+          name: b.name,
+          stockQuantity: b.stockQuantity ?? null,
+        })) ?? [];
+    return { success: true, data };
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "제품 검색에 실패했습니다.";
+    return { success: false, error: message };
   }
 }
 
@@ -137,27 +187,9 @@ export async function createNoticeFormAction(
   const parsed = parseNoticeFormData(formData);
   if (!parsed.success) return { success: false, error: parsed.error };
 
-  const {
-    bottleId,
-    price,
-    reservationStartAt,
-    reservationEndAt,
-    gradeConditions,
-    availableQuantity,
-    maxOrderQuantity,
-  } = parsed.data;
-
   try {
     await postApiAdminBottlesReservationsNotices(
-      {
-        bottleId,
-        price,
-        reservationStartAt: new Date(reservationStartAt).toISOString(),
-        reservationEndAt: new Date(reservationEndAt).toISOString(),
-        gradeConditions: gradeConditions as any,
-        availableQuantity,
-        maxOrderQuantity,
-      },
+      buildNoticeBody(parsed.data),
       withToken(token),
     );
   } catch (error) {
@@ -181,28 +213,10 @@ export async function updateNoticeFormAction(
   const parsed = parseNoticeFormData(formData);
   if (!parsed.success) return { success: false, error: parsed.error };
 
-  const {
-    bottleId,
-    price,
-    reservationStartAt,
-    reservationEndAt,
-    gradeConditions,
-    availableQuantity,
-    maxOrderQuantity,
-  } = parsed.data;
-
   try {
     await putApiAdminBottlesReservationsNoticesNoticeid(
       noticeId,
-      {
-        bottleId,
-        price,
-        reservationStartAt: new Date(reservationStartAt).toISOString(),
-        reservationEndAt: new Date(reservationEndAt).toISOString(),
-        gradeConditions: gradeConditions as any,
-        availableQuantity,
-        maxOrderQuantity,
-      },
+      buildNoticeBody(parsed.data),
       withToken(token),
     );
   } catch (error) {

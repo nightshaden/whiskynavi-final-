@@ -82,8 +82,15 @@ export default function NoticeFormFields({
             제품 <span className="text-red-500">*</span>
           </label>
           <BottleSearchCombobox
-            defaultBottleId={defaultValues?.bottleId ?? undefined}
-            defaultBottleName={defaultValues?.bottleName ?? undefined}
+            defaultBottle={
+              defaultValues?.bottleId != null &&
+              defaultValues?.bottleName != null
+                ? {
+                    id: defaultValues.bottleId,
+                    name: defaultValues.bottleName,
+                  }
+                : undefined
+            }
           />
         </div>
 
@@ -108,6 +115,7 @@ export default function NoticeFormFields({
             type="number"
             name="availableQuantity"
             min={0}
+            step={1}
             defaultValue={defaultValues?.availableQuantity ?? ""}
             className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none"
             placeholder="예: 100"
@@ -122,6 +130,7 @@ export default function NoticeFormFields({
             type="number"
             name="maxOrderQuantity"
             min={0}
+            step={1}
             defaultValue={defaultValues?.maxOrderQuantity ?? ""}
             className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none"
             placeholder="예: 2"

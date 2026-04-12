@@ -10,68 +10,93 @@ import {
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { searchBottlesAction } from "../../actions";
+import {
+  type BottleOption,
+  type SearchBottlesResult,
+  searchBottlesAction,
+} from "../../actions";
 
-interface BottleOption {
-  id: number;
-  name: string;
-  stockQuantity: number | null;
+const MAX_CACHE_SIZE = 50;
+
+function formatStockQuantity(qty: number | null): string {
+  return qty != null ? `${qty.toLocaleString("ko-KR")}병` : "-";
 }
 
 interface BottleSearchComboboxProps {
-  defaultBottleId?: number;
-  defaultBottleName?: string;
+  defaultBottle?: { id: number; name: string };
 }
 
 export default function BottleSearchCombobox({
-  defaultBottleId,
-  defaultBottleName,
+  defaultBottle,
 }: BottleSearchComboboxProps) {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<BottleOption | null>(
-    defaultBottleId && defaultBottleName
-      ? { id: defaultBottleId, name: defaultBottleName, stockQuantity: null }
+    defaultBottle
+      ? { ...defaultBottle, stockQuantity: null }
       : null,
   );
   const [options, setOptions] = useState<BottleOption[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
   const cacheRef = useRef<Map<string, BottleOption[]>>(new Map());
+  const requestIdRef = useRef(0);
 
   const fetchBottles = useCallback(async (keyword: string) => {
     const cached = cacheRef.current.get(keyword);
     if (cached) {
       setOptions(cached);
+      setError(null);
       return;
     }
 
+    const currentRequestId = ++requestIdRef.current;
     setLoading(true);
+    setError(null);
     try {
-      const results = await searchBottlesAction(keyword);
-      cacheRef.current.set(keyword, results);
-      setOptions(results);
+      const result: SearchBottlesResult =
+        await searchBottlesAction(keyword);
+      // stale 응답 무시
+      if (currentRequestId !== requestIdRef.current) return;
+
+      if (!result.success) {
+        setError(result.error);
+        return;
+      }
+      // 캐시 크기 제한
+      if (cacheRef.current.size >= MAX_CACHE_SIZE) {
+        const firstKey = cacheRef.current.keys().next().value;
+        if (firstKey !== undefined) cacheRef.current.delete(firstKey);
+      }
+      cacheRef.current.set(keyword, result.data);
+      setOptions(result.data);
+    } catch {
+      if (currentRequestId !== requestIdRef.current) return;
+      setError("검색 중 오류가 발생했습니다.");
     } finally {
-      setLoading(false);
+      if (currentRequestId === requestIdRef.current) {
+        setLoading(false);
+      }
     }
   }, []);
 
-  // 포커스 시 초기 목록 로드
+  // 드롭다운 최초 오픈 시 빈 키워드로 초기 목록 로드
   useEffect(() => {
     if (open && options.length === 0 && !search) {
       fetchBottles("");
     }
   }, [open, options.length, search, fetchBottles]);
 
-  // 검색어 변경 시 debounced fetch
+  // 검색어 변경 시 debounced fetch (캐시 히트 시 debounce 없이 즉시 반영)
   useEffect(() => {
     if (!open) return;
-    // 캐시 히트 시 즉시 반영
     const cached = cacheRef.current.get(search);
     if (cached) {
       setOptions(cached);
+      setError(null);
       return;
     }
     if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -100,11 +125,23 @@ export default function BottleSearchCombobox({
     }
   }, [open]);
 
-  const displayValue = selected ? `${selected.name} (ID: ${selected.id})` : "";
+  // 편집 모드: 현재 선택된 제품이 검색 결과에 없으면 상단에 병합
+  const visibleOptions =
+    selected && !options.some((o) => o.id === selected.id)
+      ? [selected, ...options]
+      : options;
+
+  const displayValue = selected
+    ? `${selected.name} (ID: ${selected.id})`
+    : "";
 
   return (
     <div ref={containerRef} className="relative">
-      <input type="hidden" name="bottleId" value={selected?.id ?? ""} />
+      <input
+        type="hidden"
+        name="bottleId"
+        value={selected ? String(selected.id) : ""}
+      />
 
       <input
         ref={inputRef}
@@ -120,15 +157,16 @@ export default function BottleSearchCombobox({
           setOpen(true);
           setSearch("");
         }}
+        onKeyDown={(e) => {
+          if (e.key === "Escape") setOpen(false);
+        }}
       />
 
       {selected && !open && (
         <p className="mt-1.5 text-xs text-gray-500">
           재고 수량:{" "}
           <span className="font-medium text-gray-700">
-            {selected.stockQuantity != null
-              ? `${selected.stockQuantity.toLocaleString("ko-KR")}병`
-              : "-"}
+            {formatStockQuantity(selected.stockQuantity)}
           </span>
         </p>
       )}
@@ -141,11 +179,15 @@ export default function BottleSearchCombobox({
                 <div className="py-4 text-center text-sm text-gray-400">
                   검색 중...
                 </div>
+              ) : error ? (
+                <div className="py-4 text-center text-sm text-red-500">
+                  {error}
+                </div>
               ) : (
                 <>
                   <CommandEmpty>검색 결과가 없습니다.</CommandEmpty>
                   <CommandGroup>
-                    {options.map((bottle) => (
+                    {visibleOptions.map((bottle) => (
                       <CommandItem
                         key={bottle.id}
                         value={String(bottle.id)}
@@ -161,9 +203,7 @@ export default function BottleSearchCombobox({
                         </span>
                         <span className="flex items-center gap-2">
                           <span className="text-xs text-gray-400">
-                            {bottle.stockQuantity != null
-                              ? `${bottle.stockQuantity.toLocaleString("ko-KR")}병`
-                              : "-"}
+                            {formatStockQuantity(bottle.stockQuantity)}
                           </span>
                           <Check
                             className={cn(

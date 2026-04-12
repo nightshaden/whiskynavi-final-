@@ -26,5 +26,7 @@ export default async function NoticeEditPage({ params }: NoticeEditPageProps) {
     notFound();
   }
 
+  if (!notice) notFound();
+
   return <NoticeEditContent notice={notice} />;
 }
