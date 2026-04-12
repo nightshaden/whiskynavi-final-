@@ -68,14 +68,14 @@ export default function RestOfPage({ youtubeEmbedUrl }: RestOfPageProps) {
 
             {/* SHOP Card */}
             <Link
-              href="/reservation"
+              href="#"
               className="group flex aspect-square flex-col items-center justify-center border border-white/10 bg-white/5 p-3 text-center transition-all hover:border-white/30 hover:bg-white/10 md:p-4"
             >
               <div className="typo-bold-14 mb-2 text-white md:mb-3 md:text-xl lg:text-2xl">
                 RESERVATION
               </div>
               <div className="mb-3 text-[10px] leading-relaxed text-gray-400 md:mb-6 md:text-sm">
-                <br className="md:hidden" />
+                {/* <br className="md:hidden" />
                 <span className="hidden md:inline">
                   전국 취급점에서 위스키내비
                   <br />
@@ -83,11 +83,12 @@ export default function RestOfPage({ youtubeEmbedUrl }: RestOfPageProps) {
 
                 <span className="hidden md:inline">
                   제품군을 만나보실 수 있습니다.
-                </span>
+                </span> */}
+                준비중
               </div>
-              <div className="typo-bold-12 flex items-center gap-1 text-white/60 transition-colors group-hover:text-white md:text-sm">
+              {/* <div className="typo-bold-12 flex items-center gap-1 text-white/60 transition-colors group-hover:text-white md:text-sm">
                 바로가기 <ArrowRight size={12} className="md:size-4" />
-              </div>
+              </div> */}
             </Link>
 
             {/* COMMUNITY Card */}
@@ -124,7 +125,7 @@ export default function RestOfPage({ youtubeEmbedUrl }: RestOfPageProps) {
                 COMMUNITY
               </div>
               <div className="mb-3 text-[10px] leading-relaxed text-gray-400 md:mb-6 md:text-sm">
-                <br className="md:hidden" />
+                {/* <br className="md:hidden" />
                 <span className="hidden md:inline">
                   위스키내비 커뮤니티에서
                   <br />
@@ -132,11 +133,12 @@ export default function RestOfPage({ youtubeEmbedUrl }: RestOfPageProps) {
 
                 <span className="hidden md:inline">
                   다양한 소식들을 만나보세요.
-                </span>
+                </span> */}
+                준비중입니다.
               </div>
-              <div className="typo-bold-12 flex items-center gap-1 text-white/60 transition-colors group-hover:text-white md:text-sm">
+              {/* <div className="typo-bold-12 flex items-center gap-1 text-white/60 transition-colors group-hover:text-white md:text-sm">
                 바로가기 <ArrowRight size={12} className="md:size-4" />
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
