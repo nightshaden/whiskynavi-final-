@@ -21,7 +21,7 @@ const Navigation = () => {
     {
       title: "SHOP",
       desc: "전국 취급점에서 위스키내비 제품군을 만나보실 수 있습니다.",
-      path: "/shop",
+      path: "/reservation",
     },
   ];
   return (

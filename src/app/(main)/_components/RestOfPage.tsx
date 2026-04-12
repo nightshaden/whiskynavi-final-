@@ -8,11 +8,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import type { YoutubeConfig } from "@/lib/youtube-config";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { overlay } from "overlay-kit";
 
-export default function RestOfPage() {
+interface RestOfPageProps {
+  youtubeConfig: YoutubeConfig;
+}
+
+export default function RestOfPage({ youtubeConfig }: RestOfPageProps) {
   return (
     <>
       {/* Quick Navigation Cards */}
@@ -24,23 +29,19 @@ export default function RestOfPage() {
               href="/brand"
               className="group flex aspect-square flex-col items-center justify-center border border-white/10 bg-white/5 p-3 text-center transition-all hover:border-white/30 hover:bg-white/10 md:p-4"
             >
-              <div className="typo-bold-14 md:text-xl lg:text-2xl mb-2 text-white md:mb-3">
+              <div className="typo-bold-14 mb-2 text-white md:mb-3 md:text-xl lg:text-2xl">
                 OUR BRANDS
               </div>
               <div className="mb-3 text-[10px] leading-relaxed text-gray-400 md:mb-6 md:text-sm">
-                다양한 브랜드를
-                <br className="md:hidden" />
                 <span className="hidden md:inline">
                   위스키내비에서 전개하고 있는
                   <br />
                 </span>
-                만나보세요
                 <span className="hidden md:inline">
-                  <br />
                   다양한 브랜드들을 만나보세요.
                 </span>
               </div>
-              <div className="typo-bold-12 md:text-sm flex items-center gap-1 text-white/60 transition-colors group-hover:text-white">
+              <div className="typo-bold-12 flex items-center gap-1 text-white/60 transition-colors group-hover:text-white md:text-sm">
                 바로가기 <ArrowRight size={12} className="md:size-4" />
               </div>
             </Link>
@@ -50,49 +51,42 @@ export default function RestOfPage() {
               href="/archive"
               className="group flex aspect-square flex-col items-center justify-center border border-white/10 bg-white/5 p-3 text-center transition-all hover:border-white/30 hover:bg-white/10 md:p-4"
             >
-              <div className="typo-bold-14 md:text-xl lg:text-2xl mb-2 text-white md:mb-3">
+              <div className="typo-bold-14 mb-2 text-white md:mb-3 md:text-xl lg:text-2xl">
                 ARCHIVE
               </div>
               <div className="mb-3 text-[10px] leading-relaxed text-gray-400 md:mb-6 md:text-sm">
-                발매 제품을
                 <br className="md:hidden" />
                 <span className="hidden md:inline">
                   위스키내비에서 발매한
                   <br />
                 </span>
-                둘러보세요
-                <span className="hidden md:inline">
-                  <br />
-                  제품들을 둘러보세요.
-                </span>
+                <span className="hidden md:inline">제품들을 둘러보세요.</span>
               </div>
-              <div className="typo-bold-12 md:text-sm flex items-center gap-1 text-white/60 transition-colors group-hover:text-white">
+              <div className="typo-bold-12 flex items-center gap-1 text-white/60 transition-colors group-hover:text-white md:text-sm">
                 바로가기 <ArrowRight size={12} className="md:size-4" />
               </div>
             </Link>
 
             {/* SHOP Card */}
             <Link
-              href="/shop"
+              href="/reservation"
               className="group flex aspect-square flex-col items-center justify-center border border-white/10 bg-white/5 p-3 text-center transition-all hover:border-white/30 hover:bg-white/10 md:p-4"
             >
-              <div className="typo-bold-14 md:text-xl lg:text-2xl mb-2 text-white md:mb-3">
-                SHOP
+              <div className="typo-bold-14 mb-2 text-white md:mb-3 md:text-xl lg:text-2xl">
+                RESERVATION
               </div>
               <div className="mb-3 text-[10px] leading-relaxed text-gray-400 md:mb-6 md:text-sm">
-                전국 취급점
                 <br className="md:hidden" />
                 <span className="hidden md:inline">
                   전국 취급점에서 위스키내비
                   <br />
                 </span>
-                안내
+
                 <span className="hidden md:inline">
-                  <br />
                   제품군을 만나보실 수 있습니다.
                 </span>
               </div>
-              <div className="typo-bold-12 md:text-sm flex items-center gap-1 text-white/60 transition-colors group-hover:text-white">
+              <div className="typo-bold-12 flex items-center gap-1 text-white/60 transition-colors group-hover:text-white md:text-sm">
                 바로가기 <ArrowRight size={12} className="md:size-4" />
               </div>
             </Link>
@@ -127,23 +121,21 @@ export default function RestOfPage() {
               }
               className="group flex aspect-square flex-col items-center justify-center border border-white/10 bg-white/5 p-3 text-center transition-all hover:border-white/30 hover:bg-white/10 md:p-4"
             >
-              <div className="typo-bold-14 md:text-xl lg:text-2xl mb-2 text-white md:mb-3">
+              <div className="typo-bold-14 mb-2 text-white md:mb-3 md:text-xl lg:text-2xl">
                 COMMUNITY
               </div>
               <div className="mb-3 text-[10px] leading-relaxed text-gray-400 md:mb-6 md:text-sm">
-                커뮤니티
                 <br className="md:hidden" />
                 <span className="hidden md:inline">
                   위스키내비 커뮤니티에서
                   <br />
                 </span>
-                소식
+
                 <span className="hidden md:inline">
-                  <br />
                   다양한 소식들을 만나보세요.
                 </span>
               </div>
-              <div className="typo-bold-12 md:text-sm flex items-center gap-1 text-white/60 transition-colors group-hover:text-white">
+              <div className="typo-bold-12 flex items-center gap-1 text-white/60 transition-colors group-hover:text-white md:text-sm">
                 바로가기 <ArrowRight size={12} className="md:size-4" />
               </div>
             </div>
@@ -165,7 +157,7 @@ export default function RestOfPage() {
 
           <div className="relative mb-4 aspect-video overflow-hidden border border-white/10 bg-gray-900 md:mb-6">
             <iframe
-              src="https://www.youtube.com/embed/6a21GUdYDd8"
+              src={youtubeConfig.embedUrl}
               title="위스키내비 YouTube"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
@@ -175,7 +167,7 @@ export default function RestOfPage() {
 
           <div className="text-center">
             <a
-              href="https://www.youtube.com/@WhiskyNavi"
+              href={youtubeConfig.channelUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-xs text-white transition-all hover:gap-3 hover:text-gray-300 md:text-sm lg:text-base"

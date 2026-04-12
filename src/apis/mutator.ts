@@ -1,4 +1,6 @@
-import { ApiError, AuthError } from "./errors";
+import { AuthError } from "./errors";
+
+import { ApiError } from "./errors";
 import { handleAuthError } from "./handle-auth-error";
 import { refreshSessionToken } from "./refresh-token";
 
