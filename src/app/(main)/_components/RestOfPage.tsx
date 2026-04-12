@@ -8,16 +8,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { YoutubeConfig } from "@/lib/youtube-config";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { overlay } from "overlay-kit";
 
 interface RestOfPageProps {
-  youtubeConfig: YoutubeConfig;
+  youtubeEmbedUrl: string;
 }
 
-export default function RestOfPage({ youtubeConfig }: RestOfPageProps) {
+export default function RestOfPage({ youtubeEmbedUrl }: RestOfPageProps) {
   return (
     <>
       {/* Quick Navigation Cards */}
@@ -144,40 +143,42 @@ export default function RestOfPage({ youtubeConfig }: RestOfPageProps) {
       </section>
 
       {/* YouTube Section */}
-      <section className="py-6 md:py-12">
-        <div className="mx-auto max-w-[1440px] px-4 lg:px-10">
-          <div className="mb-4 md:mb-8">
-            <h2 className="mb-1 text-lg text-white md:mb-2 md:text-2xl">
-              YOUTUBE
-            </h2>
-            <p className="text-xs text-gray-400 md:text-sm">
-              위스키내비의 다양한 콘텐츠를 만나보세요
-            </p>
-          </div>
+      {youtubeEmbedUrl && (
+        <section className="py-6 md:py-12">
+          <div className="mx-auto max-w-[1440px] px-4 lg:px-10">
+            <div className="mb-4 md:mb-8">
+              <h2 className="mb-1 text-lg text-white md:mb-2 md:text-2xl">
+                YOUTUBE
+              </h2>
+              <p className="text-xs text-gray-400 md:text-sm">
+                위스키내비의 다양한 콘텐츠를 만나보세요
+              </p>
+            </div>
 
-          <div className="relative mb-4 aspect-video overflow-hidden border border-white/10 bg-gray-900 md:mb-6">
-            <iframe
-              src={youtubeConfig.embedUrl}
-              title="위스키내비 YouTube"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="absolute inset-0 h-full w-full"
-            />
-          </div>
+            <div className="relative mb-4 aspect-video overflow-hidden border border-white/10 bg-gray-900 md:mb-6">
+              <iframe
+                src={youtubeEmbedUrl}
+                title="위스키내비 YouTube"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="absolute inset-0 h-full w-full"
+              />
+            </div>
 
-          <div className="text-center">
-            <a
-              href={youtubeConfig.channelUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-xs text-white transition-all hover:gap-3 hover:text-gray-300 md:text-sm lg:text-base"
-            >
-              더 많은 영상 보러가기
-              <ArrowRight size={14} className="md:size-4 lg:size-5" />
-            </a>
+            <div className="text-center">
+              <a
+                href="https://www.youtube.com/@WhiskyNavi"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-xs text-white transition-all hover:gap-3 hover:text-gray-300 md:text-sm lg:text-base"
+              >
+                더 많은 영상 보러가기
+                <ArrowRight size={14} className="md:size-4 lg:size-5" />
+              </a>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </>
   );
 }

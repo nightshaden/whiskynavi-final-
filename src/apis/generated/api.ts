@@ -509,20 +509,20 @@ export interface AuthResponse {
 }
 
 /**
- * 랜딩 페이지 히어로 영역에 노출되는 배너 정보를 담은 응답입니다.
+ * 배너 조회 응답입니다.
  */
 export interface BannerResponse {
-  /** 업로드한 배경 이미지 URL입니다. */
+  /** 배경 이미지의 CloudFront URL입니다. */
   backgroundUrl?: string;
-  /** 보조 설명 문구입니다. */
+  /** 배너 설명입니다. */
   description?: string;
-  /** 배너 고유 식별자입니다. */
+  /** 배너 고유 ID입니다. */
   id?: number;
-  /** 배너 클릭 시 이동할 수 있는 선택 링크입니다. */
+  /** 배너 클릭 시 이동할 링크입니다. */
   link?: string;
-  /** 업로드한 전경 이미지 URL입니다. */
+  /** 메인 이미지의 CloudFront URL입니다. */
   mainUrl?: string;
-  /** 배너 상단에 노출되는 제목입니다. */
+  /** 배너 제목입니다. */
   title?: string;
 }
 
@@ -576,7 +576,7 @@ export interface BottleAdminParameterValues {
 }
 
 /**
- * Additional metadata key/value pairs.
+ * 추가 메타데이터입니다.
  */
 export type BottleAdminResponseExtraInfos = {[key: string]: string};
 
@@ -593,52 +593,52 @@ export const BottleAdminResponseReservationStatus = {
 } as const;
 
 /**
- * Admin response for bottle details.
+ * 관리자용 보틀 상세 응답입니다.
  */
 export interface BottleAdminResponse {
-  /** ABV percentage. */
+  /** 도수(ABV)입니다. */
   abv?: number;
-  /** Bottled date. */
+  /** 병입일입니다. */
   bottledDate?: string;
-  /** Brand name. */
+  /** 브랜드명입니다. */
   brand?: string;
-  /** Capacity (ml). */
+  /** 용량(ml)입니다. */
   capacity?: number;
-  /** Cask number. */
+  /** 캐스크 번호입니다. */
   caskNumber?: string;
-  /** Cask type. */
+  /** 캐스크 타입입니다. */
   caskType?: string;
-  /** Producer or company name. */
+  /** 제조사 또는 회사명입니다. */
   company?: string;
-  /** Consumer price (admin only). */
+  /** 소비자가입니다. */
   consumerPrice?: number;
-  /** Created timestamp. */
+  /** 생성 일시입니다. */
   createdAt?: string;
-  /** Bottle description. */
+  /** 보틀 설명입니다. */
   description?: string;
-  /** Distillation date. */
+  /** 증류일입니다. */
   distillationDate?: string;
-  /** Distillery name. */
+  /** 증류소명입니다. */
   distillery?: string;
-  /** Additional metadata key/value pairs. */
+  /** 추가 메타데이터입니다. */
   extraInfos?: BottleAdminResponseExtraInfos;
-  /** Bottle ID. */
+  /** 보틀 고유 ID입니다. */
   id?: number;
-  /** Presigned label image URL. */
+  /** 라벨 이미지의 CloudFront URL입니다. */
   imgUrl?: string;
-  /** Malt type. */
+  /** 몰트 타입입니다. */
   maltType?: string;
-  /** Bottle display name. */
+  /** 보틀 노출명입니다. */
   name?: string;
   /** 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값 */
   reservationStatus?: BottleAdminResponseReservationStatus;
-  /** Series name. */
+  /** 시리즈명입니다. */
   series?: string;
-  /** Stock quantity (admin only). */
+  /** 재고 수량입니다. */
   stockQuantity?: number;
-  /** Supply price (admin only). */
+  /** 공급가입니다. */
   supplyPrice?: number;
-  /** Last updated timestamp. */
+  /** 수정 일시입니다. */
   updatedAt?: string;
 }
 
@@ -792,6 +792,7 @@ export interface BottleReservationNoticePublicResponse {
   createdAt?: string;
   gradeConditions?: BottleReservationGradeConditionResponse[];
   id?: number;
+  maxOrderQuantity?: number;
   price?: number;
   reservationEndAt?: string;
   reservationStartAt?: string;
@@ -822,9 +823,11 @@ export type BottleReservationNoticeRequestGradeConditionsItem = {
 };
 
 export interface BottleReservationNoticeRequest {
+  availableQuantity?: number;
   bottleId: number;
   /** @minItems 1 */
   gradeConditions?: BottleReservationNoticeRequestGradeConditionsItem[];
+  maxOrderQuantity?: number;
   /** @minimum 0 */
   price: number;
   reservationEndAt: string;
@@ -841,6 +844,7 @@ export interface BottleReservationNoticeResponse {
   createdAt?: string;
   gradeConditions?: BottleReservationGradeConditionResponse[];
   id?: number;
+  maxOrderQuantity?: number;
   price?: number;
   reservationEndAt?: string;
   reservationStartAt?: string;
@@ -918,12 +922,12 @@ export interface BottleReservationPickupWaitingPickupRequest {
 export type BottleResponseExtraInfos = {[key: string]: string};
 
 /**
- * API에서 반환하는 병 정보 응답입니다.
+ * 보틀 상세 응답입니다.
  */
 export interface BottleResponse {
-  /** 알코올 도수입니다. */
+  /** 도수(ABV)입니다. */
   abv?: number;
-  /** 병입 연도입니다. */
+  /** 병입일입니다. */
   bottledDate?: string;
   /** 브랜드명입니다. */
   brand?: string;
@@ -935,27 +939,27 @@ export interface BottleResponse {
   caskType?: string;
   /** 제조사 또는 회사명입니다. */
   company?: string;
-  /** 병 정보가 생성된 일시입니다. */
+  /** 생성 일시입니다. */
   createdAt?: string;
-  /** 병 설명입니다. */
+  /** 보틀 설명입니다. */
   description?: string;
-  /** 증류 일자입니다. */
+  /** 증류일입니다. */
   distillationDate?: string;
-  /** 증류소입니다. */
+  /** 증류소명입니다. */
   distillery?: string;
   /** 추가 메타데이터입니다. */
   extraInfos?: BottleResponseExtraInfos;
-  /** 병 고유 식별자입니다. */
+  /** 보틀 고유 ID입니다. */
   id?: number;
-  /** 저장된 라벨 이미지의 공개 URL입니다. */
+  /** 라벨 이미지의 CloudFront 공개 URL입니다. */
   imgUrl?: string;
   /** 몰트 타입입니다. */
   maltType?: string;
-  /** 병의 표시명입니다. */
+  /** 보틀 노출명입니다. */
   name?: string;
-  /** 시리즈명이 있을 경우의 값입니다. */
+  /** 시리즈명입니다. */
   series?: string;
-  /** 병 정보가 마지막으로 수정된 일시입니다. */
+  /** 수정 일시입니다. */
   updatedAt?: string;
 }
 
@@ -986,28 +990,28 @@ export interface BottleSearchRequest {
   abvTo?: number;
   bottledDateFrom?: string;
   bottledDateTo?: string;
-  /** 브랜드명 필터 */
-  brand?: string;
-  /** 캐스크 타입 필터 */
-  caskType?: string;
-  /** 회사명 필터 */
-  company?: string;
+  /** 브랜드명 목록 필터 */
+  brand?: string[];
+  /** 캐스크 타입 목록 필터 */
+  caskType?: string[];
+  /** 회사명 목록 필터 */
+  company?: string[];
   distillationDateFrom?: string;
   distillationDateTo?: string;
-  /** 증류소 필터 */
-  distillery?: string;
+  /** 증류소 목록 필터 */
+  distillery?: string[];
   /** 통합검색어. 이름, 회사, 브랜드, 시리즈, 몰트 타입, 증류소, 캐스크 정보, 설명, 빈티지를 함께 검색합니다. */
   keyword?: string;
-  /** 몰트 타입 필터 */
-  maltType?: string;
+  /** 몰트 타입 목록 필터 */
+  maltType?: string[];
   /** 병 이름 필터 */
   name?: string;
   pageNumber?: number;
   pageSize?: number;
   /** 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값 */
   reservationStatus?: BottleSearchRequestReservationStatus;
-  /** 시리즈명 필터 */
-  series?: string;
+  /** 시리즈명 목록 필터 */
+  series?: string[];
   sortBy?: string;
   sortDirection?: string;
   vintageFrom?: number;
@@ -1082,6 +1086,44 @@ export interface EmailVerificationVerifyRequest {
    * @minLength 1
    */
   email?: string;
+}
+
+export interface KvStoreCreateRequest {
+  /**
+   * @minLength 0
+   * @maxLength 32
+   */
+  key?: string;
+  /**
+   * @minLength 0
+   * @maxLength 255
+   */
+  value?: string;
+}
+
+export interface KvStoreResponse {
+  createdAt?: string;
+  key?: string;
+  updatedAt?: string;
+  value?: string;
+}
+
+export interface KvStoreUpdateRequest {
+  /**
+   * @minLength 0
+   * @maxLength 32
+   */
+  key?: string;
+  /**
+   * @minLength 0
+   * @maxLength 255
+   */
+  value?: string;
+}
+
+export interface KvStoreUserResponse {
+  key?: string;
+  value?: string;
 }
 
 /**
@@ -2676,28 +2718,28 @@ filters: {
   abvTo?: number;
   bottledDateFrom?: string;
   bottledDateTo?: string;
-  /** 브랜드명 필터 */
-  brand?: string;
-  /** 캐스크 타입 필터 */
-  caskType?: string;
-  /** 회사명 필터 */
-  company?: string;
+  /** 브랜드명 목록 필터 */
+  brand?: string[];
+  /** 캐스크 타입 목록 필터 */
+  caskType?: string[];
+  /** 회사명 목록 필터 */
+  company?: string[];
   distillationDateFrom?: string;
   distillationDateTo?: string;
-  /** 증류소 필터 */
-  distillery?: string;
+  /** 증류소 목록 필터 */
+  distillery?: string[];
   /** 통합검색어. 이름, 회사, 브랜드, 시리즈, 몰트 타입, 증류소, 캐스크 정보, 설명, 빈티지를 함께 검색합니다. */
   keyword?: string;
-  /** 몰트 타입 필터 */
-  maltType?: string;
+  /** 몰트 타입 목록 필터 */
+  maltType?: string[];
   /** 병 이름 필터 */
   name?: string;
   pageNumber?: number;
   pageSize?: number;
   /** 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값 */
   reservationStatus?: GetApiAdminBottlesFiltersReservationStatus;
-  /** 시리즈명 필터 */
-  series?: string;
+  /** 시리즈명 목록 필터 */
+  series?: string[];
   sortBy?: string;
   sortDirection?: string;
   vintageFrom?: number;
@@ -2807,9 +2849,11 @@ export type PostApiAdminBottlesReservationsNoticesBodyGradeConditionsItem = {
 };
 
 export type PostApiAdminBottlesReservationsNoticesBody = {
+  availableQuantity?: number;
   bottleId: number;
   /** @minItems 1 */
   gradeConditions?: PostApiAdminBottlesReservationsNoticesBodyGradeConditionsItem[];
+  maxOrderQuantity?: number;
   /** @minimum 0 */
   price: number;
   reservationEndAt: string;
@@ -2840,9 +2884,11 @@ export type PutApiAdminBottlesReservationsNoticesNoticeidBodyGradeConditionsItem
 };
 
 export type PutApiAdminBottlesReservationsNoticesNoticeidBody = {
+  availableQuantity?: number;
   bottleId: number;
   /** @minItems 1 */
   gradeConditions?: PutApiAdminBottlesReservationsNoticesNoticeidBodyGradeConditionsItem[];
+  maxOrderQuantity?: number;
   /** @minimum 0 */
   price: number;
   reservationEndAt: string;
@@ -2930,6 +2976,32 @@ size?: number;
  * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
  */
 sort?: string[];
+};
+
+export type PostApiAdminKvStoreBody = {
+  /**
+   * @minLength 0
+   * @maxLength 32
+   */
+  key?: string;
+  /**
+   * @minLength 0
+   * @maxLength 255
+   */
+  value?: string;
+};
+
+export type UpdateBody = {
+  /**
+   * @minLength 0
+   * @maxLength 32
+   */
+  key?: string;
+  /**
+   * @minLength 0
+   * @maxLength 255
+   */
+  value?: string;
 };
 
 export type GetApiAdminOrdersParams = {
@@ -3618,28 +3690,28 @@ filters: {
   abvTo?: number;
   bottledDateFrom?: string;
   bottledDateTo?: string;
-  /** 브랜드명 필터 */
-  brand?: string;
-  /** 캐스크 타입 필터 */
-  caskType?: string;
-  /** 회사명 필터 */
-  company?: string;
+  /** 브랜드명 목록 필터 */
+  brand?: string[];
+  /** 캐스크 타입 목록 필터 */
+  caskType?: string[];
+  /** 회사명 목록 필터 */
+  company?: string[];
   distillationDateFrom?: string;
   distillationDateTo?: string;
-  /** 증류소 필터 */
-  distillery?: string;
+  /** 증류소 목록 필터 */
+  distillery?: string[];
   /** 통합검색어. 이름, 회사, 브랜드, 시리즈, 몰트 타입, 증류소, 캐스크 정보, 설명, 빈티지를 함께 검색합니다. */
   keyword?: string;
-  /** 몰트 타입 필터 */
-  maltType?: string;
+  /** 몰트 타입 목록 필터 */
+  maltType?: string[];
   /** 병 이름 필터 */
   name?: string;
   pageNumber?: number;
   pageSize?: number;
   /** 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값 */
   reservationStatus?: GetApiBottlesFiltersReservationStatus;
-  /** 시리즈명 필터 */
-  series?: string;
+  /** 시리즈명 목록 필터 */
+  series?: string[];
   sortBy?: string;
   sortDirection?: string;
   vintageFrom?: number;
@@ -5100,7 +5172,7 @@ export const getApiAdminBottlesReservationsNoticesNoticeid = async (noticeId: nu
 
 
 /**
- * 등록된 예약 공고의 기간과 가격 정보를 수정합니다.
+ * 등록된 예약 공고의 기간, 가격, 수량 정보를 수정합니다.
  * @summary 예약 공고 수정(관리자)
  */
 export type putApiAdminBottlesReservationsNoticesNoticeidResponse200 = {
@@ -5667,6 +5739,140 @@ export const postApiAdminBusinessesMembersUseridPickupRevoke = async (userId: nu
   {      
     ...options,
     method: 'POST'
+    
+    
+  }
+);}
+
+
+
+export type getAllApiAdminKvStoreResponse200 = {
+  data: KvStoreResponse[]
+  status: 200
+}
+    
+export type getAllApiAdminKvStoreResponseSuccess = (getAllApiAdminKvStoreResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getAllApiAdminKvStoreResponse = (getAllApiAdminKvStoreResponseSuccess)
+
+export const getGetAllApiAdminKvStoreUrl = () => {
+
+
+  
+
+  return `/api/admin/kv-stores`
+}
+
+export const getAllApiAdminKvStore = async ( options?: RequestInit): Promise<getAllApiAdminKvStoreResponse> => {
+  
+  return customFetch<getAllApiAdminKvStoreResponse>(getGetAllApiAdminKvStoreUrl(),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+export type postApiAdminKvStoreResponse200 = {
+  data: KvStoreResponse
+  status: 200
+}
+    
+export type postApiAdminKvStoreResponseSuccess = (postApiAdminKvStoreResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiAdminKvStoreResponse = (postApiAdminKvStoreResponseSuccess)
+
+export const getPostApiAdminKvStoreUrl = () => {
+
+
+  
+
+  return `/api/admin/kv-stores`
+}
+
+export const postApiAdminKvStore = async (postApiAdminKvStoreBody: PostApiAdminKvStoreBody, options?: RequestInit): Promise<postApiAdminKvStoreResponse> => {
+  
+  return customFetch<postApiAdminKvStoreResponse>(getPostApiAdminKvStoreUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiAdminKvStoreBody,)
+  }
+);}
+
+
+
+export type updateResponse200 = {
+  data: KvStoreResponse
+  status: 200
+}
+    
+export type updateResponseSuccess = (updateResponse200) & {
+  headers: Headers;
+};
+;
+
+export type updateResponse = (updateResponseSuccess)
+
+export const getUpdateUrl = () => {
+
+
+  
+
+  return `/api/admin/kv-stores`
+}
+
+export const update = async (updateBody: UpdateBody, options?: RequestInit): Promise<updateResponse> => {
+  
+  return customFetch<updateResponse>(getUpdateUrl(),
+  {      
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      updateBody,)
+  }
+);}
+
+
+
+export type getApiAdminKvStoreResponse200 = {
+  data: KvStoreResponse
+  status: 200
+}
+    
+export type getApiAdminKvStoreResponseSuccess = (getApiAdminKvStoreResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiAdminKvStoreResponse = (getApiAdminKvStoreResponseSuccess)
+
+export const getGetApiAdminKvStoreUrl = (key: string,) => {
+
+
+  
+
+  return `/api/admin/kv-stores/${key}`
+}
+
+export const getApiAdminKvStore = async (key: string, options?: RequestInit): Promise<getApiAdminKvStoreResponse> => {
+  
+  return customFetch<getApiAdminKvStoreResponse>(getGetApiAdminKvStoreUrl(key),
+  {      
+    ...options,
+    method: 'GET'
     
     
   }
@@ -7897,6 +8103,39 @@ export const getGetApiBottlesIdUrl = (id: number,) => {
 export const getApiBottlesId = async (id: number, options?: RequestInit): Promise<getApiBottlesIdResponse> => {
   
   return customFetch<getApiBottlesIdResponse>(getGetApiBottlesIdUrl(id),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+export type getApiKvStoreResponse200 = {
+  data: KvStoreUserResponse
+  status: 200
+}
+    
+export type getApiKvStoreResponseSuccess = (getApiKvStoreResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiKvStoreResponse = (getApiKvStoreResponseSuccess)
+
+export const getGetApiKvStoreUrl = (key: string,) => {
+
+
+  
+
+  return `/api/kv-stores/${key}`
+}
+
+export const getApiKvStore = async (key: string, options?: RequestInit): Promise<getApiKvStoreResponse> => {
+  
+  return customFetch<getApiKvStoreResponse>(getGetApiKvStoreUrl(key),
   {      
     ...options,
     method: 'GET'

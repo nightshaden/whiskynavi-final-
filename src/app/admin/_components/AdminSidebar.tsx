@@ -8,6 +8,7 @@ import {
   ImageIcon,
   Package,
   Users,
+  Youtube,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -40,6 +41,12 @@ const menuItems = [
     href: "/admin/banners",
   },
   { id: "blacklist", label: "블랙리스트", icon: Ban, href: "/admin/blacklist" },
+  {
+    id: "youtube",
+    label: "YouTube 관리",
+    icon: Youtube,
+    href: "/admin/youtube",
+  },
 ];
 
 interface AdminSidebarProps {
@@ -59,7 +66,7 @@ export default function AdminSidebar({ isOpen, statsSlot }: AdminSidebarProps) {
 
   return (
     <div
-      className={`${isOpen ? "w-64" : "w-0"} flex-shrink-0 overflow-hidden border-r border-gray-200 bg-white transition-all duration-300`}
+      className={`${isOpen ? "w-64" : "w-0"} shrink-0 overflow-hidden border-r border-gray-200 bg-white transition-all duration-300`}
     >
       <div className="p-6">
         <Link href="/admin">
