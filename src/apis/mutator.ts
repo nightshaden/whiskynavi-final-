@@ -1,6 +1,19 @@
 import { AuthError, ApiError, NetworkError } from "./errors";
 import { refreshSessionToken } from "./refresh-token";
 
+/**
+ * 인증 실패 처리.
+ * - 서버: redirect("/sign-in") — Next.js가 내부적으로 throw하여 로그인 페이지로 이동
+ * - 클라이언트: AuthError throw — SessionErrorHandler가 signOut 처리
+ */
+async function handleAuthFailure(): Promise<never> {
+  if (typeof window === "undefined") {
+    const { redirect } = await import("next/navigation");
+    redirect("/sign-in");
+  }
+  throw new AuthError();
+}
+
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://api.whiskynavi.com";
 
@@ -76,17 +89,17 @@ export const customFetch = async <T>(
         return { data, status: retryRes.status, headers: retryRes.headers } as T;
       }
 
-      // 재시도도 401이면 refresh token도 만료된 것
-      if (retryRes.status === 401) {
-        throw new AuthError();
+      // 재시도도 401/403이면 인증 완전 실패
+      if (retryRes.status === 401 || retryRes.status === 403) {
+        await handleAuthFailure();
       }
 
       const detail = await extractErrorDetail(retryRes);
       throw new ApiError(retryRes.status, detail);
     }
 
-    // refresh 실패 → AuthError (SessionErrorHandler가 signOut 처리)
-    throw new AuthError();
+    // refresh 실패 → 로그인 페이지로
+    await handleAuthFailure();
   }
 
   if (!res.ok) {
