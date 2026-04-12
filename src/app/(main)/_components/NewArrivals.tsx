@@ -12,12 +12,9 @@ const NewArrivals = ({ bottles }: Props) => {
     <section className="py-6 md:py-12">
       <div className="mx-auto max-w-[1440px] px-4 lg:px-10">
         <div className="mb-4 md:mb-8">
-          <h2 className="mb-1 text-lg text-white md:mb-2 md:text-2xl">
+          <h2 className="mb-1 text-lg font-bold text-white md:mb-2 md:text-2xl">
             NEW ARRIVALS
           </h2>
-          <p className="text-xs text-gray-400 md:text-sm">
-            최신 발매된 프리미엄 위스키
-          </p>
         </div>
 
         <div className="grid grid-cols-2 gap-3 md:gap-6 lg:grid-cols-4 lg:gap-8">
