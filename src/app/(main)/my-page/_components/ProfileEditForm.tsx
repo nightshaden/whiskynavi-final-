@@ -1,6 +1,5 @@
 "use client";
 
-import { useActionState, useState } from "react";
 import type { UserSelfResponse } from "@/apis/generated/api";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -8,25 +7,22 @@ import { FormMessage } from "@/components/ui/form-message";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CalendarDays } from "lucide-react";
-import { changePassword, updateProfile } from "../actions";
+import { useActionState } from "react";
+import { updateProfile } from "../actions";
 
 interface ProfileEditFormProps {
   user: UserSelfResponse;
   onClose: () => void;
 }
 
-export default function ProfileEditForm({ user, onClose }: ProfileEditFormProps) {
-  const [pwState, pwAction, pwPending] = useActionState(changePassword, {
-    success: false,
-  });
+export default function ProfileEditForm({
+  user,
+  onClose,
+}: ProfileEditFormProps) {
   const [profileState, profileAction, profilePending] = useActionState(
     updateProfile,
     { success: false },
   );
-
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const passwordMatch = !confirmPassword || newPassword === confirmPassword;
 
   return (
     <div className="space-y-4 md:space-y-6">
@@ -74,6 +70,7 @@ export default function ProfileEditForm({ user, onClose }: ProfileEditFormProps)
                 전화번호
               </Label>
               <Input
+                disabled
                 name="phone"
                 type="tel"
                 defaultValue={user.phone}
@@ -87,6 +84,7 @@ export default function ProfileEditForm({ user, onClose }: ProfileEditFormProps)
                 </Label>
                 <div className="relative">
                   <Input
+                    disabled
                     name="birthDate"
                     type="date"
                     defaultValue={user.birthDate}
@@ -102,15 +100,18 @@ export default function ProfileEditForm({ user, onClose }: ProfileEditFormProps)
                 <Label className="typo-bold-14 mb-2 block text-gray-700">
                   성별
                 </Label>
-                <select
+                <Input
+                  disabled
                   name="gender"
-                  defaultValue={user.gender}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-gray-600 focus:outline-none md:px-4 md:py-3 md:text-base"
-                >
-                  <option value="male">남성</option>
-                  <option value="female">여성</option>
-                  <option value="other">기타</option>
-                </select>
+                  defaultValue={
+                    user.gender === "M"
+                      ? "남성"
+                      : user.gender === "F"
+                        ? "여성"
+                        : "-"
+                  }
+                  className="text-sm md:text-base"
+                />
               </div>
             </div>
           </div>
@@ -122,10 +123,26 @@ export default function ProfileEditForm({ user, onClose }: ProfileEditFormProps)
             </h4>
             <div className="space-y-2 md:space-y-3">
               {[
-                { name: "emailAgree", label: "이메일 수신 동의", checked: user.emailAgree },
-                { name: "smsAgree", label: "SMS 수신 동의", checked: user.smsAgree },
-                { name: "marketingAgree", label: "마케팅 정보 수신 동의", checked: user.marketingAgree },
-                { name: "snsAgree", label: "SNS 수신 동의", checked: user.snsAgree },
+                {
+                  name: "emailAgree",
+                  label: "이메일 수신 동의",
+                  checked: user.emailAgree,
+                },
+                {
+                  name: "smsAgree",
+                  label: "SMS 수신 동의",
+                  checked: user.smsAgree,
+                },
+                {
+                  name: "marketingAgree",
+                  label: "마케팅 정보 수신 동의",
+                  checked: user.marketingAgree,
+                },
+                {
+                  name: "snsAgree",
+                  label: "SNS 수신 동의",
+                  checked: user.snsAgree,
+                },
               ].map((item) => (
                 <label
                   key={item.name}
@@ -142,7 +159,9 @@ export default function ProfileEditForm({ user, onClose }: ProfileEditFormProps)
 
           <FormMessage message={profileState.error} className="mt-3" />
           <FormMessage
-            message={profileState.success ? "프로필이 수정되었습니다." : undefined}
+            message={
+              profileState.success ? "프로필이 수정되었습니다." : undefined
+            }
             variant="success"
             className="mt-3"
           />
@@ -155,68 +174,6 @@ export default function ProfileEditForm({ user, onClose }: ProfileEditFormProps)
               취소
             </Button>
           </div>
-        </div>
-      </form>
-
-      {/* 비밀번호 변경 */}
-      <form action={pwAction}>
-        <h4 className="mb-3 font-bold text-gray-900 md:mb-4">비밀번호 변경</h4>
-        <div className="space-y-3 md:space-y-4">
-          <div>
-            <Label className="typo-bold-14 mb-2 block text-gray-700">
-              현재 비밀번호
-            </Label>
-            <Input
-              name="currentPassword"
-              type="password"
-              placeholder="현재 비밀번호를 입력하세요"
-              className="text-sm md:text-base"
-            />
-          </div>
-          <div>
-            <Label className="typo-bold-14 mb-2 block text-gray-700">
-              새 비밀번호
-            </Label>
-            <Input
-              name="newPassword"
-              type="password"
-              placeholder="새 비밀번호를 입력하세요"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              className="text-sm md:text-base"
-            />
-          </div>
-          <div>
-            <Label className="typo-bold-14 mb-2 block text-gray-700">
-              새 비밀번호 확인
-            </Label>
-            <Input
-              name="confirmPassword"
-              type="password"
-              placeholder="새 비밀번호를 다시 입력하세요"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className={`text-sm md:text-base ${!passwordMatch ? "border-red-500 focus:ring-red-600" : ""}`}
-            />
-            {!passwordMatch && (
-              <p className="mt-1 text-xs text-red-600">
-                비밀번호가 일치하지 않습니다
-              </p>
-            )}
-          </div>
-        </div>
-
-        <FormMessage message={pwState.error} className="mt-3" />
-        <FormMessage
-          message={pwState.success ? "비밀번호가 변경되었습니다." : undefined}
-          variant="success"
-          className="mt-3"
-        />
-
-        <div className="mt-4">
-          <Button type="submit" disabled={pwPending || !passwordMatch}>
-            {pwPending ? "변경 중..." : "비밀번호 변경"}
-          </Button>
         </div>
       </form>
     </div>

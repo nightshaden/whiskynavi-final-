@@ -17,6 +17,7 @@ import { useIsDesktop } from "@/hooks/use-media-query";
 import { Crown, User } from "lucide-react";
 import { overlay } from "overlay-kit";
 import { hasNaviMembership, hasTalesMembership } from "../_lib/utils";
+import PasswordChangeForm from "./PasswordChangeForm";
 import ProfileEditForm from "./ProfileEditForm";
 
 interface UserProfileCardProps {
@@ -56,6 +57,36 @@ export default function UserProfileCard({ user }: UserProfileCardProps) {
     });
   };
 
+  const handleChangePassword = () => {
+    overlay.open(({ isOpen, close }) => {
+      if (isDesktop) {
+        return (
+          <Dialog open={isOpen} onOpenChange={close}>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle>비밀번호 변경</DialogTitle>
+              </DialogHeader>
+              <PasswordChangeForm onClose={close} />
+            </DialogContent>
+          </Dialog>
+        );
+      } else {
+        return (
+          <Drawer open={isOpen} onOpenChange={(open) => !open && close()}>
+            <DrawerContent className="max-h-[85vh]">
+              <DrawerHeader>
+                <DrawerTitle>비밀번호 변경</DrawerTitle>
+              </DrawerHeader>
+              <div className="overflow-y-auto px-4 pb-4">
+                <PasswordChangeForm onClose={close} />
+              </div>
+            </DrawerContent>
+          </Drawer>
+        );
+      }
+    });
+  };
+
   return (
     <div className="mb-6 border border-white/10 bg-white/5 p-4 text-white md:mb-8 md:p-8">
       <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
@@ -65,9 +96,15 @@ export default function UserProfileCard({ user }: UserProfileCardProps) {
             <h2 className="typo-bold-24 md:text-3xl">{user.name}님</h2>
             <button
               onClick={handleEditProfile}
-              className="typo-bold-12 md:text-sm border border-white/20 bg-white/10 px-2.5 py-1 transition-colors hover:bg-white/20 md:px-3 md:py-1.5"
+              className="typo-bold-12 border border-white/20 bg-white/10 px-2.5 py-1 transition-colors hover:bg-white/20 md:px-3 md:py-1.5 md:text-sm"
             >
-              내 정보
+              내 정보 수정
+            </button>
+            <button
+              onClick={handleChangePassword}
+              className="typo-bold-12 border border-white/20 bg-white/10 px-2.5 py-1 transition-colors hover:bg-white/20 md:px-3 md:py-1.5 md:text-sm"
+            >
+              비밀번호 변경
             </button>
           </div>
           <p className="text-sm text-white/90 md:text-base">@{user.username}</p>
