@@ -666,6 +666,7 @@ export const BottleReservationApplicationPublicResponseStatus = {
 
 export interface BottleReservationApplicationPublicResponse {
   bottleId?: number;
+  bottleImgUrl?: string;
   bottleName?: string;
   confirmedQuantity?: number;
   createdAt?: string;
@@ -709,6 +710,7 @@ export interface BottleReservationPickupBusinessResponse {
 export interface BottleReservationApplicationResponse {
   applicantUser?: BottleReservationApplicantResponse;
   bottleId?: number;
+  bottleImgUrl?: string;
   bottleName?: string;
   confirmedQuantity?: number;
   createdAt?: string;
@@ -788,6 +790,7 @@ export interface BottleReservationNoticePublicResponse {
   availableQuantity?: number;
   bottleBrand?: string;
   bottleId?: number;
+  bottleImgUrl?: string;
   bottleName?: string;
   createdAt?: string;
   gradeConditions?: BottleReservationGradeConditionResponse[];
@@ -840,6 +843,7 @@ export interface BottleReservationNoticeResponse {
   availableQuantity?: number;
   bottleBrand?: string;
   bottleId?: number;
+  bottleImgUrl?: string;
   bottleName?: string;
   createdAt?: string;
   gradeConditions?: BottleReservationGradeConditionResponse[];
@@ -874,6 +878,7 @@ export const BottleReservationPickupApplicationResponseStatus = {
 export interface BottleReservationPickupApplicationResponse {
   applicantUser?: BottleReservationPickupApplicantResponse;
   bottleId?: number;
+  bottleImgUrl?: string;
   bottleName?: string;
   confirmedQuantity?: number;
   createdAt?: string;
@@ -2560,6 +2565,30 @@ export interface TossWebhookResponse {
   pgOrderId?: string;
   /** 실제 후처리 수행 여부 */
   processed?: boolean;
+}
+
+/**
+ * 이메일 변경 요청
+ */
+export interface UpdateEmailRequest {
+  /**
+   * 변경할 새 이메일 주소
+   * @minLength 0
+   * @maxLength 100
+   */
+  newEmail?: string;
+}
+
+/**
+ * 닉네임 변경 요청
+ */
+export interface UpdateNicknameRequest {
+  /**
+   * 변경할 닉네임
+   * @minLength 3
+   * @maxLength 50
+   */
+  nickname?: string;
 }
 
 /**
@@ -4460,6 +4489,61 @@ export type PostApiUsersBusinessesPickupReservationsApplicationsWaitingPickupBod
   bottleId?: number;
   /** 같은 병이 여러 공고에 걸쳐 있을 때 범위를 좁히는 예약 공고 ID */
   noticeId?: number;
+};
+
+/**
+ * 이메일 변경 요청
+ */
+export type PutApiUsersMeEmailBody = {
+  /**
+   * 변경할 새 이메일 주소
+   * @minLength 0
+   * @maxLength 100
+   */
+  newEmail?: string;
+};
+
+/**
+ * 회원가입용 이메일 인증 코드 발송 요청
+ */
+export type PostApiUsersMeEmailVerificationSendBody = {
+  /**
+   * 인증 코드를 받을 이메일 주소
+   * @minLength 1
+   */
+  email?: string;
+};
+
+export type PostApiUsersMeEmailVerificationSend200 = {[key: string]: string};
+
+/**
+ * 회원가입 이메일 인증코드 검증 요청
+ */
+export type PostApiUsersMeEmailVerificationVerifyBody = {
+  /**
+   * 인증 코드
+   * @minLength 1
+   */
+  code?: string;
+  /**
+   * 인증 이메일 주소
+   * @minLength 1
+   */
+  email?: string;
+};
+
+export type PostApiUsersMeEmailVerificationVerify200 = {[key: string]: string};
+
+/**
+ * 닉네임 변경 요청
+ */
+export type PutApiUsersMeNicknameBody = {
+  /**
+   * 변경할 닉네임
+   * @minLength 3
+   * @maxLength 50
+   */
+  nickname?: string;
 };
 
 /**
@@ -9719,7 +9803,7 @@ export const postApiUsersBusinessesPickupReservationsApplicationsApplicationidWa
 
 /**
  * 로그인한 사용자의 프로필과 멤버십 상태를 반환합니다.
- * @summary 내 프로필 조회
+ * @summary 내 정보 조회
  */
 export type getApiUsersMeResponse200 = {
   data: UserSelfResponse
@@ -9755,7 +9839,159 @@ export const getApiUsersMe = async ( options?: RequestInit): Promise<getApiUsers
 
 
 /**
- * 인증된 사용자 계정에 연동된 소셜 계정 목록을 조회합니다.
+ * 사전 인증이 완료된 새 이메일로 계정 이메일을 변경합니다.
+ * @summary 이메일 변경
+ */
+export type putApiUsersMeEmailResponse200 = {
+  data: AuthResponse
+  status: 200
+}
+    
+export type putApiUsersMeEmailResponseSuccess = (putApiUsersMeEmailResponse200) & {
+  headers: Headers;
+};
+;
+
+export type putApiUsersMeEmailResponse = (putApiUsersMeEmailResponseSuccess)
+
+export const getPutApiUsersMeEmailUrl = () => {
+
+
+  
+
+  return `/api/users/me/email`
+}
+
+export const putApiUsersMeEmail = async (putApiUsersMeEmailBody: PutApiUsersMeEmailBody, options?: RequestInit): Promise<putApiUsersMeEmailResponse> => {
+  
+  return customFetch<putApiUsersMeEmailResponse>(getPutApiUsersMeEmailUrl(),
+  {      
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      putApiUsersMeEmailBody,)
+  }
+);}
+
+
+
+/**
+ * 변경할 이메일의 점유 여부를 확인하기 위해 인증코드를 발송합니다.
+ * @summary 이메일 변경 인증코드 발송
+ */
+export type postApiUsersMeEmailVerificationSendResponse200 = {
+  data: PostApiUsersMeEmailVerificationSend200
+  status: 200
+}
+    
+export type postApiUsersMeEmailVerificationSendResponseSuccess = (postApiUsersMeEmailVerificationSendResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiUsersMeEmailVerificationSendResponse = (postApiUsersMeEmailVerificationSendResponseSuccess)
+
+export const getPostApiUsersMeEmailVerificationSendUrl = () => {
+
+
+  
+
+  return `/api/users/me/email-verification/send`
+}
+
+export const postApiUsersMeEmailVerificationSend = async (postApiUsersMeEmailVerificationSendBody: PostApiUsersMeEmailVerificationSendBody, options?: RequestInit): Promise<postApiUsersMeEmailVerificationSendResponse> => {
+  
+  return customFetch<postApiUsersMeEmailVerificationSendResponse>(getPostApiUsersMeEmailVerificationSendUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiUsersMeEmailVerificationSendBody,)
+  }
+);}
+
+
+
+/**
+ * 변경할 이메일로 받은 인증코드를 검증합니다.
+ * @summary 이메일 변경 인증코드 검증
+ */
+export type postApiUsersMeEmailVerificationVerifyResponse200 = {
+  data: PostApiUsersMeEmailVerificationVerify200
+  status: 200
+}
+    
+export type postApiUsersMeEmailVerificationVerifyResponseSuccess = (postApiUsersMeEmailVerificationVerifyResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiUsersMeEmailVerificationVerifyResponse = (postApiUsersMeEmailVerificationVerifyResponseSuccess)
+
+export const getPostApiUsersMeEmailVerificationVerifyUrl = () => {
+
+
+  
+
+  return `/api/users/me/email-verification/verify`
+}
+
+export const postApiUsersMeEmailVerificationVerify = async (postApiUsersMeEmailVerificationVerifyBody: PostApiUsersMeEmailVerificationVerifyBody, options?: RequestInit): Promise<postApiUsersMeEmailVerificationVerifyResponse> => {
+  
+  return customFetch<postApiUsersMeEmailVerificationVerifyResponse>(getPostApiUsersMeEmailVerificationVerifyUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiUsersMeEmailVerificationVerifyBody,)
+  }
+);}
+
+
+
+/**
+ * 로그인한 사용자의 닉네임을 변경하고 새 토큰을 발급합니다.
+ * @summary 닉네임 변경
+ */
+export type putApiUsersMeNicknameResponse200 = {
+  data: AuthResponse
+  status: 200
+}
+    
+export type putApiUsersMeNicknameResponseSuccess = (putApiUsersMeNicknameResponse200) & {
+  headers: Headers;
+};
+;
+
+export type putApiUsersMeNicknameResponse = (putApiUsersMeNicknameResponseSuccess)
+
+export const getPutApiUsersMeNicknameUrl = () => {
+
+
+  
+
+  return `/api/users/me/nickname`
+}
+
+export const putApiUsersMeNickname = async (putApiUsersMeNicknameBody: PutApiUsersMeNicknameBody, options?: RequestInit): Promise<putApiUsersMeNicknameResponse> => {
+  
+  return customFetch<putApiUsersMeNicknameResponse>(getPutApiUsersMeNicknameUrl(),
+  {      
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      putApiUsersMeNicknameBody,)
+  }
+);}
+
+
+
+/**
+ * 인증된 사용자의 계정에 연동된 소셜 계정 목록을 조회합니다.
  * @summary 소셜 계정 연동 목록 조회
  */
 export type getApiUsersMeSocialLinksResponse200 = {
@@ -9792,7 +10028,7 @@ export const getApiUsersMeSocialLinks = async ( options?: RequestInit): Promise<
 
 
 /**
- * 인증된 사용자 계정에서 소셜 계정 연동을 해제합니다.
+ * 인증된 사용자의 계정에서 소셜 계정 연동을 해제합니다.
  * @summary 소셜 계정 연동 해제
  */
 export type deleteApiUsersMeSocialLinksProviderResponse200 = {
