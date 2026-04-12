@@ -27,7 +27,7 @@ function shouldSkipOptimization(src: ImageProps["src"]): boolean {
 export function ImageWithFallback({ className, style, ...rest }: ImageProps) {
   const [didError, setDidError] = useState(false);
 
-  if (didError) {
+  if (didError || !rest.src || rest.src === "") {
     return (
       <div
         className={`inline-block bg-gray-100 text-center align-middle ${className ?? ""}`}

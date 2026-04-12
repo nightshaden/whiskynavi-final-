@@ -10,15 +10,15 @@ const BottleCard = ({ bottle }: Props) => {
     <Link
       key={bottle.id}
       href={`/archive/${bottle.id}`}
-      className="group cursor-pointer border-b border-white/10 pb-2 text-left transition-colors hover:bg-white/5"
+      className="group cursor-pointer border border-white/10 p-2.5 pb-1.5 text-left transition-colors hover:bg-white/5 sm:p-4 sm:pb-2"
     >
-      <div className="relative mb-2 flex aspect-square items-center justify-center bg-linear-to-br from-gray-700 to-gray-800">
+      <div className="relative mb-2 flex aspect-square items-center justify-center">
         {bottle.imgUrl ? (
           <ImageWithFallback
             src={bottle.imgUrl}
             alt={bottle.name ?? ""}
             fill
-            className="object-contain p-4"
+            className="object-contain p-1.5 sm:p-4"
           />
         ) : (
           <div className="text-sm text-white/60 md:text-base">
@@ -28,13 +28,16 @@ const BottleCard = ({ bottle }: Props) => {
       </div>
 
       <div>
-        <p className="mb-0.5 text-xs text-gray-400">
+        <p className="text-xs text-gray-400">
           {bottle.brand ?? bottle.company ?? ""}
         </p>
-        <h3 className="typo-medium-14 mb-1 line-clamp-2 text-white group-hover:text-gray-300">
+        <h3
+          className="typo-medium-14 mt-2 line-clamp-2 text-white group-hover:text-gray-300"
+          style={{ lineHeight: 1.4 }}
+        >
           {bottle.name}
         </h3>
-        <div className="flex items-center justify-between">
+        <div className="mt-2 flex items-center justify-between">
           <span className="text-xs text-gray-500">
             {bottle.distillery ?? ""}
           </span>
