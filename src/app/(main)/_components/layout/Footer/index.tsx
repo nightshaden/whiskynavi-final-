@@ -10,10 +10,13 @@ export default function Footer() {
               WHISKYNAVI
             </p>
             <p className="text-[10px] text-gray-400 md:text-xs">
-              독립병입의 새로운 기준
+              대한민국 최초의 독립병입 브랜드
             </p>
           </div>
           <nav className="flex flex-wrap gap-3 text-xs text-gray-400 md:gap-4 md:text-sm">
+            <Link href="/about" className="transition-colors hover:text-white">
+              회사소개
+            </Link>
             <Link href="/brand" className="transition-colors hover:text-white">
               브랜드
             </Link>
@@ -23,21 +26,32 @@ export default function Footer() {
             >
               아카이브
             </Link>
+            <Link
+              href="/reservation"
+              className="transition-colors hover:text-white"
+            >
+              예약하기
+            </Link>
           </nav>
         </div>
 
         {/* Desktop: 2 rows - Company info on left, CS on right */}
         <div className="hidden space-y-2 text-xs text-gray-500 md:block">
           <div className="flex items-center justify-between">
-            <span>사업자등록번호: 472-81-02973 | 대표자: 천관호</span>
-            <span>고객센터: 0000-0000-0000</span>
+            <span>
+              (주) 캐스크야드 | 대표 천관호 010-6848-6231 | 사업자등록번호
+              689-86-03712
+            </span>
+            <span>캐스크 카니발: www.caskcarnival.com</span>
           </div>
           <div className="flex items-center justify-between">
-            <span>주소: 경기도 성남시 중원구 둔촌대로 537, 에이동 208호</span>
-            <span className="absolute left-1/2 -translate-x-1/2">
-              © 2025 WHISKYNAVI. All rights reserved.
+            <span>
+              (13591) 경기도 성남시 분당구 서현로 210번길 1. 4층 405-자65
             </span>
-            <span>이메일: contact@whiskynavi.com</span>
+            <span className="absolute left-1/2 -translate-x-1/2">
+              Copyright CASKYARD. All rights reserved.
+            </span>
+            <span>문의 이메일: contact@whiskynavi.com</span>
           </div>
         </div>
 
