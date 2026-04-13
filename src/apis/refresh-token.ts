@@ -1,4 +1,5 @@
 import { decode } from "next-auth/jwt";
+import { authLogger } from "./auth-logger";
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://api.whiskynavi.com";
@@ -39,15 +40,18 @@ export async function callRefreshApi(
           refreshToken: newRefreshToken,
         };
       }
+      authLogger.error("callRefreshApi: 200 OK but no accessToken");
       return { status: "server_error" };
     }
 
+    authLogger.error(`callRefreshApi: backend responded ${res.status}`);
     if (res.status === 401 || res.status === 400 || res.status === 403) {
       return { status: "auth_failed" };
     }
 
     return { status: "server_error" };
-  } catch {
+  } catch (e) {
+    authLogger.error("callRefreshApi: unexpected error", e);
     return { status: "server_error" };
   }
 }
@@ -78,7 +82,10 @@ async function doRefresh(): Promise<string | null> {
 
 async function refreshOnServer(): Promise<string | null> {
   const secret = process.env.NEXTAUTH_SECRET;
-  if (!secret) return null;
+  if (!secret) {
+    authLogger.error("refreshOnServer: NEXTAUTH_SECRET missing");
+    return null;
+  }
 
   try {
     const { cookies } = await import("next/headers");
@@ -89,20 +96,29 @@ async function refreshOnServer(): Promise<string | null> {
       cookieStore.get("next-auth.session-token")?.value ??
       cookieStore.get("__Secure-next-auth.session-token")?.value;
 
-    if (!sessionToken) return null;
+    if (!sessionToken) {
+      authLogger.error("refreshOnServer: no session cookie found");
+      return null;
+    }
 
     const decoded = await decode({ token: sessionToken, secret });
     if (
       !decoded?.refreshToken ||
       typeof decoded.refreshToken !== "string"
     ) {
+      authLogger.error("refreshOnServer: no refreshToken in JWT");
       return null;
     }
 
     const result = await callRefreshApi(decoded.refreshToken);
-    if (result.status === "success") return result.accessToken;
+    if (result.status === "success") {
+      authLogger.warn("refreshOnServer: refresh succeeded");
+      return result.accessToken;
+    }
+    authLogger.error(`refreshOnServer: callRefreshApi → ${result.status}`);
     return null;
-  } catch {
+  } catch (e) {
+    authLogger.error("refreshOnServer: unexpected error", e);
     return null;
   }
 }

@@ -1,3 +1,4 @@
+import { authLogger } from "./auth-logger";
 import { AuthError, ApiError, NetworkError } from "./errors";
 import { refreshSessionToken } from "./refresh-token";
 
@@ -67,9 +68,11 @@ export const customFetch = async <T>(
 
   // 401: 토큰 만료 → 세션 기반 refresh 시도 후 재요청
   if (res.status === 401) {
+    authLogger.warn(`401 received: ${fullUrl}`);
     const newToken = await refreshSessionToken();
 
     if (newToken) {
+      authLogger.warn(`refresh succeeded, retrying: ${fullUrl}`);
       const retryHeaders = new Headers(options.headers);
       retryHeaders.set("Authorization", `Bearer ${newToken}`);
 
@@ -91,6 +94,9 @@ export const customFetch = async <T>(
 
       // 재시도도 401/403이면 인증 완전 실패
       if (retryRes.status === 401 || retryRes.status === 403) {
+        authLogger.error(
+          `retry failed (${retryRes.status}): ${fullUrl} → redirect`,
+        );
         await handleAuthFailure();
       }
 
@@ -99,10 +105,12 @@ export const customFetch = async <T>(
     }
 
     // refresh 실패 → 로그인 페이지로
+    authLogger.error("refresh returned null → redirect");
     await handleAuthFailure();
   }
 
   if (!res.ok) {
+    authLogger.error(`non-401 error (${res.status}): ${fullUrl}`);
     const detail = await extractErrorDetail(res);
     throw new ApiError(res.status, detail);
   }
