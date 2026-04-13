@@ -1,6 +1,6 @@
 import { getApiBottles, type BottleResponse } from "@/apis/generated/api";
 import type { Brand } from "@/types/brand";
-import { Link } from "lucide-react";
+import Link from "next/link";
 import Hero from "../_components/Hero";
 import BrandBackground from "./_components/BrandBackground";
 import BrandNavigation from "./_components/BrandNavigation";
@@ -56,7 +56,7 @@ const Page = async () => {
                 <div className="mt-6 text-center lg:mt-8">
                   <Link
                     href={`/archive?brand=${brand.id}`}
-                    className="border border-white px-6 py-2 text-sm text-white transition-all hover:bg-white hover:text-[#1d2429] sm:px-7 sm:py-2.5 sm:text-base"
+                    className="inline-block border border-white px-6 py-2 text-sm text-white transition-all hover:bg-white hover:text-[#1d2429] sm:px-7 sm:py-2.5 sm:text-base"
                   >
                     더 많은 제품 보러가기
                   </Link>
