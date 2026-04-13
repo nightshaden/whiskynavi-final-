@@ -1,9 +1,6 @@
 "use client";
 
-import type {
-  BottleReservationNoticePublicResponse,
-  PickupLocationResponse,
-} from "@/apis/generated/api";
+import type { BottleReservationNoticePublicResponse, PickupLocationResponse } from "@/apis/generated/api";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import ApplyForm from "../../_components/ApplyForm";
@@ -18,10 +15,7 @@ interface ReservationDetailClientProps {
   pickupLocations: PickupLocationResponse[];
 }
 
-export default function ReservationDetailClient({
-  notice,
-  pickupLocations,
-}: ReservationDetailClientProps) {
+export default function ReservationDetailClient({ notice, pickupLocations }: ReservationDetailClientProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -30,11 +24,7 @@ export default function ReservationDetailClient({
   const handleApply = (quantity: number, userBusinessId: number) => {
     setError(null);
     startTransition(async () => {
-      const result = await applyReservation(
-        notice.id!,
-        quantity,
-        userBusinessId,
-      );
+      const result = await applyReservation(notice.id!, quantity, userBusinessId);
       if (result.success) {
         router.push("/reservation");
         router.refresh();
@@ -50,20 +40,13 @@ export default function ReservationDetailClient({
       <div className="mb-6 grid grid-cols-1 gap-6 lg:mb-8 lg:grid-cols-2 lg:gap-8">
         {/* Image */}
         <div className="relative flex aspect-square items-center justify-center bg-gradient-to-br from-gray-700 to-gray-800">
-          <div className="text-4xl text-white/60 lg:text-6xl">
-            {notice.bottleName ?? ""}
-          </div>
-          <StatusBadge
-            status={status}
-            className="absolute top-2 right-2 lg:top-4 lg:right-4"
-          />
+          <div className="text-4xl text-white/60 lg:text-6xl">{notice.bottleName ?? ""}</div>
+          <StatusBadge status={status} className="absolute top-2 right-2 lg:top-4 lg:right-4" />
         </div>
 
         {/* Info */}
         <div className="flex flex-col justify-center">
-          <h3 className="typo-bold-20 mb-4 text-white lg:mb-6 lg:text-3xl">
-            {notice.bottleName}
-          </h3>
+          <h3 className="typo-bold-20 mb-4 text-white lg:mb-6 lg:text-3xl">{notice.bottleName}</h3>
           <InfoList notice={notice} />
         </div>
       </div>
@@ -79,12 +62,7 @@ export default function ReservationDetailClient({
 
         <div className="flex flex-col">
           {status === "active" ? (
-            <ApplyForm
-              onApply={handleApply}
-              isPending={isPending}
-              error={error}
-              pickupLocations={pickupLocations}
-            />
+            <ApplyForm onApply={handleApply} isPending={isPending} error={error} pickupLocations={pickupLocations} />
           ) : status === "pending" ? (
             <button
               type="button"

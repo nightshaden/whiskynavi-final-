@@ -1,9 +1,6 @@
 import { OrderResponseOrderStatus } from "@/apis/generated/api";
 
-export const ORDER_STATUS_MAP: Record<
-  string,
-  { label: string; colorClass: string }
-> = {
+export const ORDER_STATUS_MAP: Record<string, { label: string; colorClass: string }> = {
   [OrderResponseOrderStatus.ORDER_REQUESTED]: {
     label: "주문 접수",
     colorClass: "border-yellow-600/30 bg-yellow-600/20 text-yellow-400",
@@ -61,25 +58,15 @@ export const MEMBERSHIP_INFO = {
     name: "위스키내비",
     subtitle: "WHISKY NAVI",
     badgeLabel: "NAVI",
-    benefits: [
-      "싱글 캐스크 신제품 우선 구매",
-      "연 2회 증류소 탐방 이벤트 참여",
-      "멤버 전용 테이스팅 노트 제공",
-    ],
+    benefits: ["싱글 캐스크 신제품 우선 구매", "연 2회 증류소 탐방 이벤트 참여", "멤버 전용 테이스팅 노트 제공"],
     // TODO: 문구 바꾸기
-    joinMessage:
-      "프리미엄 멤버십에 가입하시면\n특별한 혜택을 누리실 수 있습니다.",
+    joinMessage: "프리미엄 멤버십에 가입하시면\n특별한 혜택을 누리실 수 있습니다.",
   },
   tales: {
     name: "더 위스키테일즈",
     subtitle: "THE WHISKY TALES",
     badgeLabel: "TALES",
-    benefits: [
-      "스토리텔링 콘텐츠 무제한 열람",
-      "구매시 5% 추가 할인",
-      "월간 큐레이션 추천",
-      "특별 이벤트 초대",
-    ],
+    benefits: ["스토리텔링 콘텐츠 무제한 열람", "구매시 5% 추가 할인", "월간 큐레이션 추천", "특별 이벤트 초대"],
     joinMessage: "TALES 멤버십에 가입하시면\n특별한 혜택을 누리실 수 있습니다.",
   },
   notice: [

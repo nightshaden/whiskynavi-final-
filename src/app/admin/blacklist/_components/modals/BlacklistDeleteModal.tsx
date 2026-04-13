@@ -45,11 +45,7 @@ export default function DeleteConfirmModal({
           <Button variant="outline" className="flex-1" onClick={close}>
             취소
           </Button>
-          <Button
-            variant="destructive"
-            className="flex-1"
-            onClick={handleConfirm}
-          >
+          <Button variant="destructive" className="flex-1" onClick={handleConfirm}>
             삭제
           </Button>
         </DialogFooter>

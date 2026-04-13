@@ -104,11 +104,7 @@ export const authOptions: NextAuthOptions = {
             password: credentials.password,
           });
 
-          if (
-            !res.data.accessToken ||
-            !res.data.refreshToken ||
-            !res.data.userId
-          ) {
+          if (!res.data.accessToken || !res.data.refreshToken || !res.data.userId) {
             throw new Error("서버 응답에 필수 인증 정보가 누락되었습니다.");
           }
 
@@ -121,8 +117,7 @@ export const authOptions: NextAuthOptions = {
             refreshToken: res.data.refreshToken,
           };
         } catch (error) {
-          const message =
-            error instanceof Error ? error.message : "로그인에 실패했습니다.";
+          const message = error instanceof Error ? error.message : "로그인에 실패했습니다.";
           throw new Error(message);
         }
       },

@@ -5,13 +5,7 @@ import { useState, useTransition } from "react";
 
 import type { AdminUserResponse } from "@/apis/generated/api";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import UserSearchInput from "../../blacklist/_components/UserSearchInput";
 import { addMembershipAction } from "../actions";
 
@@ -23,18 +17,11 @@ interface AddMemberModalProps {
   brand: MembershipBrand;
 }
 
-export default function AddMemberModal({
-  isOpen,
-  close,
-  brand: initialBrand,
-}: AddMemberModalProps) {
+export default function AddMemberModal({ isOpen, close, brand: initialBrand }: AddMemberModalProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [selectedUser, setSelectedUser] = useState<AdminUserResponse | null>(
-    null,
-  );
-  const [selectedBrand, setSelectedBrand] =
-    useState<MembershipBrand>(initialBrand);
+  const [selectedUser, setSelectedUser] = useState<AdminUserResponse | null>(null);
+  const [selectedBrand, setSelectedBrand] = useState<MembershipBrand>(initialBrand);
   const [error, setError] = useState<string | null>(null);
 
   const handleConfirm = () => {
@@ -52,17 +39,14 @@ export default function AddMemberModal({
     });
   };
 
-  const brandLabel =
-    selectedBrand === "navi" ? "위스키내비" : "더 위스키테일즈";
+  const brandLabel = selectedBrand === "navi" ? "위스키내비" : "더 위스키테일즈";
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="typo-bold-20">멤버십 추가</DialogTitle>
-          <p className="mt-1 text-sm text-gray-500">
-            사용자를 검색하여 멤버십을 추가합니다.
-          </p>
+          <p className="mt-1 text-sm text-gray-500">사용자를 검색하여 멤버십을 추가합니다.</p>
         </DialogHeader>
 
         <div className="space-y-5 py-2">
@@ -74,9 +58,7 @@ export default function AddMemberModal({
                 type="button"
                 onClick={() => setSelectedBrand("navi")}
                 className={`flex-1 cursor-pointer rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${
-                  selectedBrand === "navi"
-                    ? "bg-amber-600 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  selectedBrand === "navi" ? "bg-amber-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >
                 위스키내비
@@ -85,9 +67,7 @@ export default function AddMemberModal({
                 type="button"
                 onClick={() => setSelectedBrand("tales")}
                 className={`flex-1 cursor-pointer rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${
-                  selectedBrand === "tales"
-                    ? "bg-amber-600 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  selectedBrand === "tales" ? "bg-amber-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >
                 더 위스키테일즈
@@ -110,8 +90,7 @@ export default function AddMemberModal({
               <p className="typo-medium-14 text-gray-900">선택된 사용자</p>
               <div className="grid grid-cols-2 gap-2 text-sm">
                 <div>
-                  <span className="text-gray-500">이름:</span>{" "}
-                  <span className="font-medium">{selectedUser.name}</span>
+                  <span className="text-gray-500">이름:</span> <span className="font-medium">{selectedUser.name}</span>
                 </div>
                 <div>
                   <span className="text-gray-500">닉네임:</span>{" "}
@@ -123,9 +102,7 @@ export default function AddMemberModal({
                 </div>
                 <div>
                   <span className="text-gray-500">추가 멤버십:</span>{" "}
-                  <span className="font-medium text-amber-600">
-                    {brandLabel}
-                  </span>
+                  <span className="font-medium text-amber-600">{brandLabel}</span>
                 </div>
               </div>
             </div>

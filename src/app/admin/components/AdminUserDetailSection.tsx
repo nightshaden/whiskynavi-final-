@@ -1,17 +1,8 @@
 "use client";
 
-import type {
-  AdminUserOrderSummaryResponse,
-  AdminUserResponse,
-} from "@/apis/generated/api";
+import type { AdminUserOrderSummaryResponse, AdminUserResponse } from "@/apis/generated/api";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { IconGoogle, IconKakao, IconNaver } from "@/icons";
 import {
@@ -31,13 +22,7 @@ import {
 import { overlay } from "overlay-kit";
 import { useState } from "react";
 import { toast } from "sonner";
-import {
-  ASSIGNABLE_ROLES,
-  ORDER_STATUS_COLOR,
-  ORDER_STATUS_LABEL,
-  ROLE_COLOR_MAP,
-  ROLE_LABEL_MAP,
-} from "../constants";
+import { ASSIGNABLE_ROLES, ORDER_STATUS_COLOR, ORDER_STATUS_LABEL, ROLE_COLOR_MAP, ROLE_LABEL_MAP } from "../constants";
 import AdminConfirmModal from "./modals/AdminConfirmModal";
 import RoleConflictModal from "./modals/RoleConflictModal";
 
@@ -53,12 +38,7 @@ const ROLE_CONFLICT_GROUPS: { name: string; roles: string[] }[] = [
   { name: "관리자", roles: ["ROLE_ADMIN", "ROLE_SUPER_ADMIN"] },
   {
     name: "업장",
-    roles: [
-      "ROLE_BUSINESS",
-      "ROLE_TRAILNTALE_BUSINESS",
-      "ROLE_COMMUNITY_BUSINESS",
-      "ROLE_PICK_UP_BUSINESS",
-    ],
+    roles: ["ROLE_BUSINESS", "ROLE_TRAILNTALE_BUSINESS", "ROLE_COMMUNITY_BUSINESS", "ROLE_PICK_UP_BUSINESS"],
   },
 ];
 
@@ -106,13 +86,10 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
   // ── 권한 충돌 체크 ───────────────────────────────────
   const checkRoleConflict = (roleToAdd: string) => {
     const group = ROLE_CONFLICT_GROUPS.find((g) => g.roles.includes(roleToAdd));
-    if (!group)
-      return { hasConflict: false, message: "", conflictingRole: null };
+    if (!group) return { hasConflict: false, message: "", conflictingRole: null };
 
     const conflictingRole =
-      (userDetails.roles ?? []).find(
-        (role) => group.roles.includes(role) && role !== roleToAdd,
-      ) ?? null;
+      (userDetails.roles ?? []).find((role) => group.roles.includes(role) && role !== roleToAdd) ?? null;
 
     if (conflictingRole) {
       return {
@@ -126,8 +103,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
   };
 
   // ── 관리자 권한 여부 ──────────────────────────────────
-  const isAdminRole = (role: string) =>
-    role === "ROLE_ADMIN" || role === "ROLE_SUPER_ADMIN";
+  const isAdminRole = (role: string) => role === "ROLE_ADMIN" || role === "ROLE_SUPER_ADMIN";
 
   // ── 권한 추가 핸들러 ──────────────────────────────────
   const handleAddRole = () => {
@@ -193,65 +169,44 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
         </h3>
         <div className="grid grid-cols-2 gap-6">
           <div>
-            <Label
-              htmlFor="name"
-              className="typo-bold-14 mb-2 block text-gray-700"
-            >
+            <Label htmlFor="name" className="typo-bold-14 mb-2 block text-gray-700">
               이름
             </Label>
             <p className="text-gray-900">{userDetails.name}</p>
           </div>
           <div>
-            <Label
-              htmlFor="username"
-              className="typo-bold-14 mb-2 block text-gray-700"
-            >
+            <Label htmlFor="username" className="typo-bold-14 mb-2 block text-gray-700">
               사용자명
             </Label>
             <p className="text-gray-900">@{userDetails.username}</p>
           </div>
           <div>
-            <Label
-              htmlFor="email"
-              className="typo-bold-14 mb-2 block flex items-center gap-1 text-gray-700"
-            >
+            <Label htmlFor="email" className="typo-bold-14 mb-2 block flex items-center gap-1 text-gray-700">
               <Mail size={14} />
               이메일
             </Label>
             <p className="text-gray-900">{userDetails.email}</p>
           </div>
           <div>
-            <Label
-              htmlFor="phone"
-              className="typo-bold-14 mb-2 block flex items-center gap-1 text-gray-700"
-            >
+            <Label htmlFor="phone" className="typo-bold-14 mb-2 block flex items-center gap-1 text-gray-700">
               <Phone size={14} />
               전화번호
             </Label>
             <p className="text-gray-900">{userDetails.phone}</p>
           </div>
           <div>
-            <Label
-              htmlFor="status"
-              className="typo-bold-14 mb-2 block text-gray-700"
-            >
+            <Label htmlFor="status" className="typo-bold-14 mb-2 block text-gray-700">
               계정 상태
             </Label>
             <div className="flex items-center gap-3">
               <Switch
                 checked={userDetails.status === "ACTIVE"}
-                onCheckedChange={(checked) =>
-                  onStatusToggle?.(checked ? "ACTIVE" : "INACTIVE")
-                }
+                onCheckedChange={(checked) => onStatusToggle?.(checked ? "ACTIVE" : "INACTIVE")}
                 disabled={!onStatusToggle || isSaving}
                 className="data-[state=checked]:bg-green-500 data-[state=unchecked]:bg-red-400"
               />
               <span
-                className={`text-sm font-medium ${
-                  userDetails.status === "ACTIVE"
-                    ? "text-green-700"
-                    : "text-red-700"
-                }`}
+                className={`text-sm font-medium ${userDetails.status === "ACTIVE" ? "text-green-700" : "text-red-700"}`}
               >
                 {userDetails.status === "ACTIVE" ? "활성" : "비활성"}
               </span>
@@ -302,62 +257,42 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                 </h4>
                 <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <Label
-                      htmlFor="createdAt"
-                      className="typo-bold-14 mb-2 block text-gray-700"
-                    >
+                    <Label htmlFor="createdAt" className="typo-bold-14 mb-2 block text-gray-700">
                       가입일
                     </Label>
                     <p className="text-gray-900">{userDetails.createdAt}</p>
                   </div>
                   <div>
-                    <Label
-                      htmlFor="lastLoginAt"
-                      className="typo-bold-14 mb-2 block text-gray-700"
-                    >
+                    <Label htmlFor="lastLoginAt" className="typo-bold-14 mb-2 block text-gray-700">
                       마지막 로그인
                     </Label>
-                    <p className="text-gray-900">
-                      {userDetails.lastLoginAt ?? "-"}
-                    </p>
+                    <p className="text-gray-900">{userDetails.lastLoginAt ?? "-"}</p>
                   </div>
                 </div>
 
                 {/* 소셜 로그인 연동 정보 */}
                 {(userDetails.userExt as any)?.socialConnections && (
                   <div className="mt-6">
-                    <Label
-                      htmlFor="socialConnections"
-                      className="typo-bold-14 mb-3 block text-gray-700"
-                    >
+                    <Label htmlFor="socialConnections" className="typo-bold-14 mb-3 block text-gray-700">
                       소셜 로그인 연동
                     </Label>
                     <div className="flex gap-2">
-                      {(userDetails.userExt as any)?.socialConnections
-                        ?.google && (
+                      {(userDetails.userExt as any)?.socialConnections?.google && (
                         <div className="flex items-center gap-2 rounded-lg border-2 border-red-200 bg-white px-3 py-2">
                           <IconGoogle size={20} />
-                          <span className="typo-medium-14 text-gray-700">
-                            Google
-                          </span>
+                          <span className="typo-medium-14 text-gray-700">Google</span>
                         </div>
                       )}
-                      {(userDetails.userExt as any)?.socialConnections
-                        ?.kakao && (
+                      {(userDetails.userExt as any)?.socialConnections?.kakao && (
                         <div className="flex items-center gap-2 rounded-lg bg-[#FEE500] px-3 py-2">
                           <IconKakao size={20} />
-                          <span className="typo-medium-14 text-gray-900">
-                            Kakao
-                          </span>
+                          <span className="typo-medium-14 text-gray-900">Kakao</span>
                         </div>
                       )}
-                      {(userDetails.userExt as any)?.socialConnections
-                        ?.naver && (
+                      {(userDetails.userExt as any)?.socialConnections?.naver && (
                         <div className="flex items-center gap-2 rounded-lg bg-[#03C75A] px-3 py-2">
                           <IconNaver size={20} />
-                          <span className="typo-medium-14 text-white">
-                            Naver
-                          </span>
+                          <span className="typo-medium-14 text-white">Naver</span>
                         </div>
                       )}
                     </div>
@@ -401,10 +336,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                 </div>
                 <div className="space-y-4">
                   <div>
-                    <Label
-                      htmlFor="roles"
-                      className="typo-bold-14 mb-3 block text-gray-700"
-                    >
+                    <Label htmlFor="roles" className="typo-bold-14 mb-3 block text-gray-700">
                       보유 권한
                     </Label>
                     <div className="flex flex-wrap gap-2">
@@ -429,22 +361,18 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                     </div>
                     {isEditingRoles && (
                       <div className="mt-3 flex gap-2">
-                        <Select
-                          value={newRole}
-                          onValueChange={(value) => setNewRole(value)}
-                        >
+                        <Select value={newRole} onValueChange={(value) => setNewRole(value)}>
                           <SelectTrigger className="flex-1 text-sm">
                             <SelectValue placeholder="권한 선택" />
                           </SelectTrigger>
                           <SelectContent>
-                            {ASSIGNABLE_ROLES.filter(
-                              (role) =>
-                                !(userDetails.roles ?? []).includes(role),
-                            ).map((role) => (
-                              <SelectItem key={role} value={role}>
-                                {ROLE_LABEL_MAP[role]}
-                              </SelectItem>
-                            ))}
+                            {ASSIGNABLE_ROLES.filter((role) => !(userDetails.roles ?? []).includes(role)).map(
+                              (role) => (
+                                <SelectItem key={role} value={role}>
+                                  {ROLE_LABEL_MAP[role]}
+                                </SelectItem>
+                              ),
+                            )}
                           </SelectContent>
                         </Select>
                         <button
@@ -471,9 +399,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                 </h4>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
-                    <span className="text-sm text-gray-700">
-                      개인정보 처리방침
-                    </span>
+                    <span className="text-sm text-gray-700">개인정보 처리방침</span>
                     {userDetails.userExt?.privacyAgree ? (
                       <CheckCircle size={20} className="text-green-600" />
                     ) : (
@@ -481,9 +407,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                     )}
                   </div>
                   <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
-                    <span className="text-sm text-gray-700">
-                      마케팅 수신 동의
-                    </span>
+                    <span className="text-sm text-gray-700">마케팅 수신 동의</span>
                     {userDetails.userExt?.marketingAgree ? (
                       <CheckCircle size={20} className="text-green-600" />
                     ) : (
@@ -491,9 +415,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                     )}
                   </div>
                   <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
-                    <span className="text-sm text-gray-700">
-                      이메일 수신 동의
-                    </span>
+                    <span className="text-sm text-gray-700">이메일 수신 동의</span>
                     {userDetails.userExt?.emailAgree ? (
                       <CheckCircle size={20} className="text-green-600" />
                     ) : (
@@ -520,20 +442,14 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                   <div className="mb-6 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 p-5">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="typo-medium-14 text-amber-100">
-                          총 구매 금액
-                        </p>
+                        <p className="typo-medium-14 text-amber-100">총 구매 금액</p>
                         <p className="typo-bold-24 mt-1 text-white">
                           {(orderSummary.totalAmount ?? 0).toLocaleString()}원
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="typo-medium-14 text-amber-100">
-                          총 주문 수
-                        </p>
-                        <p className="typo-bold-24 mt-1 text-white">
-                          {orderSummary.totalElements}건
-                        </p>
+                        <p className="typo-medium-14 text-amber-100">총 주문 수</p>
+                        <p className="typo-bold-24 mt-1 text-white">{orderSummary.totalElements}건</p>
                       </div>
                     </div>
                   </div>
@@ -544,55 +460,29 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                       <table className="w-full text-sm">
                         <thead>
                           <tr className="border-b border-gray-200">
-                            <th className="px-3 py-3 text-left font-semibold text-gray-700">
-                              제품명
-                            </th>
-                            <th className="px-3 py-3 text-left font-semibold text-gray-700">
-                              주문번호
-                            </th>
-                            <th className="px-3 py-3 text-left font-semibold text-gray-700">
-                              주문유형
-                            </th>
-                            <th className="px-3 py-3 text-right font-semibold text-gray-700">
-                              신청수량
-                            </th>
-                            <th className="px-3 py-3 text-right font-semibold text-gray-700">
-                              배정수량
-                            </th>
-                            <th className="px-3 py-3 text-right font-semibold text-gray-700">
-                              금액
-                            </th>
-                            <th className="px-3 py-3 text-left font-semibold text-gray-700">
-                              주문일
-                            </th>
-                            <th className="px-3 py-3 text-left font-semibold text-gray-700">
-                              상태
-                            </th>
+                            <th className="px-3 py-3 text-left font-semibold text-gray-700">제품명</th>
+                            <th className="px-3 py-3 text-left font-semibold text-gray-700">주문번호</th>
+                            <th className="px-3 py-3 text-left font-semibold text-gray-700">주문유형</th>
+                            <th className="px-3 py-3 text-right font-semibold text-gray-700">신청수량</th>
+                            <th className="px-3 py-3 text-right font-semibold text-gray-700">배정수량</th>
+                            <th className="px-3 py-3 text-right font-semibold text-gray-700">금액</th>
+                            <th className="px-3 py-3 text-left font-semibold text-gray-700">주문일</th>
+                            <th className="px-3 py-3 text-left font-semibold text-gray-700">상태</th>
                           </tr>
                         </thead>
                         <tbody>
                           {(orderSummary.orders ?? []).map((order) => (
-                            <tr
-                              key={order.id}
-                              className="border-b border-gray-100 transition-colors hover:bg-gray-50"
-                            >
-                              <td className="px-3 py-3 font-medium text-gray-900">
-                                {order.itemName}
-                              </td>
+                            <tr key={order.id} className="border-b border-gray-100 transition-colors hover:bg-gray-50">
+                              <td className="px-3 py-3 font-medium text-gray-900">{order.itemName}</td>
+                              <td className="px-3 py-3 text-gray-600">{order.orderNumber}</td>
                               <td className="px-3 py-3 text-gray-600">
-                                {order.orderNumber}
-                              </td>
-                              <td className="px-3 py-3 text-gray-600">
-                                {ORDER_TYPE_LABEL[order.orderType ?? ""] ??
-                                  order.orderType}
+                                {ORDER_TYPE_LABEL[order.orderType ?? ""] ?? order.orderType}
                               </td>
                               <td className="px-3 py-3 text-right font-medium text-gray-900">
                                 {order.requestedQuantity}병
                               </td>
                               <td className="px-3 py-3 text-right font-medium text-amber-700">
-                                {order.approvedQuantity != null
-                                  ? `${order.approvedQuantity}병`
-                                  : "-"}
+                                {order.approvedQuantity != null ? `${order.approvedQuantity}병` : "-"}
                               </td>
                               <td className="px-3 py-3 text-right font-medium text-gray-900">
                                 {(order.totalPrice ?? 0).toLocaleString()}원
@@ -610,14 +500,10 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                               <td className="px-3 py-3">
                                 <span
                                   className={`rounded px-2 py-1 text-xs font-medium ${
-                                    ORDER_STATUS_COLOR[
-                                      order.orderStatus ?? ""
-                                    ] ?? "bg-gray-100 text-gray-700"
+                                    ORDER_STATUS_COLOR[order.orderStatus ?? ""] ?? "bg-gray-100 text-gray-700"
                                   }`}
                                 >
-                                  {ORDER_STATUS_LABEL[
-                                    order.orderStatus ?? ""
-                                  ] ?? order.orderStatus}
+                                  {ORDER_STATUS_LABEL[order.orderStatus ?? ""] ?? order.orderStatus}
                                 </span>
                               </td>
                             </tr>
@@ -627,20 +513,14 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                     </div>
                   ) : (
                     <div className="py-12 text-center text-gray-500">
-                      <ShoppingBag
-                        size={48}
-                        className="mx-auto mb-3 text-gray-300"
-                      />
+                      <ShoppingBag size={48} className="mx-auto mb-3 text-gray-300" />
                       <p>주문 내역이 없습니다.</p>
                     </div>
                   )}
                 </>
               ) : (
                 <div className="py-12 text-center text-gray-500">
-                  <ShoppingBag
-                    size={48}
-                    className="mx-auto mb-3 text-gray-300"
-                  />
+                  <ShoppingBag size={48} className="mx-auto mb-3 text-gray-300" />
                   <p>예약 내역 데이터가 없습니다.</p>
                 </div>
               )}
@@ -658,31 +538,20 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
           </h3>
           <div className="space-y-3">
             <div>
-              <Label
-                htmlFor="banReason"
-                className="typo-bold-14 mb-1 block text-red-700"
-              >
+              <Label htmlFor="banReason" className="typo-bold-14 mb-1 block text-red-700">
                 제재 사유
               </Label>
               <p className="text-red-900">{userDetails.userExt.banReason}</p>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label
-                  htmlFor="banStartDate"
-                  className="typo-bold-14 mb-1 block text-red-700"
-                >
+                <Label htmlFor="banStartDate" className="typo-bold-14 mb-1 block text-red-700">
                   제재 시작일
                 </Label>
-                <p className="text-red-900">
-                  {userDetails.userExt.banStartDate}
-                </p>
+                <p className="text-red-900">{userDetails.userExt.banStartDate}</p>
               </div>
               <div>
-                <Label
-                  htmlFor="banEndDate"
-                  className="typo-bold-14 mb-1 block text-red-700"
-                >
+                <Label htmlFor="banEndDate" className="typo-bold-14 mb-1 block text-red-700">
                   제재 종료일
                 </Label>
                 <p className="text-red-900">{userDetails.userExt.banEndDate}</p>

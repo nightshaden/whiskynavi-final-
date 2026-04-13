@@ -8,11 +8,7 @@ interface MaltTypeFilterProps {
   onToggle: (maltId: string) => void;
 }
 
-export function MaltTypeFilter({
-  maltTypes,
-  selectedMaltTypes,
-  onToggle,
-}: MaltTypeFilterProps) {
+export function MaltTypeFilter({ maltTypes, selectedMaltTypes, onToggle }: MaltTypeFilterProps) {
   return (
     <FilterGroup.Section title="몰트" sectionKey="malt">
       <div className="space-y-2.5">
@@ -24,10 +20,7 @@ export function MaltTypeFilter({
               onCheckedChange={() => onToggle(malt)}
               className="border-white/30 bg-white/10 data-[state=checked]:border-white data-[state=checked]:bg-white data-[state=checked]:text-black"
             />
-            <label
-              htmlFor={`malt-${malt}`}
-              className="cursor-pointer text-sm text-white/80 group-hover:text-white"
-            >
+            <label htmlFor={`malt-${malt}`} className="cursor-pointer text-sm text-white/80 group-hover:text-white">
               {malt}
             </label>
           </div>

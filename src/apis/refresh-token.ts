@@ -1,8 +1,7 @@
 import { decode } from "next-auth/jwt";
 import { authLogger } from "./auth-logger";
 
-const BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://api.whiskynavi.com";
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://api.whiskynavi.com";
 
 /**
  * refresh API 호출 결과.
@@ -19,9 +18,7 @@ export type RefreshResult =
  * 백엔드 refresh API를 raw fetch로 호출한다.
  * customFetch를 사용하면 재귀가 발생하므로 반드시 raw fetch 사용.
  */
-export async function callRefreshApi(
-  refreshToken: string,
-): Promise<RefreshResult> {
+export async function callRefreshApi(refreshToken: string): Promise<RefreshResult> {
   try {
     const res = await fetch(`${BASE_URL}/api/auth/refresh`, {
       method: "POST",
@@ -93,8 +90,7 @@ async function refreshOnServer(): Promise<string | null> {
 
     // next-auth v4 쿠키명 — v5 마이그레이션 시 변경 필요
     const sessionToken =
-      cookieStore.get("next-auth.session-token")?.value ??
-      cookieStore.get("__Secure-next-auth.session-token")?.value;
+      cookieStore.get("next-auth.session-token")?.value ?? cookieStore.get("__Secure-next-auth.session-token")?.value;
 
     if (!sessionToken) {
       authLogger.error("refreshOnServer: no session cookie found");
@@ -102,10 +98,7 @@ async function refreshOnServer(): Promise<string | null> {
     }
 
     const decoded = await decode({ token: sessionToken, secret });
-    if (
-      !decoded?.refreshToken ||
-      typeof decoded.refreshToken !== "string"
-    ) {
+    if (!decoded?.refreshToken || typeof decoded.refreshToken !== "string") {
       authLogger.error("refreshOnServer: no refreshToken in JWT");
       return null;
     }

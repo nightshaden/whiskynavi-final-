@@ -33,10 +33,7 @@ const REFETCH_INTERVAL_SEC = 5 * 60;
 
 export function AuthProvider({ children }: Props) {
   return (
-    <SessionProvider
-      refetchInterval={REFETCH_INTERVAL_SEC}
-      refetchOnWindowFocus
-    >
+    <SessionProvider refetchInterval={REFETCH_INTERVAL_SEC} refetchOnWindowFocus>
       <SessionErrorHandler />
       {children}
     </SessionProvider>

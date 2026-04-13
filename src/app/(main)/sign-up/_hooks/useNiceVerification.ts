@@ -1,7 +1,4 @@
-import {
-  postApiUserNiceidResult,
-  postApiUserNiceidSession,
-} from "@/apis/generated/api";
+import { postApiUserNiceidResult, postApiUserNiceidSession } from "@/apis/generated/api";
 import { useEffect, useReducer } from "react";
 import {
   DEV_MOCK_PROFILE,
@@ -121,10 +118,7 @@ export function useNiceVerification(options?: UseNiceVerificationOptions) {
         } catch (error) {
           dispatch({
             type: "VERIFICATION_ERROR",
-            error:
-              error instanceof Error
-                ? error.message
-                : "본인인증 결과 조회에 실패했습니다. 다시 시도해주세요.",
+            error: error instanceof Error ? error.message : "본인인증 결과 조회에 실패했습니다. 다시 시도해주세요.",
           });
         }
       }
@@ -153,27 +147,18 @@ export function useNiceVerification(options?: UseNiceVerificationOptions) {
 
       dispatch({ type: "SESSION_CREATED", requestNo: data.requestNo });
 
-      const popup = window.open(
-        data.authUrl,
-        "nice-auth",
-        "width=430,height=720",
-      );
+      const popup = window.open(data.authUrl, "nice-auth", "width=430,height=720");
 
       if (!popup) {
         const tab = window.open(data.authUrl, "_blank");
         if (!tab) {
-          throw new Error(
-            "팝업이 차단되었습니다. 브라우저 설정에서 팝업을 허용한 후 다시 시도해 주세요.",
-          );
+          throw new Error("팝업이 차단되었습니다. 브라우저 설정에서 팝업을 허용한 후 다시 시도해 주세요.");
         }
       }
     } catch (error) {
       dispatch({
         type: "VERIFICATION_ERROR",
-        error:
-          error instanceof Error
-            ? error.message
-            : "본인인증을 시작하지 못했습니다. 다시 시도해주세요.",
+        error: error instanceof Error ? error.message : "본인인증을 시작하지 못했습니다. 다시 시도해주세요.",
       });
     }
   }

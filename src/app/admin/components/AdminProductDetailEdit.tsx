@@ -13,17 +13,13 @@ interface AdminProductDetailEditProps {
 
 const FALLBACK_IMAGE = "/default-bottle-v2.png";
 
-export default function AdminProductDetailEdit({
-  defaultValues,
-}: AdminProductDetailEditProps) {
+export default function AdminProductDetailEdit({ defaultValues }: AdminProductDetailEditProps) {
   const [extraInfos, setExtraInfos] = useState<Record<string, string>>(
     (defaultValues?.extraInfos as Record<string, string>) ?? {},
   );
   const newExtraInfoKeyRef = useRef<HTMLInputElement>(null);
   const newExtraInfoValueRef = useRef<HTMLInputElement>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | undefined>(
-    defaultValues?.imgUrl,
-  );
+  const [previewUrl, setPreviewUrl] = useState<string | undefined>(defaultValues?.imgUrl);
   const currentImage = previewUrl || FALLBACK_IMAGE;
 
   const handleAddImage = (file: File) => {
@@ -60,11 +56,7 @@ export default function AdminProductDetailEdit({
 
   return (
     <div className="rounded-lg bg-white p-4">
-      <input
-        type="hidden"
-        name="extraInfos"
-        value={JSON.stringify(extraInfos)}
-      />
+      <input type="hidden" name="extraInfos" value={JSON.stringify(extraInfos)} />
 
       <div className="flex gap-6 divide-x divide-gray-200">
         {/* 왼쪽: 모든 필드 (설명 제외) */}
@@ -150,9 +142,7 @@ export default function AdminProductDetailEdit({
           </div>
 
           <div className="flex gap-3">
-            <Label className="w-32 text-sm text-gray-700">
-              알코올 도수 (%)
-            </Label>
+            <Label className="w-32 text-sm text-gray-700">알코올 도수 (%)</Label>
             <input
               type="number"
               name="abv"
@@ -234,9 +224,7 @@ export default function AdminProductDetailEdit({
 
           {/* 추가 정보 */}
           <div className="border-t pt-2">
-            <Label className="typo-bold-14 mb-2 block text-gray-700">
-              추가 정보
-            </Label>
+            <Label className="typo-bold-14 mb-2 block text-gray-700">추가 정보</Label>
             <div className="space-y-2">
               {Object.entries(extraInfos).map(([key, value]) => (
                 <div key={key} className="flex items-center gap-2">

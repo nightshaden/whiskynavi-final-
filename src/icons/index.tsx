@@ -14,114 +14,30 @@ import NaverSvg from "./naver.svg";
 import SearchSvg from "./search.svg";
 import YoutubeSvg from "./youtube.svg";
 
-export const IconGlobal: React.FC<IconProps> = ({
-  size = 20,
-  title,
-  ...rest
-}) => {
-  return (
-    <GlobalSvg
-      width={size}
-      height={size}
-      aria-hidden={title ? undefined : true}
-      title={title}
-      {...rest}
-    />
-  );
+export const IconGlobal: React.FC<IconProps> = ({ size = 20, title, ...rest }) => {
+  return <GlobalSvg width={size} height={size} aria-hidden={title ? undefined : true} title={title} {...rest} />;
 };
 
-export const IconGoogle: React.FC<IconProps> = ({
-  size = 20,
-  title,
-  ...rest
-}) => {
-  return (
-    <GoogleSvg
-      width={size}
-      height={size}
-      aria-hidden={title ? undefined : true}
-      title={title}
-      {...rest}
-    />
-  );
+export const IconGoogle: React.FC<IconProps> = ({ size = 20, title, ...rest }) => {
+  return <GoogleSvg width={size} height={size} aria-hidden={title ? undefined : true} title={title} {...rest} />;
 };
 
-export const IconInstagram: React.FC<IconProps> = ({
-  size = 20,
-  title,
-  ...rest
-}) => {
-  return (
-    <InstagramSvg
-      width={size}
-      height={size}
-      aria-hidden={title ? undefined : true}
-      title={title}
-      {...rest}
-    />
-  );
+export const IconInstagram: React.FC<IconProps> = ({ size = 20, title, ...rest }) => {
+  return <InstagramSvg width={size} height={size} aria-hidden={title ? undefined : true} title={title} {...rest} />;
 };
 
-export const IconKakao: React.FC<IconProps> = ({
-  size = 20,
-  title,
-  ...rest
-}) => {
-  return (
-    <KakaoSvg
-      width={size}
-      height={size}
-      aria-hidden={title ? undefined : true}
-      title={title}
-      {...rest}
-    />
-  );
+export const IconKakao: React.FC<IconProps> = ({ size = 20, title, ...rest }) => {
+  return <KakaoSvg width={size} height={size} aria-hidden={title ? undefined : true} title={title} {...rest} />;
 };
 
-export const IconNaver: React.FC<IconProps> = ({
-  size = 20,
-  title,
-  ...rest
-}) => {
-  return (
-    <NaverSvg
-      width={size}
-      height={size}
-      aria-hidden={title ? undefined : true}
-      title={title}
-      {...rest}
-    />
-  );
+export const IconNaver: React.FC<IconProps> = ({ size = 20, title, ...rest }) => {
+  return <NaverSvg width={size} height={size} aria-hidden={title ? undefined : true} title={title} {...rest} />;
 };
 
-export const IconSearch: React.FC<IconProps> = ({
-  size = 20,
-  title,
-  ...rest
-}) => {
-  return (
-    <SearchSvg
-      width={size}
-      height={size}
-      aria-hidden={title ? undefined : true}
-      title={title}
-      {...rest}
-    />
-  );
+export const IconSearch: React.FC<IconProps> = ({ size = 20, title, ...rest }) => {
+  return <SearchSvg width={size} height={size} aria-hidden={title ? undefined : true} title={title} {...rest} />;
 };
 
-export const IconYoutube: React.FC<IconProps> = ({
-  size = 20,
-  title,
-  ...rest
-}) => {
-  return (
-    <YoutubeSvg
-      width={size}
-      height={size}
-      aria-hidden={title ? undefined : true}
-      title={title}
-      {...rest}
-    />
-  );
+export const IconYoutube: React.FC<IconProps> = ({ size = 20, title, ...rest }) => {
+  return <YoutubeSvg width={size} height={size} aria-hidden={title ? undefined : true} title={title} {...rest} />;
 };

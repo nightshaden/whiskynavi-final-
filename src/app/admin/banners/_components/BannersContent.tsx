@@ -17,11 +17,7 @@ interface BannersContentProps {
   totalElements: number;
 }
 
-export default function BannersContent({
-  searchParams,
-  banners,
-  totalElements,
-}: BannersContentProps) {
+export default function BannersContent({ searchParams, banners, totalElements }: BannersContentProps) {
   const { toggle } = useSidebar();
   const router = useRouter();
 
@@ -30,11 +26,7 @@ export default function BannersContent({
 
   return (
     <>
-      <AdminHeader
-        title="배너 관리"
-        onToggleSidebar={toggle}
-        showSearch={false}
-      />
+      <AdminHeader title="배너 관리" onToggleSidebar={toggle} showSearch={false} />
 
       <div className="p-8">
         <div className="mb-4 flex justify-end">
@@ -83,23 +75,13 @@ export default function BannersContent({
                   ) : null}
                 </div>
                 <div className="p-4">
-                  <h3 className="font-semibold text-gray-900">
-                    {banner.title ?? "(제목 없음)"}
-                  </h3>
+                  <h3 className="font-semibold text-gray-900">{banner.title ?? "(제목 없음)"}</h3>
                   {banner.description ? (
-                    <p className="mt-1 truncate text-sm text-gray-500">
-                      {banner.description}
-                    </p>
+                    <p className="mt-1 truncate text-sm text-gray-500">{banner.description}</p>
                   ) : null}
                   <div className="mt-2 flex items-center justify-between">
-                    <span className="text-xs text-gray-400">
-                      ID: {banner.id}
-                    </span>
-                    {banner.link ? (
-                      <span className="truncate text-xs text-amber-600">
-                        {banner.link}
-                      </span>
-                    ) : null}
+                    <span className="text-xs text-gray-400">ID: {banner.id}</span>
+                    {banner.link ? <span className="truncate text-xs text-amber-600">{banner.link}</span> : null}
                   </div>
                 </div>
               </button>

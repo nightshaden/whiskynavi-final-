@@ -27,9 +27,7 @@ function main() {
   const lines: string[] = [];
   lines.push(`/* AUTO-GENERATED FILE. DO NOT EDIT. */`);
   lines.push(`import * as React from 'react';`);
-  lines.push(
-    `\nexport type IconProps = React.SVGProps<SVGSVGElement> & { size?: number | string; title?: string };\n`,
-  );
+  lines.push(`\nexport type IconProps = React.SVGProps<SVGSVGElement> & { size?: number | string; title?: string };\n`);
 
   // 각 SVG를 import 해서 래핑
   for (const file of files) {
@@ -58,9 +56,7 @@ export const Icon${name}: React.FC<IconProps> = ({ size = 20, title, ...rest }) 
 
   fs.writeFileSync(OUTPUT, lines.join("\n"), "utf8");
   // eslint-disable-next-line no-console
-  console.log(
-    `Generated: ${path.relative(process.cwd(), OUTPUT)} with ${files.length} icons.`,
-  );
+  console.log(`Generated: ${path.relative(process.cwd(), OUTPUT)} with ${files.length} icons.`);
 }
 
 main();

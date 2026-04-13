@@ -19,27 +19,19 @@ export default async function SidebarStatsSection() {
         </div>
         <div>
           <p className="text-xs text-gray-500">등록 제품</p>
-          <p className="typo-bold-18 text-green-600">
-            {fmt(stats.totalBottles)}
-          </p>
+          <p className="typo-bold-18 text-green-600">{fmt(stats.totalBottles)}</p>
         </div>
         <div>
           <p className="text-xs text-gray-500">예약 공고</p>
-          <p className="typo-bold-18 text-amber-600">
-            {fmt(stats.totalNotices)}
-          </p>
+          <p className="typo-bold-18 text-amber-600">{fmt(stats.totalNotices)}</p>
         </div>
         <div>
           <p className="text-xs text-gray-500">예약 신청</p>
-          <p className="typo-bold-18 text-purple-600">
-            {fmt(stats.totalApplications)}
-          </p>
+          <p className="typo-bold-18 text-purple-600">{fmt(stats.totalApplications)}</p>
         </div>
         <div>
           <p className="text-xs text-gray-500">사업자 회원</p>
-          <p className="typo-bold-18 text-blue-600">
-            {fmt(stats.totalBusinessMembers)}
-          </p>
+          <p className="typo-bold-18 text-blue-600">{fmt(stats.totalBusinessMembers)}</p>
         </div>
       </div>
     </div>

@@ -27,11 +27,7 @@ const DesktopAuthArea: FC<DesktopAuthAreaProps> = ({ onOpenUserMenu }) => {
   }
 
   return (
-    <button
-      type="button"
-      onClick={onOpenUserMenu}
-      className="group flex cursor-pointer items-center gap-3"
-    >
+    <button type="button" onClick={onOpenUserMenu} className="group flex cursor-pointer items-center gap-3">
       <UserAvatar />
       <div className="flex flex-col items-start">
         <UserName name={session.user?.name} />

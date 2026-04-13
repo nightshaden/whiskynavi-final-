@@ -9,9 +9,7 @@ export function useUserSearch() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<AdminUserResponse[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<AdminUserResponse | null>(
-    null,
-  );
+  const [selectedUser, setSelectedUser] = useState<AdminUserResponse | null>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
   const deferredQuery = useDeferredValue(searchQuery);
@@ -19,10 +17,7 @@ export function useUserSearch() {
   const trimmedQuery = deferredQuery.trim();
 
   // 빈 쿼리 → 결과/드롭다운을 derived state로 처리
-  const visibleResults = useMemo(
-    () => (trimmedQuery ? searchResults : []),
-    [trimmedQuery, searchResults],
-  );
+  const visibleResults = useMemo(() => (trimmedQuery ? searchResults : []), [trimmedQuery, searchResults]);
   const isDropdownVisible = showDropdown && trimmedQuery.length > 0;
 
   // deferredQuery 변경 시 API 호출 (비어있으면 skip)
@@ -49,10 +44,7 @@ export function useUserSearch() {
   // 외부 클릭 시 드롭다운 닫기
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        searchContainerRef.current &&
-        !searchContainerRef.current.contains(event.target as Node)
-      ) {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
         setShowDropdown(false);
       }
     };

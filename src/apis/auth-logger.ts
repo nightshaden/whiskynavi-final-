@@ -5,9 +5,7 @@
  * - development: 항상 출력
  * - production:  AUTH_DEBUG=1 환경변수 설정 시에만 출력
  */
-const isEnabled =
-  process.env.NODE_ENV === "development" ||
-  process.env.AUTH_DEBUG === "1";
+const isEnabled = process.env.NODE_ENV === "development" || process.env.AUTH_DEBUG === "1";
 
 const PREFIX = "[auth]";
 

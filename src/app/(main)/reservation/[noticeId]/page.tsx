@@ -44,10 +44,7 @@ export default async function ReservationDetailPage({ params }: PageProps) {
           <span className="typo-bold-14 lg:text-base">목록으로 돌아가기</span>
         </Link>
 
-        <ReservationDetailClient
-          notice={notice}
-          pickupLocations={pickupLocations}
-        />
+        <ReservationDetailClient notice={notice} pickupLocations={pickupLocations} />
       </div>
     </div>
   );

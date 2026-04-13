@@ -1,18 +1,8 @@
 "use client";
 
 import type { UserSelfResponse } from "@/apis/generated/api";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-} from "@/components/ui/drawer";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { useIsDesktop } from "@/hooks/use-media-query";
 import { Crown, User } from "lucide-react";
 import { overlay } from "overlay-kit";

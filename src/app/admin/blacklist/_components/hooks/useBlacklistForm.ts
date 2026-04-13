@@ -89,24 +89,13 @@ type UseBlacklistFormOptions = {
   onSubmit: (data: BlacklistFormData) => void | Promise<void>;
 };
 
-export function useBlacklistForm({
-  mode,
-  initialData,
-  onSubmit,
-}: UseBlacklistFormOptions) {
-  const [formState, dispatch] = useReducer(
-    formReducer,
-    initialData,
-    getInitialState,
-  );
+export function useBlacklistForm({ mode, initialData, onSubmit }: UseBlacklistFormOptions) {
+  const [formState, dispatch] = useReducer(formReducer, initialData, getInitialState);
   const [isPending, startTransition] = useTransition();
 
   const handleSubmit = () => {
     const result = blacklistFormSchema.safeParse({
-      userId:
-        mode === "edit"
-          ? (initialData?.userId?.toString() ?? formState.userId)
-          : formState.userId,
+      userId: mode === "edit" ? (initialData?.userId?.toString() ?? formState.userId) : formState.userId,
       reason: formState.reason,
     });
 

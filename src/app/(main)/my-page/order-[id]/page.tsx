@@ -9,9 +9,7 @@ interface OrderDetailPageProps {
   params: Promise<{ id: string }>;
 }
 
-export default async function OrderDetailPage({
-  params,
-}: OrderDetailPageProps) {
+export default async function OrderDetailPage({ params }: OrderDetailPageProps) {
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -26,9 +24,7 @@ export default async function OrderDetailPage({
     notFound();
   }
 
-  const result = await getApiOrdersOrderid(orderId, withToken(token)).catch(
-    () => null,
-  );
+  const result = await getApiOrdersOrderid(orderId, withToken(token)).catch(() => null);
 
   if (!result?.data) {
     notFound();

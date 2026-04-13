@@ -10,21 +10,12 @@ import type { AdminUserResponse } from "@/apis/generated/api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 import AdminHeader from "../../_components/AdminHeader";
 import { useSidebar } from "../../_components/AdminLayoutClient";
 import Pagination from "../../_components/Pagination";
-import {
-  banUserAction,
-  cancelUserBanAction,
-  editUserBanAction,
-} from "../actions";
+import { banUserAction, cancelUserBanAction, editUserBanAction } from "../actions";
 import DeleteConfirmModal from "./modals/BlacklistDeleteModal";
 import BlacklistFormModal from "./modals/BlacklistFormModal";
 
@@ -37,10 +28,7 @@ interface BlacklistContentProps {
   blacklist: AdminUserResponse[];
 }
 
-export default function BlacklistContent({
-  searchParams,
-  blacklist,
-}: BlacklistContentProps) {
+export default function BlacklistContent({ searchParams, blacklist }: BlacklistContentProps) {
   const { toggle } = useSidebar();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -55,11 +43,7 @@ export default function BlacklistContent({
       const name = item.name?.toLowerCase() || "";
       const email = item.email?.toLowerCase() || "";
       const reason = item.userExt?.banReason?.toLowerCase() || "";
-      return (
-        name.includes(searchLower) ||
-        email.includes(searchLower) ||
-        reason.includes(searchLower)
-      );
+      return name.includes(searchLower) || email.includes(searchLower) || reason.includes(searchLower);
     });
   }, [blacklist, searchQuery]);
 
@@ -174,12 +158,7 @@ export default function BlacklistContent({
 
   return (
     <>
-      <AdminHeader
-        title="블랙리스트"
-        onToggleSidebar={toggle}
-        searchQuery={searchQuery}
-        onSearch={handleSearch}
-      />
+      <AdminHeader title="블랙리스트" onToggleSidebar={toggle} searchQuery={searchQuery} onSearch={handleSearch} />
 
       <div className="p-8">
         <div className="mb-4 flex justify-end">
@@ -196,36 +175,19 @@ export default function BlacklistContent({
             <table className="w-full">
               <thead className="border-b border-gray-200 bg-gray-50">
                 <tr>
-                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
-                    ID
-                  </th>
-                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
-                    이름
-                  </th>
-                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
-                    이메일
-                  </th>
-                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
-                    사유
-                  </th>
-                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
-                    제재 시작일
-                  </th>
-                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
-                    제재 종료일
-                  </th>
-                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
-                    관리
-                  </th>
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">ID</th>
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">이름</th>
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">이메일</th>
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">사유</th>
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">제재 시작일</th>
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">제재 종료일</th>
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">관리</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {paginatedBlacklist.length === 0 && !isPending ? (
                   <tr>
-                    <td
-                      colSpan={7}
-                      className="px-4 py-8 text-center text-gray-500"
-                    >
+                    <td colSpan={7} className="px-4 py-8 text-center text-gray-500">
                       블랙리스트가 없습니다.
                     </td>
                   </tr>
@@ -241,32 +203,19 @@ export default function BlacklistContent({
                   ))
                 ) : (
                   paginatedBlacklist.map((item) => (
-                    <tr
-                      key={item.id}
-                      className="transition-colors hover:bg-gray-50"
-                    >
-                      <td className="px-4 py-3 text-sm text-gray-900">
-                        {item.id}
-                      </td>
-                      <td className="typo-medium-14 px-4 py-3 text-gray-900">
-                        {item.name}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-600">
-                        {item.email}
-                      </td>
+                    <tr key={item.id} className="transition-colors hover:bg-gray-50">
+                      <td className="px-4 py-3 text-sm text-gray-900">{item.id}</td>
+                      <td className="typo-medium-14 px-4 py-3 text-gray-900">{item.name}</td>
+                      <td className="px-4 py-3 text-sm text-gray-600">{item.email}</td>
                       <td className="max-w-[300px] px-4 py-3 text-sm text-gray-600">
                         {item.userExt?.banReason ? (
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <span className="block cursor-default truncate">
-                                  {item.userExt.banReason}
-                                </span>
+                                <span className="block cursor-default truncate">{item.userExt.banReason}</span>
                               </TooltipTrigger>
                               <TooltipContent className="max-w-[400px]">
-                                <p className="whitespace-pre-wrap">
-                                  {item.userExt.banReason}
-                                </p>
+                                <p className="whitespace-pre-wrap">{item.userExt.banReason}</p>
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
@@ -274,9 +223,7 @@ export default function BlacklistContent({
                           "-"
                         )}
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-600">
-                        {formatDate(item.userExt?.banStartDate)}
-                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-600">{formatDate(item.userExt?.banStartDate)}</td>
                       <td className="px-4 py-3 text-sm text-gray-600">
                         {isPermanentBan(item.userExt?.banEndDate) ? (
                           <Badge variant="destructive">영구</Badge>
@@ -286,18 +233,10 @@ export default function BlacklistContent({
                       </td>
                       <td className="px-4 py-3 text-sm">
                         <div className="flex items-center gap-2">
-                          <Button
-                            variant="edit"
-                            onClick={() => openEditModal(item)}
-                            disabled={isPending}
-                          >
+                          <Button variant="edit" onClick={() => openEditModal(item)} disabled={isPending}>
                             <Edit2 size={16} />
                           </Button>
-                          <Button
-                            variant="delete"
-                            onClick={() => openDeleteModal(item)}
-                            disabled={isPending}
-                          >
+                          <Button variant="delete" onClick={() => openDeleteModal(item)} disabled={isPending}>
                             <Trash2 size={16} />
                           </Button>
                         </div>

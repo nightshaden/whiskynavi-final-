@@ -62,9 +62,7 @@ export default function FilterHeader({
                 onClose();
               }}
               className={`block w-full cursor-pointer px-3 py-2 text-left text-xs hover:bg-gray-100 ${
-                currentValue === option.value
-                  ? "bg-amber-50 text-amber-700"
-                  : ""
+                currentValue === option.value ? "bg-amber-50 text-amber-700" : ""
               }`}
             >
               {option.label}

@@ -70,11 +70,7 @@ export default function UserEditContent({ user }: UserEditContentProps) {
 
   return (
     <>
-      <AdminHeader
-        title="회원 정보 수정"
-        onToggleSidebar={toggle}
-        showSearch={false}
-      />
+      <AdminHeader title="회원 정보 수정" onToggleSidebar={toggle} showSearch={false} />
 
       <div className="p-8">
         <button

@@ -3,10 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
-import {
-  patchApiAdminUsersIdRolesAdd,
-  patchApiAdminUsersIdRolesRemove,
-} from "@/apis/generated/api";
+import { patchApiAdminUsersIdRolesAdd, patchApiAdminUsersIdRolesRemove } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
 
@@ -26,10 +23,7 @@ const BRAND_ROLE_MAP = {
   tales: "ROLE_WHISKYTALES_MEMBER",
 } as const;
 
-export async function addMembershipAction(
-  userId: number,
-  brand: MembershipBrand,
-) {
+export async function addMembershipAction(userId: number, brand: MembershipBrand) {
   const token = await getAuthToken();
 
   if (!token) {
@@ -44,24 +38,16 @@ export async function addMembershipAction(
   const role = BRAND_ROLE_MAP[parsed.data.brand];
 
   try {
-    await patchApiAdminUsersIdRolesAdd(
-      parsed.data.userId,
-      { roles: [role] },
-      withToken(token),
-    );
+    await patchApiAdminUsersIdRolesAdd(parsed.data.userId, { roles: [role] }, withToken(token));
     revalidatePath("/admin/membership");
     return { success: true };
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "멤버십 추가에 실패했습니다.";
+    const message = error instanceof Error ? error.message : "멤버십 추가에 실패했습니다.";
     return { success: false, error: message };
   }
 }
 
-export async function removeMembershipAction(
-  userId: number,
-  brand: MembershipBrand,
-) {
+export async function removeMembershipAction(userId: number, brand: MembershipBrand) {
   const token = await getAuthToken();
 
   if (!token) {
@@ -76,16 +62,11 @@ export async function removeMembershipAction(
   const role = BRAND_ROLE_MAP[parsed.data.brand];
 
   try {
-    await patchApiAdminUsersIdRolesRemove(
-      parsed.data.userId,
-      { roles: [role] },
-      withToken(token),
-    );
+    await patchApiAdminUsersIdRolesRemove(parsed.data.userId, { roles: [role] }, withToken(token));
     revalidatePath("/admin/membership");
     return { success: true };
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "멤버십 삭제에 실패했습니다.";
+    const message = error instanceof Error ? error.message : "멤버십 삭제에 실패했습니다.";
     return { success: false, error: message };
   }
 }

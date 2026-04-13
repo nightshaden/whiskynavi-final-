@@ -1,9 +1,6 @@
 "use server";
 
-import {
-  patchApiAdminBannersId,
-  postApiAdminBanners,
-} from "@/apis/generated/api";
+import { patchApiAdminBannersId, postApiAdminBanners } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
@@ -31,10 +28,7 @@ const bannerFormSchema = z.object({
     .optional(),
 });
 
-export async function createBannerFormAction(
-  _prev: FormState,
-  formData: FormData,
-): Promise<FormState> {
+export async function createBannerFormAction(_prev: FormState, formData: FormData): Promise<FormState> {
   const token = await getAuthToken();
   if (!token) {
     return { success: false, error: "인증이 필요합니다." };
@@ -75,8 +69,7 @@ export async function createBannerFormAction(
       withToken(token),
     );
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "배너 생성에 실패했습니다.";
+    const message = error instanceof Error ? error.message : "배너 생성에 실패했습니다.";
     return { success: false, error: message };
   }
 
@@ -84,11 +77,7 @@ export async function createBannerFormAction(
   redirect("/admin/banners");
 }
 
-export async function updateBannerFormAction(
-  id: number,
-  _prev: FormState,
-  formData: FormData,
-): Promise<FormState> {
+export async function updateBannerFormAction(id: number, _prev: FormState, formData: FormData): Promise<FormState> {
   const token = await getAuthToken();
   if (!token) {
     return { success: false, error: "인증이 필요합니다." };
@@ -126,8 +115,7 @@ export async function updateBannerFormAction(
       withToken(token),
     );
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "배너 수정에 실패했습니다.";
+    const message = error instanceof Error ? error.message : "배너 수정에 실패했습니다.";
     return { success: false, error: message };
   }
 

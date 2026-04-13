@@ -1,12 +1,7 @@
 "use client";
 
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { Check, ChevronDown } from "lucide-react";
 import { useState } from "react";
@@ -130,9 +125,7 @@ export function AgreementSection() {
   const [viewingTerms, setViewingTerms] = useState<string | null>(null);
   const [isMarketingExpanded, setIsMarketingExpanded] = useState(false);
 
-  const allAgreed = [...agreementItems, ...marketingSubItems].every(
-    (item) => agreements[item.id],
-  );
+  const allAgreed = [...agreementItems, ...marketingSubItems].every((item) => agreements[item.id]);
 
   const handleAllAgree = (checked: boolean) => {
     const newAgreements: Record<string, boolean> = {};
@@ -165,9 +158,7 @@ export function AgreementSection() {
     });
   };
 
-  const requiredAgreed = agreementItems
-    .filter((item) => item.required)
-    .every((item) => agreements[item.id]);
+  const requiredAgreed = agreementItems.filter((item) => item.required).every((item) => agreements[item.id]);
 
   const termsData = viewingTerms ? TERMS_CONTENT[viewingTerms] : null;
 
@@ -182,15 +173,10 @@ export function AgreementSection() {
           className="mt-0.5 size-5 rounded border-gray-200 data-[state=checked]:border-gray-900 data-[state=checked]:bg-gray-900 data-[state=checked]:text-white"
         />
         <div>
-          <label
-            htmlFor="all-agree"
-            className="typo-bold-16 cursor-pointer text-black"
-          >
+          <label htmlFor="all-agree" className="typo-bold-16 cursor-pointer text-black">
             모두 동의합니다
           </label>
-          <p className="typo-regular-12 mt-1 text-gray-500">
-            선택 동의 항목 포함
-          </p>
+          <p className="typo-regular-12 mt-1 text-gray-500">선택 동의 항목 포함</p>
         </div>
       </div>
 
@@ -210,13 +196,8 @@ export function AgreementSection() {
                 </div>
                 <button
                   type="button"
-                  onClick={() =>
-                    handleAgreementChange(item.id, !agreements[item.id])
-                  }
-                  className={cn(
-                    "typo-regular-14 text-left",
-                    agreements[item.id] ? "text-black" : "text-gray-500",
-                  )}
+                  onClick={() => handleAgreementChange(item.id, !agreements[item.id])}
+                  className={cn("typo-regular-14 text-left", agreements[item.id] ? "text-black" : "text-gray-500")}
                 >
                   {item.label}
                 </button>
@@ -228,12 +209,7 @@ export function AgreementSection() {
                   className="typo-regular-12 flex items-center gap-0.5 text-gray-400 hover:text-gray-600"
                 >
                   {isMarketingExpanded ? "접기" : "펼치기"}
-                  <ChevronDown
-                    className={cn(
-                      "size-3.5 transition-transform",
-                      isMarketingExpanded && "rotate-180",
-                    )}
-                  />
+                  <ChevronDown className={cn("size-3.5 transition-transform", isMarketingExpanded && "rotate-180")} />
                 </button>
               ) : (
                 <button
@@ -261,13 +237,8 @@ export function AgreementSection() {
                     </div>
                     <button
                       type="button"
-                      onClick={() =>
-                        handleAgreementChange(sub.id, !agreements[sub.id])
-                      }
-                      className={cn(
-                        "typo-regular-13 text-left",
-                        agreements[sub.id] ? "text-black" : "text-gray-500",
-                      )}
+                      onClick={() => handleAgreementChange(sub.id, !agreements[sub.id])}
+                      className={cn("typo-regular-13 text-left", agreements[sub.id] ? "text-black" : "text-gray-500")}
                     >
                       {sub.label}
                     </button>
@@ -280,51 +251,22 @@ export function AgreementSection() {
       </div>
 
       {/* 약관 내용 Dialog */}
-      <Dialog
-        open={!!viewingTerms}
-        onOpenChange={(open) => !open && setViewingTerms(null)}
-      >
+      <Dialog open={!!viewingTerms} onOpenChange={(open) => !open && setViewingTerms(null)}>
         <DialogContent className="max-h-[70vh] overflow-y-auto sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>{termsData?.title}</DialogTitle>
           </DialogHeader>
-          <div className="text-sm leading-relaxed whitespace-pre-wrap text-gray-700">
-            {termsData?.content}
-          </div>
+          <div className="text-sm leading-relaxed whitespace-pre-wrap text-gray-700">{termsData?.content}</div>
         </DialogContent>
       </Dialog>
 
       {/* Hidden inputs for form submission */}
-      <input
-        type="hidden"
-        name="privacyAgree"
-        value={String(agreements.terms && agreements.privacy)}
-      />
-      <input
-        type="hidden"
-        name="marketingAgree"
-        value={String(agreements["privacy-optional"] || false)}
-      />
-      <input
-        type="hidden"
-        name="emailAgree"
-        value={String(agreements["sub-email"] || false)}
-      />
-      <input
-        type="hidden"
-        name="smsAgree"
-        value={String(agreements["sub-sms"] || false)}
-      />
-      <input
-        type="hidden"
-        name="snsAgree"
-        value={String(agreements["sub-sns"] || false)}
-      />
-      <input
-        type="hidden"
-        name="requiredAgreed"
-        value={String(requiredAgreed)}
-      />
+      <input type="hidden" name="privacyAgree" value={String(agreements.terms && agreements.privacy)} />
+      <input type="hidden" name="marketingAgree" value={String(agreements["privacy-optional"] || false)} />
+      <input type="hidden" name="emailAgree" value={String(agreements["sub-email"] || false)} />
+      <input type="hidden" name="smsAgree" value={String(agreements["sub-sms"] || false)} />
+      <input type="hidden" name="snsAgree" value={String(agreements["sub-sns"] || false)} />
+      <input type="hidden" name="requiredAgreed" value={String(requiredAgreed)} />
     </div>
   );
 }

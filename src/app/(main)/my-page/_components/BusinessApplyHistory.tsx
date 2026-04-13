@@ -11,28 +11,16 @@ const BusinessApplyHistory: FC<Props> = ({ applicationHistory }) => {
     <div className="overflow-y-auto px-4 pb-4">
       <div className="space-y-3">
         {applicationHistory?.map((application) => (
-          <div
-            key={application.id}
-            className="rounded-lg border border-gray-200 p-4"
-          >
+          <div key={application.id} className="rounded-lg border border-gray-200 p-4">
             <div className="mb-3 flex items-start gap-3">
-              {application.status === "PENDING" && (
-                <Clock className="mt-0.5 shrink-0 text-yellow-500" size={20} />
-              )}
+              {application.status === "PENDING" && <Clock className="mt-0.5 shrink-0 text-yellow-500" size={20} />}
               {application.status === "APPROVED" && (
-                <CheckCircle
-                  className="mt-0.5 shrink-0 text-green-500"
-                  size={20}
-                />
+                <CheckCircle className="mt-0.5 shrink-0 text-green-500" size={20} />
               )}
-              {application.status === "REJECTED" && (
-                <XCircle className="mt-0.5 shrink-0 text-red-500" size={20} />
-              )}
+              {application.status === "REJECTED" && <XCircle className="mt-0.5 shrink-0 text-red-500" size={20} />}
               <div className="flex-1">
                 <div className="mb-2 flex items-center gap-2">
-                  <h4 className="text-sm font-bold text-gray-900">
-                    {application.businessName}
-                  </h4>
+                  <h4 className="text-sm font-bold text-gray-900">{application.businessName}</h4>
                   <span
                     className={`px-2 py-0.5 text-xs font-semibold ${
                       application.status === "PENDING"
@@ -50,27 +38,18 @@ const BusinessApplyHistory: FC<Props> = ({ applicationHistory }) => {
                   </span>
                 </div>
                 <div className="space-y-1 text-xs text-gray-600">
-                  <p>
-                    사업자 등록번호: {application.businessRegistrationNumber}
-                  </p>
+                  <p>사업자 등록번호: {application.businessRegistrationNumber}</p>
                   <p>대표자: {application.representativeName}</p>
                   <p>연락처: {application.contact}</p>
-                  {application.pickupAddress && (
-                    <p>픽업 주소: {application.pickupAddress}</p>
-                  )}
+                  {application.pickupAddress && <p>픽업 주소: {application.pickupAddress}</p>}
                   <p>신청일: {application.createdAt}</p>
-                  {application.updatedAt && (
-                    <p>검토일: {application.updatedAt}</p>
+                  {application.updatedAt && <p>검토일: {application.updatedAt}</p>}
+                  {application.status === "REJECTED" && application.rejectReason && (
+                    <div className="mt-2 rounded border border-red-200 bg-red-50 p-2">
+                      <p className="font-medium text-red-700">거부 사유:</p>
+                      <p className="text-red-600">{application.rejectReason}</p>
+                    </div>
                   )}
-                  {application.status === "REJECTED" &&
-                    application.rejectReason && (
-                      <div className="mt-2 rounded border border-red-200 bg-red-50 p-2">
-                        <p className="font-medium text-red-700">거부 사유:</p>
-                        <p className="text-red-600">
-                          {application.rejectReason}
-                        </p>
-                      </div>
-                    )}
                 </div>
               </div>
             </div>

@@ -20,9 +20,7 @@ export default function OrdersTab({ orders }: OrdersTabProps) {
 
   const handleOrderClick = (order: OrderResponse) => {
     if (isDesktop) {
-      overlay.open(({ isOpen, close }) => (
-        <OrderDetailModal isOpen={isOpen} close={close} order={order} />
-      ));
+      overlay.open(({ isOpen, close }) => <OrderDetailModal isOpen={isOpen} close={close} order={order} />);
     } else {
       router.push(`/my-page/order-${order.id}`);
     }
@@ -37,9 +35,7 @@ export default function OrdersTab({ orders }: OrdersTabProps) {
 
   return (
     <div>
-      <h3 className="typo-bold-20 mb-4 text-white md:mb-6 md:text-2xl">
-        주문내역
-      </h3>
+      <h3 className="typo-bold-20 mb-4 text-white md:mb-6 md:text-2xl">주문내역</h3>
 
       {!orders.content?.length ? (
         <div className="py-12 text-center">
@@ -49,11 +45,7 @@ export default function OrdersTab({ orders }: OrdersTabProps) {
         <>
           <div className="space-y-3 md:space-y-4">
             {orders.content.map((order) => (
-              <OrderCard
-                key={order.id}
-                order={order}
-                onClick={() => handleOrderClick(order)}
-              />
+              <OrderCard key={order.id} order={order} onClick={() => handleOrderClick(order)} />
             ))}
           </div>
 
@@ -72,9 +64,7 @@ export default function OrdersTab({ orders }: OrdersTabProps) {
                   key={i}
                   onClick={() => handlePageChange(i)}
                   className={`px-3 py-2 text-sm transition-colors ${
-                    i === currentPage
-                      ? "font-bold text-white"
-                      : "text-gray-400 hover:text-white"
+                    i === currentPage ? "font-bold text-white" : "text-gray-400 hover:text-white"
                   }`}
                 >
                   {i + 1}

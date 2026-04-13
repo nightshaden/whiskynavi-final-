@@ -1,13 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
@@ -31,13 +25,7 @@ type BlacklistFormModalProps = {
   onSubmit: (data: BlacklistFormData) => void | Promise<void>;
 };
 
-export default function BlacklistFormModal({
-  isOpen,
-  close,
-  mode,
-  initialData,
-  onSubmit,
-}: BlacklistFormModalProps) {
+export default function BlacklistFormModal({ isOpen, close, mode, initialData, onSubmit }: BlacklistFormModalProps) {
   const { formState, dispatch, isPending, handleSubmit } = useBlacklistForm({
     mode,
     initialData,
@@ -50,9 +38,7 @@ export default function BlacklistFormModal({
     <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="typo-bold-20">
-            블랙리스트 {isAdd ? "추가" : "수정"}
-          </DialogTitle>
+          <DialogTitle className="typo-bold-20">블랙리스트 {isAdd ? "추가" : "수정"}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
@@ -85,9 +71,7 @@ export default function BlacklistFormModal({
             <Textarea
               id="reason"
               value={formState.reason}
-              onChange={(e) =>
-                dispatch({ type: "SET_REASON", payload: e.target.value })
-              }
+              onChange={(e) => dispatch({ type: "SET_REASON", payload: e.target.value })}
               rows={3}
               placeholder="제재 사유 입력"
             />
@@ -98,9 +82,7 @@ export default function BlacklistFormModal({
               <Label>시작일</Label>
               <DateTimePicker
                 value={formState.startAt}
-                onChange={(iso) =>
-                  dispatch({ type: "SET_START_DATE", payload: iso })
-                }
+                onChange={(iso) => dispatch({ type: "SET_START_DATE", payload: iso })}
                 placeholder="시작일 선택"
               />
             </div>
@@ -113,9 +95,7 @@ export default function BlacklistFormModal({
               ) : (
                 <DateTimePicker
                   value={formState.endAt ?? undefined}
-                  onChange={(iso) =>
-                    dispatch({ type: "SET_END_DATE", payload: iso })
-                  }
+                  onChange={(iso) => dispatch({ type: "SET_END_DATE", payload: iso })}
                   placeholder="종료일 선택"
                 />
               )}

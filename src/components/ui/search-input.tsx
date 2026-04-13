@@ -10,18 +10,10 @@ interface SearchInputProps extends React.ComponentProps<typeof Input> {
 }
 
 const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
-  (
-    { containerClassName, iconClassName, inputClassName, className, ...props },
-    ref,
-  ) => {
+  ({ containerClassName, iconClassName, inputClassName, className, ...props }, ref) => {
     return (
       <div className={cn("relative", containerClassName)}>
-        <IconSearch
-          className={cn(
-            "absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400",
-            iconClassName,
-          )}
-        />
+        <IconSearch className={cn("absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400", iconClassName)} />
         <Input
           ref={ref}
           className={cn(

@@ -11,9 +11,7 @@ interface PasswordChangeFormProps {
   onClose: () => void;
 }
 
-export default function PasswordChangeForm({
-  onClose,
-}: PasswordChangeFormProps) {
+export default function PasswordChangeForm({ onClose }: PasswordChangeFormProps) {
   const [pwState, pwAction, pwPending] = useActionState(changePassword, {
     success: false,
   });
@@ -32,9 +30,7 @@ export default function PasswordChangeForm({
     <form action={pwAction}>
       <div className="space-y-3 md:space-y-4">
         <div>
-          <Label className="typo-bold-14 mb-2 block text-gray-700">
-            현재 비밀번호
-          </Label>
+          <Label className="typo-bold-14 mb-2 block text-gray-700">현재 비밀번호</Label>
           <Input
             name="currentPassword"
             type="password"
@@ -43,9 +39,7 @@ export default function PasswordChangeForm({
           />
         </div>
         <div>
-          <Label className="typo-bold-14 mb-2 block text-gray-700">
-            새 비밀번호
-          </Label>
+          <Label className="typo-bold-14 mb-2 block text-gray-700">새 비밀번호</Label>
           <Input
             name="newPassword"
             type="password"
@@ -56,9 +50,7 @@ export default function PasswordChangeForm({
           />
         </div>
         <div>
-          <Label className="typo-bold-14 mb-2 block text-gray-700">
-            새 비밀번호 확인
-          </Label>
+          <Label className="typo-bold-14 mb-2 block text-gray-700">새 비밀번호 확인</Label>
           <Input
             name="confirmPassword"
             type="password"
@@ -67,11 +59,7 @@ export default function PasswordChangeForm({
             onChange={(e) => setConfirmPassword(e.target.value)}
             className={`text-sm md:text-base ${!passwordMatch ? "border-red-500 focus:ring-red-600" : ""}`}
           />
-          {!passwordMatch && (
-            <p className="mt-1 text-xs text-red-600">
-              비밀번호가 일치하지 않습니다
-            </p>
-          )}
+          {!passwordMatch && <p className="mt-1 text-xs text-red-600">비밀번호가 일치하지 않습니다</p>}
         </div>
       </div>
 

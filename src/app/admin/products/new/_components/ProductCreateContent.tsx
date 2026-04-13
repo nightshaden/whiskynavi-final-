@@ -12,18 +12,11 @@ export default function ProductCreateContent() {
   const { toggle } = useSidebar();
   const router = useRouter();
 
-  const [formState, formAction, isPending] = useActionState(
-    createBottleFormAction,
-    { success: false },
-  );
+  const [formState, formAction, isPending] = useActionState(createBottleFormAction, { success: false });
 
   return (
     <>
-      <AdminHeader
-        title="제품 등록"
-        onToggleSidebar={toggle}
-        showSearch={false}
-      />
+      <AdminHeader title="제품 등록" onToggleSidebar={toggle} showSearch={false} />
 
       <form action={formAction} className="p-8">
         <div className="mb-6 flex items-center justify-between">

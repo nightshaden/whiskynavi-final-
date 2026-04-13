@@ -34,11 +34,7 @@ interface ReservationsContentProps {
   totalElements: number;
 }
 
-export default function ReservationsContent({
-  searchParams,
-  notices,
-  totalElements,
-}: ReservationsContentProps) {
+export default function ReservationsContent({ searchParams, notices, totalElements }: ReservationsContentProps) {
   const { toggle } = useSidebar();
   const router = useRouter();
 
@@ -62,12 +58,7 @@ export default function ReservationsContent({
 
   return (
     <>
-      <AdminHeader
-        title="예약 공고 관리"
-        onToggleSidebar={toggle}
-        searchQuery={searchQuery}
-        onSearch={handleSearch}
-      />
+      <AdminHeader title="예약 공고 관리" onToggleSidebar={toggle} searchQuery={searchQuery} onSearch={handleSearch} />
 
       <div className="p-8">
         <div className="mb-4 flex items-center justify-between">
@@ -87,39 +78,20 @@ export default function ReservationsContent({
             <table className="w-full">
               <thead className="border-b border-gray-200 bg-gray-50">
                 <tr>
-                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
-                    ID
-                  </th>
-                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
-                    제품명
-                  </th>
-                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
-                    브랜드
-                  </th>
-                  <th className="typo-bold-12 px-4 py-3 text-right text-gray-700 uppercase">
-                    가격
-                  </th>
-                  <th className="typo-bold-12 px-4 py-3 text-center text-gray-700 uppercase">
-                    신청 / 전체
-                  </th>
-                  <th className="typo-bold-12 px-4 py-3 text-center text-gray-700 uppercase">
-                    승인
-                  </th>
-                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
-                    예약기간
-                  </th>
-                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
-                    관리
-                  </th>
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">ID</th>
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">제품명</th>
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">브랜드</th>
+                  <th className="typo-bold-12 px-4 py-3 text-right text-gray-700 uppercase">가격</th>
+                  <th className="typo-bold-12 px-4 py-3 text-center text-gray-700 uppercase">신청 / 전체</th>
+                  <th className="typo-bold-12 px-4 py-3 text-center text-gray-700 uppercase">승인</th>
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">예약기간</th>
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">관리</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {notices.length === 0 ? (
                   <tr>
-                    <td
-                      colSpan={8}
-                      className="px-4 py-8 text-center text-gray-500"
-                    >
+                    <td colSpan={8} className="px-4 py-8 text-center text-gray-500">
                       예약 공고가 없습니다.
                     </td>
                   </tr>
@@ -128,52 +100,30 @@ export default function ReservationsContent({
                     <tr
                       key={notice.id}
                       className="cursor-pointer transition-colors hover:bg-gray-50"
-                      onClick={() =>
-                        router.push(`/admin/reservations/${notice.id}`)
-                      }
+                      onClick={() => router.push(`/admin/reservations/${notice.id}`)}
                     >
-                      <td className="px-4 py-3 text-sm text-gray-900">
-                        {notice.id}
-                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-900">{notice.id}</td>
                       <td className="typo-medium-14 max-w-[200px] truncate px-4 py-3 text-gray-900">
                         {notice.bottleName}
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-600">
-                        {notice.bottleBrand ?? "-"}
-                      </td>
-                      <td className="px-4 py-3 text-right text-sm text-gray-900">
-                        {notice.price?.toLocaleString()}원
-                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-600">{notice.bottleBrand ?? "-"}</td>
+                      <td className="px-4 py-3 text-right text-sm text-gray-900">{notice.price?.toLocaleString()}원</td>
                       <td className="px-4 py-3 text-center text-sm">
-                        <span className="font-medium text-blue-600">
-                          {notice.appliedQuantity ?? 0}
-                        </span>
+                        <span className="font-medium text-blue-600">{notice.appliedQuantity ?? 0}</span>
                         <span className="mx-1 text-gray-400">/</span>
-                        <span className="text-gray-600">
-                          {notice.availableQuantity ?? 0}
-                        </span>
+                        <span className="text-gray-600">{notice.availableQuantity ?? 0}</span>
                       </td>
                       <td className="px-4 py-3 text-center text-sm">
-                        <span className="font-medium text-green-600">
-                          {notice.approvedQuantity ?? 0}
-                        </span>
+                        <span className="font-medium text-green-600">{notice.approvedQuantity ?? 0}</span>
                       </td>
                       <td className="px-4 py-3 text-sm whitespace-nowrap text-gray-600">
-                        {formatPeriod(
-                          notice.reservationStartAt,
-                          notice.reservationEndAt,
-                        )}
+                        {formatPeriod(notice.reservationStartAt, notice.reservationEndAt)}
                       </td>
                       <td className="px-4 py-3 text-sm">
-                        <div
-                          className="flex items-center gap-1"
-                          onClick={(e) => e.stopPropagation()}
-                        >
+                        <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
                           <button
                             type="button"
-                            onClick={() =>
-                              router.push(`/admin/reservations/${notice.id}`)
-                            }
+                            onClick={() => router.push(`/admin/reservations/${notice.id}`)}
                             className="cursor-pointer rounded-md p-1.5 text-gray-500 transition-colors hover:bg-amber-50 hover:text-amber-600"
                             title="상세"
                           >
@@ -181,11 +131,7 @@ export default function ReservationsContent({
                           </button>
                           <button
                             type="button"
-                            onClick={() =>
-                              router.push(
-                                `/admin/reservations/${notice.id}/edit`,
-                              )
-                            }
+                            onClick={() => router.push(`/admin/reservations/${notice.id}/edit`)}
                             className="cursor-pointer rounded-md p-1.5 text-gray-500 transition-colors hover:bg-amber-50 hover:text-amber-600"
                             title="수정"
                           >

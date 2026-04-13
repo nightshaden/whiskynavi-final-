@@ -7,10 +7,7 @@ interface PaginationProps {
   buildPageUrl: (page: number) => string;
 }
 
-function generatePageNumbers(
-  currentPage: number,
-  totalPages: number,
-): (number | "...")[] {
+function generatePageNumbers(currentPage: number, totalPages: number): (number | "...")[] {
   if (totalPages <= 5) {
     return Array.from({ length: totalPages }, (_, i) => i + 1);
   }
@@ -31,11 +28,7 @@ function generatePageNumbers(
   return pages;
 }
 
-export default function Pagination({
-  currentPage,
-  totalPages,
-  buildPageUrl,
-}: PaginationProps) {
+export default function Pagination({ currentPage, totalPages, buildPageUrl }: PaginationProps) {
   if (totalPages <= 1) return null;
 
   const pageNumbers = generatePageNumbers(currentPage, totalPages);
@@ -63,18 +56,13 @@ export default function Pagination({
               key={page}
               href={buildPageUrl(page)}
               className={`px-1.5 py-0.5 text-xs sm:px-2 sm:py-1 sm:text-base ${
-                currentPage === page
-                  ? "font-bold text-white"
-                  : "text-gray-400 hover:text-gray-300"
+                currentPage === page ? "font-bold text-white" : "text-gray-400 hover:text-gray-300"
               }`}
             >
               {page}
             </Link>
           ) : (
-            <span
-              key={`ellipsis-${idx}`}
-              className="px-1.5 py-0.5 text-xs text-gray-400 sm:px-2 sm:py-1 sm:text-base"
-            >
+            <span key={`ellipsis-${idx}`} className="px-1.5 py-0.5 text-xs text-gray-400 sm:px-2 sm:py-1 sm:text-base">
               {page}
             </span>
           ),

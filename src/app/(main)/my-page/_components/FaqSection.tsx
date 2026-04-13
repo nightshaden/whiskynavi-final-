@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { HelpCircle } from "lucide-react";
 import { FAQ_DATA } from "../_lib/constants";
 
@@ -18,11 +13,7 @@ export default function FaqSection() {
       </h3>
       <Accordion type="single" collapsible className="space-y-2 md:space-y-3">
         {FAQ_DATA.map((faq, index) => (
-          <AccordionItem
-            key={index}
-            value={`faq-${index}`}
-            className="border border-white/10"
-          >
+          <AccordionItem key={index} value={`faq-${index}`} className="border border-white/10">
             <AccordionTrigger className="typo-bold-14 px-4 py-4 text-left text-white hover:bg-white/5 hover:no-underline md:px-5 md:text-base [&[data-state=open]>svg]:rotate-180">
               {faq.question}
             </AccordionTrigger>

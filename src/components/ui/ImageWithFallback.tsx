@@ -29,17 +29,10 @@ export function ImageWithFallback({ className, style, ...rest }: ImageProps) {
 
   if (didError || !rest.src || rest.src === "") {
     return (
-      <div
-        className={`inline-block bg-gray-100 text-center align-middle ${className ?? ""}`}
-        style={style}
-      >
+      <div className={`inline-block bg-gray-100 text-center align-middle ${className ?? ""}`} style={style}>
         <div className="flex h-full w-full items-center justify-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={ERROR_IMG_SRC}
-            alt="Error loading image"
-            data-original-url={String(rest.src)}
-          />
+          <img src={ERROR_IMG_SRC} alt="Error loading image" data-original-url={String(rest.src)} />
         </div>
       </div>
     );

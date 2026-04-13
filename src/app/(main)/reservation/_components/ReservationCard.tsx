@@ -14,10 +14,7 @@ const formatDate = (dateStr?: string): string => {
   return dateStr.slice(0, 16).replace("T", " ");
 };
 
-export default function ReservationCard({
-  notice,
-  status,
-}: ReservationCardProps) {
+export default function ReservationCard({ notice, status }: ReservationCardProps) {
   const isActive = status === "active";
 
   return (
@@ -32,9 +29,7 @@ export default function ReservationCard({
             className="object-contain p-1.5 sm:p-4"
           />
         ) : (
-          <div className="text-sm text-white/60 md:text-base">
-            {notice.bottleName}
-          </div>
+          <div className="text-sm text-white/60 md:text-base">{notice.bottleName}</div>
         )}
       </div>
       {/* Content */}
@@ -49,33 +44,21 @@ export default function ReservationCard({
               {notice.bottleName ?? "-"}
             </h3>
           </div>
-          <Badge
-            className={`shrink-0 border-transparent text-white ${
-              isActive ? "bg-blue-600" : "bg-gray-600"
-            }`}
-          >
+          <Badge className={`shrink-0 border-transparent text-white ${isActive ? "bg-blue-600" : "bg-gray-600"}`}>
             {isActive ? "진행 중" : "종료"}
           </Badge>
         </div>
         <div className="mt-2 flex items-center justify-between">
           {notice.price != null && (
-            <span className="text-xs text-gray-400">
-              {notice.price?.toLocaleString() ?? "-"}원
-            </span>
+            <span className="text-xs text-gray-400">{notice.price?.toLocaleString() ?? "-"}원</span>
           )}
           {notice.availableQuantity != null && (
-            <span className="text-xs text-gray-500">
-              {notice.availableQuantity?.toLocaleString() ?? "-"}병
-            </span>
+            <span className="text-xs text-gray-500">{notice.availableQuantity?.toLocaleString() ?? "-"}병</span>
           )}
         </div>
         {/* Reservation Date */}
-        <div
-          className={`mt-2 text-xs ${isActive ? "text-blue-400" : "text-gray-500"}`}
-        >
-          {isActive
-            ? `마감: ${formatDate(notice.reservationEndAt)}`
-            : `종료: ${formatDate(notice.reservationEndAt)}`}
+        <div className={`mt-2 text-xs ${isActive ? "text-blue-400" : "text-gray-500"}`}>
+          {isActive ? `마감: ${formatDate(notice.reservationEndAt)}` : `종료: ${formatDate(notice.reservationEndAt)}`}
         </div>
       </div>
     </div>

@@ -5,8 +5,7 @@
 import { readFileSync } from "fs";
 import { resolve } from "path";
 
-const BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://api.whiskynavi.com";
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://api.whiskynavi.com";
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 
 if (!ACCESS_TOKEN) {

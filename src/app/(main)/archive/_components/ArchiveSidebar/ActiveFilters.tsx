@@ -6,25 +6,16 @@ import { FILTER_DEFAULTS, FilterState } from "../../_types";
 
 interface CurrentFiltersProps {
   filters: FilterState;
-  onRemove: (
-    type: "brands" | "maltTypes" | "distilleries" | "caskTypes",
-    value: string,
-  ) => void;
+  onRemove: (type: "brands" | "maltTypes" | "distilleries" | "caskTypes", value: string) => void;
   onClearAll: () => void;
 }
 
-const CurrentFilters = ({
-  filters,
-  onRemove,
-  onClearAll,
-}: CurrentFiltersProps) => {
+const CurrentFilters = ({ filters, onRemove, onClearAll }: CurrentFiltersProps) => {
   const filterConfigs = [
     { key: "brands" as const, items: filters.brands },
     {
       key: "maltTypes" as const,
-      items: filters.maltTypes.filter(
-        (m) => m !== FILTER_DEFAULTS.DEFAULT_MALT_TYPE,
-      ),
+      items: filters.maltTypes.filter((m) => m !== FILTER_DEFAULTS.DEFAULT_MALT_TYPE),
     },
     { key: "distilleries" as const, items: filters.distilleries },
     { key: "caskTypes" as const, items: filters.caskTypes },
@@ -33,20 +24,11 @@ const CurrentFilters = ({
   const activeFiltersCount = useMemo(() => {
     let count = 0;
     count += filters.brands.length;
-    count += filters.maltTypes.filter(
-      (m) => m !== FILTER_DEFAULTS.DEFAULT_MALT_TYPE,
-    ).length;
+    count += filters.maltTypes.filter((m) => m !== FILTER_DEFAULTS.DEFAULT_MALT_TYPE).length;
     count += filters.distilleries.length;
     count += filters.caskTypes.length;
-    if (
-      filters.abv[0] !== FILTER_DEFAULTS.ABV_MIN ||
-      filters.abv[1] !== FILTER_DEFAULTS.ABV_MAX
-    )
-      count++;
-    if (
-      filters.vintage[0] !== FILTER_DEFAULTS.VINTAGE_MIN ||
-      filters.vintage[1] !== FILTER_DEFAULTS.VINTAGE_MAX
-    )
+    if (filters.abv[0] !== FILTER_DEFAULTS.ABV_MIN || filters.abv[1] !== FILTER_DEFAULTS.ABV_MAX) count++;
+    if (filters.vintage[0] !== FILTER_DEFAULTS.VINTAGE_MIN || filters.vintage[1] !== FILTER_DEFAULTS.VINTAGE_MAX)
       count++;
     return count;
   }, [filters]);
@@ -56,9 +38,7 @@ const CurrentFilters = ({
   return (
     <div className="mb-4">
       <div className="mb-2 flex items-center justify-between">
-        <span className="text-xs text-white/60">
-          적용된 필터 ({activeFiltersCount})
-        </span>
+        <span className="text-xs text-white/60">적용된 필터 ({activeFiltersCount})</span>
         <button
           type="button"
           onClick={onClearAll}

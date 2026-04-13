@@ -8,10 +8,7 @@ interface AdminLayoutClientProps {
   statsSlot: ReactNode;
 }
 
-export default function AdminLayoutClient({
-  children,
-  statsSlot,
-}: AdminLayoutClientProps) {
+export default function AdminLayoutClient({ children, statsSlot }: AdminLayoutClientProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   return (

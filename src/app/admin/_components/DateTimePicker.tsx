@@ -2,11 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { CalendarDays } from "lucide-react";
@@ -105,9 +101,7 @@ export default function DateTimePicker({
     [currentDate, updateDateTime],
   );
 
-  const displayText = currentDate
-    ? format(currentDate, "yyyy년 MM월 dd일 HH:mm", { locale: ko })
-    : null;
+  const displayText = currentDate ? format(currentDate, "yyyy년 MM월 dd일 HH:mm", { locale: ko }) : null;
 
   // form 제출용 hidden value (ISO string)
   const hiddenValue = currentDate ? currentDate.toISOString() : "";
@@ -129,12 +123,7 @@ export default function DateTimePicker({
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
-          <Calendar
-            mode="single"
-            selected={currentDate}
-            onSelect={handleDaySelect}
-            locale={ko}
-          />
+          <Calendar mode="single" selected={currentDate} onSelect={handleDaySelect} locale={ko} />
           <div className="flex items-center gap-2 border-t border-gray-200 px-4 py-3">
             <label className="text-sm text-gray-600">시간</label>
             <input
@@ -158,13 +147,7 @@ export default function DateTimePicker({
         </PopoverContent>
       </Popover>
       {required && !currentDate && (
-        <input
-          tabIndex={-1}
-          className="absolute h-0 w-0 opacity-0"
-          required
-          value=""
-          onChange={() => {}}
-        />
+        <input tabIndex={-1} className="absolute h-0 w-0 opacity-0" required value="" onChange={() => {}} />
       )}
     </div>
   );

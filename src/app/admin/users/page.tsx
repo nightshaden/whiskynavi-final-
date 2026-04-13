@@ -38,10 +38,6 @@ export default async function UsersPage({ searchParams }: UsersPageProps) {
   );
 
   return (
-    <UsersContent
-      searchParams={params}
-      users={res.data.content ?? []}
-      totalElements={res.data.totalElements ?? 0}
-    />
+    <UsersContent searchParams={params} users={res.data.content ?? []} totalElements={res.data.totalElements ?? 0} />
   );
 }

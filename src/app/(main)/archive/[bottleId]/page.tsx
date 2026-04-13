@@ -28,25 +28,16 @@ const Page = async ({ params }: { params: Promise<{ bottleId: string }> }) => {
             <div>
               <div className="relative flex aspect-square items-center justify-center bg-gradient-to-br from-gray-700 to-gray-800">
                 {bottle.imgUrl ? (
-                  <ImageWithFallback
-                    src={bottle.imgUrl}
-                    alt={bottle.name ?? ""}
-                    fill
-                    className="object-contain p-4"
-                  />
+                  <ImageWithFallback src={bottle.imgUrl} alt={bottle.name ?? ""} fill className="object-contain p-4" />
                 ) : (
-                  <div className="text-4xl text-white/60 lg:text-5xl">
-                    {bottle.name}
-                  </div>
+                  <div className="text-4xl text-white/60 lg:text-5xl">{bottle.name}</div>
                 )}
               </div>
             </div>
 
             {/* Column 2 - Basic Info */}
             <div className="flex flex-col">
-              <h3 className="typo-bold-20 mb-6 text-white lg:mb-8 lg:text-2xl">
-                {bottle.name}
-              </h3>
+              <h3 className="typo-bold-20 mb-6 text-white lg:mb-8 lg:text-2xl">{bottle.name}</h3>
 
               <div className="space-y-3 lg:space-y-4">
                 {[
@@ -63,10 +54,7 @@ const Page = async ({ params }: { params: Promise<{ bottleId: string }> }) => {
                   { label: "병입일", value: bottle.bottledDate },
                   {
                     label: "용량",
-                    value:
-                      bottle.capacity != null
-                        ? `${bottle.capacity}ml`
-                        : undefined,
+                    value: bottle.capacity != null ? `${bottle.capacity}ml` : undefined,
                   },
                 ].map((item, index, arr) => (
                   <div
@@ -75,12 +63,8 @@ const Page = async ({ params }: { params: Promise<{ bottleId: string }> }) => {
                       index < arr.length - 1 ? "border-b border-white/10" : ""
                     }`}
                   >
-                    <span className="text-sm text-gray-400 lg:text-base">
-                      {item.label}
-                    </span>
-                    <span className="typo-medium-14 text-white lg:text-base">
-                      {item.value || "-"}
-                    </span>
+                    <span className="text-sm text-gray-400 lg:text-base">{item.label}</span>
+                    <span className="typo-medium-14 text-white lg:text-base">{item.value || "-"}</span>
                   </div>
                 ))}
               </div>
@@ -88,9 +72,7 @@ const Page = async ({ params }: { params: Promise<{ bottleId: string }> }) => {
 
             {/* Column 3 - Tasting Note */}
             <div className="flex flex-col">
-              <h3 className="typo-bold-18 mb-4 text-white lg:text-xl">
-                테이스팅 노트
-              </h3>
+              <h3 className="typo-bold-18 mb-4 text-white lg:text-xl">테이스팅 노트</h3>
               <div className="overflow-y-auto border border-white/10 p-4 lg:max-h-[500px] lg:p-6">
                 <p className="text-sm leading-relaxed whitespace-pre-wrap text-gray-300 lg:text-base">
                   {bottle.description || "테이스팅 노트가 제공되지 않았습니다."}

@@ -54,17 +54,12 @@ export default async function DashboardStats() {
       {items.map((item) => {
         const Icon = item.icon;
         return (
-          <div
-            key={item.label}
-            className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm"
-          >
+          <div key={item.label} className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
             <div className="mb-4 flex items-center justify-between">
               <h3 className="typo-medium-14 text-gray-500">{item.label}</h3>
               <Icon size={20} className={item.color} />
             </div>
-            <p className={`typo-bold-30 ${item.valueColor}`}>
-              {item.value?.toLocaleString() ?? "-"}
-            </p>
+            <p className={`typo-bold-30 ${item.valueColor}`}>{item.value?.toLocaleString() ?? "-"}</p>
           </div>
         );
       })}

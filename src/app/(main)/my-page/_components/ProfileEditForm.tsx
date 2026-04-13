@@ -7,19 +7,8 @@ import { FormMessage } from "@/components/ui/form-message";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CalendarDays } from "lucide-react";
-import {
-  useActionState,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  useTransition,
-} from "react";
-import {
-  sendEmailVerification,
-  updateProfile,
-  verifyEmailCode,
-} from "../actions";
+import { useActionState, useCallback, useEffect, useRef, useState, useTransition } from "react";
+import { sendEmailVerification, updateProfile, verifyEmailCode } from "../actions";
 
 type EmailVerificationStep = "idle" | "code-sent" | "verified";
 
@@ -28,14 +17,8 @@ interface ProfileEditFormProps {
   onClose: () => void;
 }
 
-export default function ProfileEditForm({
-  user,
-  onClose,
-}: ProfileEditFormProps) {
-  const [profileState, profileAction, profilePending] = useActionState(
-    updateProfile,
-    { success: false },
-  );
+export default function ProfileEditForm({ user, onClose }: ProfileEditFormProps) {
+  const [profileState, profileAction, profilePending] = useActionState(updateProfile, { success: false });
 
   // Email verification state
   const [email, setEmail] = useState(user.email ?? "");
@@ -110,47 +93,31 @@ export default function ProfileEditForm({
       <form action={profileAction}>
         <input type="hidden" name="originalUsername" value={user.username} />
         <input type="hidden" name="originalEmail" value={user.email} />
-        <input
-          type="hidden"
-          name="emailVerified"
-          value={String(!emailChanged || isEmailVerified)}
-        />
+        <input type="hidden" name="emailVerified" value={String(!emailChanged || isEmailVerified)} />
 
         <div className="border-b border-gray-200 pb-4 md:pb-6">
           <h4 className="mb-3 font-bold text-gray-900 md:mb-4">기본 정보</h4>
           <div className="space-y-3 md:space-y-4">
             {/* 닉네임 */}
             <div>
-              <Label className="typo-bold-14 mb-2 block text-gray-700">
-                닉네임
-              </Label>
-              <Input
-                name="username"
-                defaultValue={user.username}
-                className="text-sm md:text-base"
-              />
+              <Label className="typo-bold-14 mb-2 block text-gray-700">닉네임</Label>
+              <Input name="username" defaultValue={user.username} className="text-sm md:text-base" />
             </div>
 
             {/* 이름 (읽기 전용) */}
             <div>
-              <Label className="typo-bold-14 mb-2 block text-gray-700">
-                이름
-              </Label>
+              <Label className="typo-bold-14 mb-2 block text-gray-700">이름</Label>
               <Input
                 defaultValue={user.name}
                 disabled
                 className="cursor-not-allowed bg-gray-50 text-sm text-gray-500 md:text-base"
               />
-              <p className="mt-1 text-xs text-gray-500">
-                이름은 변경할 수 없습니다
-              </p>
+              <p className="mt-1 text-xs text-gray-500">이름은 변경할 수 없습니다</p>
             </div>
 
             {/* 이메일 (인증 플로우) */}
             <div>
-              <Label className="typo-bold-14 mb-2 block text-gray-700">
-                이메일
-              </Label>
+              <Label className="typo-bold-14 mb-2 block text-gray-700">이메일</Label>
               <div className="flex items-end gap-2">
                 <div className="flex-1">
                   <Input
@@ -213,34 +180,20 @@ export default function ProfileEditForm({
                 />
               )}
               {isEmailVerified && !emailError && (
-                <FormMessage
-                  message="이메일 인증이 완료되었습니다."
-                  variant="success"
-                  className="mt-1"
-                />
+                <FormMessage message="이메일 인증이 완료되었습니다." variant="success" className="mt-1" />
               )}
             </div>
 
             {/* 전화번호 (읽기 전용) */}
             <div>
-              <Label className="typo-bold-14 mb-2 block text-gray-700">
-                전화번호
-              </Label>
-              <Input
-                disabled
-                name="phone"
-                type="tel"
-                defaultValue={user.phone}
-                className="text-sm md:text-base"
-              />
+              <Label className="typo-bold-14 mb-2 block text-gray-700">전화번호</Label>
+              <Input disabled name="phone" type="tel" defaultValue={user.phone} className="text-sm md:text-base" />
             </div>
 
             {/* 생년월일 & 성별 (읽기 전용) */}
             <div className="grid grid-cols-2 gap-3 md:gap-4">
               <div>
-                <Label className="typo-bold-14 mb-2 block text-gray-700">
-                  생년월일
-                </Label>
+                <Label className="typo-bold-14 mb-2 block text-gray-700">생년월일</Label>
                 <div className="relative">
                   <Input
                     disabled
@@ -256,19 +209,11 @@ export default function ProfileEditForm({
                 </div>
               </div>
               <div>
-                <Label className="typo-bold-14 mb-2 block text-gray-700">
-                  성별
-                </Label>
+                <Label className="typo-bold-14 mb-2 block text-gray-700">성별</Label>
                 <Input
                   disabled
                   name="gender"
-                  defaultValue={
-                    user.gender === "M"
-                      ? "남성"
-                      : user.gender === "F"
-                        ? "여성"
-                        : "-"
-                  }
+                  defaultValue={user.gender === "M" ? "남성" : user.gender === "F" ? "여성" : "-"}
                   className="text-sm md:text-base"
                 />
               </div>
@@ -277,9 +222,7 @@ export default function ProfileEditForm({
 
           {/* 마케팅 수신 동의 */}
           <div className="mt-4 md:mt-6">
-            <h4 className="mb-3 font-bold text-gray-900 md:mb-4">
-              마케팅 수신 동의
-            </h4>
+            <h4 className="mb-3 font-bold text-gray-900 md:mb-4">마케팅 수신 동의</h4>
             <div className="space-y-2 md:space-y-3">
               {[
                 {
@@ -308,9 +251,7 @@ export default function ProfileEditForm({
                   className="flex cursor-pointer items-center gap-2 border border-gray-200 p-2 hover:bg-gray-50 md:gap-3 md:p-3"
                 >
                   <Checkbox name={item.name} defaultChecked={item.checked} />
-                  <span className="text-sm text-gray-900 md:text-base">
-                    {item.label}
-                  </span>
+                  <span className="text-sm text-gray-900 md:text-base">{item.label}</span>
                 </label>
               ))}
             </div>
@@ -318,19 +259,13 @@ export default function ProfileEditForm({
 
           <FormMessage message={profileState.error} className="mt-3" />
           <FormMessage
-            message={
-              profileState.success ? "프로필이 수정되었습니다." : undefined
-            }
+            message={profileState.success ? "프로필이 수정되었습니다." : undefined}
             variant="success"
             className="mt-3"
           />
 
           <div className="mt-4 flex gap-3">
-            <Button
-              type="submit"
-              disabled={profilePending || (emailChanged && !isEmailVerified)}
-              className="flex-1"
-            >
+            <Button type="submit" disabled={profilePending || (emailChanged && !isEmailVerified)} className="flex-1">
               {profilePending ? "저장 중..." : "정보 수정"}
             </Button>
             <Button type="button" variant="outline" onClick={onClose}>

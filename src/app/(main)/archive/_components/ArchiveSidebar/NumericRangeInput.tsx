@@ -13,13 +13,7 @@ interface NumericRangeInputProps {
   className?: string;
 }
 
-export function NumericRangeInput({
-  value,
-  min,
-  max,
-  onChange,
-  className,
-}: NumericRangeInputProps) {
+export function NumericRangeInput({ value, min, max, onChange, className }: NumericRangeInputProps) {
   const [local, setLocal] = useState(String(value));
 
   useEffect(() => {

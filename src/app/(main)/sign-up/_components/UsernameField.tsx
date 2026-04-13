@@ -13,10 +13,7 @@ interface UsernameFieldProps {
   error?: string;
 }
 
-export function UsernameField({
-  onValidationChange,
-  error,
-}: UsernameFieldProps) {
+export function UsernameField({ onValidationChange, error }: UsernameFieldProps) {
   const [value, setValue] = useState("");
   const [localError, setLocalError] = useState<string | null>(null);
   const [isVerified, setIsVerified] = useState(false);
@@ -72,10 +69,7 @@ export function UsernameField({
 
   return (
     <div className="w-full">
-      <Label
-        htmlFor="username"
-        className="typo-medium-14 block font-semibold text-black"
-      >
+      <Label htmlFor="username" className="typo-medium-14 block font-semibold text-black">
         닉네임
       </Label>
       <div className="flex items-end gap-3">
@@ -100,11 +94,7 @@ export function UsernameField({
       </div>
       <FormMessage message={displayError} className="typo-regular-12 mt-2" />
       {isVerified && !displayError && (
-        <FormMessage
-          message="사용 가능한 닉네임입니다."
-          variant="success"
-          className="typo-regular-12 mt-2"
-        />
+        <FormMessage message="사용 가능한 닉네임입니다." variant="success" className="typo-regular-12 mt-2" />
       )}
       {/* Hidden input for form submission */}
       <input type="hidden" name="usernameVerified" value={String(isVerified)} />

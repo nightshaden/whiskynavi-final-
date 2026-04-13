@@ -1,13 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertTriangle } from "lucide-react";
 
 interface AdminConfirmModalProps {
@@ -18,13 +12,7 @@ interface AdminConfirmModalProps {
   onConfirm: () => void;
 }
 
-export default function AdminConfirmModal({
-  isOpen,
-  close,
-  userName,
-  username,
-  onConfirm,
-}: AdminConfirmModalProps) {
+export default function AdminConfirmModal({ isOpen, close, userName, username, onConfirm }: AdminConfirmModalProps) {
   const handleConfirm = () => {
     onConfirm();
     close();
@@ -46,23 +34,16 @@ export default function AdminConfirmModal({
             </span>{" "}
             회원을
             <br />
-            정말로 <span className="font-bold text-red-600">관리자</span>로
-            등록하시겠습니까?
+            정말로 <span className="font-bold text-red-600">관리자</span>로 등록하시겠습니까?
           </p>
-          <p className="mt-2 text-sm text-red-600">
-            관리자는 모든 회원 정보와 시스템을 관리할 수 있습니다.
-          </p>
+          <p className="mt-2 text-sm text-red-600">관리자는 모든 회원 정보와 시스템을 관리할 수 있습니다.</p>
         </DialogHeader>
 
         <DialogFooter className="gap-2 sm:gap-2">
           <Button variant="outline" className="flex-1" onClick={close}>
             취소
           </Button>
-          <Button
-            variant="destructive"
-            className="flex-1"
-            onClick={handleConfirm}
-          >
+          <Button variant="destructive" className="flex-1" onClick={handleConfirm}>
             확인
           </Button>
         </DialogFooter>

@@ -2,11 +2,7 @@
 
 import type { OrderResponse } from "@/apis/generated/api";
 import { ChevronRight } from "lucide-react";
-import {
-  formatCurrency,
-  formatDate,
-  getOrderStatusConfig,
-} from "../_lib/utils";
+import { formatCurrency, formatDate, getOrderStatusConfig } from "../_lib/utils";
 
 interface OrderCardProps {
   order: OrderResponse;
@@ -23,16 +19,10 @@ export default function OrderCard({ order, onClick }: OrderCardProps) {
     >
       <div className="mb-3 flex items-start justify-between md:mb-4">
         <div>
-          <p className="mb-1 text-xs text-gray-400 md:text-sm">
-            주문번호: {order.orderNumber}
-          </p>
-          <p className="text-xs text-gray-400 md:text-sm">
-            {formatDate(order.createdAt)}
-          </p>
+          <p className="mb-1 text-xs text-gray-400 md:text-sm">주문번호: {order.orderNumber}</p>
+          <p className="text-xs text-gray-400 md:text-sm">{formatDate(order.createdAt)}</p>
         </div>
-        <span
-          className={`typo-bold-12 px-2 py-0.5 md:px-3 md:py-1 md:text-sm ${status.colorClass}`}
-        >
+        <span className={`typo-bold-12 px-2 py-0.5 md:px-3 md:py-1 md:text-sm ${status.colorClass}`}>
           {status.label}
         </span>
       </div>
@@ -40,9 +30,7 @@ export default function OrderCard({ order, onClick }: OrderCardProps) {
         {order.itemName || order.saleTitle || "상품명 없음"}
       </h4>
       <div className="flex items-center justify-between">
-        <p className="typo-bold-18 text-white md:text-xl">
-          {formatCurrency(order.totalPrice)}
-        </p>
+        <p className="typo-bold-18 text-white md:text-xl">{formatCurrency(order.totalPrice)}</p>
         <button className="flex items-center gap-1 text-xs text-gray-400 hover:text-white md:text-sm">
           상세보기
           <ChevronRight size={14} className="md:size-4" />

@@ -12,27 +12,22 @@ import NewArrivals from "./_components/NewArrivals";
 import RestOfPage from "./_components/RestOfPage";
 
 export default async function HomePage() {
-  const [bannersResponse, bottlesResponse, youtubeResponse] = await Promise.all(
-    [
-      getApiBanners({ page: 0, size: 10 }).catch(() => ({
-        data: { content: [] as BannerResponse[] },
-      })),
-      getApiBottles({
-        filters: { pageNumber: 0, pageSize: 8 },
-        sort: "bottledDate,desc",
-      } as GetApiBottlesParams & { sort: string }).catch(() => ({
-        data: { content: [] as BottleResponse[] },
-      })),
-      getApiKvStore(YOUTUBE_KEY).catch(() => ({
-        data: { value: "" },
-      })),
-    ],
-  );
+  const [bannersResponse, bottlesResponse, youtubeResponse] = await Promise.all([
+    getApiBanners({ page: 0, size: 10 }).catch(() => ({
+      data: { content: [] as BannerResponse[] },
+    })),
+    getApiBottles({
+      filters: { pageNumber: 0, pageSize: 8 },
+      sort: "bottledDate,desc",
+    } as GetApiBottlesParams & { sort: string }).catch(() => ({
+      data: { content: [] as BottleResponse[] },
+    })),
+    getApiKvStore(YOUTUBE_KEY).catch(() => ({
+      data: { value: "" },
+    })),
+  ]);
 
-  const banners =
-    bannersResponse.data.content?.filter(
-      (b): b is BannerResponse & { title: string } => !!b.title,
-    ) ?? [];
+  const banners = bannersResponse.data.content?.filter((b): b is BannerResponse & { title: string } => !!b.title) ?? [];
 
   const bottles = bottlesResponse.data.content ?? [];
   const youtubeEmbedUrl = youtubeResponse.data.value ?? "";

@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  ChevronDown,
-  ClipboardCheck,
-  Droplet,
-  Ship,
-  Users,
-} from "lucide-react";
+import { ChevronDown, ClipboardCheck, Droplet, Ship, Users } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -115,8 +109,7 @@ export default function MobileAbout() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.9 }}
                 >
-                  2020년 설립 이래, 다양한 증류소의 우수한 캐스크를 선별 및
-                  병입하여 국내외 시장에 선보이고 있습니다.
+                  2020년 설립 이래, 다양한 증류소의 우수한 캐스크를 선별 및 병입하여 국내외 시장에 선보이고 있습니다.
                 </motion.p>
                 <motion.p
                   className="typo-regular-14 sm:typo-regular-16 max-w-3xl text-center"
@@ -124,8 +117,7 @@ export default function MobileAbout() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 1.2 }}
                 >
-                  정교한 셀렉션과 멈추지 않는 도전 정신으로 독립 병입 시장의
-                  새로운 항로를 개척해 나가겠습니다.
+                  정교한 셀렉션과 멈추지 않는 도전 정신으로 독립 병입 시장의 새로운 항로를 개척해 나가겠습니다.
                 </motion.p>
               </div>
             </div>
@@ -140,20 +132,13 @@ export default function MobileAbout() {
           transition={{ duration: 0.8, delay: 1.5 }}
         >
           <div className="flex justify-center">
-            <ChevronDown
-              className="animate-scroll-down h-6 w-6 text-white/40 md:h-10 md:w-10"
-              strokeWidth={1.5}
-            />
+            <ChevronDown className="animate-scroll-down h-6 w-6 text-white/40 md:h-10 md:w-10" strokeWidth={1.5} />
           </div>
         </motion.div>
       </motion.section>
 
       {/* Section 2: Horizontal Scroll - Three Principles */}
-      <div
-        ref={horizontalScrollRef}
-        className="relative bg-[#1d2429]"
-        style={{ height: "400vh" }}
-      >
+      <div ref={horizontalScrollRef} className="relative bg-[#1d2429]" style={{ height: "400vh" }}>
         <div className="sticky top-0 flex h-screen items-center justify-center overflow-hidden">
           {/* DISCOVER */}
           <div
@@ -192,8 +177,8 @@ export default function MobileAbout() {
                     className="typo-regular-16 sm:typo-regular-18 pr-4 leading-relaxed text-white/80"
                     style={{ wordBreak: "keep-all" }}
                   >
-                    신생 증류소 탐색 부터 원액 소싱, 캐스크 블렌딩까지 다채로운
-                    위스키를 제공하기 위해 끊임없이 탐구합니다.
+                    신생 증류소 탐색 부터 원액 소싱, 캐스크 블렌딩까지 다채로운 위스키를 제공하기 위해 끊임없이
+                    탐구합니다.
                   </p>
                 </motion.div>
               </div>
@@ -237,8 +222,7 @@ export default function MobileAbout() {
                     className="typo-regular-16 sm:typo-regular-18 pl-4 leading-relaxed text-white/80"
                     style={{ wordBreak: "keep-all" }}
                   >
-                    소비자의 취향에 맞는 위스키를 제공하는 것, 위스키내비의
-                    최우선 목표입니다.
+                    소비자의 취향에 맞는 위스키를 제공하는 것, 위스키내비의 최우선 목표입니다.
                   </p>
                 </motion.div>
               </div>
@@ -285,8 +269,7 @@ export default function MobileAbout() {
                   >
                     위스키 초심자부터 매니아까지,
                     <br />
-                    다양하고 세분화된 라인업으로 위스키 애호가들의 길잡이가
-                    되겠습니다.
+                    다양하고 세분화된 라인업으로 위스키 애호가들의 길잡이가 되겠습니다.
                   </p>
                 </motion.div>
               </div>
@@ -340,13 +323,9 @@ export default function MobileAbout() {
                   </h3>
                 </div>
                 <div className="space-y-3">
-                  <p
-                    className="typo-regular-14 leading-relaxed text-white/90"
-                    style={{ wordBreak: "keep-all" }}
-                  >
-                    현지 파트너와의 탄탄한 협력을 통해 우수한 품질의 원액을 선별
-                    및 소싱합니다. 원액의 잠재력을 극대화할 수 있는 캐스크를
-                    매칭해, 증류소 본연의 매력을 위스키에 선명하게 담아냅니다.
+                  <p className="typo-regular-14 leading-relaxed text-white/90" style={{ wordBreak: "keep-all" }}>
+                    현지 파트너와의 탄탄한 협력을 통해 우수한 품질의 원액을 선별 및 소싱합니다. 원액의 잠재력을 극대화할
+                    수 있는 캐스크를 매칭해, 증류소 본연의 매력을 위스키에 선명하게 담아냅니다.
                   </p>
                 </div>
               </div>
@@ -368,13 +347,9 @@ export default function MobileAbout() {
                   </h3>
                 </div>
                 <div className="space-y-3">
-                  <p
-                    className="typo-regular-14 leading-relaxed text-white/90"
-                    style={{ wordBreak: "keep-all" }}
-                  >
-                    원액의 잠재력을 최고조로 끌어올릴 수 있는 최적의 캐스크를
-                    엄선합니다. 체계적인 숙성 관리로 위스키의 풍미 변화를
-                    추적해, 가장 완성도 높은 병입 시점을 찾아냅니다.
+                  <p className="typo-regular-14 leading-relaxed text-white/90" style={{ wordBreak: "keep-all" }}>
+                    원액의 잠재력을 최고조로 끌어올릴 수 있는 최적의 캐스크를 엄선합니다. 체계적인 숙성 관리로 위스키의
+                    풍미 변화를 추적해, 가장 완성도 높은 병입 시점을 찾아냅니다.
                   </p>
                 </div>
               </div>
@@ -396,14 +371,9 @@ export default function MobileAbout() {
                   </h3>
                 </div>
                 <div className="space-y-3">
-                  <p
-                    className="typo-regular-14 leading-relaxed text-white/90"
-                    style={{ wordBreak: "keep-all" }}
-                  >
-                    경쟁력 있는 해외 위스키 브랜드를 공식 수입 및 유통합니다.
-                    위스키내비 자체 라인업뿐만 아니라, 해외의 다양한 증류소 및
-                    브랜드와 독점 파트너십을 맺어 다채로운 선택지를 국내 시장에
-                    제안합니다.
+                  <p className="typo-regular-14 leading-relaxed text-white/90" style={{ wordBreak: "keep-all" }}>
+                    경쟁력 있는 해외 위스키 브랜드를 공식 수입 및 유통합니다. 위스키내비 자체 라인업뿐만 아니라, 해외의
+                    다양한 증류소 및 브랜드와 독점 파트너십을 맺어 다채로운 선택지를 국내 시장에 제안합니다.
                   </p>
                 </div>
               </div>
@@ -425,14 +395,9 @@ export default function MobileAbout() {
                   </h3>
                 </div>
                 <div className="space-y-3">
-                  <p
-                    className="typo-regular-14 leading-relaxed text-white/90"
-                    style={{ wordBreak: "keep-all" }}
-                  >
-                    기업 및 개인 고객을 위한 맞춤형 위스키 제조 솔루션을
-                    제공합니다. 고객의 니즈와 아이덴티티를 반영한 원액
-                    블렌딩부터 바틀 선택, 라벨 디자인에 이르기까지 완성도 높은
-                    제품을 위한 전 과정을 지원합니다.
+                  <p className="typo-regular-14 leading-relaxed text-white/90" style={{ wordBreak: "keep-all" }}>
+                    기업 및 개인 고객을 위한 맞춤형 위스키 제조 솔루션을 제공합니다. 고객의 니즈와 아이덴티티를 반영한
+                    원액 블렌딩부터 바틀 선택, 라벨 디자인에 이르기까지 완성도 높은 제품을 위한 전 과정을 지원합니다.
                   </p>
                 </div>
               </div>

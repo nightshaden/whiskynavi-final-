@@ -1,9 +1,6 @@
 "use client";
 
-import type {
-  AdminUserOrderSummaryResponse,
-  AdminUserResponse,
-} from "@/apis/generated/api";
+import type { AdminUserOrderSummaryResponse, AdminUserResponse } from "@/apis/generated/api";
 import { ArrowLeft, Edit2, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { overlay } from "overlay-kit";
@@ -17,20 +14,13 @@ interface UserDetailContentProps {
   orderSummary: AdminUserOrderSummaryResponse;
 }
 
-export default function UserDetailContent({
-  user,
-  orderSummary,
-}: UserDetailContentProps) {
+export default function UserDetailContent({ user, orderSummary }: UserDetailContentProps) {
   const { toggle } = useSidebar();
   const router = useRouter();
 
   return (
     <>
-      <AdminHeader
-        title="회원 상세"
-        onToggleSidebar={toggle}
-        showSearch={false}
-      />
+      <AdminHeader title="회원 상세" onToggleSidebar={toggle} showSearch={false} />
 
       <div className="p-8">
         <div className="mb-4 flex items-center justify-between">
@@ -53,11 +43,7 @@ export default function UserDetailContent({
             </button>
             <button
               type="button"
-              onClick={() =>
-                overlay.open((props) => (
-                  <UserDeleteModal {...props} id={user.id!} />
-                ))
-              }
+              onClick={() => overlay.open((props) => <UserDeleteModal {...props} id={user.id!} />)}
               className="typo-medium-14 flex cursor-pointer items-center gap-1 rounded-lg bg-red-600 px-3 py-1.5 text-white transition-colors hover:bg-red-700"
             >
               <Trash2 size={14} />
@@ -65,11 +51,7 @@ export default function UserDetailContent({
             </button>
           </div>
         </div>
-        <AdminUserDetailSection
-          isEditMode={false}
-          userDetails={user}
-          orderSummary={orderSummary}
-        />
+        <AdminUserDetailSection isEditMode={false} userDetails={user} orderSummary={orderSummary} />
       </div>
     </>
   );

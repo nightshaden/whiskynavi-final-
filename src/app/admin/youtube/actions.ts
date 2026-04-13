@@ -1,10 +1,7 @@
 "use server";
 
 import { ApiError, getUserErrorMessage } from "@/apis/errors";
-import {
-  postApiAdminKvStore,
-  update as updateKvStore,
-} from "@/apis/generated/api";
+import { postApiAdminKvStore, update as updateKvStore } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
@@ -21,18 +18,13 @@ const schema = z.object({
     .transform((url) => {
       const embedUrl = toEmbedUrl(url);
       if (!embedUrl) {
-        throw new Error(
-          "YouTube URL을 입력해주세요. (watch, embed, youtu.be, shorts 모두 가능)",
-        );
+        throw new Error("YouTube URL을 입력해주세요. (watch, embed, youtu.be, shorts 모두 가능)");
       }
       return embedUrl;
     }),
 });
 
-export async function updateYoutubeAction(
-  _prev: FormState,
-  formData: FormData,
-): Promise<FormState> {
+export async function updateYoutubeAction(_prev: FormState, formData: FormData): Promise<FormState> {
   const token = await getAuthToken();
   if (!token) return { success: false, error: "인증이 필요합니다." };
 
@@ -46,17 +38,11 @@ export async function updateYoutubeAction(
   const embedUrl = parsed.data.url;
 
   try {
-    await updateKvStore(
-      { key: YOUTUBE_KEY, value: embedUrl },
-      withToken(token),
-    );
+    await updateKvStore({ key: YOUTUBE_KEY, value: embedUrl }, withToken(token));
   } catch (error) {
     if (error instanceof ApiError && error.status === 404) {
       try {
-        await postApiAdminKvStore(
-          { key: YOUTUBE_KEY, value: embedUrl },
-          withToken(token),
-        );
+        await postApiAdminKvStore({ key: YOUTUBE_KEY, value: embedUrl }, withToken(token));
       } catch (createError) {
         return {
           success: false,

@@ -19,14 +19,10 @@ const BRAND_ROLE_MAP = {
   tales: "ROLE_WHISKYTALES_MEMBER",
 } as const;
 
-export default async function MembershipPage({
-  searchParams,
-}: MembershipPageProps) {
+export default async function MembershipPage({ searchParams }: MembershipPageProps) {
   const params = await searchParams;
   const token = await getAuthToken();
-  const brand = (params.brand === "tales" ? "tales" : "navi") as
-    | "navi"
-    | "tales";
+  const brand = (params.brand === "tales" ? "tales" : "navi") as "navi" | "tales";
 
   const res = await getApiAdminUsers(
     {

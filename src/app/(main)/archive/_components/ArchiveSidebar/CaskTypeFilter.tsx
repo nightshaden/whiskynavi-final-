@@ -11,16 +11,11 @@ interface CaskTypeFilterProps {
   onChange: (values: string[]) => void;
 }
 
-export function CaskTypeFilter({
-  caskTypes,
-  selectedCaskTypes,
-  onChange,
-}: CaskTypeFilterProps) {
+export function CaskTypeFilter({ caskTypes, selectedCaskTypes, onChange }: CaskTypeFilterProps) {
   const [search, setSearch] = useState("");
 
   const filtered = useMemo(
-    () =>
-      caskTypes.filter((c) => c.toLowerCase().includes(search.toLowerCase())),
+    () => caskTypes.filter((c) => c.toLowerCase().includes(search.toLowerCase())),
     [caskTypes, search],
   );
 
@@ -55,19 +50,12 @@ export function CaskTypeFilter({
               onCheckedChange={() => toggle(cask)}
               className="border-white/30 bg-white/10 data-[state=checked]:border-white data-[state=checked]:bg-white data-[state=checked]:text-black"
             />
-            <label
-              htmlFor={`cask-${cask}`}
-              className="cursor-pointer text-sm text-white/80 group-hover:text-white"
-            >
+            <label htmlFor={`cask-${cask}`} className="cursor-pointer text-sm text-white/80 group-hover:text-white">
               {cask}
             </label>
           </div>
         ))}
-        {filtered.length === 0 && (
-          <p className="py-2 text-center text-xs text-white/30">
-            검색 결과가 없습니다
-          </p>
-        )}
+        {filtered.length === 0 && <p className="py-2 text-center text-xs text-white/30">검색 결과가 없습니다</p>}
       </div>
     </FilterGroup.Section>
   );

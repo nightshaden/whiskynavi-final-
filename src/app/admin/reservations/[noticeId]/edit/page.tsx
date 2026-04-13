@@ -17,10 +17,7 @@ export default async function NoticeEditPage({ params }: NoticeEditPageProps) {
 
   let notice: BottleReservationNoticeResponse | undefined;
   try {
-    const res = await getApiAdminBottlesReservationsNoticesNoticeid(
-      Number(noticeId),
-      withToken(token),
-    );
+    const res = await getApiAdminBottlesReservationsNoticesNoticeid(Number(noticeId), withToken(token));
     notice = res.data;
   } catch {
     notFound();

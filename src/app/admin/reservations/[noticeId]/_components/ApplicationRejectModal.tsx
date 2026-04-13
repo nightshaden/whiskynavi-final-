@@ -62,11 +62,7 @@ export default function ApplicationRejectModal({
           <Button variant="outline" onClick={close} disabled={isPending}>
             취소
           </Button>
-          <Button
-            variant="destructive"
-            onClick={handleReject}
-            disabled={isPending}
-          >
+          <Button variant="destructive" onClick={handleReject} disabled={isPending}>
             {isPending ? "처리 중..." : "거절"}
           </Button>
         </DialogFooter>

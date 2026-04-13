@@ -17,11 +17,7 @@ const Page = async ({ searchParams }: PageProps) => {
 
   return (
     <div className="min-h-screen bg-[#1d2429]">
-      <Hero
-        backgroundText="ARCHIVE"
-        title="아카이브"
-        subtitle="위스키내비에서 발매한 모든 제품을 둘러보세요."
-      />
+      <Hero backgroundText="ARCHIVE" title="아카이브" subtitle="위스키내비에서 발매한 모든 제품을 둘러보세요." />
       <ArchiveClientShell bottleParams={bottleParams.data}>
         <Suspense key={suspenseKey} fallback={<BottleListSkeleton />}>
           <BottleList params={params} />

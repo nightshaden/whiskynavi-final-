@@ -15,15 +15,7 @@ interface RangeSliderProps {
   debounceMs?: number;
 }
 
-export function RangeSlider({
-  value,
-  onChange,
-  min,
-  max,
-  step = 1,
-  unit = "",
-  debounceMs = 300,
-}: RangeSliderProps) {
+export function RangeSlider({ value, onChange, min, max, step = 1, unit = "", debounceMs = 300 }: RangeSliderProps) {
   // 로컬 상태 (즉각적인 UI 반응)
   const [localValue, setLocalValue] = useState<[number, number]>(value);
 
@@ -65,10 +57,7 @@ export function RangeSlider({
           type="number"
           value={localValue[0]}
           onChange={(e) => {
-            const newValue: [number, number] = [
-              Number(e.target.value),
-              localValue[1],
-            ];
+            const newValue: [number, number] = [Number(e.target.value), localValue[1]];
             handleChange(newValue);
           }}
           className="typo-regular-14 w-20 border-white/20 bg-white/10 text-center text-white"
@@ -79,10 +68,7 @@ export function RangeSlider({
           type="number"
           value={localValue[1]}
           onChange={(e) => {
-            const newValue: [number, number] = [
-              localValue[0],
-              Number(e.target.value),
-            ];
+            const newValue: [number, number] = [localValue[0], Number(e.target.value)];
             handleChange(newValue);
           }}
           className="typo-regular-14 w-20 border-white/20 bg-white/10 text-center text-white"

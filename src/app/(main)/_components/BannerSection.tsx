@@ -94,9 +94,7 @@ export default function BannerSection({ banners }: BannerSectionProps) {
               key={index}
               onClick={() => setCurrentSlide(index)}
               className={`w-0.5 transition-all md:w-1 ${
-                index === currentSlide
-                  ? "h-4 bg-white md:h-6 lg:h-8"
-                  : "h-0.5 bg-white/30 hover:bg-white/50 md:h-1"
+                index === currentSlide ? "h-4 bg-white md:h-6 lg:h-8" : "h-0.5 bg-white/30 hover:bg-white/50 md:h-1"
               }`}
             />
           ))}

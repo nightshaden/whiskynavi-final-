@@ -36,8 +36,7 @@ const noticeFormSchema = z.object({
   }),
   price: z.string().transform((v) => {
     const n = Number(v);
-    if (!v.trim() || Number.isNaN(n) || n < 0)
-      throw new Error("price must be >= 0");
+    if (!v.trim() || Number.isNaN(n) || n < 0) throw new Error("price must be >= 0");
     return n;
   }),
   availableQuantity: optionalPositiveInt("예약 받을 병수"),
@@ -67,13 +66,7 @@ function parseNoticeFormData(formData: FormData) {
     return { success: false as const, error: result.error.message };
   }
 
-  const {
-    reservationStartAt,
-    reservationEndAt,
-    gradeConditions,
-    availableQuantity,
-    maxOrderQuantity,
-  } = result.data;
+  const { reservationStartAt, reservationEndAt, gradeConditions, availableQuantity, maxOrderQuantity } = result.data;
 
   const start = new Date(reservationStartAt).getTime();
   const end = new Date(reservationEndAt).getTime();
@@ -85,11 +78,7 @@ function parseNoticeFormData(formData: FormData) {
     };
   }
 
-  if (
-    availableQuantity != null &&
-    maxOrderQuantity != null &&
-    maxOrderQuantity > availableQuantity
-  ) {
+  if (availableQuantity != null && maxOrderQuantity != null && maxOrderQuantity > availableQuantity) {
     return {
       success: false as const,
       error: "인당 최대 예약 병수는 전체 예약 받을 병수를 초과할 수 없습니다.",
@@ -117,8 +106,7 @@ function buildNoticeBody(data: z.infer<typeof noticeFormSchema>) {
     price: data.price,
     reservationStartAt: new Date(data.reservationStartAt).toISOString(),
     reservationEndAt: new Date(data.reservationEndAt).toISOString(),
-    gradeConditions:
-      data.gradeConditions as PostApiAdminBottlesReservationsNoticesBodyGradeConditionsItem[],
+    gradeConditions: data.gradeConditions as PostApiAdminBottlesReservationsNoticesBodyGradeConditionsItem[],
     availableQuantity: data.availableQuantity,
     maxOrderQuantity: data.maxOrderQuantity,
   };
@@ -132,13 +120,9 @@ export interface BottleOption {
   stockQuantity: number | null;
 }
 
-export type SearchBottlesResult =
-  | { success: true; data: BottleOption[] }
-  | { success: false; error: string };
+export type SearchBottlesResult = { success: true; data: BottleOption[] } | { success: false; error: string };
 
-export async function searchBottlesAction(
-  keyword: string,
-): Promise<SearchBottlesResult> {
+export async function searchBottlesAction(keyword: string): Promise<SearchBottlesResult> {
   const token = await getAuthToken();
   if (!token) return { success: false, error: "인증이 필요합니다." };
 
@@ -156,10 +140,7 @@ export async function searchBottlesAction(
     );
     const data: BottleOption[] =
       res.data.content
-        ?.filter(
-          (b): b is typeof b & { id: number; name: string } =>
-            b.id != null && b.name != null,
-        )
+        ?.filter((b): b is typeof b & { id: number; name: string } => b.id != null && b.name != null)
         .map((b) => ({
           id: b.id,
           name: b.name,
@@ -167,18 +148,14 @@ export async function searchBottlesAction(
         })) ?? [];
     return { success: true, data };
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "제품 검색에 실패했습니다.";
+    const message = error instanceof Error ? error.message : "제품 검색에 실패했습니다.";
     return { success: false, error: message };
   }
 }
 
 // ─── Notice CRUD ──────────────────────────────────────────
 
-export async function createNoticeFormAction(
-  _prev: FormState,
-  formData: FormData,
-): Promise<FormState> {
+export async function createNoticeFormAction(_prev: FormState, formData: FormData): Promise<FormState> {
   const token = await getAuthToken();
   if (!token) return { success: false, error: "인증이 필요합니다." };
 
@@ -186,13 +163,9 @@ export async function createNoticeFormAction(
   if (!parsed.success) return { success: false, error: parsed.error };
 
   try {
-    await postApiAdminBottlesReservationsNotices(
-      buildNoticeBody(parsed.data),
-      withToken(token),
-    );
+    await postApiAdminBottlesReservationsNotices(buildNoticeBody(parsed.data), withToken(token));
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "공고 생성에 실패했습니다.";
+    const message = error instanceof Error ? error.message : "공고 생성에 실패했습니다.";
     return { success: false, error: message };
   }
 
@@ -212,14 +185,9 @@ export async function updateNoticeFormAction(
   if (!parsed.success) return { success: false, error: parsed.error };
 
   try {
-    await putApiAdminBottlesReservationsNoticesNoticeid(
-      noticeId,
-      buildNoticeBody(parsed.data),
-      withToken(token),
-    );
+    await putApiAdminBottlesReservationsNoticesNoticeid(noticeId, buildNoticeBody(parsed.data), withToken(token));
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "공고 수정에 실패했습니다.";
+    const message = error instanceof Error ? error.message : "공고 수정에 실패했습니다.";
     return { success: false, error: message };
   }
 
@@ -229,10 +197,7 @@ export async function updateNoticeFormAction(
 
 // ─── Application Actions ──────────────────────────────────
 
-export async function confirmApplicationAction(
-  applicationId: number,
-  confirmedQuantity: number,
-) {
+export async function confirmApplicationAction(applicationId: number, confirmedQuantity: number) {
   const token = await getAuthToken();
   if (!token) return { success: false, error: "인증이 필요합니다." };
 
@@ -245,8 +210,7 @@ export async function confirmApplicationAction(
     revalidatePath("/admin/reservations");
     return { success: true };
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "확정에 실패했습니다.";
+    const message = error instanceof Error ? error.message : "확정에 실패했습니다.";
     return { success: false, error: message };
   }
 }
@@ -256,15 +220,11 @@ export async function rejectApplicationAction(applicationId: number) {
   if (!token) return { success: false, error: "인증이 필요합니다." };
 
   try {
-    await postApiAdminBottlesReservationsApplicationsApplicationidReject(
-      applicationId,
-      withToken(token),
-    );
+    await postApiAdminBottlesReservationsApplicationsApplicationidReject(applicationId, withToken(token));
     revalidatePath("/admin/reservations");
     return { success: true };
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "거절에 실패했습니다.";
+    const message = error instanceof Error ? error.message : "거절에 실패했습니다.";
     return { success: false, error: message };
   }
 }
@@ -274,15 +234,11 @@ export async function cancelApplicationAction(applicationId: number) {
   if (!token) return { success: false, error: "인증이 필요합니다." };
 
   try {
-    await postApiAdminBottlesReservationsApplicationsApplicationidCancel(
-      applicationId,
-      withToken(token),
-    );
+    await postApiAdminBottlesReservationsApplicationsApplicationidCancel(applicationId, withToken(token));
     revalidatePath("/admin/reservations");
     return { success: true };
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "취소에 실패했습니다.";
+    const message = error instanceof Error ? error.message : "취소에 실패했습니다.";
     return { success: false, error: message };
   }
 }

@@ -13,9 +13,7 @@ interface ProductEditContentProps {
   product: BottleAdminResponse;
 }
 
-export default function ProductEditContent({
-  product,
-}: ProductEditContentProps) {
+export default function ProductEditContent({ product }: ProductEditContentProps) {
   const { toggle } = useSidebar();
   const router = useRouter();
 
@@ -26,11 +24,7 @@ export default function ProductEditContent({
 
   return (
     <>
-      <AdminHeader
-        title="제품 편집"
-        onToggleSidebar={toggle}
-        showSearch={false}
-      />
+      <AdminHeader title="제품 편집" onToggleSidebar={toggle} showSearch={false} />
 
       <form action={formAction} className="p-8">
         <div className="mb-6 flex items-center justify-between">

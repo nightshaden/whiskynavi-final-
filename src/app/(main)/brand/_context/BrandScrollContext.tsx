@@ -9,11 +9,7 @@ interface BrandScrollContextValue {
 
 const BrandScrollContext = createContext<BrandScrollContextValue | null>(null);
 
-export function BrandScrollProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function BrandScrollProvider({ children }: { children: React.ReactNode }) {
   const refs = useRef<Record<string, HTMLElement | null>>({});
 
   const registerRef = useCallback((id: string, el: HTMLElement | null) => {
@@ -27,11 +23,7 @@ export function BrandScrollProvider({
     }
   }, []);
 
-  return (
-    <BrandScrollContext value={{ registerRef, scrollTo }}>
-      {children}
-    </BrandScrollContext>
-  );
+  return <BrandScrollContext value={{ registerRef, scrollTo }}>{children}</BrandScrollContext>;
 }
 
 export function useBrandScroll() {

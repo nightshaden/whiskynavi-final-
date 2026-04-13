@@ -17,11 +17,7 @@ function getServerSnapshot() {
 }
 
 export function useMediaQuery(query: string) {
-  return useSyncExternalStore(
-    subscribe(query),
-    getSnapshot(query),
-    getServerSnapshot,
-  );
+  return useSyncExternalStore(subscribe(query), getSnapshot(query), getServerSnapshot);
 }
 
 const MOBILE_BREAKPOINT = 768;

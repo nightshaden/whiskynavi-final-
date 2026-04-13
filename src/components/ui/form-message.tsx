@@ -6,11 +6,7 @@ interface FormMessageProps {
   className?: string;
 }
 
-export function FormMessage({
-  message,
-  variant = "error",
-  className,
-}: FormMessageProps) {
+export function FormMessage({ message, variant = "error", className }: FormMessageProps) {
   if (!message) return null;
 
   return (

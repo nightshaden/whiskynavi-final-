@@ -1,9 +1,6 @@
 "use client";
 
-import type {
-  BottleReservationApplicationResponse,
-  BottleReservationNoticeResponse,
-} from "@/apis/generated/api";
+import type { BottleReservationApplicationResponse, BottleReservationNoticeResponse } from "@/apis/generated/api";
 import { ArrowLeft, Edit2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import AdminHeader from "../../../_components/AdminHeader";
@@ -34,11 +31,7 @@ export default function NoticeDetailContent({
 
   return (
     <>
-      <AdminHeader
-        title="예약 공고 상세"
-        onToggleSidebar={toggle}
-        showSearch={false}
-      />
+      <AdminHeader title="예약 공고 상세" onToggleSidebar={toggle} showSearch={false} />
 
       <div className="p-8">
         <div className="mb-6 flex items-center justify-between">

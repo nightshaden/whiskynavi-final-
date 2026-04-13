@@ -2,12 +2,7 @@
 
 import type { AdminUserResponse, OrderResponse } from "@/apis/generated/api";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Search } from "lucide-react";
 import { useState } from "react";
 
@@ -45,13 +40,7 @@ interface OrderHistoryModalProps {
   totalAmount: number;
 }
 
-export default function OrderHistoryModal({
-  isOpen,
-  close,
-  user,
-  orders,
-  totalAmount,
-}: OrderHistoryModalProps) {
+export default function OrderHistoryModal({ isOpen, close, user, orders, totalAmount }: OrderHistoryModalProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredOrders = orders.filter((order) => {
@@ -69,17 +58,13 @@ export default function OrderHistoryModal({
         <DialogHeader>
           <DialogTitle className="typo-bold-20">주문 내역</DialogTitle>
           <p className="mt-1 text-sm text-gray-600">
-            {user.name} ({user.username}) - 총 {orders.length}건 / 총 금액{" "}
-            {totalAmount.toLocaleString()}원
+            {user.name} ({user.username}) - 총 {orders.length}건 / 총 금액 {totalAmount.toLocaleString()}원
           </p>
         </DialogHeader>
 
         <div className="border-t border-gray-200 pt-4">
           <div className="relative">
-            <Search
-              className="absolute top-1/2 left-4 -translate-y-1/2 transform text-gray-400"
-              size={20}
-            />
+            <Search className="absolute top-1/2 left-4 -translate-y-1/2 transform text-gray-400" size={20} />
             <input
               type="text"
               placeholder="상품명, 주문번호로 검색..."
@@ -94,32 +79,22 @@ export default function OrderHistoryModal({
           {filteredOrders.length > 0 ? (
             <div className="space-y-3">
               {filteredOrders.map((order) => (
-                <div
-                  key={order.id}
-                  className="rounded-lg bg-gray-50 p-4 transition-colors hover:bg-gray-100"
-                >
+                <div key={order.id} className="rounded-lg bg-gray-50 p-4 transition-colors hover:bg-gray-100">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="mb-2 flex items-center gap-3">
-                        <h4 className="font-bold text-gray-900">
-                          {order.itemName}
-                        </h4>
+                        <h4 className="font-bold text-gray-900">{order.itemName}</h4>
                         <span
                           className={`rounded px-2 py-1 text-xs font-medium ${
-                            ORDER_STATUS_COLOR[order.orderStatus!] ??
-                            "bg-gray-100 text-gray-700"
+                            ORDER_STATUS_COLOR[order.orderStatus!] ?? "bg-gray-100 text-gray-700"
                           }`}
                         >
-                          {ORDER_STATUS_LABEL[order.orderStatus!] ??
-                            order.orderStatus}
+                          {ORDER_STATUS_LABEL[order.orderStatus!] ?? order.orderStatus}
                         </span>
                       </div>
                       <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
                         <p className="text-gray-600">
-                          주문번호:{" "}
-                          <span className="font-medium text-gray-900">
-                            {order.orderNumber}
-                          </span>
+                          주문번호: <span className="font-medium text-gray-900">{order.orderNumber}</span>
                         </p>
                         <p className="text-gray-600">
                           주문일:{" "}
@@ -135,30 +110,19 @@ export default function OrderHistoryModal({
                           </span>
                         </p>
                         <p className="text-gray-600">
-                          신청:{" "}
-                          <span className="font-bold text-gray-900">
-                            {order.requestedQuantity}병
-                          </span>
+                          신청: <span className="font-bold text-gray-900">{order.requestedQuantity}병</span>
                         </p>
                         {order.approvedQuantity != null && (
                           <p className="text-gray-600">
-                            배정:{" "}
-                            <span className="font-bold text-amber-700">
-                              {order.approvedQuantity}병
-                            </span>
+                            배정: <span className="font-bold text-amber-700">{order.approvedQuantity}병</span>
                           </p>
                         )}
                         <p className="text-gray-600">
-                          단가:{" "}
-                          <span className="font-medium text-gray-900">
-                            {order.unitPrice?.toLocaleString()}원
-                          </span>
+                          단가: <span className="font-medium text-gray-900">{order.unitPrice?.toLocaleString()}원</span>
                         </p>
                         <p className="text-gray-600">
                           총 금액:{" "}
-                          <span className="font-bold text-gray-900">
-                            {order.totalPrice?.toLocaleString()}원
-                          </span>
+                          <span className="font-bold text-gray-900">{order.totalPrice?.toLocaleString()}원</span>
                         </p>
                       </div>
                     </div>

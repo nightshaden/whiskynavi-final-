@@ -4,11 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import type { AdminUserResponse } from "@/apis/generated/api";
-import {
-  getApiAdminUsers,
-  patchApiAdminUsersIdBan,
-  patchApiAdminUsersIdBanUpdate,
-} from "@/apis/generated/api";
+import { getApiAdminUsers, patchApiAdminUsersIdBan, patchApiAdminUsersIdBanUpdate } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
 
@@ -30,22 +26,15 @@ export async function searchUsersAction(name: string): Promise<{
   }
 
   try {
-    const res = await getApiAdminUsers(
-      { filters: { name, pageSize: 10 } },
-      withToken(token),
-    );
+    const res = await getApiAdminUsers({ filters: { name, pageSize: 10 } }, withToken(token));
     return { success: true, data: res.data.content as AdminUserResponse[] };
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "사용자 검색에 실패했습니다.";
+    const message = error instanceof Error ? error.message : "사용자 검색에 실패했습니다.";
     return { success: false, error: message };
   }
 }
 
-export async function banUserAction(
-  userId: number,
-  data: { reason: string; startAt: string; endAt: string | null },
-) {
+export async function banUserAction(userId: number, data: { reason: string; startAt: string; endAt: string | null }) {
   const token = await getAuthToken();
 
   if (!token) {
@@ -70,10 +59,7 @@ export async function banUserAction(
     revalidatePath("/admin/blacklist");
     return { success: true };
   } catch (error) {
-    const message =
-      error instanceof Error
-        ? error.message
-        : "블랙리스트 추가에 실패했습니다.";
+    const message = error instanceof Error ? error.message : "블랙리스트 추가에 실패했습니다.";
     return { success: false, error: message };
   }
 }
@@ -106,10 +92,7 @@ export async function editUserBanAction(
     revalidatePath("/admin/blacklist");
     return { success: true };
   } catch (error) {
-    const message =
-      error instanceof Error
-        ? error.message
-        : "블랙리스트 수정에 실패했습니다.";
+    const message = error instanceof Error ? error.message : "블랙리스트 수정에 실패했습니다.";
     return { success: false, error: message };
   }
 }
@@ -130,10 +113,7 @@ export async function cancelUserBanAction(userId: number) {
     revalidatePath("/admin/blacklist");
     return { success: true };
   } catch (error) {
-    const message =
-      error instanceof Error
-        ? error.message
-        : "블랙리스트 해제에 실패했습니다.";
+    const message = error instanceof Error ? error.message : "블랙리스트 해제에 실패했습니다.";
     return { success: false, error: message };
   }
 }

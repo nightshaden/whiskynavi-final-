@@ -13,13 +13,7 @@ export function UserName({ name }: { name: string | null | undefined }) {
   return <span className="typo-bold-14 text-white">{name ?? "사용자"}님</span>;
 }
 
-export function LogoutButton({
-  className,
-  onBeforeSignOut,
-}: {
-  className: string;
-  onBeforeSignOut?: () => void;
-}) {
+export function LogoutButton({ className, onBeforeSignOut }: { className: string; onBeforeSignOut?: () => void }) {
   return (
     <button
       type="button"

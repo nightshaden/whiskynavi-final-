@@ -1,13 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { FormMessage } from "@/components/ui/form-message";
 import { useState, useTransition } from "react";
 import { cancelOrder } from "../actions";
@@ -19,12 +13,7 @@ interface OrderCancelModalProps {
   itemName?: string;
 }
 
-export default function OrderCancelModal({
-  isOpen,
-  close,
-  orderId,
-  itemName,
-}: OrderCancelModalProps) {
+export default function OrderCancelModal({ isOpen, close, orderId, itemName }: OrderCancelModalProps) {
   const [reason, setReason] = useState("");
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string>();
@@ -48,13 +37,10 @@ export default function OrderCancelModal({
         </DialogHeader>
         <div className="space-y-4 py-4">
           <p className="text-sm text-gray-600">
-            <span className="font-semibold">{itemName}</span> 주문을
-            취소하시겠습니까?
+            <span className="font-semibold">{itemName}</span> 주문을 취소하시겠습니까?
           </p>
           <div>
-            <label className="typo-bold-14 mb-2 block text-gray-700">
-              취소 사유 (선택)
-            </label>
+            <label className="typo-bold-14 mb-2 block text-gray-700">취소 사유 (선택)</label>
             <textarea
               value={reason}
               onChange={(e) => setReason(e.target.value)}
@@ -70,11 +56,7 @@ export default function OrderCancelModal({
           <Button variant="outline" onClick={close} disabled={isPending}>
             돌아가기
           </Button>
-          <Button
-            variant="destructive"
-            onClick={handleCancel}
-            disabled={isPending}
-          >
+          <Button variant="destructive" onClick={handleCancel} disabled={isPending}>
             {isPending ? "취소 중..." : "주문 취소"}
           </Button>
         </DialogFooter>

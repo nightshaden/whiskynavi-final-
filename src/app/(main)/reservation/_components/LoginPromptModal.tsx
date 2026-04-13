@@ -16,19 +16,14 @@ interface LoginPromptModalProps {
   close: () => void;
 }
 
-export default function LoginPromptModal({
-  isOpen,
-  close,
-}: LoginPromptModalProps) {
+export default function LoginPromptModal({ isOpen, close }: LoginPromptModalProps) {
   const router = useRouter();
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
-          <DialogTitle className="typo-bold-20">
-            로그인이 필요합니다
-          </DialogTitle>
+          <DialogTitle className="typo-bold-20">로그인이 필요합니다</DialogTitle>
           <DialogDescription className="pt-2 text-gray-600">
             예약 서비스를 이용하시려면 로그인이 필요합니다.
           </DialogDescription>

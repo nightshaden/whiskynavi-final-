@@ -11,9 +11,7 @@ import EmptyState from "./_components/EmptyState";
 import RecentEndedSection from "./_components/RecentEndedSection";
 import UnauthenticatedGuard from "./_components/UnauthenticatedGuard";
 
-function normalizeActiveNotices(
-  data: unknown,
-): BottleReservationNoticePublicResponse[] {
+function normalizeActiveNotices(data: unknown): BottleReservationNoticePublicResponse[] {
   if (Array.isArray(data)) {
     return data as BottleReservationNoticePublicResponse[];
   }
@@ -43,11 +41,7 @@ export default async function ReservationPage() {
   if (!session) {
     return (
       <div className="min-h-screen bg-[#1d2429]">
-        <Hero
-          backgroundText="RESERVE"
-          title="예약하기"
-          subtitle="위스키내비의 신규 출시 제품을 예약하세요."
-        />
+        <Hero backgroundText="RESERVE" title="예약하기" subtitle="위스키내비의 신규 출시 제품을 예약하세요." />
         <div className="mx-auto max-w-[1440px] px-4 pt-3 pb-12 lg:px-10 lg:pt-2">
           <UnauthenticatedGuard />
         </div>
@@ -68,16 +62,11 @@ export default async function ReservationPage() {
 
   const recentEndedNotices = recentEndedResult?.data ?? [];
 
-  const hasNoData =
-    activeNotices.length === 0 && recentEndedNotices.length === 0;
+  const hasNoData = activeNotices.length === 0 && recentEndedNotices.length === 0;
 
   return (
     <div className="min-h-screen bg-[#1d2429]">
-      <Hero
-        backgroundText="RESERVE"
-        title="예약하기"
-        subtitle="위스키내비의 신규 출시 제품을 예약하세요."
-      />
+      <Hero backgroundText="RESERVE" title="예약하기" subtitle="위스키내비의 신규 출시 제품을 예약하세요." />
       <div className="mx-auto max-w-[1440px] px-4 pt-3 pb-12 lg:px-10 lg:pt-2">
         <main className="flex-1 bg-[#1d2429]">
           {hasNoData ? (

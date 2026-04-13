@@ -11,18 +11,11 @@ interface DistilleryFilterProps {
   onChange: (values: string[]) => void;
 }
 
-export function DistilleryFilter({
-  distilleries,
-  selectedDistilleries,
-  onChange,
-}: DistilleryFilterProps) {
+export function DistilleryFilter({ distilleries, selectedDistilleries, onChange }: DistilleryFilterProps) {
   const [search, setSearch] = useState("");
 
   const filtered = useMemo(
-    () =>
-      distilleries.filter((d) =>
-        d.toLowerCase().includes(search.toLowerCase()),
-      ),
+    () => distilleries.filter((d) => d.toLowerCase().includes(search.toLowerCase())),
     [distilleries, search],
   );
 
@@ -65,11 +58,7 @@ export function DistilleryFilter({
             </label>
           </div>
         ))}
-        {filtered.length === 0 && (
-          <p className="py-2 text-center text-xs text-white/30">
-            검색 결과가 없습니다
-          </p>
-        )}
+        {filtered.length === 0 && <p className="py-2 text-center text-xs text-white/30">검색 결과가 없습니다</p>}
       </div>
     </FilterGroup.Section>
   );

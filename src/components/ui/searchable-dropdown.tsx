@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
 import { useImperativeHandle, useMemo, useRef, useState } from "react";
@@ -50,9 +43,7 @@ export default function SearchableDropdown({
   const shouldShowDropdown = isFocused && !disabled;
 
   const filteredItems = useMemo(() => {
-    return items.filter((item) =>
-      item.toLowerCase().includes(searchValue.toLowerCase()),
-    );
+    return items.filter((item) => item.toLowerCase().includes(searchValue.toLowerCase()));
   }, [items, searchValue]);
 
   useImperativeHandle(ref, () => inputRef.current as HTMLInputElement);
@@ -61,11 +52,7 @@ export default function SearchableDropdown({
     <div className={cn("relative", containerClassName)}>
       <Command
         shouldFilter={false}
-        className={cn(
-          "overflow-visible",
-          shouldShowDropdown && "rounded-b-none",
-          className,
-        )}
+        className={cn("overflow-visible", shouldShowDropdown && "rounded-b-none", className)}
       >
         <CommandInput
           ref={inputRef}
@@ -114,14 +101,7 @@ export default function SearchableDropdown({
                     }}
                   >
                     {item}
-                    <Check
-                      className={cn(
-                        "ml-auto",
-                        selectedValues.includes(item)
-                          ? "opacity-100"
-                          : "opacity-0",
-                      )}
-                    />
+                    <Check className={cn("ml-auto", selectedValues.includes(item) ? "opacity-100" : "opacity-0")} />
                   </CommandItem>
                 ))}
               </CommandGroup>

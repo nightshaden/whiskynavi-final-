@@ -1,10 +1,6 @@
 "use client";
 
-import type {
-  PageOrderResponse,
-  UserBusinessApplicationResponse,
-  UserSelfResponse,
-} from "@/apis/generated/api";
+import type { PageOrderResponse, UserBusinessApplicationResponse, UserSelfResponse } from "@/apis/generated/api";
 import { Crown, Package } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -19,17 +15,10 @@ interface MyPageClientProps {
   businessApplicationHistory: UserBusinessApplicationResponse[] | null;
 }
 
-export default function MyPageClient({
-  user,
-  orders,
-  businessApplicationHistory,
-}: MyPageClientProps) {
+export default function MyPageClient({ user, orders, businessApplicationHistory }: MyPageClientProps) {
   const searchParams = useSearchParams();
-  const initialTab =
-    searchParams.get("tab") === "membership" ? "membership" : "orders";
-  const [activeTab, setActiveTab] = useState<"orders" | "membership">(
-    initialTab,
-  );
+  const initialTab = searchParams.get("tab") === "membership" ? "membership" : "orders";
+  const [activeTab, setActiveTab] = useState<"orders" | "membership">(initialTab);
 
   const handleTabChange = (tab: "orders" | "membership") => {
     setActiveTab(tab);
@@ -57,15 +46,10 @@ export default function MyPageClient({
               <button
                 onClick={() => handleTabChange("orders")}
                 className={`flex-1 px-4 py-3 text-center text-sm font-semibold transition-colors md:px-6 md:py-4 md:text-base ${
-                  activeTab === "orders"
-                    ? "border-b-2 border-white text-white"
-                    : "text-gray-400 hover:text-gray-300"
+                  activeTab === "orders" ? "border-b-2 border-white text-white" : "text-gray-400 hover:text-gray-300"
                 }`}
               >
-                <Package
-                  size={16}
-                  className="mr-1 inline-block md:mr-2 md:size-5"
-                />
+                <Package size={16} className="mr-1 inline-block md:mr-2 md:size-5" />
                 주문내역
               </button>
               <button
@@ -76,10 +60,7 @@ export default function MyPageClient({
                     : "text-gray-400 hover:text-gray-300"
                 }`}
               >
-                <Crown
-                  size={16}
-                  className="mr-1 inline-block md:mr-2 md:size-5"
-                />
+                <Crown size={16} className="mr-1 inline-block md:mr-2 md:size-5" />
                 나의 멤버십
               </button>
             </nav>
@@ -92,9 +73,7 @@ export default function MyPageClient({
         </div>
 
         {/* 사업자 등록 섹션 */}
-        <BusinessRegistrationSection
-          businessApplicationHistory={businessApplicationHistory}
-        />
+        <BusinessRegistrationSection businessApplicationHistory={businessApplicationHistory} />
         {/* FAQ Section */}
         <FaqSection />
       </div>

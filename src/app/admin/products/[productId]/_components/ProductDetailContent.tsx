@@ -13,19 +13,13 @@ interface ProductDetailContentProps {
   product: BottleAdminResponse;
 }
 
-export default function ProductDetailContent({
-  product,
-}: ProductDetailContentProps) {
+export default function ProductDetailContent({ product }: ProductDetailContentProps) {
   const { toggle } = useSidebar();
   const router = useRouter();
 
   return (
     <>
-      <AdminHeader
-        title="제품 상세"
-        onToggleSidebar={toggle}
-        showSearch={false}
-      />
+      <AdminHeader title="제품 상세" onToggleSidebar={toggle} showSearch={false} />
       <div className="p-8">
         <div className="mb-6 flex items-center justify-between">
           <button
@@ -48,11 +42,7 @@ export default function ProductDetailContent({
             </button>
             <button
               type="button"
-              onClick={() =>
-                overlay.open((props) => (
-                  <ProductDeleteModal {...props} id={product.id!} />
-                ))
-              }
+              onClick={() => overlay.open((props) => <ProductDeleteModal {...props} id={product.id!} />)}
               className="flex cursor-pointer items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-white transition-colors hover:bg-red-700"
             >
               <Trash2 size={16} />

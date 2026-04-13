@@ -12,18 +12,11 @@ export default function NoticeCreateContent() {
   const { toggle } = useSidebar();
   const router = useRouter();
 
-  const [formState, formAction, isPending] = useActionState(
-    createNoticeFormAction,
-    { success: false },
-  );
+  const [formState, formAction, isPending] = useActionState(createNoticeFormAction, { success: false });
 
   return (
     <>
-      <AdminHeader
-        title="예약 공고 등록"
-        onToggleSidebar={toggle}
-        showSearch={false}
-      />
+      <AdminHeader title="예약 공고 등록" onToggleSidebar={toggle} showSearch={false} />
 
       <form action={formAction} className="p-8">
         <div className="mb-6 flex items-center justify-between">

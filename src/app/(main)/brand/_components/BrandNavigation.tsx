@@ -16,9 +16,7 @@ const BrandNavigation = ({ brands }: Props) => {
       <div className="bg-[#1d2429] py-6 pb-16 transition-all duration-500 lg:py-4 lg:pb-8">
         <div className="mx-auto max-w-[1440px] px-6 lg:px-10">
           {/* Desktop: 4 Tabs in Equal Grid */}
-          <div
-            className={`mx-auto hidden max-w-5xl gap-6 transition-all duration-500 lg:grid lg:grid-cols-4`}
-          >
+          <div className={`mx-auto hidden max-w-5xl gap-6 transition-all duration-500 lg:grid lg:grid-cols-4`}>
             {brands.map((brand) => (
               <button
                 key={brand.id}
@@ -37,9 +35,7 @@ const BrandNavigation = ({ brands }: Props) => {
           </div>
 
           {/* Mobile & Tablet: 2x2 Grid */}
-          <div
-            className={`mx-auto grid max-w-md grid-cols-2 gap-4 transition-all duration-500 lg:hidden`}
-          >
+          <div className={`mx-auto grid max-w-md grid-cols-2 gap-4 transition-all duration-500 lg:hidden`}>
             {brands.map((brand) => (
               <button
                 key={brand.id}

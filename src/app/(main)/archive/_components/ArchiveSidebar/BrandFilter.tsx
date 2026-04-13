@@ -7,11 +7,7 @@ interface BrandFilterProps {
   onToggle: (brandId: string) => void;
 }
 
-export function BrandFilter({
-  brands,
-  selectedBrands,
-  onToggle,
-}: BrandFilterProps) {
+export function BrandFilter({ brands, selectedBrands, onToggle }: BrandFilterProps) {
   return (
     <FilterGroup.Section title="브랜드" sectionKey="brand">
       <div className="flex flex-wrap gap-2">
@@ -23,9 +19,7 @@ export function BrandFilter({
               type="button"
               onClick={() => onToggle(brand)}
               className={`rounded-full px-3 py-1.5 text-xs transition-colors ${
-                isSelected
-                  ? "bg-white text-black"
-                  : "border border-white/10 bg-white/5 text-white hover:bg-white/10"
+                isSelected ? "bg-white text-black" : "border border-white/10 bg-white/5 text-white hover:bg-white/10"
               }`}
             >
               {brand}

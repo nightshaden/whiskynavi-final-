@@ -2,13 +2,7 @@
 
 import type { PickupLocationResponse } from "@/apis/generated/api";
 import { FormMessage } from "@/components/ui/form-message";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
 
 interface ApplyFormProps {
@@ -18,12 +12,7 @@ interface ApplyFormProps {
   error?: string | null;
 }
 
-export default function ApplyForm({
-  onApply,
-  isPending,
-  pickupLocations,
-  error,
-}: ApplyFormProps) {
+export default function ApplyForm({ onApply, isPending, pickupLocations, error }: ApplyFormProps) {
   const [quantity, setQuantity] = useState(1);
   const [selectedLocationId, setSelectedLocationId] = useState<string>("");
 
@@ -33,13 +22,8 @@ export default function ApplyForm({
     <div className="space-y-3">
       {/* 업장 선택 */}
       <div>
-        <label className="mb-1 block text-xs text-gray-400 lg:text-sm">
-          수령 업장
-        </label>
-        <Select
-          value={selectedLocationId}
-          onValueChange={setSelectedLocationId}
-        >
+        <label className="mb-1 block text-xs text-gray-400 lg:text-sm">수령 업장</label>
+        <Select value={selectedLocationId} onValueChange={setSelectedLocationId}>
           <SelectTrigger className="w-full border-white/20 bg-white/10 text-sm text-white lg:text-base [&>svg]:text-white/60">
             <SelectValue placeholder="업장을 선택해주세요" />
           </SelectTrigger>
@@ -51,9 +35,7 @@ export default function ApplyForm({
               </SelectItem>
             ))}
             {pickupLocations.length === 0 && (
-              <div className="text-muted-foreground px-2 py-4 text-center text-sm">
-                등록된 업장이 없습니다
-              </div>
+              <div className="text-muted-foreground px-2 py-4 text-center text-sm">등록된 업장이 없습니다</div>
             )}
           </SelectContent>
         </Select>
@@ -68,11 +50,7 @@ export default function ApplyForm({
               min="1"
               max="10"
               value={quantity}
-              onChange={(e) =>
-                setQuantity(
-                  Math.max(1, Math.min(10, parseInt(e.target.value) || 1)),
-                )
-              }
+              onChange={(e) => setQuantity(Math.max(1, Math.min(10, parseInt(e.target.value) || 1)))}
               className="w-20 border border-white/20 bg-white/10 py-2.5 pr-8 pl-2 text-center text-base text-white transition-colors focus:border-white/40 focus:outline-none lg:h-full lg:w-40 lg:pr-10 lg:pl-3 lg:text-lg"
             />
             <span className="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 text-base text-white/60 lg:right-3 lg:text-lg">
@@ -89,8 +67,7 @@ export default function ApplyForm({
           </button>
         </div>
         <p className="text-[10px] text-gray-400 lg:text-xs">
-          * 예약 신청 병수와 실제 배정 병수는 총 신청 수에 따라 달라질 수
-          있습니다.
+          * 예약 신청 병수와 실제 배정 병수는 총 신청 수에 따라 달라질 수 있습니다.
         </p>
         <FormMessage message={error} className="mt-2" />
       </div>

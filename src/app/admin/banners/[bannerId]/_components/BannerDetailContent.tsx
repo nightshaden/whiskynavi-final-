@@ -11,19 +11,13 @@ interface BannerDetailContentProps {
   banner: BannerResponse;
 }
 
-export default function BannerDetailContent({
-  banner,
-}: BannerDetailContentProps) {
+export default function BannerDetailContent({ banner }: BannerDetailContentProps) {
   const { toggle } = useSidebar();
   const router = useRouter();
 
   return (
     <>
-      <AdminHeader
-        title="배너 상세"
-        onToggleSidebar={toggle}
-        showSearch={false}
-      />
+      <AdminHeader title="배너 상세" onToggleSidebar={toggle} showSearch={false} />
 
       <div className="p-8">
         <div className="mb-6 flex items-center justify-between">
@@ -69,12 +63,8 @@ export default function BannerDetailContent({
                   />
                 ) : null}
                 <div className="text-white">
-                  <h2 className="typo-bold-24">
-                    {banner.title ?? "(제목 없음)"}
-                  </h2>
-                  {banner.description ? (
-                    <p className="mt-1 text-white/80">{banner.description}</p>
-                  ) : null}
+                  <h2 className="typo-bold-24">{banner.title ?? "(제목 없음)"}</h2>
+                  {banner.description ? <p className="mt-1 text-white/80">{banner.description}</p> : null}
                 </div>
               </div>
             </div>
@@ -95,9 +85,7 @@ export default function BannerDetailContent({
             </div>
             <div className="sm:col-span-2">
               <dt className="typo-medium-14 text-gray-500">설명</dt>
-              <dd className="mt-1 text-gray-900">
-                {banner.description ?? "(없음)"}
-              </dd>
+              <dd className="mt-1 text-gray-900">{banner.description ?? "(없음)"}</dd>
             </div>
             <div className="sm:col-span-2">
               <dt className="typo-medium-14 text-gray-500">링크</dt>
@@ -126,16 +114,9 @@ export default function BannerDetailContent({
             <h4 className="typo-bold-14 mb-3 text-gray-700">배경 이미지</h4>
             <div className="relative h-48 w-full overflow-hidden rounded-lg bg-gray-100">
               {banner.backgroundUrl ? (
-                <ImageWithFallback
-                  src={banner.backgroundUrl}
-                  alt="배경 이미지"
-                  fill
-                  className="object-cover"
-                />
+                <ImageWithFallback src={banner.backgroundUrl} alt="배경 이미지" fill className="object-cover" />
               ) : (
-                <div className="flex h-full items-center justify-center text-sm text-gray-400">
-                  이미지 없음
-                </div>
+                <div className="flex h-full items-center justify-center text-sm text-gray-400">이미지 없음</div>
               )}
             </div>
           </div>
@@ -143,16 +124,9 @@ export default function BannerDetailContent({
             <h4 className="typo-bold-14 mb-3 text-gray-700">메인 이미지</h4>
             <div className="relative h-48 w-full overflow-hidden rounded-lg bg-gray-100">
               {banner.mainUrl ? (
-                <ImageWithFallback
-                  src={banner.mainUrl}
-                  alt="메인 이미지"
-                  fill
-                  className="object-contain"
-                />
+                <ImageWithFallback src={banner.mainUrl} alt="메인 이미지" fill className="object-contain" />
               ) : (
-                <div className="flex h-full items-center justify-center text-sm text-gray-400">
-                  이미지 없음
-                </div>
+                <div className="flex h-full items-center justify-center text-sm text-gray-400">이미지 없음</div>
               )}
             </div>
           </div>

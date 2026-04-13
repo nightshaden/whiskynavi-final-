@@ -13,10 +13,7 @@ interface ArchiveClientShellProps {
   children: ReactNode;
 }
 
-export default function ArchiveClientShell({
-  bottleParams,
-  children,
-}: ArchiveClientShellProps) {
+export default function ArchiveClientShell({ bottleParams, children }: ArchiveClientShellProps) {
   const filterState = useFilters();
 
   return (

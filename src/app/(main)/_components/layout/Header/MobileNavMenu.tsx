@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 import { Session } from "next-auth";
 import Link from "next/link";
@@ -32,10 +27,7 @@ const MobileNavMenu: FC<Props> = ({ session, pathname }) => {
               if (!open) close();
             }}
           >
-            <SheetContent
-              side="right"
-              className="w-4/5 border-white/10 bg-[#1d2429] sm:max-w-sm"
-            >
+            <SheetContent side="right" className="w-4/5 border-white/10 bg-[#1d2429] sm:max-w-sm">
               <SheetHeader>
                 <SheetTitle className="text-white">메뉴</SheetTitle>
               </SheetHeader>

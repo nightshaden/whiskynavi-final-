@@ -1,13 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertTriangle } from "lucide-react";
 
 interface RoleConflictModalProps {
@@ -17,12 +11,7 @@ interface RoleConflictModalProps {
   onConfirm: () => void;
 }
 
-export default function RoleConflictModal({
-  isOpen,
-  close,
-  message,
-  onConfirm,
-}: RoleConflictModalProps) {
+export default function RoleConflictModal({ isOpen, close, message, onConfirm }: RoleConflictModalProps) {
   const handleConfirm = () => {
     onConfirm();
     close();
@@ -45,10 +34,7 @@ export default function RoleConflictModal({
           <Button variant="outline" className="flex-1" onClick={close}>
             취소
           </Button>
-          <Button
-            className="flex-1 bg-amber-600 text-white hover:bg-amber-700"
-            onClick={handleConfirm}
-          >
+          <Button className="flex-1 bg-amber-600 text-white hover:bg-amber-700" onClick={handleConfirm}>
             교체
           </Button>
         </DialogFooter>

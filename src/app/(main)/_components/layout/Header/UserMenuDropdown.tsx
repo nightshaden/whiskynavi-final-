@@ -7,11 +7,7 @@ interface UserMenuDropdownProps {
   isAdminUser: boolean;
 }
 
-export default function UserMenuDropdown({
-  close,
-  anchorRect,
-  isAdminUser,
-}: UserMenuDropdownProps) {
+export default function UserMenuDropdown({ close, anchorRect, isAdminUser }: UserMenuDropdownProps) {
   const top = anchorRect ? anchorRect.bottom + 8 : 80;
   const right = anchorRect ? window.innerWidth - anchorRect.right : 32;
 

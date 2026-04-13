@@ -13,9 +13,7 @@ export function SignInForm() {
   const [error, setError] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
 
-  const handleCredentialsSubmit = async (
-    e: React.FormEvent<HTMLFormElement>,
-  ) => {
+  const handleCredentialsSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
     setIsPending(true);
@@ -63,10 +61,7 @@ export function SignInForm() {
       <form onSubmit={handleCredentialsSubmit} className="w-full">
         {/* Email Input */}
         <div className="mt-6 w-full">
-          <Label
-            htmlFor="email"
-            className="typo-medium-13 block font-semibold text-white"
-          >
+          <Label htmlFor="email" className="typo-medium-13 block font-semibold text-white">
             이메일 주소
           </Label>
           <Input
@@ -81,10 +76,7 @@ export function SignInForm() {
 
         {/* Password Input */}
         <div className="mt-6 w-full">
-          <Label
-            htmlFor="password"
-            className="typo-medium-13 block font-semibold text-white"
-          >
+          <Label htmlFor="password" className="typo-medium-13 block font-semibold text-white">
             비밀번호
           </Label>
           <Input
@@ -97,9 +89,7 @@ export function SignInForm() {
         </div>
 
         {/* Error Message */}
-        {error && (
-          <p className="mt-4 text-center text-sm text-red-400">{error}</p>
-        )}
+        {error && <p className="mt-4 text-center text-sm text-red-400">{error}</p>}
 
         {/* Login Button */}
         <Button
@@ -108,23 +98,15 @@ export function SignInForm() {
           disabled={isPending}
           className="mt-7 h-14 w-full cursor-pointer border border-white/30 bg-white disabled:cursor-not-allowed disabled:opacity-50"
         >
-          <p className="typo-medium-16 font-semibold text-black">
-            {isPending ? "로그인 중..." : "로그인"}
-          </p>
+          <p className="typo-medium-16 font-semibold text-black">{isPending ? "로그인 중..." : "로그인"}</p>
         </Button>
       </form>
       <div className="mt-5 flex w-full items-center justify-center gap-14">
-        <Link
-          href="/sign-up"
-          className="typo-medium-16 w-25 text-center font-semibold text-[#FFF]"
-        >
+        <Link href="/sign-up" className="typo-medium-16 w-25 text-center font-semibold text-[#FFF]">
           회원가입
         </Link>
         <span className="text-[#FFF]">|</span>
-        <Link
-          href="/find-password"
-          className="typo-medium-16 w-25 text-center font-semibold text-[#FFF]"
-        >
+        <Link href="/find-password" className="typo-medium-16 w-25 text-center font-semibold text-[#FFF]">
           비밀번호 찾기
         </Link>
       </div>

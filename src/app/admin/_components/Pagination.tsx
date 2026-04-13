@@ -13,13 +13,7 @@ interface PaginationProps {
   basePath: string;
 }
 
-export default function Pagination({
-  totalItems,
-  itemsPerPage,
-  currentPage,
-  searchParams,
-  basePath,
-}: PaginationProps) {
+export default function Pagination({ totalItems, itemsPerPage, currentPage, searchParams, basePath }: PaginationProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -44,9 +38,7 @@ export default function Pagination({
 
   const handleItemsPerPageChange = (value: number) => {
     startTransition(() => {
-      router.push(
-        `${basePath}?${createQueryString({ limit: String(value), page: "1" })}`,
-      );
+      router.push(`${basePath}?${createQueryString({ limit: String(value), page: "1" })}`);
     });
   };
 
@@ -72,9 +64,7 @@ export default function Pagination({
         <span className="ml-4 text-sm text-gray-600">
           {totalItems}개 중 {startIndex}-{endIndex}
         </span>
-        {isPending && (
-          <div className="ml-2 h-4 w-4 animate-spin rounded-full border-b-2 border-amber-600"></div>
-        )}
+        {isPending && <div className="ml-2 h-4 w-4 animate-spin rounded-full border-b-2 border-amber-600"></div>}
       </div>
 
       <div className="flex items-center gap-1">
@@ -106,9 +96,7 @@ export default function Pagination({
               onClick={() => handlePageChange(pageNum)}
               disabled={isPending}
               className={`h-8 w-8 cursor-pointer rounded text-sm font-medium ${
-                currentPage === pageNum
-                  ? "bg-amber-600 text-white"
-                  : "border border-gray-300 hover:bg-gray-50"
+                currentPage === pageNum ? "bg-amber-600 text-white" : "border border-gray-300 hover:bg-gray-50"
               } disabled:opacity-50`}
             >
               {pageNum}

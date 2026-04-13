@@ -40,9 +40,7 @@
 // src/apis/errors.ts — 기존 코드 끝(getUserErrorMessage 함수 아래)에 추가
 
 export class NetworkError extends Error {
-  constructor(
-    message = "네트워크 연결에 실패했습니다. 인터넷 연결을 확인해주세요.",
-  ) {
+  constructor(message = "네트워크 연결에 실패했습니다. 인터넷 연결을 확인해주세요.") {
     super(message);
     this.name = "NetworkError";
   }
@@ -91,8 +89,7 @@ git commit -m "feat: add NetworkError class for network failure distinction"
 ```typescript
 import { decode } from "next-auth/jwt";
 
-const BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://api.whiskynavi.com";
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://api.whiskynavi.com";
 
 /**
  * refresh API 호출 결과.
@@ -109,9 +106,7 @@ export type RefreshResult =
  * 백엔드 refresh API를 raw fetch로 호출한다.
  * customFetch를 사용하면 재귀가 발생하므로 반드시 raw fetch 사용.
  */
-export async function callRefreshApi(
-  refreshToken: string,
-): Promise<RefreshResult> {
+export async function callRefreshApi(refreshToken: string): Promise<RefreshResult> {
   try {
     const res = await fetch(`${BASE_URL}/api/auth/refresh`, {
       method: "POST",
@@ -161,8 +156,7 @@ export async function refreshOnServer(): Promise<RefreshResult> {
 
     // next-auth v4 쿠키명 — v5 마이그레이션 시 변경 필요
     const sessionToken =
-      cookieStore.get("next-auth.session-token")?.value ??
-      cookieStore.get("__Secure-next-auth.session-token")?.value;
+      cookieStore.get("next-auth.session-token")?.value ?? cookieStore.get("__Secure-next-auth.session-token")?.value;
 
     if (!sessionToken) return { status: "auth_failed" };
 
@@ -307,11 +301,7 @@ export const authOptions: NextAuthOptions = {
             password: credentials.password,
           });
 
-          if (
-            !res.data.accessToken ||
-            !res.data.refreshToken ||
-            !res.data.userId
-          ) {
+          if (!res.data.accessToken || !res.data.refreshToken || !res.data.userId) {
             throw new Error("서버 응답에 필수 인증 정보가 누락되었습니다.");
           }
 
@@ -324,8 +314,7 @@ export const authOptions: NextAuthOptions = {
             refreshToken: res.data.refreshToken,
           };
         } catch (error) {
-          const message =
-            error instanceof Error ? error.message : "로그인에 실패했습니다.";
+          const message = error instanceof Error ? error.message : "로그인에 실패했습니다.";
           throw new Error(message);
         }
       },
@@ -503,8 +492,7 @@ git commit -m "refactor: remove refreshToken from Session, narrow error type"
 ```typescript
 import { AuthError, ApiError, NetworkError } from "./errors";
 
-const BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://api.whiskynavi.com";
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://api.whiskynavi.com";
 
 function parseResponse(res: Response): Promise<unknown> | undefined {
   if (res.status === 204 || res.status === 205) {
@@ -537,10 +525,7 @@ async function extractErrorDetail(res: Response): Promise<string> {
  * 토큰 리프레시는 이 함수에서 하지 않음.
  * NextAuth jwt callback이 getServerSession/getSession 호출 시 자동으로 처리.
  */
-export const customFetch = async <T>(
-  url: string,
-  options: RequestInit,
-): Promise<T> => {
+export const customFetch = async <T>(url: string, options: RequestInit): Promise<T> => {
   const fullUrl = url.startsWith("http") ? url : `${BASE_URL}${url}`;
 
   let res: Response;
@@ -790,8 +775,7 @@ git commit -m "feat: add role-based access control to admin layout"
 
 // 변경:
 const isAuthError =
-  error.message === "인증이 만료되었습니다. 다시 로그인해주세요." ||
-  error.digest?.includes("AUTH_ERROR") === true;
+  error.message === "인증이 만료되었습니다. 다시 로그인해주세요." || error.digest?.includes("AUTH_ERROR") === true;
 ```
 
 또한 `console.error` 줄은 development에서만 유용하므로 조건부로 변경:
@@ -868,8 +852,7 @@ mutator.ts에서 더 이상 `refreshSessionToken`을 호출하지 않으므로, 
 ```typescript
 import { decode } from "next-auth/jwt";
 
-const BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://api.whiskynavi.com";
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://api.whiskynavi.com";
 
 /**
  * refresh API 호출 결과.
@@ -886,9 +869,7 @@ export type RefreshResult =
  * 백엔드 refresh API를 raw fetch로 호출한다.
  * customFetch를 사용하면 재귀가 발생하므로 반드시 raw fetch 사용.
  */
-export async function callRefreshApi(
-  refreshToken: string,
-): Promise<RefreshResult> {
+export async function callRefreshApi(refreshToken: string): Promise<RefreshResult> {
   try {
     const res = await fetch(`${BASE_URL}/api/auth/refresh`, {
       method: "POST",

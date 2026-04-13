@@ -1,15 +1,6 @@
 "use client";
 
-import {
-  Award,
-  Ban,
-  Calendar,
-  Home,
-  ImageIcon,
-  Package,
-  Users,
-  Youtube,
-} from "lucide-react";
+import { Award, Ban, Calendar, Home, ImageIcon, Package, Users, Youtube } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
@@ -84,9 +75,7 @@ export default function AdminSidebar({ isOpen, statsSlot }: AdminSidebarProps) {
               key={item.id}
               href={item.href}
               className={`mb-1 flex w-full items-center gap-3 rounded-lg px-4 py-3 transition-colors ${
-                active
-                  ? "bg-amber-50 font-semibold text-amber-700"
-                  : "text-gray-700 hover:bg-gray-50"
+                active ? "bg-amber-50 font-semibold text-amber-700" : "text-gray-700 hover:bg-gray-50"
               }`}
             >
               <Icon size={20} />

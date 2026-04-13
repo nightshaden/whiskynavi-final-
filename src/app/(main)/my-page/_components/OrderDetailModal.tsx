@@ -2,19 +2,10 @@
 
 import type { OrderResponse } from "@/apis/generated/api";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { overlay } from "overlay-kit";
 import { CANCELABLE_STATUSES } from "../_lib/constants";
-import {
-  formatCurrency,
-  formatDate,
-  getOrderStatusConfig,
-} from "../_lib/utils";
+import { formatCurrency, formatDate, getOrderStatusConfig } from "../_lib/utils";
 import OrderCancelModal from "./OrderCancelModal";
 
 interface OrderDetailModalProps {
@@ -23,11 +14,7 @@ interface OrderDetailModalProps {
   order: OrderResponse;
 }
 
-export default function OrderDetailModal({
-  isOpen,
-  close,
-  order,
-}: OrderDetailModalProps) {
+export default function OrderDetailModal({ isOpen, close, order }: OrderDetailModalProps) {
   const status = getOrderStatusConfig(order.orderStatus);
   const canCancel = CANCELABLE_STATUSES.includes(order.orderStatus as never);
 
@@ -52,18 +39,10 @@ export default function OrderDetailModal({
           {/* 주문 상태 */}
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">
-                주문번호: {order.orderNumber}
-              </p>
-              <p className="text-sm text-gray-500">
-                {formatDate(order.createdAt)}
-              </p>
+              <p className="text-sm text-gray-500">주문번호: {order.orderNumber}</p>
+              <p className="text-sm text-gray-500">{formatDate(order.createdAt)}</p>
             </div>
-            <span
-              className={`typo-bold-14 rounded px-3 py-1 ${status.colorClass}`}
-            >
-              {status.label}
-            </span>
+            <span className={`typo-bold-14 rounded px-3 py-1 ${status.colorClass}`}>{status.label}</span>
           </div>
 
           {/* 상품 정보 */}
@@ -72,9 +51,7 @@ export default function OrderDetailModal({
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-gray-500">상품명</span>
-                <span className="font-medium">
-                  {order.itemName || order.saleTitle || "상품명 없음"}
-                </span>
+                <span className="font-medium">{order.itemName || order.saleTitle || "상품명 없음"}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">신청 수량</span>
@@ -86,15 +63,11 @@ export default function OrderDetailModal({
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">단가</span>
-                <span className="font-medium">
-                  {formatCurrency(order.unitPrice)}
-                </span>
+                <span className="font-medium">{formatCurrency(order.unitPrice)}</span>
               </div>
               <div className="flex justify-between border-t pt-2">
                 <span className="font-semibold text-gray-900">총 금액</span>
-                <span className="font-bold text-gray-900">
-                  {formatCurrency(order.totalPrice)}
-                </span>
+                <span className="font-bold text-gray-900">{formatCurrency(order.totalPrice)}</span>
               </div>
             </div>
           </div>

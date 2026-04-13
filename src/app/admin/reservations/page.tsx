@@ -11,9 +11,7 @@ interface ReservationsPageProps {
   }>;
 }
 
-export default async function ReservationsPage({
-  searchParams,
-}: ReservationsPageProps) {
+export default async function ReservationsPage({ searchParams }: ReservationsPageProps) {
   const params = await searchParams;
   const token = await getAuthToken();
 

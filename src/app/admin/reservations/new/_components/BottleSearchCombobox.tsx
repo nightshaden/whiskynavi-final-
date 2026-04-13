@@ -1,20 +1,10 @@
 "use client";
 
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
+import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  type BottleOption,
-  type SearchBottlesResult,
-  searchBottlesAction,
-} from "../../actions";
+import { type BottleOption, type SearchBottlesResult, searchBottlesAction } from "../../actions";
 
 const MAX_CACHE_SIZE = 50;
 
@@ -26,9 +16,7 @@ interface BottleSearchComboboxProps {
   defaultBottle?: { id: number; name: string };
 }
 
-export default function BottleSearchCombobox({
-  defaultBottle,
-}: BottleSearchComboboxProps) {
+export default function BottleSearchCombobox({ defaultBottle }: BottleSearchComboboxProps) {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<BottleOption | null>(
     defaultBottle ? { ...defaultBottle, stockQuantity: null } : null,
@@ -108,35 +96,24 @@ export default function BottleSearchCombobox({
   // 외부 클릭 시 닫기
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(e.target as Node)
-      ) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setOpen(false);
       }
     }
     if (open) {
       document.addEventListener("mousedown", handleClickOutside);
-      return () =>
-        document.removeEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
     }
   }, [open]);
 
   // 편집 모드: 현재 선택된 제품이 검색 결과에 없으면 상단에 병합
-  const visibleOptions =
-    selected && !options.some((o) => o.id === selected.id)
-      ? [selected, ...options]
-      : options;
+  const visibleOptions = selected && !options.some((o) => o.id === selected.id) ? [selected, ...options] : options;
 
   const displayValue = selected ? `${selected.name} (ID: ${selected.id})` : "";
 
   return (
     <div ref={containerRef} className="relative">
-      <input
-        type="hidden"
-        name="bottleId"
-        value={selected ? String(selected.id) : ""}
-      />
+      <input type="hidden" name="bottleId" value={selected ? String(selected.id) : ""} />
 
       <input
         ref={inputRef}
@@ -159,10 +136,7 @@ export default function BottleSearchCombobox({
 
       {selected && !open && (
         <p className="mt-1.5 text-xs text-gray-500">
-          재고 수량:{" "}
-          <span className="font-medium text-gray-700">
-            {formatStockQuantity(selected.stockQuantity)}
-          </span>
+          재고 수량: <span className="font-medium text-gray-700">{formatStockQuantity(selected.stockQuantity)}</span>
         </p>
       )}
 
@@ -171,13 +145,9 @@ export default function BottleSearchCombobox({
           <Command shouldFilter={false}>
             <CommandList>
               {loading ? (
-                <div className="py-4 text-center text-sm text-gray-400">
-                  검색 중...
-                </div>
+                <div className="py-4 text-center text-sm text-gray-400">검색 중...</div>
               ) : error ? (
-                <div className="py-4 text-center text-sm text-red-500">
-                  {error}
-                </div>
+                <div className="py-4 text-center text-sm text-red-500">{error}</div>
               ) : (
                 <>
                   <CommandEmpty>검색 결과가 없습니다.</CommandEmpty>
@@ -197,16 +167,8 @@ export default function BottleSearchCombobox({
                           {bottle.name} (ID: {bottle.id})
                         </span>
                         <span className="flex items-center gap-2">
-                          <span className="text-xs text-gray-400">
-                            {formatStockQuantity(bottle.stockQuantity)}
-                          </span>
-                          <Check
-                            className={cn(
-                              selected?.id === bottle.id
-                                ? "opacity-100"
-                                : "opacity-0",
-                            )}
-                          />
+                          <span className="text-xs text-gray-400">{formatStockQuantity(bottle.stockQuantity)}</span>
+                          <Check className={cn(selected?.id === bottle.id ? "opacity-100" : "opacity-0")} />
                         </span>
                       </CommandItem>
                     ))}

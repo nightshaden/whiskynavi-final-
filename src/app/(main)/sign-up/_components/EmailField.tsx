@@ -95,10 +95,7 @@ export function EmailField({ onValidationChange, error }: EmailFieldProps) {
 
   return (
     <div className="w-full">
-      <Label
-        htmlFor="email"
-        className="typo-medium-14 block font-semibold text-black"
-      >
+      <Label htmlFor="email" className="typo-medium-14 block font-semibold text-black">
         이메일
       </Label>
 
@@ -122,11 +119,7 @@ export function EmailField({ onValidationChange, error }: EmailFieldProps) {
           disabled={isPending || !email || step !== "input"}
           className="typo-medium-14 mb-px h-auto rounded-[10px] bg-[#1E2A38] px-5 py-2.5 text-white hover:bg-[#2a3a4d] disabled:opacity-50"
         >
-          {isPending && step === "input"
-            ? "발송 중..."
-            : step === "input"
-              ? "인증하기"
-              : "발송완료"}
+          {isPending && step === "input" ? "발송 중..." : step === "input" ? "인증하기" : "발송완료"}
         </Button>
       </div>
 
@@ -163,11 +156,7 @@ export function EmailField({ onValidationChange, error }: EmailFieldProps) {
         />
       )}
       {isVerified && !displayError && (
-        <FormMessage
-          message="이메일 인증이 완료되었습니다."
-          variant="success"
-          className="typo-regular-12 mt-2"
-        />
+        <FormMessage message="이메일 인증이 완료되었습니다." variant="success" className="typo-regular-12 mt-2" />
       )}
 
       <input type="hidden" name="emailVerified" value={String(isVerified)} />

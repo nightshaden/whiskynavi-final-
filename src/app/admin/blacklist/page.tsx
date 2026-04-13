@@ -12,9 +12,7 @@ interface BlacklistPageProps {
   }>;
 }
 
-export default async function BlacklistPage({
-  searchParams,
-}: BlacklistPageProps) {
+export default async function BlacklistPage({ searchParams }: BlacklistPageProps) {
   const params = await searchParams;
   const token = await getAuthToken();
 
@@ -30,10 +28,5 @@ export default async function BlacklistPage({
     },
     withToken(token),
   );
-  return (
-    <BlacklistContent
-      searchParams={params}
-      blacklist={(res.data.content ?? []) as AdminUserResponse[]}
-    />
-  );
+  return <BlacklistContent searchParams={params} blacklist={(res.data.content ?? []) as AdminUserResponse[]} />;
 }

@@ -24,11 +24,7 @@ export default function NoticeEditContent({ notice }: NoticeEditContentProps) {
 
   return (
     <>
-      <AdminHeader
-        title="예약 공고 편집"
-        onToggleSidebar={toggle}
-        showSearch={false}
-      />
+      <AdminHeader title="예약 공고 편집" onToggleSidebar={toggle} showSearch={false} />
 
       <form action={formAction} className="p-8">
         <div className="mb-6 flex items-center justify-between">

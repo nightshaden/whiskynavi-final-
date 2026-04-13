@@ -1,8 +1,4 @@
-import {
-  getApiOrders,
-  getApiUsersBusinessesApplicationsMeHistory,
-  getApiUsersMe,
-} from "@/apis/generated/api";
+import { getApiOrders, getApiUsersBusinessesApplicationsMeHistory, getApiUsersMe } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { authOptions, getAuthToken } from "@/lib/auth";
 import { getServerSession } from "next-auth";
@@ -30,41 +26,29 @@ export default async function MyPage({ searchParams }: MyPageProps) {
   const params = await searchParams;
   const page = Number(params.page) || 0;
 
-  const [userResult, ordersResult, businessApplicationHistoryResult] =
-    await Promise.all([
-      getApiUsersMe(withToken(token)).catch((e) => {
-        if (isRedirectError(e)) throw e;
-        console.error("[my-page] getApiUsersMe failed:", e);
-        return null;
-      }),
-      getApiOrders(
-        { page, size: 10, sort: ["createdAt,desc"] },
-        withToken(token),
-      ).catch((e) => {
-        if (isRedirectError(e)) throw e;
-        console.error("[my-page] getApiOrders failed:", e);
-        return null;
-      }),
-      getApiUsersBusinessesApplicationsMeHistory(
-        { page, size: 10, sort: ["createdAt,desc"] },
-        withToken(token),
-      ).catch((e) => {
+  const [userResult, ordersResult, businessApplicationHistoryResult] = await Promise.all([
+    getApiUsersMe(withToken(token)).catch((e) => {
+      if (isRedirectError(e)) throw e;
+      console.error("[my-page] getApiUsersMe failed:", e);
+      return null;
+    }),
+    getApiOrders({ page, size: 10, sort: ["createdAt,desc"] }, withToken(token)).catch((e) => {
+      if (isRedirectError(e)) throw e;
+      console.error("[my-page] getApiOrders failed:", e);
+      return null;
+    }),
+    getApiUsersBusinessesApplicationsMeHistory({ page, size: 10, sort: ["createdAt,desc"] }, withToken(token)).catch(
+      (e) => {
         if (isRedirectError(e)) throw e;
         console.error("[my-page] getBusinessApplicationHistory failed:", e);
         return null;
-      }),
-    ]);
+      },
+    ),
+  ]);
 
   const user = userResult?.data ?? {};
   const orders = ordersResult?.data ?? { content: [], totalPages: 0 };
-  const businessApplicationHistory =
-    businessApplicationHistoryResult?.data.content ?? null;
+  const businessApplicationHistory = businessApplicationHistoryResult?.data.content ?? null;
 
-  return (
-    <MyPageClient
-      user={user}
-      orders={orders}
-      businessApplicationHistory={businessApplicationHistory}
-    />
-  );
+  return <MyPageClient user={user} orders={orders} businessApplicationHistory={businessApplicationHistory} />;
 }

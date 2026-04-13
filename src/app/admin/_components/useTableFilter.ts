@@ -8,18 +8,12 @@ interface UseTableFilterOptions {
   basePath: string;
 }
 
-export function useTableFilter({
-  searchParams,
-  basePath,
-}: UseTableFilterOptions) {
+export function useTableFilter({ searchParams, basePath }: UseTableFilterOptions) {
   const router = useRouter();
   const [openFilter, setOpenFilter] = useState<string | null>(null);
   const filterRef = useRef<HTMLTableSectionElement>(null);
 
-  const toggleFilter = useCallback(
-    (name: string) => setOpenFilter((prev) => (prev === name ? null : name)),
-    [],
-  );
+  const toggleFilter = useCallback((name: string) => setOpenFilter((prev) => (prev === name ? null : name)), []);
 
   const closeFilter = useCallback(() => setOpenFilter(null), []);
 
@@ -35,10 +29,7 @@ export function useTableFilter({
     return () => document.removeEventListener("mousedown", handleClick);
   }, [openFilter]);
 
-  const getFilterValue = useCallback(
-    (key: string) => searchParams[key] || "all",
-    [searchParams],
-  );
+  const getFilterValue = useCallback((key: string) => searchParams[key] || "all", [searchParams]);
 
   const updateFilter = useCallback(
     (key: string, value: string) => {

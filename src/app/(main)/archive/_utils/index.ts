@@ -1,7 +1,4 @@
-import type {
-  BottleSearchParameterValues,
-  GetApiBottlesParams,
-} from "@/apis/generated/api";
+import type { BottleSearchParameterValues, GetApiBottlesParams } from "@/apis/generated/api";
 import { FILTER_DEFAULTS, type FilterState } from "../_types";
 
 export type SearchParams = {
@@ -32,9 +29,7 @@ export function findCategory(
     return "brands";
   }
 
-  for (const key of Object.keys(
-    params,
-  ) as (keyof BottleSearchParameterValues)[]) {
+  for (const key of Object.keys(params) as (keyof BottleSearchParameterValues)[]) {
     if (params[key]?.includes(value)) {
       return key;
     }
@@ -46,18 +41,14 @@ export function findCategory(
 /**
  * BottleSearchParameterValues에서 모든 고유 값들을 추출
  */
-export function extractAllValues(
-  params: BottleSearchParameterValues,
-): string[] {
+export function extractAllValues(params: BottleSearchParameterValues): string[] {
   return [...new Set(Object.values(params).flatMap((value) => value ?? []))];
 }
 
 /**
  * FilterState를 API GetApiBottlesParams["filters"] 형식으로 변환
  */
-export function convertFiltersToQueries(
-  filterState: FilterState,
-): GetApiBottlesParams["filters"] {
+export function convertFiltersToQueries(filterState: FilterState): GetApiBottlesParams["filters"] {
   const queries: GetApiBottlesParams["filters"] = {};
 
   // 통합검색어
@@ -108,11 +99,8 @@ export function convertFiltersToQueries(
 /**
  * URL SearchParams에서 FilterState 파싱
  */
-export function parseFiltersFromSearchParams(
-  searchParams: URLSearchParams,
-): FilterState {
-  const parseStringArray = (key: string): string[] =>
-    searchParams.get(key)?.split(",").filter(Boolean) ?? [];
+export function parseFiltersFromSearchParams(searchParams: URLSearchParams): FilterState {
+  const parseStringArray = (key: string): string[] => searchParams.get(key)?.split(",").filter(Boolean) ?? [];
 
   const parseNumber = (key: string, defaultValue: number): number => {
     const value = searchParams.get(key);
@@ -129,14 +117,9 @@ export function parseFiltersFromSearchParams(
     series: parseStringArray("series"),
     companies: parseStringArray("company"),
     maltTypes:
-      parseStringArray("maltType").length > 0
-        ? parseStringArray("maltType")
-        : [FILTER_DEFAULTS.DEFAULT_MALT_TYPE],
+      parseStringArray("maltType").length > 0 ? parseStringArray("maltType") : [FILTER_DEFAULTS.DEFAULT_MALT_TYPE],
     caskTypes: parseStringArray("caskType"),
-    abv: [
-      parseNumber("abvFrom", FILTER_DEFAULTS.ABV_MIN),
-      parseNumber("abvTo", FILTER_DEFAULTS.ABV_MAX),
-    ],
+    abv: [parseNumber("abvFrom", FILTER_DEFAULTS.ABV_MIN), parseNumber("abvTo", FILTER_DEFAULTS.ABV_MAX)],
     vintage: [
       parseNumber("vintageFrom", FILTER_DEFAULTS.VINTAGE_MIN),
       parseNumber("vintageTo", FILTER_DEFAULTS.VINTAGE_MAX),
@@ -147,9 +130,7 @@ export function parseFiltersFromSearchParams(
 /**
  * GetApiBottlesParams["filters"]를 URLSearchParams 문자열로 변환
  */
-export function buildQueryString(
-  queries: GetApiBottlesParams["filters"],
-): string {
+export function buildQueryString(queries: GetApiBottlesParams["filters"]): string {
   const params = new URLSearchParams();
 
   for (const [key, value] of Object.entries(queries)) {

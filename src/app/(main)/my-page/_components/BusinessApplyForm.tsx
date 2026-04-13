@@ -6,26 +6,15 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { FormMessage } from "@/components/ui/form-message";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { CalendarDays, Loader2, Upload } from "lucide-react";
 import { useActionState, useRef, useState } from "react";
 import { submitBusinessApplication } from "../actions";
 
-export default function BusinessApplyForm({
-  onClose,
-}: {
-  onClose?: () => void;
-}) {
-  const [state, formAction, pending] = useActionState(
-    submitBusinessApplication,
-    { success: false },
-  );
+export default function BusinessApplyForm({ onClose }: { onClose?: () => void }) {
+  const [state, formAction, pending] = useActionState(submitBusinessApplication, { success: false });
   const [isPickupStore, setIsPickupStore] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
   const [openingDate, setOpeningDate] = useState<Date>();
@@ -35,10 +24,7 @@ export default function BusinessApplyForm({
   return (
     <form action={formAction} className="space-y-4 md:space-y-6">
       <div>
-        <Label
-          htmlFor="businessName"
-          className="typo-bold-14 mb-2 block text-gray-900"
-        >
+        <Label htmlFor="businessName" className="typo-bold-14 mb-2 block text-gray-900">
           사업자 이름 *
         </Label>
         <Input
@@ -57,20 +43,14 @@ export default function BusinessApplyForm({
           checked={isPickupStore}
           onCheckedChange={(checked) => setIsPickupStore(checked as boolean)}
         />
-        <Label
-          htmlFor="pickupStore"
-          className="typo-medium-14 cursor-pointer text-gray-900"
-        >
+        <Label htmlFor="pickupStore" className="typo-medium-14 cursor-pointer text-gray-900">
           픽업매장 등록
         </Label>
       </div>
 
       {isPickupStore && (
         <div>
-          <Label
-            htmlFor="pickupAddress"
-            className="typo-bold-14 mb-2 block text-gray-900"
-          >
+          <Label htmlFor="pickupAddress" className="typo-bold-14 mb-2 block text-gray-900">
             픽업매장 주소 *
           </Label>
           <Input
@@ -85,10 +65,7 @@ export default function BusinessApplyForm({
       )}
 
       <div>
-        <Label
-          htmlFor="contact"
-          className="typo-bold-14 mb-2 block text-gray-900"
-        >
+        <Label htmlFor="contact" className="typo-bold-14 mb-2 block text-gray-900">
           연락처 *
         </Label>
         <Input
@@ -102,14 +79,8 @@ export default function BusinessApplyForm({
       </div>
 
       <div>
-        <Label className="typo-bold-14 mb-2 block text-gray-900">
-          개업일 *
-        </Label>
-        <input
-          type="hidden"
-          name="openingDate"
-          value={openingDate ? format(openingDate, "yyyy-MM-dd") : ""}
-        />
+        <Label className="typo-bold-14 mb-2 block text-gray-900">개업일 *</Label>
+        <input type="hidden" name="openingDate" value={openingDate ? format(openingDate, "yyyy-MM-dd") : ""} />
         <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
           <PopoverTrigger asChild>
             <Button
@@ -120,9 +91,7 @@ export default function BusinessApplyForm({
               }`}
             >
               <CalendarDays className="mr-2 size-4 text-gray-400" />
-              {openingDate
-                ? format(openingDate, "yyyy년 MM월 dd일", { locale: ko })
-                : "개업일을 선택하세요"}
+              {openingDate ? format(openingDate, "yyyy년 MM월 dd일", { locale: ko }) : "개업일을 선택하세요"}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
@@ -139,21 +108,12 @@ export default function BusinessApplyForm({
         </Popover>
         {/* required 검증용 숨김 input */}
         {!openingDate && (
-          <input
-            tabIndex={-1}
-            className="absolute h-0 w-0 opacity-0"
-            required
-            value=""
-            onChange={() => {}}
-          />
+          <input tabIndex={-1} className="absolute h-0 w-0 opacity-0" required value="" onChange={() => {}} />
         )}
       </div>
 
       <div>
-        <Label
-          htmlFor="representativeName"
-          className="typo-bold-14 mb-2 block text-gray-900"
-        >
+        <Label htmlFor="representativeName" className="typo-bold-14 mb-2 block text-gray-900">
           대표자 이름 *
         </Label>
         <Input
@@ -167,10 +127,7 @@ export default function BusinessApplyForm({
       </div>
 
       <div>
-        <Label
-          htmlFor="businessRegistrationNumber"
-          className="typo-bold-14 mb-2 block text-gray-900"
-        >
+        <Label htmlFor="businessRegistrationNumber" className="typo-bold-14 mb-2 block text-gray-900">
           사업자 등록번호 *
         </Label>
         <Input
@@ -184,10 +141,7 @@ export default function BusinessApplyForm({
       </div>
 
       <div>
-        <Label
-          htmlFor="document"
-          className="typo-bold-14 mb-2 block text-gray-900"
-        >
+        <Label htmlFor="document" className="typo-bold-14 mb-2 block text-gray-900">
           사업자 등록증 *
         </Label>
         <div className="rounded-lg border-2 border-dashed border-gray-300 p-6 text-center transition-colors hover:border-gray-400">
@@ -209,18 +163,12 @@ export default function BusinessApplyForm({
             {fileName ? (
               <div className="space-y-1">
                 <p className="typo-medium-14 text-gray-900">{fileName}</p>
-                <p className="text-xs text-gray-500">
-                  파일을 다시 선택하려면 클릭하세요
-                </p>
+                <p className="text-xs text-gray-500">파일을 다시 선택하려면 클릭하세요</p>
               </div>
             ) : (
               <div className="space-y-1">
-                <p className="typo-medium-14 text-gray-900">
-                  파일을 선택하세요
-                </p>
-                <p className="text-xs text-gray-500">
-                  PDF, JPG, PNG (최대 10MB)
-                </p>
+                <p className="typo-medium-14 text-gray-900">파일을 선택하세요</p>
+                <p className="text-xs text-gray-500">PDF, JPG, PNG (최대 10MB)</p>
               </div>
             )}
           </label>
@@ -228,12 +176,7 @@ export default function BusinessApplyForm({
       </div>
 
       <FormMessage message={state.error} />
-      <FormMessage
-        message={
-          state.success ? "사업자 등록 신청이 완료되었습니다." : undefined
-        }
-        variant="success"
-      />
+      <FormMessage message={state.success ? "사업자 등록 신청이 완료되었습니다." : undefined} variant="success" />
 
       <div className="flex gap-3 pt-4">
         <button

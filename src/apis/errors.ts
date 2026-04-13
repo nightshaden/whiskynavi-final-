@@ -28,12 +28,9 @@ export class ApiError extends Error {
  * - '' (빈 문자열)
  */
 const knownErrorMessages: Record<string, string> = {
-  "Reservation window is not active.":
-    "현재 예약 가능한 기간이 아닙니다.",
-  "Already applied to this notice.":
-    "이미 신청한 예약 공고입니다.",
-  "Insufficient available quantity.":
-    "남은 수량이 부족합니다.",
+  "Reservation window is not active.": "현재 예약 가능한 기간이 아닙니다.",
+  "Already applied to this notice.": "이미 신청한 예약 공고입니다.",
+  "Insufficient available quantity.": "남은 수량이 부족합니다.",
 };
 
 function extractUserMessage(status: number, detail: string): string {
@@ -95,9 +92,7 @@ function defaultMessageForStatus(status: number): string {
 }
 
 export class NetworkError extends Error {
-  constructor(
-    message = "네트워크 연결에 실패했습니다. 인터넷 연결을 확인해주세요.",
-  ) {
+  constructor(message = "네트워크 연결에 실패했습니다. 인터넷 연결을 확인해주세요.") {
     super(message);
     this.name = "NetworkError";
   }

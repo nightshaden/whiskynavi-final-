@@ -1,7 +1,4 @@
-import {
-  type BottleAdminResponse,
-  getApiAdminBottlesId,
-} from "@/apis/generated/api";
+import { type BottleAdminResponse, getApiAdminBottlesId } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
 import { notFound } from "next/navigation";
@@ -11,9 +8,7 @@ interface ProductEditPageProps {
   params: Promise<{ productId: string }>;
 }
 
-export default async function ProductEditPage({
-  params,
-}: ProductEditPageProps) {
+export default async function ProductEditPage({ params }: ProductEditPageProps) {
   const { productId } = await params;
   const token = await getAuthToken();
 

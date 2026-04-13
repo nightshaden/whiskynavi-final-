@@ -13,10 +13,7 @@ interface NoticeDetailPageProps {
   searchParams: Promise<{ page?: string; limit?: string }>;
 }
 
-export default async function NoticeDetailPage({
-  params,
-  searchParams,
-}: NoticeDetailPageProps) {
+export default async function NoticeDetailPage({ params, searchParams }: NoticeDetailPageProps) {
   const { noticeId } = await params;
   const sp = await searchParams;
   const token = await getAuthToken();
@@ -24,10 +21,7 @@ export default async function NoticeDetailPage({
   let notice: BottleReservationNoticeResponse | undefined;
   try {
     const [noticeRes, applicationsRes] = await Promise.all([
-      getApiAdminBottlesReservationsNoticesNoticeid(
-        Number(noticeId),
-        withToken(token),
-      ),
+      getApiAdminBottlesReservationsNoticesNoticeid(Number(noticeId), withToken(token)),
       getApiAdminBottlesReservationsApplications(
         {
           noticeId: Number(noticeId),

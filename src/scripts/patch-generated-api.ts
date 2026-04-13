@@ -44,10 +44,7 @@ const apiMatches = apiSource.match(urlParamsPattern);
 if (!apiMatches || apiMatches.length === 0) {
   console.log("patch api.ts: 패치 대상 없음 (이미 적용됨 또는 패턴 변경)");
 } else {
-  const apiPatched = apiSource.replace(
-    urlParamsPattern,
-    URL_PARAMS_REPLACEMENT,
-  );
+  const apiPatched = apiSource.replace(urlParamsPattern, URL_PARAMS_REPLACEMENT);
   writeFileSync(API_FILE, apiPatched, "utf-8");
   console.log(`patch api.ts: ${apiMatches.length}개 URL 빌더 패치 완료`);
 }
@@ -76,10 +73,7 @@ if (!mutatorSource.includes("res.status === 403")) {
   }
 
 `;
-  mutatorSource = mutatorSource.replace(
-    "  if (!res.ok) {",
-    `${AUTH_BLOCK}  if (!res.ok) {`,
-  );
+  mutatorSource = mutatorSource.replace("  if (!res.ok) {", `${AUTH_BLOCK}  if (!res.ok) {`);
   mutatorPatched = true;
 }
 

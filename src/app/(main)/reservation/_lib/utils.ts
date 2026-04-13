@@ -2,16 +2,10 @@ import type { BottleReservationNoticePublicResponse } from "@/apis/generated/api
 
 export type NoticeStatus = "pending" | "active" | "closed";
 
-export function getNoticeStatus(
-  notice: BottleReservationNoticePublicResponse,
-): NoticeStatus {
+export function getNoticeStatus(notice: BottleReservationNoticePublicResponse): NoticeStatus {
   const now = new Date();
-  const start = notice.reservationStartAt
-    ? new Date(notice.reservationStartAt)
-    : null;
-  const end = notice.reservationEndAt
-    ? new Date(notice.reservationEndAt)
-    : null;
+  const start = notice.reservationStartAt ? new Date(notice.reservationStartAt) : null;
+  const end = notice.reservationEndAt ? new Date(notice.reservationEndAt) : null;
 
   if (end && now > end) return "closed";
   if (start && now < start) return "pending";
@@ -70,12 +64,7 @@ export function buildInfoItems(notice: BottleReservationNoticePublicResponse) {
     },
     {
       label: "가용 수량",
-      value:
-        notice.availableQuantity != null
-          ? `${notice.availableQuantity}병`
-          : null,
+      value: notice.availableQuantity != null ? `${notice.availableQuantity}병` : null,
     },
-  ].filter(
-    (item): item is { label: string; value: string } => item.value != null,
-  );
+  ].filter((item): item is { label: string; value: string } => item.value != null);
 }

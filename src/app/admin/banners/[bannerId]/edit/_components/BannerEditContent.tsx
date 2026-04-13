@@ -25,12 +25,8 @@ export default function BannerEditContent({ banner }: BannerEditContentProps) {
 
   const bgInputRef = useRef<HTMLInputElement>(null);
   const mainInputRef = useRef<HTMLInputElement>(null);
-  const [bgPreview, setBgPreview] = useState<string | null>(
-    banner.backgroundUrl ?? null,
-  );
-  const [mainPreview, setMainPreview] = useState<string | null>(
-    banner.mainUrl ?? null,
-  );
+  const [bgPreview, setBgPreview] = useState<string | null>(banner.backgroundUrl ?? null);
+  const [mainPreview, setMainPreview] = useState<string | null>(banner.mainUrl ?? null);
 
   const handleBgChange = (file: File | null) => {
     if (bgPreview && bgPreview.startsWith("blob:")) {
@@ -64,11 +60,7 @@ export default function BannerEditContent({ banner }: BannerEditContentProps) {
 
   return (
     <>
-      <AdminHeader
-        title="배너 편집"
-        onToggleSidebar={toggle}
-        showSearch={false}
-      />
+      <AdminHeader title="배너 편집" onToggleSidebar={toggle} showSearch={false} />
 
       <form action={formAction} className="p-8">
         <div className="mb-6 flex items-center justify-between">

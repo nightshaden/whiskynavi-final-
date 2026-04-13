@@ -15,8 +15,7 @@ export default function AdminErrorPage({ error, reset }: AdminErrorPageProps) {
   const router = useRouter();
 
   const isAuthError =
-    error.message === "인증이 만료되었습니다. 다시 로그인해주세요." ||
-    error.digest?.includes("AUTH_ERROR") === true;
+    error.message === "인증이 만료되었습니다. 다시 로그인해주세요." || error.digest?.includes("AUTH_ERROR") === true;
 
   useEffect(() => {
     if (process.env.NODE_ENV === "development") {

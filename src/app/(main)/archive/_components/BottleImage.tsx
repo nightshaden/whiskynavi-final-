@@ -25,12 +25,7 @@ export function BottleImage({
   const [isLoading, setIsLoading] = useState(true);
 
   return (
-    <div
-      className={cn(
-        "relative flex items-center justify-center overflow-hidden",
-        containerClassName,
-      )}
-    >
+    <div className={cn("relative flex items-center justify-center overflow-hidden", containerClassName)}>
       {isLoading && <Skeleton className="absolute inset-0 h-full w-full" />}
       <Image
         src={src}

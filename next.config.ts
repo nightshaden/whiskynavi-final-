@@ -12,8 +12,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname:
-          "navi-s3-cask-bucket-a08be16e-142b-4537-86bb-0bbe737bd844.s3.ap-northeast-2.amazonaws.com",
+        hostname: "navi-s3-cask-bucket-a08be16e-142b-4537-86bb-0bbe737bd844.s3.ap-northeast-2.amazonaws.com",
         pathname: "/**",
       },
       {

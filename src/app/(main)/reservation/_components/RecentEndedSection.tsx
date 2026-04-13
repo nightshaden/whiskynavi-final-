@@ -6,9 +6,7 @@ interface RecentEndedSectionProps {
   notices: BottleReservationNoticePublicResponse[];
 }
 
-export default function RecentEndedSection({
-  notices,
-}: RecentEndedSectionProps) {
+export default function RecentEndedSection({ notices }: RecentEndedSectionProps) {
   if (notices.length === 0) return null;
 
   return (

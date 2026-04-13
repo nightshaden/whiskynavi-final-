@@ -9,10 +9,7 @@ const MobileSearchBar = () => {
   return (
     <div className="mx-auto -mt-8 max-w-[1440px] px-4 py-4 lg:hidden">
       <div className="relative">
-        <Search
-          className="absolute top-1/2 left-3 -translate-y-1/2 transform text-gray-400"
-          size={16}
-        />
+        <Search className="absolute top-1/2 left-3 -translate-y-1/2 transform text-gray-400" size={16} />
         <input
           type="text"
           placeholder="보틀명, 증류소로 검색하세요"

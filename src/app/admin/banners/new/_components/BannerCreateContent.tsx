@@ -13,10 +13,7 @@ export default function BannerCreateContent() {
   const { toggle } = useSidebar();
   const router = useRouter();
 
-  const [formState, formAction, isPending] = useActionState(
-    createBannerFormAction,
-    { success: false },
-  );
+  const [formState, formAction, isPending] = useActionState(createBannerFormAction, { success: false });
 
   const bgInputRef = useRef<HTMLInputElement>(null);
   const mainInputRef = useRef<HTMLInputElement>(null);
@@ -47,11 +44,7 @@ export default function BannerCreateContent() {
 
   return (
     <>
-      <AdminHeader
-        title="배너 등록"
-        onToggleSidebar={toggle}
-        showSearch={false}
-      />
+      <AdminHeader title="배너 등록" onToggleSidebar={toggle} showSearch={false} />
 
       <form action={formAction} className="p-8">
         <div className="mb-6 flex items-center justify-between">

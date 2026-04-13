@@ -60,10 +60,8 @@ export default function MembershipBenefitsContent() {
   const { toggle } = useSidebar();
   const router = useRouter();
   const [isEditMode, setIsEditMode] = useState(false);
-  const [benefits, setBenefits] =
-    useState<MembershipBenefitsData>(DEFAULT_BENEFITS);
-  const [editingBenefits, setEditingBenefits] =
-    useState<MembershipBenefitsData>(DEFAULT_BENEFITS);
+  const [benefits, setBenefits] = useState<MembershipBenefitsData>(DEFAULT_BENEFITS);
+  const [editingBenefits, setEditingBenefits] = useState<MembershipBenefitsData>(DEFAULT_BENEFITS);
 
   const handleEdit = () => {
     setEditingBenefits(benefits);
@@ -88,11 +86,7 @@ export default function MembershipBenefitsContent() {
 
   const currentBenefits = isEditMode ? editingBenefits : benefits;
 
-  const updateBenefit = (
-    brand: "navi" | "tales",
-    field: keyof MembershipBenefit,
-    value: number | boolean,
-  ) => {
+  const updateBenefit = (brand: "navi" | "tales", field: keyof MembershipBenefit, value: number | boolean) => {
     setEditingBenefits((prev) => ({
       ...prev,
       [brand]: {
@@ -106,11 +100,7 @@ export default function MembershipBenefitsContent() {
 
   return (
     <>
-      <AdminHeader
-        title="멤버십 혜택 관리"
-        onToggleSidebar={toggle}
-        showSearch={false}
-      />
+      <AdminHeader title="멤버십 혜택 관리" onToggleSidebar={toggle} showSearch={false} />
 
       <div className="p-8">
         {/* 상단 네비게이션 */}
@@ -150,10 +140,7 @@ export default function MembershipBenefitsContent() {
             const brandBenefits = currentBenefits[key].member;
 
             return (
-              <div
-                key={key}
-                className="rounded-xl border-2 border-gray-200 bg-white p-6 shadow-sm"
-              >
+              <div key={key} className="rounded-xl border-2 border-gray-200 bg-white p-6 shadow-sm">
                 <div className="mb-4 flex items-center justify-between">
                   <h3 className="typo-bold-24 text-amber-600">{label}</h3>
                   <Award className="text-amber-600" size={32} />
@@ -163,89 +150,56 @@ export default function MembershipBenefitsContent() {
                   {isEditMode ? (
                     <>
                       <div>
-                        <Label className="text-xs text-gray-600">
-                          할인율 (%)
-                        </Label>
+                        <Label className="text-xs text-gray-600">할인율 (%)</Label>
                         <Input
                           type="number"
                           value={brandBenefits.discount}
-                          onChange={(e) =>
-                            updateBenefit(
-                              key,
-                              "discount",
-                              Number(e.target.value),
-                            )
-                          }
+                          onChange={(e) => updateBenefit(key, "discount", Number(e.target.value))}
                           className="mt-1"
                         />
                       </div>
                       <div>
-                        <Label className="text-xs text-gray-600">
-                          조기 접근 (일)
-                        </Label>
+                        <Label className="text-xs text-gray-600">조기 접근 (일)</Label>
                         <Input
                           type="number"
                           value={brandBenefits.earlyAccess}
-                          onChange={(e) =>
-                            updateBenefit(
-                              key,
-                              "earlyAccess",
-                              Number(e.target.value),
-                            )
-                          }
+                          onChange={(e) => updateBenefit(key, "earlyAccess", Number(e.target.value))}
                           className="mt-1"
                         />
                       </div>
-                      {BOOLEAN_BENEFIT_FIELDS.map(
-                        ({ key: field, label: fieldLabel }) => (
-                          <div
-                            key={field}
-                            className="flex items-center justify-between py-2"
-                          >
-                            <Label className="text-sm text-gray-700">
-                              {fieldLabel}
-                            </Label>
-                            <Switch
-                              checked={brandBenefits[field]}
-                              onCheckedChange={(checked) =>
-                                updateBenefit(key, field, checked)
-                              }
-                            />
-                          </div>
-                        ),
-                      )}
+                      {BOOLEAN_BENEFIT_FIELDS.map(({ key: field, label: fieldLabel }) => (
+                        <div key={field} className="flex items-center justify-between py-2">
+                          <Label className="text-sm text-gray-700">{fieldLabel}</Label>
+                          <Switch
+                            checked={brandBenefits[field]}
+                            onCheckedChange={(checked) => updateBenefit(key, field, checked)}
+                          />
+                        </div>
+                      ))}
                     </>
                   ) : (
                     <>
                       <div className="flex justify-between border-b border-gray-100 py-2">
                         <span className="text-sm text-gray-600">할인율</span>
-                        <span className="typo-bold-14 text-gray-900">
-                          {brandBenefits.discount}%
-                        </span>
+                        <span className="typo-bold-14 text-gray-900">{brandBenefits.discount}%</span>
                       </div>
                       <div className="flex justify-between border-b border-gray-100 py-2">
                         <span className="text-sm text-gray-600">조기 접근</span>
-                        <span className="typo-bold-14 text-gray-900">
-                          {brandBenefits.earlyAccess}일
-                        </span>
+                        <span className="typo-bold-14 text-gray-900">{brandBenefits.earlyAccess}일</span>
                       </div>
-                      {BOOLEAN_BENEFIT_FIELDS.map(
-                        ({ key: field, label: fieldLabel }) => (
-                          <div
-                            key={field}
-                            className={`flex justify-between py-2 ${field !== "prioritySupport" ? "border-b border-gray-100" : ""}`}
-                          >
-                            <span className="text-sm text-gray-600">
-                              {fieldLabel}
-                            </span>
-                            {brandBenefits[field] ? (
-                              <Check className="text-green-600" size={20} />
-                            ) : (
-                              <X className="text-gray-400" size={20} />
-                            )}
-                          </div>
-                        ),
-                      )}
+                      {BOOLEAN_BENEFIT_FIELDS.map(({ key: field, label: fieldLabel }) => (
+                        <div
+                          key={field}
+                          className={`flex justify-between py-2 ${field !== "prioritySupport" ? "border-b border-gray-100" : ""}`}
+                        >
+                          <span className="text-sm text-gray-600">{fieldLabel}</span>
+                          {brandBenefits[field] ? (
+                            <Check className="text-green-600" size={20} />
+                          ) : (
+                            <X className="text-gray-400" size={20} />
+                          )}
+                        </div>
+                      ))}
                     </>
                   )}
                 </div>

@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  ChevronDown,
-  ClipboardCheck,
-  Droplet,
-  Ship,
-  Users,
-} from "lucide-react";
+import { ChevronDown, ClipboardCheck, Droplet, Ship, Users } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -138,8 +132,7 @@ export default function DesktopAbout() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.9 }}
                 >
-                  2020년 설립 이래, 다양한 증류소의 우수한 캐스크를 선별 및
-                  병입하여 국내외 시장에 선보이고 있습니다.
+                  2020년 설립 이래, 다양한 증류소의 우수한 캐스크를 선별 및 병입하여 국내외 시장에 선보이고 있습니다.
                 </motion.p>
                 <motion.p
                   className="typo-regular-18 xl:typo-regular-20 max-w-5xl text-center"
@@ -147,8 +140,7 @@ export default function DesktopAbout() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 1.2 }}
                 >
-                  정교한 셀렉션과 멈추지 않는 도전 정신으로 독립 병입 시장의
-                  새로운 항로를 개척해 나가겠습니다.
+                  정교한 셀렉션과 멈추지 않는 도전 정신으로 독립 병입 시장의 새로운 항로를 개척해 나가겠습니다.
                 </motion.p>
               </div>
             </div>
@@ -163,20 +155,13 @@ export default function DesktopAbout() {
           transition={{ duration: 0.8, delay: 1.5 }}
         >
           <div className="flex justify-center">
-            <ChevronDown
-              className="animate-scroll-down h-12 w-12 text-white/40"
-              strokeWidth={1.5}
-            />
+            <ChevronDown className="animate-scroll-down h-12 w-12 text-white/40" strokeWidth={1.5} />
           </div>
         </motion.div>
       </motion.section>
 
       {/* Section 2: Horizontal Scroll - Three Principles */}
-      <div
-        ref={horizontalScrollRef}
-        className="relative bg-[#1d2429]"
-        style={{ height: "400vh" }}
-      >
+      <div ref={horizontalScrollRef} className="relative bg-[#1d2429]" style={{ height: "400vh" }}>
         <div className="sticky top-0 flex h-screen items-center justify-center overflow-hidden">
           {/* DISCOVER */}
           <div
@@ -310,8 +295,7 @@ export default function DesktopAbout() {
                   >
                     위스키 초심자부터 매니아까지,
                     <br />
-                    다양하고 세분화된 라인업으로 위스키 애호가들의 길잡이가
-                    되겠습니다.
+                    다양하고 세분화된 라인업으로 위스키 애호가들의 길잡이가 되겠습니다.
                   </p>
                 </motion.div>
               </div>

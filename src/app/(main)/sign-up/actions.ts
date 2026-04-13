@@ -17,10 +17,7 @@ export type SignUpState = {
   };
 };
 
-export async function signUpAction(
-  _prevState: SignUpState | null,
-  formData: FormData,
-): Promise<SignUpState> {
+export async function signUpAction(_prevState: SignUpState | null, formData: FormData): Promise<SignUpState> {
   // FormData를 객체로 변환
   const rawData = {
     email: formData.get("email") ?? "",
@@ -76,8 +73,7 @@ export async function signUpAction(
     return {
       success: false,
       error: generalError,
-      fieldErrors:
-        Object.keys(fieldErrors).length > 0 ? fieldErrors : undefined,
+      fieldErrors: Object.keys(fieldErrors).length > 0 ? fieldErrors : undefined,
     };
   }
 
@@ -107,15 +103,10 @@ export async function signUpAction(
     // NICE 관련 400 에러는 별도 안내
     if (error instanceof ApiError && error.status === 400) {
       const msg = error.userMessage;
-      if (
-        msg.includes("본인인증") ||
-        msg.includes("NICE") ||
-        msg.includes("niceRequestNo")
-      ) {
+      if (msg.includes("본인인증") || msg.includes("NICE") || msg.includes("niceRequestNo")) {
         return {
           success: false,
-          error:
-            "본인인증 정보가 만료되었거나 유효하지 않습니다. 다시 인증해주세요.",
+          error: "본인인증 정보가 만료되었거나 유효하지 않습니다. 다시 인증해주세요.",
         };
       }
     }

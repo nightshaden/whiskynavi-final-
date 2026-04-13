@@ -2,20 +2,14 @@
 
 import type { BottleReservationNoticePublicResponse } from "@/apis/generated/api";
 import { useEffect, useState } from "react";
-import {
-  calculateTimeRemaining,
-  getNoticeStatus,
-  type NoticeStatus,
-} from "./utils";
+import { calculateTimeRemaining, getNoticeStatus, type NoticeStatus } from "./utils";
 
 interface CountdownTimerResult {
   timeRemaining: string;
   status: NoticeStatus;
 }
 
-export function useCountdownTimer(
-  notice: BottleReservationNoticePublicResponse,
-): CountdownTimerResult {
+export function useCountdownTimer(notice: BottleReservationNoticePublicResponse): CountdownTimerResult {
   const status = getNoticeStatus(notice);
   const [timeRemaining, setTimeRemaining] = useState("");
 
@@ -28,8 +22,7 @@ export function useCountdownTimer(
     if (!targetDateStr || status === "closed") return;
 
     const targetDate = new Date(targetDateStr);
-    const updateTimer = () =>
-      setTimeRemaining(calculateTimeRemaining(targetDate));
+    const updateTimer = () => setTimeRemaining(calculateTimeRemaining(targetDate));
     updateTimer();
     const interval = setInterval(updateTimer, 1000);
     return () => clearInterval(interval);

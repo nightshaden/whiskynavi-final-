@@ -1,12 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Carousel,
-  type CarouselApi,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
+import { Carousel, type CarouselApi, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -85,9 +80,7 @@ const Hero = () => {
             type="button"
             onClick={() => api?.scrollTo(index)}
             className={`rounded-full transition-all duration-300 ${
-              current === index
-                ? "h-2.5 w-6.25 bg-[#5D5D5D]"
-                : "h-2.5 w-2.5 bg-white"
+              current === index ? "h-2.5 w-6.25 bg-[#5D5D5D]" : "h-2.5 w-2.5 bg-white"
             }`}
             aria-label={`Go to slide ${index + 1}`}
           />
@@ -106,12 +99,8 @@ const HeroItem = ({ item }: { item: HeroItem }) => {
       <div className="relative z-10 mx-auto h-full max-w-screen-xl pb-50">
         <div className="mb-21 flex h-full justify-between px-30">
           <div className="flex w-full max-w-[600px] flex-col justify-center">
-            <h2 className="typo-bold-36 whitespace-pre-line text-white">
-              {item.title.replace(" : ", " \n: ")}
-            </h2>
-            <p className="typo-medium-18 mt-10 leading-loose whitespace-pre-line text-white">
-              {item.description}
-            </p>
+            <h2 className="typo-bold-36 whitespace-pre-line text-white">{item.title.replace(" : ", " \n: ")}</h2>
+            <p className="typo-medium-18 mt-10 leading-loose whitespace-pre-line text-white">{item.description}</p>
             <Button color="white" className="mt-10 w-fit rounded-none bg-white">
               <p className="typo-bold-16 text-black">예약 매장 확인</p>
             </Button>

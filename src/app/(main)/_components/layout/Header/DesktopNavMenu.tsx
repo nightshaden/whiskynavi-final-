@@ -20,13 +20,7 @@ const DesktopNavMenu: FC<Props> = ({ session, pathname }) => {
   const openUserMenu = () => {
     const rect = authAreaRef.current?.getBoundingClientRect();
     overlay.open(({ isOpen, close }) =>
-      isOpen ? (
-        <UserMenuDropdown
-          isAdminUser={isAdminUser(session)}
-          close={close}
-          anchorRect={rect}
-        />
-      ) : null,
+      isOpen ? <UserMenuDropdown isAdminUser={isAdminUser(session)} close={close} anchorRect={rect} /> : null,
     );
   };
 
@@ -38,9 +32,7 @@ const DesktopNavMenu: FC<Props> = ({ session, pathname }) => {
             key={href}
             href={href}
             className={`typo-bold-18 transition-colors ${
-              pathname.startsWith(href)
-                ? "text-white"
-                : "text-white/80 hover:text-white"
+              pathname.startsWith(href) ? "text-white" : "text-white/80 hover:text-white"
             }`}
           >
             {label}
@@ -52,9 +44,7 @@ const DesktopNavMenu: FC<Props> = ({ session, pathname }) => {
               key={href}
               href={href}
               className={`typo-bold-18 transition-colors ${
-                pathname.startsWith(href)
-                  ? "text-white"
-                  : "text-white/80 hover:text-white"
+                pathname.startsWith(href) ? "text-white" : "text-white/80 hover:text-white"
               }`}
             >
               {label}

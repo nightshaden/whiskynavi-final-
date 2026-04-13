@@ -42,9 +42,7 @@ export default function NoticeInfoSection({ notice }: NoticeInfoSectionProps) {
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         {fields.map((field) => (
           <div key={field.label}>
-            <span className="mb-1 block text-xs text-gray-500">
-              {field.label}
-            </span>
+            <span className="mb-1 block text-xs text-gray-500">{field.label}</span>
             <span className="typo-medium-14 text-gray-900">{field.value}</span>
           </div>
         ))}
@@ -59,14 +57,8 @@ export default function NoticeInfoSection({ notice }: NoticeInfoSectionProps) {
                 key={idx}
                 className="inline-flex items-center gap-1 rounded bg-amber-50 px-2 py-1 text-xs text-amber-700"
               >
-                {ROLE_LABEL_MAP[
-                  gc.requiredRole as keyof typeof ROLE_LABEL_MAP
-                ] ?? gc.requiredRole}
-                {gc.applicableFrom && (
-                  <span className="text-amber-500">
-                    ({formatDateTime(gc.applicableFrom)}~)
-                  </span>
-                )}
+                {ROLE_LABEL_MAP[gc.requiredRole as keyof typeof ROLE_LABEL_MAP] ?? gc.requiredRole}
+                {gc.applicableFrom && <span className="text-amber-500">({formatDateTime(gc.applicableFrom)}~)</span>}
               </span>
             ))}
           </div>

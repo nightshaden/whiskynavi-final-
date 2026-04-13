@@ -49,10 +49,7 @@ export default function AdminHeader({
         {showSearch && (
           <div className="flex gap-4">
             <div className="relative flex-1">
-              <Search
-                className="absolute top-1/2 left-4 -translate-y-1/2 transform text-gray-400"
-                size={20}
-              />
+              <Search className="absolute top-1/2 left-4 -translate-y-1/2 transform text-gray-400" size={20} />
               <input
                 type="text"
                 placeholder="이름으로 검색..."

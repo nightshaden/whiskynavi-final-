@@ -18,14 +18,7 @@ interface ArchiveSidebarProps {
   params: BottleSearchParameterValues;
 }
 
-const DEFAULT_EXPANDED = [
-  "brand",
-  "malt",
-  "distillery",
-  "cask",
-  "abv",
-  "vintage",
-];
+const DEFAULT_EXPANDED = ["brand", "malt", "distillery", "cask", "abv", "vintage"];
 
 export function ArchiveSidebar({ params }: ArchiveSidebarProps) {
   const {
@@ -61,18 +54,10 @@ export function ArchiveSidebar({ params }: ArchiveSidebarProps) {
           </div>
         </div>
 
-        <CurrentFilters
-          filters={filters}
-          onRemove={removeActiveFilter}
-          onClearAll={clearAllFilters}
-        />
+        <CurrentFilters filters={filters} onRemove={removeActiveFilter} onClearAll={clearAllFilters} />
 
         <FilterGroup defaultExpanded={DEFAULT_EXPANDED}>
-          <BrandFilter
-            brands={params.brands ?? []}
-            selectedBrands={filters.brands}
-            onToggle={toggleBrand}
-          />
+          <BrandFilter brands={params.brands ?? []} selectedBrands={filters.brands} onToggle={toggleBrand} />
 
           <MaltTypeFilter
             maltTypes={params.maltTypes ?? []}

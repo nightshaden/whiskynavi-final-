@@ -1,5 +1,5 @@
 import { authLogger } from "./auth-logger";
-import { AuthError, ApiError, NetworkError } from "./errors";
+import { ApiError, AuthError, NetworkError } from "./errors";
 import { refreshSessionToken } from "./refresh-token";
 
 /**
@@ -15,8 +15,7 @@ async function handleAuthFailure(): Promise<never> {
   throw new AuthError();
 }
 
-const BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://api.whiskynavi.com";
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://api.whiskynavi.com";
 
 function parseResponse(res: Response): Promise<unknown> | undefined {
   if (res.status === 204 || res.status === 205) {
@@ -50,10 +49,7 @@ async function extractErrorDetail(res: Response): Promise<string> {
  * - 서버: JWT 쿠키에서 refreshToken 추출 → callRefreshApi (raw fetch)
  * - 클라이언트: getSession() → jwt callback 트리거 → 최신 accessToken 반환
  */
-export const customFetch = async <T>(
-  url: string,
-  options: RequestInit,
-): Promise<T> => {
+export const customFetch = async <T>(url: string, options: RequestInit): Promise<T> => {
   const fullUrl = url.startsWith("http") ? url : `${BASE_URL}${url}`;
 
   let res: Response;
@@ -94,9 +90,7 @@ export const customFetch = async <T>(
 
       // 재시도도 401/403이면 인증 완전 실패
       if (retryRes.status === 401 || retryRes.status === 403) {
-        authLogger.error(
-          `retry failed (${retryRes.status}): ${fullUrl} → redirect`,
-        );
+        authLogger.error(`retry failed (${retryRes.status}): ${fullUrl} → redirect`);
         await handleAuthFailure();
       }
 

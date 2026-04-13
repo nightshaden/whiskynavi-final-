@@ -6,22 +6,14 @@ interface ApprovalSummarySectionProps {
   notice: BottleReservationNoticeResponse;
 }
 
-export default function ApprovalSummarySection({
-  notice,
-}: ApprovalSummarySectionProps) {
+export default function ApprovalSummarySection({ notice }: ApprovalSummarySectionProps) {
   const applied = notice.appliedQuantity ?? 0;
   const approved = notice.approvedQuantity ?? 0;
   const available = notice.availableQuantity ?? 0;
 
   const ratio = available > 0 ? (approved / available) * 100 : 0;
-  const barColor =
-    ratio >= 100 ? "bg-red-500" : ratio > 80 ? "bg-amber-500" : "bg-green-500";
-  const textColor =
-    ratio >= 100
-      ? "text-red-600"
-      : ratio > 80
-        ? "text-amber-600"
-        : "text-green-600";
+  const barColor = ratio >= 100 ? "bg-red-500" : ratio > 80 ? "bg-amber-500" : "bg-green-500";
+  const textColor = ratio >= 100 ? "text-red-600" : ratio > 80 ? "text-amber-600" : "text-green-600";
 
   return (
     <div className="mb-4 rounded-xl border-2 border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50 p-4">
@@ -32,12 +24,9 @@ export default function ApprovalSummarySection({
         </div>
         <div className="text-right">
           <p className={`typo-bold-24 ${textColor}`}>
-            {approved}{" "}
-            <span className="text-sm text-gray-500">/ {available}병</span>
+            {approved} <span className="text-sm text-gray-500">/ {available}병</span>
           </p>
-          <p className="mt-0.5 text-xs text-gray-600">
-            {available > 0 ? ratio.toFixed(1) : "0.0"}% 승인됨
-          </p>
+          <p className="mt-0.5 text-xs text-gray-600">{available > 0 ? ratio.toFixed(1) : "0.0"}% 승인됨</p>
         </div>
       </div>
 

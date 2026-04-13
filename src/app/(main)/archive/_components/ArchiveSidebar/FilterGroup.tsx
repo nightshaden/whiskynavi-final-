@@ -1,13 +1,7 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from "react";
+import { createContext, useCallback, useContext, useMemo, useState } from "react";
 
 // ============================================================================
 // Context
@@ -22,8 +16,7 @@ const FilterGroupContext = createContext<FilterGroupContextValue | null>(null);
 
 function useFilterGroup() {
   const ctx = useContext(FilterGroupContext);
-  if (!ctx)
-    throw new Error("FilterGroup.Section must be used within FilterGroup");
+  if (!ctx) throw new Error("FilterGroup.Section must be used within FilterGroup");
   return ctx;
 }
 
@@ -37,24 +30,17 @@ interface FilterGroupProps {
 }
 
 function FilterGroupRoot({ defaultExpanded = [], children }: FilterGroupProps) {
-  const [expandedSections, setExpandedSections] = useState<
-    Record<string, boolean>
-  >(() => Object.fromEntries(defaultExpanded.map((key) => [key, true])));
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>(() =>
+    Object.fromEntries(defaultExpanded.map((key) => [key, true])),
+  );
 
   const toggleSection = useCallback((key: string) => {
     setExpandedSections((prev) => ({ ...prev, [key]: !prev[key] }));
   }, []);
 
-  const value = useMemo(
-    () => ({ expandedSections, toggleSection }),
-    [expandedSections, toggleSection],
-  );
+  const value = useMemo(() => ({ expandedSections, toggleSection }), [expandedSections, toggleSection]);
 
-  return (
-    <FilterGroupContext.Provider value={value}>
-      {children}
-    </FilterGroupContext.Provider>
-  );
+  return <FilterGroupContext.Provider value={value}>{children}</FilterGroupContext.Provider>;
 }
 
 // ============================================================================
@@ -80,9 +66,7 @@ function Section({ title, sectionKey, children }: SectionProps) {
       >
         {title}
         <ChevronDown
-          className={`h-4 w-4 text-white/50 transition-transform duration-200 ${
-            isExpanded ? "rotate-180" : ""
-          }`}
+          className={`h-4 w-4 text-white/50 transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
         />
       </button>
       {isExpanded && <div className="pb-4">{children}</div>}

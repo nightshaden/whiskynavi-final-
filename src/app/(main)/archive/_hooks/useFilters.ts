@@ -3,11 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { FILTER_DEFAULTS, type FilterState } from "../_types";
-import {
-  buildQueryString,
-  convertFiltersToQueries,
-  parseFiltersFromSearchParams,
-} from "../_utils";
+import { buildQueryString, convertFiltersToQueries, parseFiltersFromSearchParams } from "../_utils";
 
 export interface UseFiltersReturn {
   filters: FilterState;
@@ -42,16 +38,12 @@ export function useFilters(): UseFiltersReturn {
 
   // 필터 변경 시 URL 업데이트 (디바운스 적용)
   useEffect(() => {
-    if (
-      JSON.stringify(prevFiltersRef.current) === JSON.stringify(filters)
-    ) {
+    if (JSON.stringify(prevFiltersRef.current) === JSON.stringify(filters)) {
       return;
     }
 
     const keywordChanged = filters.keyword !== prevKeywordRef.current;
-    const debounceMs = keywordChanged
-      ? FILTER_DEFAULTS.KEYWORD_DEBOUNCE_MS
-      : FILTER_DEFAULTS.DEBOUNCE_MS;
+    const debounceMs = keywordChanged ? FILTER_DEFAULTS.KEYWORD_DEBOUNCE_MS : FILTER_DEFAULTS.DEBOUNCE_MS;
 
     const timeoutId = setTimeout(() => {
       prevFiltersRef.current = filters;
@@ -72,9 +64,7 @@ export function useFilters(): UseFiltersReturn {
   const toggleBrand = useCallback((brandId: string) => {
     setFilters((prev) => ({
       ...prev,
-      brands: prev.brands.includes(brandId)
-        ? prev.brands.filter((id) => id !== brandId)
-        : [...prev.brands, brandId],
+      brands: prev.brands.includes(brandId) ? prev.brands.filter((id) => id !== brandId) : [...prev.brands, brandId],
     }));
   }, []);
 
@@ -89,24 +79,18 @@ export function useFilters(): UseFiltersReturn {
   }, []);
 
   // 활성 필터 제거
-  const removeActiveFilter = useCallback(
-    (type: keyof FilterState, value: string) => {
-      setFilters((prev) => {
-        const currentValue = prev[type];
-        if (
-          Array.isArray(currentValue) &&
-          typeof currentValue[0] === "string"
-        ) {
-          return {
-            ...prev,
-            [type]: currentValue.filter((id) => id !== value),
-          } as FilterState;
-        }
-        return prev;
-      });
-    },
-    [],
-  );
+  const removeActiveFilter = useCallback((type: keyof FilterState, value: string) => {
+    setFilters((prev) => {
+      const currentValue = prev[type];
+      if (Array.isArray(currentValue) && typeof currentValue[0] === "string") {
+        return {
+          ...prev,
+          [type]: currentValue.filter((id) => id !== value),
+        } as FilterState;
+      }
+      return prev;
+    });
+  }, []);
 
   // 통합검색어 업데이트
   const updateKeyword = useCallback((keyword: string) => {

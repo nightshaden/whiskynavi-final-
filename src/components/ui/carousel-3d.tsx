@@ -31,11 +31,7 @@ export interface Carousel3DItemProps<T> {
 interface Carousel3DProps<T> {
   items: T[];
   renderItem: (props: Carousel3DItemProps<T>) => React.ReactNode;
-  getPosition?: (
-    currentIndex: number,
-    itemIndex: number,
-    totalItems: number,
-  ) => Carousel3DPosition | null;
+  getPosition?: (currentIndex: number, itemIndex: number, totalItems: number) => Carousel3DPosition | null;
   visibleRange?: number;
   cardSpacing?: number;
   containerClassName?: string;
@@ -172,9 +168,7 @@ export function Carousel3D<T>({
 
   const handlePrev = useCallback(() => {
     if (items.length === 0) return;
-    throttledNavigate(
-      (prev) => (prev - 1 + items.length) % items.length,
-    );
+    throttledNavigate((prev) => (prev - 1 + items.length) % items.length);
   }, [items.length, throttledNavigate]);
 
   // Handle touch navigation via custom event (bridges useEffect ref world → state world)
@@ -207,13 +201,7 @@ export function Carousel3D<T>({
   const positions = items.map((_, index) =>
     getPosition
       ? getPosition(currentIndex, index, items.length)
-      : getDefaultPosition(
-          currentIndex,
-          index,
-          items.length,
-          visibleRange,
-          cardSpacing,
-        ),
+      : getDefaultPosition(currentIndex, index, items.length, visibleRange, cardSpacing),
   );
 
   return (
@@ -270,9 +258,7 @@ export function Carousel3D<T>({
               key={index}
               onClick={() => goToIndex(index)}
               aria-label={`${index + 1}번으로 이동`}
-              className={`h-1 transition-all ${
-                index === currentIndex ? "w-6 bg-white" : "w-1 bg-white/40"
-              }`}
+              className={`h-1 transition-all ${index === currentIndex ? "w-6 bg-white" : "w-1 bg-white/40"}`}
             />
           ))}
         </div>

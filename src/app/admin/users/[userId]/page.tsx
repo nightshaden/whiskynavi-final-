@@ -1,7 +1,4 @@
-import {
-  getApiAdminOrdersUsersUserid,
-  getApiAdminUsersId,
-} from "@/apis/generated/api";
+import { getApiAdminOrdersUsersUserid, getApiAdminUsersId } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
 import { notFound } from "next/navigation";
@@ -18,16 +15,10 @@ export default async function UserDetailPage({ params }: UserDetailPageProps) {
   try {
     const [userRes, orderRes] = await Promise.all([
       getApiAdminUsersId(Number(userId), withToken(token)),
-      getApiAdminOrdersUsersUserid(
-        Number(userId),
-        { page: 0, size: 20 },
-        withToken(token),
-      ),
+      getApiAdminOrdersUsersUserid(Number(userId), { page: 0, size: 20 }, withToken(token)),
     ]);
 
-    return (
-      <UserDetailContent user={userRes.data} orderSummary={orderRes.data} />
-    );
+    return <UserDetailContent user={userRes.data} orderSummary={orderRes.data} />;
   } catch {
     notFound();
   }

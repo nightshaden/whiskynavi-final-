@@ -53,20 +53,10 @@ const UserDeleteModal: FC<Props> = ({ isOpen, close, id }) => {
         </DialogHeader>
 
         <DialogFooter className="gap-2 sm:gap-2">
-          <Button
-            variant="outline"
-            className="flex-1"
-            onClick={close}
-            disabled={isPending}
-          >
+          <Button variant="outline" className="flex-1" onClick={close} disabled={isPending}>
             취소
           </Button>
-          <Button
-            variant="destructive"
-            className="flex-1"
-            onClick={handleDelete}
-            disabled={isPending}
-          >
+          <Button variant="destructive" className="flex-1" onClick={handleDelete} disabled={isPending}>
             {isPending ? "삭제 중..." : "삭제"}
           </Button>
         </DialogFooter>

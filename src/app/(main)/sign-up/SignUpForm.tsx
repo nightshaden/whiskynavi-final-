@@ -9,12 +9,7 @@ import { AgreementSection, EmailField, UsernameField } from "./_components";
 import { useFunnel } from "./_hooks/useFunnel";
 import { useNiceVerification } from "./_hooks/useNiceVerification";
 import { signUpAction, type SignUpState } from "./actions";
-import {
-  formatGenderLabel,
-  IS_DEV_BYPASS_ENABLED,
-  maskPhoneNumber,
-  type VerifiedSignupProfile,
-} from "./nice";
+import { formatGenderLabel, IS_DEV_BYPASS_ENABLED, maskPhoneNumber, type VerifiedSignupProfile } from "./nice";
 
 // --- Funnel Steps ---
 
@@ -25,11 +20,7 @@ type SignUpSteps = {
 
 // --- Step Components ---
 
-function VerificationStep({
-  onNext,
-}: {
-  onNext: (profile: VerifiedSignupProfile) => void;
-}) {
+function VerificationStep({ onNext }: { onNext: (profile: VerifiedSignupProfile) => void }) {
   const nice = useNiceVerification({ onSuccess: onNext });
 
   return (
@@ -55,8 +46,7 @@ function VerificationStep({
         <p className="typo-medium-14 text-gray-500">Step 1</p>
         <h2 className="typo-bold-20 mt-2 text-black">NICE 본인인증</h2>
         <p className="typo-regular-14 mt-3 text-gray-600">
-          회원가입은 본인인증 후 진행됩니다. 인증이 완료되면 이름, 휴대폰번호,
-          생년월일, 성별이 자동으로 반영됩니다.
+          회원가입은 본인인증 후 진행됩니다. 인증이 완료되면 이름, 휴대폰번호, 생년월일, 성별이 자동으로 반영됩니다.
         </p>
 
         <Button
@@ -85,13 +75,7 @@ function VerificationStep({
   );
 }
 
-function InfoFormStep({
-  verifiedProfile,
-  onReset,
-}: {
-  verifiedProfile: VerifiedSignupProfile;
-  onReset: () => void;
-}) {
+function InfoFormStep({ verifiedProfile, onReset }: { verifiedProfile: VerifiedSignupProfile; onReset: () => void }) {
   const [state, formAction, isPending] = useActionState(signUpAction, {
     success: false,
   } satisfies SignUpState);
@@ -127,27 +111,15 @@ function InfoFormStep({
           </div>
           <div>
             <Label className="typo-medium-13 text-gray-500">전화번호</Label>
-            <Input
-              value={maskPhoneNumber(verifiedProfile.phone)}
-              readOnly
-              className="mt-2"
-            />
+            <Input value={maskPhoneNumber(verifiedProfile.phone)} readOnly className="mt-2" />
           </div>
           <div>
             <Label className="typo-medium-13 text-gray-500">생년월일</Label>
-            <Input
-              value={verifiedProfile.birthDate}
-              readOnly
-              className="mt-2"
-            />
+            <Input value={verifiedProfile.birthDate} readOnly className="mt-2" />
           </div>
           <div>
             <Label className="typo-medium-13 text-gray-500">성별</Label>
-            <Input
-              value={formatGenderLabel(verifiedProfile.gender)}
-              readOnly
-              className="mt-2"
-            />
+            <Input value={formatGenderLabel(verifiedProfile.gender)} readOnly className="mt-2" />
           </div>
         </div>
       </section>
@@ -156,27 +128,13 @@ function InfoFormStep({
       <input type="hidden" name="phone" value={verifiedProfile.phone} />
       <input type="hidden" name="birthDate" value={verifiedProfile.birthDate} />
       <input type="hidden" name="gender" value={verifiedProfile.gender} />
-      <input
-        type="hidden"
-        name="niceRequestNo"
-        value={verifiedProfile.niceRequestNo}
-      />
-      <input
-        type="hidden"
-        name="niceWebTransactionId"
-        value={verifiedProfile.niceWebTransactionId}
-      />
+      <input type="hidden" name="niceRequestNo" value={verifiedProfile.niceRequestNo} />
+      <input type="hidden" name="niceWebTransactionId" value={verifiedProfile.niceWebTransactionId} />
 
-      <EmailField
-        onValidationChange={setIsEmailVerified}
-        error={state.fieldErrors?.email}
-      />
+      <EmailField onValidationChange={setIsEmailVerified} error={state.fieldErrors?.email} />
 
       <div className="w-full">
-        <Label
-          htmlFor="password"
-          className="typo-medium-14 block font-semibold text-black"
-        >
+        <Label htmlFor="password" className="typo-medium-14 block font-semibold text-black">
           비밀번호
         </Label>
         <Input
@@ -189,17 +147,11 @@ function InfoFormStep({
           placeholder="8~16자, 영문 대소문자/숫자/특수문자 중 2가지 이상 조합"
           className="typo-regular-14 rounded-none border-0 border-b border-gray-200 bg-transparent px-0 py-3 text-black placeholder:text-gray-400 focus-visible:border-black focus-visible:ring-0"
         />
-        <FormMessage
-          message={state.fieldErrors?.password}
-          className="typo-regular-12 mt-2"
-        />
+        <FormMessage message={state.fieldErrors?.password} className="typo-regular-12 mt-2" />
       </div>
 
       <div className="w-full">
-        <Label
-          htmlFor="confirmPassword"
-          className="typo-medium-14 block font-semibold text-black"
-        >
+        <Label htmlFor="confirmPassword" className="typo-medium-14 block font-semibold text-black">
           비밀번호 확인
         </Label>
         <Input
@@ -213,10 +165,7 @@ function InfoFormStep({
         />
       </div>
 
-      <UsernameField
-        onValidationChange={setIsUsernameVerified}
-        error={state.fieldErrors?.username}
-      />
+      <UsernameField onValidationChange={setIsUsernameVerified} error={state.fieldErrors?.username} />
 
       <div className="my-2 h-px w-full bg-gray-200" />
 
@@ -256,17 +205,10 @@ export function SignUpForm() {
   console.log("funnel", funnel);
   return funnel.Render({
     본인인증: ({ history }) => (
-      <VerificationStep
-        onNext={(profile) =>
-          history.push("회원정보입력", { verifiedProfile: profile })
-        }
-      />
+      <VerificationStep onNext={(profile) => history.push("회원정보입력", { verifiedProfile: profile })} />
     ),
     회원정보입력: ({ context, history }) => (
-      <InfoFormStep
-        verifiedProfile={context.verifiedProfile}
-        onReset={() => history.back()}
-      />
+      <InfoFormStep verifiedProfile={context.verifiedProfile} onReset={() => history.back()} />
     ),
   });
 }

@@ -2,10 +2,7 @@
 
 import { useCallback, useState, type InputHTMLAttributes } from "react";
 
-interface CurrencyInputProps extends Omit<
-  InputHTMLAttributes<HTMLInputElement>,
-  "type" | "value" | "onChange"
-> {
+interface CurrencyInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "value" | "onChange"> {
   name: string;
   defaultValue?: number | string;
   suffix?: string;
@@ -13,8 +10,7 @@ interface CurrencyInputProps extends Omit<
 
 function formatNumber(value: string | number | undefined): string {
   if (value == null || value === "") return "";
-  const num =
-    typeof value === "string" ? Number(value.replace(/,/g, "")) : value;
+  const num = typeof value === "string" ? Number(value.replace(/,/g, "")) : value;
   if (isNaN(num)) return "";
   return num.toLocaleString("ko-KR");
 }

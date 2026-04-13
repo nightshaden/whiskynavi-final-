@@ -38,24 +38,14 @@ export default function ProductsContent({
   const itemsPerPage = Number(searchParams.limit) || 20;
   const searchQuery = searchParams.q || "";
 
-  const {
-    openFilter,
-    filterRef,
-    toggleFilter,
-    closeFilter,
-    getFilterValue,
-    updateFilter,
-  } = useTableFilter({ searchParams, basePath: "/admin/products" });
+  const { openFilter, filterRef, toggleFilter, closeFilter, getFilterValue, updateFilter } = useTableFilter({
+    searchParams,
+    basePath: "/admin/products",
+  });
 
-  const brandOptions = [
-    { value: "all", label: "전체" },
-    ...brands.map((b) => ({ value: b, label: b })),
-  ];
+  const brandOptions = [{ value: "all", label: "전체" }, ...brands.map((b) => ({ value: b, label: b }))];
 
-  const distilleryOptions = [
-    { value: "all", label: "전체" },
-    ...distilleries.map((d) => ({ value: d, label: d })),
-  ];
+  const distilleryOptions = [{ value: "all", label: "전체" }, ...distilleries.map((d) => ({ value: d, label: d }))];
 
   const handleProductClick = (productId: number) => {
     router.push(`/admin/products/${productId}`);
@@ -77,12 +67,7 @@ export default function ProductsContent({
 
   return (
     <>
-      <AdminHeader
-        title="제품 관리"
-        onToggleSidebar={toggle}
-        searchQuery={searchQuery}
-        onSearch={handleSearch}
-      />
+      <AdminHeader title="제품 관리" onToggleSidebar={toggle} searchQuery={searchQuery} onSearch={handleSearch} />
 
       <div className="p-8">
         <div className="mb-4 flex justify-end">
@@ -98,20 +83,11 @@ export default function ProductsContent({
         <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead
-                ref={filterRef}
-                className="border-b border-gray-200 bg-gray-50"
-              >
+              <thead ref={filterRef} className="border-b border-gray-200 bg-gray-50">
                 <tr>
-                  <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">
-                    ID
-                  </th>
-                  <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">
-                    이미지
-                  </th>
-                  <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">
-                    제품명
-                  </th>
+                  <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">ID</th>
+                  <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">이미지</th>
+                  <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">제품명</th>
                   <FilterHeader
                     label="브랜드"
                     filterKey="brand"
@@ -136,41 +112,24 @@ export default function ProductsContent({
                     dropdownWidth="w-40 max-h-60 overflow-y-auto"
                     className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase"
                   />
-                  <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">
-                    시리즈
-                  </th>
+                  <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">시리즈</th>
                   <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">
                     캐스크타입
                   </th>
                   <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">
                     캐스크번호
                   </th>
-                  <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">
-                    도수
-                  </th>
-                  <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">
-                    용량
-                  </th>
-                  <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">
-                    증류일
-                  </th>
-                  <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">
-                    병입일
-                  </th>
-                  <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">
-                    관리
-                  </th>
+                  <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">도수</th>
+                  <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">용량</th>
+                  <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">증류일</th>
+                  <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">병입일</th>
+                  <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">관리</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {products.map((product) => (
-                  <tr
-                    key={product.id}
-                    className="transition-colors hover:bg-gray-50"
-                  >
-                    <td className="px-2 py-1.5 text-xs whitespace-nowrap text-gray-900">
-                      {product.id}
-                    </td>
+                  <tr key={product.id} className="transition-colors hover:bg-gray-50">
+                    <td className="px-2 py-1.5 text-xs whitespace-nowrap text-gray-900">{product.id}</td>
                     <td className="px-2 py-1.5 whitespace-nowrap">
                       <Image
                         width={40}
@@ -183,30 +142,16 @@ export default function ProductsContent({
                         }}
                       />
                     </td>
-                    <td className="typo-medium-12 max-w-[200px] truncate px-2 py-1.5 text-gray-900">
-                      {product.name}
-                    </td>
-                    <td className="px-2 py-1.5 text-xs whitespace-nowrap text-gray-600">
-                      {product.brand}
-                    </td>
-                    <td className="px-2 py-1.5 text-xs whitespace-nowrap text-gray-600">
-                      {product.distillery}
-                    </td>
+                    <td className="typo-medium-12 max-w-[200px] truncate px-2 py-1.5 text-gray-900">{product.name}</td>
+                    <td className="px-2 py-1.5 text-xs whitespace-nowrap text-gray-600">{product.brand}</td>
+                    <td className="px-2 py-1.5 text-xs whitespace-nowrap text-gray-600">{product.distillery}</td>
                     <td className="max-w-[120px] truncate px-2 py-1.5 text-xs text-gray-600">
                       {product.series || "-"}
                     </td>
-                    <td className="px-2 py-1.5 text-xs whitespace-nowrap text-gray-600">
-                      {product.caskType}
-                    </td>
-                    <td className="px-2 py-1.5 text-xs whitespace-nowrap text-gray-600">
-                      {product.caskNumber}
-                    </td>
-                    <td className="px-2 py-1.5 text-xs whitespace-nowrap text-gray-600">
-                      {product.abv}%
-                    </td>
-                    <td className="px-2 py-1.5 text-xs whitespace-nowrap text-gray-600">
-                      {product.capacity}ml
-                    </td>
+                    <td className="px-2 py-1.5 text-xs whitespace-nowrap text-gray-600">{product.caskType}</td>
+                    <td className="px-2 py-1.5 text-xs whitespace-nowrap text-gray-600">{product.caskNumber}</td>
+                    <td className="px-2 py-1.5 text-xs whitespace-nowrap text-gray-600">{product.abv}%</td>
+                    <td className="px-2 py-1.5 text-xs whitespace-nowrap text-gray-600">{product.capacity}ml</td>
                     <td className="px-2 py-1.5 text-xs whitespace-nowrap text-gray-600">
                       {product.distillationDate
                         ? new Date(product.distillationDate)

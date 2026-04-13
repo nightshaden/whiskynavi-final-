@@ -13,11 +13,7 @@ export const metadata = {
   description: "위스키내비 관리자 페이지",
 };
 
-export default async function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
 
   if (!session?.accessToken) {

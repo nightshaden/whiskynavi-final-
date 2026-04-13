@@ -1,10 +1,6 @@
 "use server";
 
-import {
-  deleteApiAdminBottlesId,
-  patchApiAdminBottlesId,
-  postApiAdminBottles,
-} from "@/apis/generated/api";
+import { deleteApiAdminBottlesId, patchApiAdminBottlesId, postApiAdminBottles } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
@@ -58,10 +54,7 @@ function parseBottleFormData(formData: FormData) {
   return { success: true as const, data: result.data };
 }
 
-export async function createBottleFormAction(
-  _prev: FormState,
-  formData: FormData,
-): Promise<FormState> {
+export async function createBottleFormAction(_prev: FormState, formData: FormData): Promise<FormState> {
   const token = await getAuthToken();
   if (!token) {
     return { success: false, error: "인증이 필요합니다." };
@@ -82,14 +75,9 @@ export async function createBottleFormAction(
   }
 
   try {
-    await postApiAdminBottles(
-      { labelImg },
-      { ...parsed.data, name: parsed.data.name },
-      withToken(token),
-    );
+    await postApiAdminBottles({ labelImg }, { ...parsed.data, name: parsed.data.name }, withToken(token));
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "제품 생성에 실패했습니다.";
+    const message = error instanceof Error ? error.message : "제품 생성에 실패했습니다.";
     return { success: false, error: message };
   }
 
@@ -97,11 +85,7 @@ export async function createBottleFormAction(
   redirect("/admin/products");
 }
 
-export async function updateBottleFormAction(
-  id: number,
-  _prev: FormState,
-  formData: FormData,
-): Promise<FormState> {
+export async function updateBottleFormAction(id: number, _prev: FormState, formData: FormData): Promise<FormState> {
   const token = await getAuthToken();
   if (!token) {
     return { success: false, error: "인증이 필요합니다." };
@@ -116,15 +100,9 @@ export async function updateBottleFormAction(
   }
 
   try {
-    await patchApiAdminBottlesId(
-      id,
-      { labelImg: hasImage ? labelImg : undefined },
-      parsed.data,
-      withToken(token),
-    );
+    await patchApiAdminBottlesId(id, { labelImg: hasImage ? labelImg : undefined }, parsed.data, withToken(token));
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "제품 수정에 실패했습니다.";
+    const message = error instanceof Error ? error.message : "제품 수정에 실패했습니다.";
     return { success: false, error: message };
   }
 
@@ -144,8 +122,7 @@ export async function deleteBottleAction(id: number) {
     revalidatePath("/admin/products");
     return { success: true };
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "제품 삭제에 실패했습니다.";
+    const message = error instanceof Error ? error.message : "제품 삭제에 실패했습니다.";
     return { success: false, error: message };
   }
 }

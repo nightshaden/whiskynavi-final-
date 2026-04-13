@@ -71,10 +71,7 @@ const cancelOrderSchema = z.object({
   reason: z.string().max(500).optional(),
 });
 
-export async function cancelOrder(
-  orderId: number,
-  reason?: string,
-): Promise<{ success: boolean; error?: string }> {
+export async function cancelOrder(orderId: number, reason?: string): Promise<{ success: boolean; error?: string }> {
   try {
     const token = await getAuthToken();
     if (!token) {
@@ -86,11 +83,7 @@ export async function cancelOrder(
       return { success: false, error: parsed.error.issues[0].message };
     }
 
-    await patchApiOrdersOrderidCancel(
-      parsed.data.orderId,
-      { reason: parsed.data.reason },
-      withToken(token),
-    );
+    await patchApiOrdersOrderidCancel(parsed.data.orderId, { reason: parsed.data.reason }, withToken(token));
 
     revalidatePath("/my-page");
     return { success: true };
@@ -103,9 +96,7 @@ export async function cancelOrder(
   }
 }
 
-export async function sendEmailVerification(
-  email: string,
-): Promise<{ success: boolean; error?: string }> {
+export async function sendEmailVerification(email: string): Promise<{ success: boolean; error?: string }> {
   try {
     const token = await getAuthToken();
     if (!token) {
@@ -123,20 +114,14 @@ export async function sendEmailVerification(
   }
 }
 
-export async function verifyEmailCode(
-  email: string,
-  code: string,
-): Promise<{ success: boolean; error?: string }> {
+export async function verifyEmailCode(email: string, code: string): Promise<{ success: boolean; error?: string }> {
   try {
     const token = await getAuthToken();
     if (!token) {
       return { success: false, error: "로그인이 필요합니다." };
     }
 
-    await postApiUsersMeEmailVerificationVerify(
-      { email, code },
-      withToken(token),
-    );
+    await postApiUsersMeEmailVerificationVerify({ email, code }, withToken(token));
     return { success: true };
   } catch (error) {
     if (isRedirectError(error)) throw error;
@@ -177,8 +162,7 @@ export async function updateProfile(
       return { success: false, error: parsed.error.issues[0].message };
     }
 
-    const { username, email, originalUsername, originalEmail, emailVerified } =
-      parsed.data;
+    const { username, email, originalUsername, originalEmail, emailVerified } = parsed.data;
 
     const nicknameChanged = username !== originalUsername;
     const emailChanged = email !== originalEmail;
@@ -192,10 +176,7 @@ export async function updateProfile(
     }
 
     if (nicknameChanged) {
-      await putApiUsersMeNickname(
-        { nickname: username },
-        withToken(token),
-      );
+      await putApiUsersMeNickname({ nickname: username }, withToken(token));
     }
 
     if (emailChanged) {
@@ -216,9 +197,7 @@ export async function updateProfile(
 const businessApplySchema = z.object({
   businessName: z.string().min(1, "사업자 이름을 입력해주세요."),
   contact: z.string().min(1, "연락처를 입력해주세요."),
-  businessRegistrationNumber: z
-    .string()
-    .min(1, "사업자 등록번호를 입력해주세요."),
+  businessRegistrationNumber: z.string().min(1, "사업자 등록번호를 입력해주세요."),
   pickupAddress: z.string().optional().default(""),
   openingDate: z.string().min(1, "개업일을 입력해주세요."),
   representativeName: z.string().min(1, "대표자 이름을 입력해주세요."),
@@ -280,9 +259,7 @@ export async function submitBusinessApplication(
   }
 }
 
-export async function cancelBusinessApplication(
-  applicationId: number,
-): Promise<{ success: boolean; error?: string }> {
+export async function cancelBusinessApplication(applicationId: number): Promise<{ success: boolean; error?: string }> {
   try {
     const token = await getAuthToken();
     if (!token) {

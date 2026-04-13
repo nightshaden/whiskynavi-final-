@@ -1,7 +1,4 @@
-import {
-  getApiAdminBottles,
-  getApiAdminBottlesParameters,
-} from "@/apis/generated/api";
+import { getApiAdminBottles, getApiAdminBottlesParameters } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
 import ProductsContent from "./_components/ProductsContent";
@@ -16,9 +13,7 @@ interface ProductsPageProps {
   }>;
 }
 
-export default async function ProductsPage({
-  searchParams,
-}: ProductsPageProps) {
+export default async function ProductsPage({ searchParams }: ProductsPageProps) {
   const params = await searchParams;
   const token = await getAuthToken();
 

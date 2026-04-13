@@ -293,12 +293,7 @@ export function generateUsers(): User[] {
   ];
 
   const additionalUsers: User[] = [];
-  const memberships: ("VIP" | "GOLD" | "SILVER" | null)[] = [
-    "VIP",
-    "GOLD",
-    "SILVER",
-    null,
-  ];
+  const memberships: ("VIP" | "GOLD" | "SILVER" | null)[] = ["VIP", "GOLD", "SILVER", null];
 
   for (let i = 4; i <= 50; i++) {
     const naviMembership = memberships[i % 4];
@@ -368,10 +363,8 @@ export function generateProducts(): Product[] {
       bottledDate: "2023-11-20",
       agingYears: 30,
       totalQuantity: 240,
-      description:
-        "셰리 버트에서 숙성된 글렌피딕 1993년산 싱글 캐스크 위스키입니다.",
-      imgUrl:
-        "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=400",
+      description: "셰리 버트에서 숙성된 글렌피딕 1993년산 싱글 캐스크 위스키입니다.",
+      imgUrl: "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=400",
       price: 350000,
       stock: 12,
       status: "판매중",
@@ -396,8 +389,7 @@ export function generateProducts(): Product[] {
       agingYears: 19,
       totalQuantity: 180,
       description: "아일라 위스키의 정수를 담은 라가불린 2005년산입니다.",
-      imgUrl:
-        "https://images.unsplash.com/photo-1527281400466-a3562d75a501?w=400",
+      imgUrl: "https://images.unsplash.com/photo-1527281400466-a3562d75a501?w=400",
       price: 420000,
       stock: 8,
       status: "판매중",
@@ -422,8 +414,7 @@ export function generateProducts(): Product[] {
       agingYears: 15,
       totalQuantity: 150,
       description: "포트 파이프에서 숙성된 강렬한 피트향의 아드벡입니다.",
-      imgUrl:
-        "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400",
+      imgUrl: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400",
       price: 380000,
       stock: 0,
       status: "품절",
@@ -434,19 +425,8 @@ export function generateProducts(): Product[] {
   ];
 
   const additionalProducts: Product[] = [];
-  const distilleries = [
-    "Macallan",
-    "Glenlivet",
-    "Highland Park",
-    "Springbank",
-    "Bowmore",
-  ];
-  const brands = [
-    "위스키내비",
-    "더 위스키테일즈",
-    "트레일 앤 테일",
-    "투게더 인 스피릿",
-  ];
+  const distilleries = ["Macallan", "Glenlivet", "Highland Park", "Springbank", "Bowmore"];
+  const brands = ["위스키내비", "더 위스키테일즈", "트레일 앤 테일", "투게더 인 스피릿"];
 
   for (let i = 4; i <= 50; i++) {
     additionalProducts.push({
@@ -466,8 +446,7 @@ export function generateProducts(): Product[] {
       agingYears: 15 + (i % 10),
       totalQuantity: 200,
       description: `프리미엄 위스키 ${i}번`,
-      imgUrl:
-        "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=400",
+      imgUrl: "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=400",
       price: 300000 + i * 10000,
       stock: i % 5,
       status: i % 5 === 0 ? "품절" : "판매중",
@@ -494,8 +473,7 @@ export function generateReservations(): Reservation[] {
       status: "예약진행중",
       noticeDate: "2026.01.10",
       deadline: "2026.01.31",
-      imageUrl:
-        "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=400",
+      imageUrl: "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=400",
       applicants: extendedApplicants,
       username: "whisky_lover",
       reservationDate: "2026.01.10",
@@ -512,8 +490,7 @@ export function generateReservations(): Reservation[] {
       status: "통관중",
       noticeDate: "2026.01.05",
       deadline: "2026.01.25",
-      imageUrl:
-        "https://images.unsplash.com/photo-1527281400934-a78fc40cae85?w=400",
+      imageUrl: "https://images.unsplash.com/photo-1527281400934-a78fc40cae85?w=400",
       applicants: [],
       username: "scotch_master",
       reservationDate: "2026.01.05",
@@ -530,8 +507,7 @@ export function generateReservations(): Reservation[] {
       status: "배송완료",
       noticeDate: "2025.12.18",
       deadline: "2025.12.30",
-      imageUrl:
-        "https://images.unsplash.com/photo-1584916201218-f4242ceb4809?w=400",
+      imageUrl: "https://images.unsplash.com/photo-1584916201218-f4242ceb4809?w=400",
       applicants: [],
       username: "admin_user",
       reservationDate: "2025.12.18",
@@ -541,12 +517,7 @@ export function generateReservations(): Reservation[] {
 
   const additionalReservations: Reservation[] = [];
   const statuses = ["예약진행중", "예약마감", "통관중", "배송중", "배송완료"];
-  const brands = [
-    "위스키내비",
-    "더 위스키테일즈",
-    "트레일 앤 테일",
-    "투게더 인 스피릿",
-  ];
+  const brands = ["위스키내비", "더 위스키테일즈", "트레일 앤 테일", "투게더 인 스피릿"];
 
   for (let i = 4; i <= 50; i++) {
     additionalReservations.push({
@@ -560,8 +531,7 @@ export function generateReservations(): Reservation[] {
       status: statuses[i % 5],
       noticeDate: `2026.01.${String((i % 28) + 1).padStart(2, "0")}`,
       deadline: `2026.02.${String((i % 28) + 1).padStart(2, "0")}`,
-      imageUrl:
-        "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=400",
+      imageUrl: "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=400",
       applicants: [],
       username: `user_${i}`,
       reservationDate: `2026.01.${String((i % 28) + 1).padStart(2, "0")}`,
@@ -577,8 +547,7 @@ export const initialBlacklist: BlacklistItem[] = [
   {
     id: 1,
     name: "홍길동",
-    reason:
-      "중복 예약으로 인한 다른 회원 피해 발생. 3회 이상 반복된 행위로 예약 제한 조치.",
+    reason: "중복 예약으로 인한 다른 회원 피해 발생. 3회 이상 반복된 행위로 예약 제한 조치.",
     startAt: "2026.01.01",
     endAt: "2026.06.30",
   },

@@ -8,12 +8,7 @@ interface MobileAuthSectionProps {
   close: () => void;
 }
 
-export default function MobileAuthSection({
-  userName,
-  hasSession,
-  isAdmin,
-  close,
-}: MobileAuthSectionProps) {
+export default function MobileAuthSection({ userName, hasSession, isAdmin, close }: MobileAuthSectionProps) {
   if (!hasSession) {
     return (
       <Link

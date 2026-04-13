@@ -62,11 +62,7 @@ export default function ApplicationCancelModal({
           <Button variant="outline" onClick={close} disabled={isPending}>
             닫기
           </Button>
-          <Button
-            variant="destructive"
-            onClick={handleCancel}
-            disabled={isPending}
-          >
+          <Button variant="destructive" onClick={handleCancel} disabled={isPending}>
             {isPending ? "처리 중..." : "취소 확인"}
           </Button>
         </DialogFooter>

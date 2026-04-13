@@ -8,17 +8,12 @@ interface AdminProductDetailViewProps {
   productDetails: BottleAdminResponse;
 }
 
-export default function AdminProductDetailView({
-  productDetails,
-}: AdminProductDetailViewProps) {
+export default function AdminProductDetailView({ productDetails }: AdminProductDetailViewProps) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
-  const imgUrls: string[] = productDetails.imgUrl
-    ? [productDetails.imgUrl]
-    : [];
+  const imgUrls: string[] = productDetails.imgUrl ? [productDetails.imgUrl] : [];
   const fallbackImage = "/default-bottle-v2.png";
-  const currentImage =
-    imgUrls.length > 0 ? imgUrls[selectedImageIndex] : fallbackImage;
+  const currentImage = imgUrls.length > 0 ? imgUrls[selectedImageIndex] : fallbackImage;
 
   return (
     <div className="rounded-lg bg-white p-4">
@@ -27,152 +22,117 @@ export default function AdminProductDetailView({
         <div className="flex-1 space-y-2 pr-6">
           <div className="flex gap-3">
             <span className="w-32 text-sm text-gray-600">제품명</span>
-            <span className="flex-1 text-sm text-gray-900">
-              {productDetails.name}
-            </span>
+            <span className="flex-1 text-sm text-gray-900">{productDetails.name}</span>
           </div>
 
           <div className="flex gap-3">
             <span className="w-32 text-sm text-gray-600">브랜드</span>
-            <span className="flex-1 text-sm text-gray-900">
-              {productDetails.brand}
-            </span>
+            <span className="flex-1 text-sm text-gray-900">{productDetails.brand}</span>
           </div>
 
           {productDetails.series && (
             <div className="flex gap-3">
               <span className="w-32 text-sm text-gray-600">시리즈</span>
-              <span className="flex-1 text-sm text-gray-900">
-                {productDetails.series}
-              </span>
+              <span className="flex-1 text-sm text-gray-900">{productDetails.series}</span>
             </div>
           )}
 
           {productDetails.company && (
             <div className="flex gap-3">
               <span className="w-32 text-sm text-gray-600">회사</span>
-              <span className="flex-1 text-sm text-gray-900">
-                {productDetails.company}
-              </span>
+              <span className="flex-1 text-sm text-gray-900">{productDetails.company}</span>
             </div>
           )}
 
           {productDetails.distillery && (
             <div className="flex gap-3">
               <span className="w-32 text-sm text-gray-600">증류소</span>
-              <span className="flex-1 text-sm text-gray-900">
-                {productDetails.distillery}
-              </span>
+              <span className="flex-1 text-sm text-gray-900">{productDetails.distillery}</span>
             </div>
           )}
 
           {productDetails.maltType && (
             <div className="flex gap-3">
               <span className="w-32 text-sm text-gray-600">몰트 타입</span>
-              <span className="flex-1 text-sm text-gray-900">
-                {productDetails.maltType}
-              </span>
+              <span className="flex-1 text-sm text-gray-900">{productDetails.maltType}</span>
             </div>
           )}
 
           {productDetails.caskType && (
             <div className="flex gap-3">
               <span className="w-32 text-sm text-gray-600">캐스크 타입</span>
-              <span className="flex-1 text-sm text-gray-900">
-                {productDetails.caskType}
-              </span>
+              <span className="flex-1 text-sm text-gray-900">{productDetails.caskType}</span>
             </div>
           )}
 
           {productDetails.caskNumber && (
             <div className="flex gap-3">
               <span className="w-32 text-sm text-gray-600">캐스크 번호</span>
-              <span className="flex-1 text-sm text-gray-900">
-                {productDetails.caskNumber}
-              </span>
+              <span className="flex-1 text-sm text-gray-900">{productDetails.caskNumber}</span>
             </div>
           )}
 
           {productDetails.abv && (
             <div className="flex gap-3">
               <span className="w-32 text-sm text-gray-600">알코올 도수</span>
-              <span className="flex-1 text-sm text-gray-900">
-                {productDetails.abv}%
-              </span>
+              <span className="flex-1 text-sm text-gray-900">{productDetails.abv}%</span>
             </div>
           )}
 
           {productDetails.capacity && (
             <div className="flex gap-3">
               <span className="w-32 text-sm text-gray-600">용량</span>
-              <span className="flex-1 text-sm text-gray-900">
-                {productDetails.capacity}ml
-              </span>
+              <span className="flex-1 text-sm text-gray-900">{productDetails.capacity}ml</span>
             </div>
           )}
 
           {productDetails.distillationDate && (
             <div className="flex gap-3">
               <span className="w-32 text-sm text-gray-600">증류 날짜</span>
-              <span className="flex-1 text-sm text-gray-900">
-                {productDetails.distillationDate}
-              </span>
+              <span className="flex-1 text-sm text-gray-900">{productDetails.distillationDate}</span>
             </div>
           )}
 
           {productDetails.bottledDate && (
             <div className="flex gap-3">
               <span className="w-32 text-sm text-gray-600">병입 날짜</span>
-              <span className="flex-1 text-sm text-gray-900">
-                {productDetails.bottledDate}
-              </span>
+              <span className="flex-1 text-sm text-gray-900">{productDetails.bottledDate}</span>
             </div>
           )}
 
           {productDetails.stockQuantity != null && (
             <div className="flex gap-3">
               <span className="w-32 text-sm text-gray-600">재고 수량</span>
-              <span className="flex-1 text-sm text-gray-900">
-                {productDetails.stockQuantity}
-              </span>
+              <span className="flex-1 text-sm text-gray-900">{productDetails.stockQuantity}</span>
             </div>
           )}
 
           {productDetails.supplyPrice != null && (
             <div className="flex gap-3">
               <span className="w-32 text-sm text-gray-600">공급가</span>
-              <span className="flex-1 text-sm text-gray-900">
-                {productDetails.supplyPrice.toLocaleString()}원
-              </span>
+              <span className="flex-1 text-sm text-gray-900">{productDetails.supplyPrice.toLocaleString()}원</span>
             </div>
           )}
 
           {productDetails.consumerPrice != null && (
             <div className="flex gap-3">
               <span className="w-32 text-sm text-gray-600">소비자가</span>
-              <span className="flex-1 text-sm text-gray-900">
-                {productDetails.consumerPrice.toLocaleString()}원
-              </span>
+              <span className="flex-1 text-sm text-gray-900">{productDetails.consumerPrice.toLocaleString()}원</span>
             </div>
           )}
 
           {/* 추가 정보 */}
-          {productDetails.extraInfos &&
-            Object.keys(productDetails.extraInfos).length > 0 && (
-              <div className="border-t pt-2">
-                <div className="typo-bold-14 mb-2 text-gray-600">추가 정보</div>
-                {Object.entries(productDetails.extraInfos).map(
-                  ([key, value]) => (
-                    <div key={key} className="flex gap-3">
-                      <span className="w-32 text-sm text-gray-600">{key}</span>
-                      <span className="flex-1 text-sm text-gray-900">
-                        {value as string}
-                      </span>
-                    </div>
-                  ),
-                )}
-              </div>
-            )}
+          {productDetails.extraInfos && Object.keys(productDetails.extraInfos).length > 0 && (
+            <div className="border-t pt-2">
+              <div className="typo-bold-14 mb-2 text-gray-600">추가 정보</div>
+              {Object.entries(productDetails.extraInfos).map(([key, value]) => (
+                <div key={key} className="flex gap-3">
+                  <span className="w-32 text-sm text-gray-600">{key}</span>
+                  <span className="flex-1 text-sm text-gray-900">{value as string}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* 중간: 설명 */}

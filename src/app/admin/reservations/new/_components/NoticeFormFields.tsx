@@ -1,13 +1,7 @@
 "use client";
 
 import type { BottleReservationNoticeResponse } from "@/apis/generated/api";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, X } from "lucide-react";
 import { useState } from "react";
 import CurrencyInput from "../../../_components/CurrencyInput";
@@ -26,9 +20,7 @@ interface NoticeFormFieldsProps {
   defaultValues?: BottleReservationNoticeResponse;
 }
 
-export default function NoticeFormFields({
-  defaultValues,
-}: NoticeFormFieldsProps) {
+export default function NoticeFormFields({ defaultValues }: NoticeFormFieldsProps) {
   const [gradeConditions, setGradeConditions] = useState<GradeCondition[]>(
     defaultValues?.gradeConditions?.map((gc) => ({
       applicableFrom: gc.applicableFrom ?? "",
@@ -37,24 +29,15 @@ export default function NoticeFormFields({
   );
 
   const addCondition = () => {
-    setGradeConditions((prev) => [
-      ...prev,
-      { applicableFrom: "", requiredRole: "" },
-    ]);
+    setGradeConditions((prev) => [...prev, { applicableFrom: "", requiredRole: "" }]);
   };
 
   const removeCondition = (idx: number) => {
     setGradeConditions((prev) => prev.filter((_, i) => i !== idx));
   };
 
-  const updateCondition = (
-    idx: number,
-    field: keyof GradeCondition,
-    value: string,
-  ) => {
-    setGradeConditions((prev) =>
-      prev.map((c, i) => (i === idx ? { ...c, [field]: value } : c)),
-    );
+  const updateCondition = (idx: number, field: keyof GradeCondition, value: string) => {
+    setGradeConditions((prev) => prev.map((c, i) => (i === idx ? { ...c, [field]: value } : c)));
   };
 
   return (
@@ -83,8 +66,7 @@ export default function NoticeFormFields({
           </label>
           <BottleSearchCombobox
             defaultBottle={
-              defaultValues?.bottleId != null &&
-              defaultValues?.bottleName != null
+              defaultValues?.bottleId != null && defaultValues?.bottleName != null
                 ? {
                     id: defaultValues.bottleId,
                     name: defaultValues.bottleName,
@@ -108,9 +90,7 @@ export default function NoticeFormFields({
         </div>
 
         <div>
-          <label className="typo-medium-14 mb-1 block text-gray-700">
-            예약 받을 병수
-          </label>
+          <label className="typo-medium-14 mb-1 block text-gray-700">예약 받을 병수</label>
           <input
             type="number"
             name="availableQuantity"
@@ -123,9 +103,7 @@ export default function NoticeFormFields({
         </div>
 
         <div>
-          <label className="typo-medium-14 mb-1 block text-gray-700">
-            인당 최대 예약 가능 병수
-          </label>
+          <label className="typo-medium-14 mb-1 block text-gray-700">인당 최대 예약 가능 병수</label>
           <input
             type="number"
             name="maxOrderQuantity"
@@ -141,31 +119,21 @@ export default function NoticeFormFields({
           <label className="typo-medium-14 mb-1 block text-gray-700">
             예약 시작일 <span className="text-red-500">*</span>
           </label>
-          <DateTimePicker
-            name="reservationStartAt"
-            defaultValue={defaultValues?.reservationStartAt}
-            required
-          />
+          <DateTimePicker name="reservationStartAt" defaultValue={defaultValues?.reservationStartAt} required />
         </div>
 
         <div>
           <label className="typo-medium-14 mb-1 block text-gray-700">
             예약 종료일 <span className="text-red-500">*</span>
           </label>
-          <DateTimePicker
-            name="reservationEndAt"
-            defaultValue={defaultValues?.reservationEndAt}
-            required
-          />
+          <DateTimePicker name="reservationEndAt" defaultValue={defaultValues?.reservationEndAt} required />
         </div>
       </div>
 
       {/* 등급 조건 */}
       <div className="mt-6 border-t border-gray-200 pt-6">
         <div className="mb-3 flex items-center justify-between">
-          <label className="typo-medium-14 text-gray-700">
-            등급 조건 (선택)
-          </label>
+          <label className="typo-medium-14 text-gray-700">등급 조건 (선택)</label>
           <button
             type="button"
             onClick={addCondition}
@@ -176,23 +144,16 @@ export default function NoticeFormFields({
           </button>
         </div>
 
-        {gradeConditions.length === 0 && (
-          <p className="text-sm text-gray-400">등급 조건이 없습니다.</p>
-        )}
+        {gradeConditions.length === 0 && <p className="text-sm text-gray-400">등급 조건이 없습니다.</p>}
 
         <div className="space-y-3">
           {gradeConditions.map((cond, idx) => (
-            <div
-              key={idx}
-              className="flex items-center gap-3 rounded-lg bg-gray-50 p-3"
-            >
+            <div key={idx} className="flex items-center gap-3 rounded-lg bg-gray-50 p-3">
               <div className="flex-1">
                 <label className="mb-1 block text-xs text-gray-500">역할</label>
                 <Select
                   value={cond.requiredRole || undefined}
-                  onValueChange={(val) =>
-                    updateCondition(idx, "requiredRole", val)
-                  }
+                  onValueChange={(val) => updateCondition(idx, "requiredRole", val)}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="선택하세요" />
@@ -208,14 +169,10 @@ export default function NoticeFormFields({
               </div>
 
               <div className="flex-1">
-                <label className="mb-1 block text-xs text-gray-500">
-                  적용 시작일
-                </label>
+                <label className="mb-1 block text-xs text-gray-500">적용 시작일</label>
                 <DateTimePicker
                   value={cond.applicableFrom}
-                  onChange={(iso) =>
-                    updateCondition(idx, "applicableFrom", iso)
-                  }
+                  onChange={(iso) => updateCondition(idx, "applicableFrom", iso)}
                 />
               </div>
 

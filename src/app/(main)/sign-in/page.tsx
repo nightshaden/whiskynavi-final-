@@ -14,12 +14,7 @@ const Page = async ({ searchParams }: PageProps) => {
       <section className="flex w-full max-w-[400px] flex-col items-center">
         {/* Logo */}
         <div className="flex flex-col items-center">
-          <Image
-            src="/whiskynavi-logo.png"
-            alt="whiskynavi-logo"
-            width={80}
-            height={101}
-          />
+          <Image src="/whiskynavi-logo.png" alt="whiskynavi-logo" width={80} height={101} />
         </div>
 
         <SignInForm />

@@ -10,32 +10,20 @@ type FunnelHistory<Steps extends Record<string, unknown>> = {
 };
 
 type StepRenderers<Steps extends Record<string, unknown>> = {
-  [K in keyof Steps]: (props: {
-    context: Steps[K];
-    history: FunnelHistory<Steps>;
-  }) => ReactNode;
+  [K in keyof Steps]: (props: { context: Steps[K]; history: FunnelHistory<Steps> }) => ReactNode;
 };
 
 export function useFunnel<Steps extends Record<string, unknown>>(initial: {
   step: keyof Steps;
   context: Steps[keyof Steps];
 }) {
-  const [stack, setStack] = useState<FunnelEntry<Steps>[]>([
-    initial as FunnelEntry<Steps>,
-  ]);
+  const [stack, setStack] = useState<FunnelEntry<Steps>[]>([initial as FunnelEntry<Steps>]);
 
   const current = stack[stack.length - 1];
 
   const history: FunnelHistory<Steps> = {
-    push: useCallback(
-      (step, context) =>
-        setStack((prev) => [...prev, { step, context } as FunnelEntry<Steps>]),
-      [],
-    ),
-    back: useCallback(
-      () => setStack((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev)),
-      [],
-    ),
+    push: useCallback((step, context) => setStack((prev) => [...prev, { step, context } as FunnelEntry<Steps>]), []),
+    back: useCallback(() => setStack((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev)), []),
   };
 
   function Render(renderers: StepRenderers<Steps>) {

@@ -53,11 +53,7 @@ export default function DashboardContent({ statsSlot }: DashboardContentProps) {
 
   return (
     <>
-      <AdminHeader
-        title="대시보드"
-        onToggleSidebar={toggle}
-        showSearch={false}
-      />
+      <AdminHeader title="대시보드" onToggleSidebar={toggle} showSearch={false} />
 
       <div className="p-8">
         {statsSlot}
@@ -73,15 +69,11 @@ export default function DashboardContent({ statsSlot }: DashboardContentProps) {
                 className="group rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
               >
                 <div className="flex items-center gap-4">
-                  <div
-                    className={`${link.color} rounded-lg p-3 text-white transition-transform group-hover:scale-110`}
-                  >
+                  <div className={`${link.color} rounded-lg p-3 text-white transition-transform group-hover:scale-110`}>
                     <Icon size={24} />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">
-                      {link.title}
-                    </h3>
+                    <h3 className="font-semibold text-gray-900">{link.title}</h3>
                     <p className="text-sm text-gray-500">{link.description}</p>
                   </div>
                 </div>

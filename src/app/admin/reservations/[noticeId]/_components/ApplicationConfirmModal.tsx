@@ -62,9 +62,7 @@ export default function ApplicationConfirmModal({
         </DialogHeader>
 
         <div className="py-2">
-          <label className="typo-medium-14 mb-1 block text-gray-700">
-            확정 수량
-          </label>
+          <label className="typo-medium-14 mb-1 block text-gray-700">확정 수량</label>
           <input
             type="number"
             min={1}
@@ -73,9 +71,7 @@ export default function ApplicationConfirmModal({
             onChange={(e) => setQuantity(Number(e.target.value))}
             className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none"
           />
-          <p className="mt-1 text-xs text-gray-500">
-            신청 수량: {requestedQuantity}
-          </p>
+          <p className="mt-1 text-xs text-gray-500">신청 수량: {requestedQuantity}</p>
         </div>
 
         <DialogFooter>

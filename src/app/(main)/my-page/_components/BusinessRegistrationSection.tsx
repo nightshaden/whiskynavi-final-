@@ -1,18 +1,8 @@
 "use client";
 
 import type { UserBusinessApplicationResponse } from "@/apis/generated/api";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-} from "@/components/ui/drawer";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { useIsDesktop } from "@/hooks/use-media-query";
 import { Building2, CheckCircle, Clock, XCircle } from "lucide-react";
 import { overlay } from "overlay-kit";
@@ -25,9 +15,7 @@ interface BusinessRegistrationSectionProps {
   businessApplicationHistory: UserBusinessApplicationResponse[] | null;
 }
 
-export default function BusinessRegistrationSection({
-  businessApplicationHistory,
-}: BusinessRegistrationSectionProps) {
+export default function BusinessRegistrationSection({ businessApplicationHistory }: BusinessRegistrationSectionProps) {
   const isDesktop = useIsDesktop();
   const [isPending, startTransition] = useTransition();
   const latestBusinessApplication = businessApplicationHistory?.[0] ?? null;
@@ -73,9 +61,7 @@ export default function BusinessRegistrationSection({
               <DialogHeader>
                 <DialogTitle>내 정보 수정</DialogTitle>
               </DialogHeader>
-              <BusinessApplyHistory
-                applicationHistory={businessApplicationHistory}
-              />
+              <BusinessApplyHistory applicationHistory={businessApplicationHistory} />
             </DialogContent>
           </Dialog>
         );
@@ -87,9 +73,7 @@ export default function BusinessRegistrationSection({
                 <DrawerTitle>내 정보 수정</DrawerTitle>
               </DrawerHeader>
               <div className="overflow-y-auto px-4 pb-4">
-                <BusinessApplyHistory
-                  applicationHistory={businessApplicationHistory}
-                />
+                <BusinessApplyHistory applicationHistory={businessApplicationHistory} />
               </div>
             </DrawerContent>
           </Drawer>
@@ -107,9 +91,7 @@ export default function BusinessRegistrationSection({
           <DialogHeader>
             <DialogTitle>사업자 등록 취소</DialogTitle>
           </DialogHeader>
-          <p className="text-muted-foreground text-sm">
-            사업자 등록 신청을 취소하시겠습니까?
-          </p>
+          <p className="text-muted-foreground text-sm">사업자 등록 신청을 취소하시겠습니까?</p>
           <div className="flex justify-end gap-2 pt-2">
             <button
               onClick={close}
@@ -121,9 +103,7 @@ export default function BusinessRegistrationSection({
               onClick={() => {
                 close();
                 startTransition(async () => {
-                  const result = await cancelBusinessApplication(
-                    latestBusinessApplication.id!,
-                  );
+                  const result = await cancelBusinessApplication(latestBusinessApplication.id!);
                   if (!result.success) {
                     overlay.open(({ isOpen: errOpen, close: errClose }) => (
                       <Dialog open={errOpen} onOpenChange={errClose}>
@@ -131,9 +111,7 @@ export default function BusinessRegistrationSection({
                           <DialogHeader>
                             <DialogTitle>오류</DialogTitle>
                           </DialogHeader>
-                          <p className="text-muted-foreground text-sm">
-                            {result.error ?? "취소에 실패했습니다."}
-                          </p>
+                          <p className="text-muted-foreground text-sm">{result.error ?? "취소에 실패했습니다."}</p>
                           <div className="flex justify-end pt-2">
                             <button
                               onClick={errClose}
@@ -168,8 +146,7 @@ export default function BusinessRegistrationSection({
       </div>
       <div className="space-y-3 md:space-y-4">
         <p className="text-sm text-gray-400 md:text-base">
-          사업자로 등록하시면 위스키 픽업 서비스 및 비즈니스 전용 혜택을 받으실
-          수 있습니다.
+          사업자로 등록하시면 위스키 픽업 서비스 및 비즈니스 전용 혜택을 받으실 수 있습니다.
         </p>
         {isPendingApplication ? (
           <div className="flex gap-3">
@@ -201,28 +178,17 @@ export default function BusinessRegistrationSection({
         <div className="mt-4 border border-white/10 p-4 md:p-6">
           <div className="mb-3 flex items-start gap-3">
             {latestBusinessApplication.status === "PENDING" && (
-              <Clock
-                className="mt-0.5 flex-shrink-0 text-yellow-400"
-                size={20}
-              />
+              <Clock className="mt-0.5 flex-shrink-0 text-yellow-400" size={20} />
             )}
             {latestBusinessApplication.status === "APPROVED" && (
-              <CheckCircle
-                className="mt-0.5 flex-shrink-0 text-green-400"
-                size={20}
-              />
+              <CheckCircle className="mt-0.5 flex-shrink-0 text-green-400" size={20} />
             )}
             {latestBusinessApplication.status === "REJECTED" && (
-              <XCircle
-                className="mt-0.5 flex-shrink-0 text-red-400"
-                size={20}
-              />
+              <XCircle className="mt-0.5 flex-shrink-0 text-red-400" size={20} />
             )}
             <div className="flex-1">
               <div className="mb-2 flex items-center gap-2">
-                <h4 className="text-sm font-bold text-white md:text-base">
-                  {latestBusinessApplication.businessName}
-                </h4>
+                <h4 className="text-sm font-bold text-white md:text-base">{latestBusinessApplication.businessName}</h4>
                 <span
                   className={`px-2 py-0.5 text-xs font-semibold ${
                     latestBusinessApplication.status === "PENDING"
@@ -240,22 +206,14 @@ export default function BusinessRegistrationSection({
                 </span>
               </div>
               <div className="space-y-1 text-xs text-gray-400 md:text-sm">
-                <p>
-                  사업자 등록번호:{" "}
-                  {latestBusinessApplication.businessRegistrationNumber}
-                </p>
+                <p>사업자 등록번호: {latestBusinessApplication.businessRegistrationNumber}</p>
                 <p>대표자: {latestBusinessApplication.representativeName}</p>
                 <p>연락처: {latestBusinessApplication.contact}</p>
-                {latestBusinessApplication.pickupAddress && (
-                  <p>픽업 주소: {latestBusinessApplication.pickupAddress}</p>
-                )}
+                {latestBusinessApplication.pickupAddress && <p>픽업 주소: {latestBusinessApplication.pickupAddress}</p>}
                 <p>신청일: {latestBusinessApplication.createdAt}</p>
-                {latestBusinessApplication.status === "REJECTED" &&
-                  latestBusinessApplication.rejectReason && (
-                    <p className="mt-2 text-red-400">
-                      거부 사유: {latestBusinessApplication.rejectReason}
-                    </p>
-                  )}
+                {latestBusinessApplication.status === "REJECTED" && latestBusinessApplication.rejectReason && (
+                  <p className="mt-2 text-red-400">거부 사유: {latestBusinessApplication.rejectReason}</p>
+                )}
               </div>
             </div>
           </div>
