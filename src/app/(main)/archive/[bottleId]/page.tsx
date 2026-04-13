@@ -1,4 +1,5 @@
 import { getApiBottlesId } from "@/apis/generated/api";
+import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -26,9 +27,11 @@ const Page = async ({ params }: { params: Promise<{ bottleId: string }> }) => {
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
             {/* Column 1 - Image */}
             <div>
-              <div className="relative flex aspect-square items-center justify-center bg-gradient-to-br from-gray-700 to-gray-800">
+              <div className="relative flex aspect-square items-center justify-center border border-white/10">
                 {bottle.imgUrl ? (
-                  <ImageWithFallback src={bottle.imgUrl} alt={bottle.name ?? ""} fill className="object-contain p-4" />
+                  <ImageLightbox src={bottle.imgUrl} alt={bottle.name ?? ""}>
+                    <ImageWithFallback src={bottle.imgUrl} alt={bottle.name ?? ""} fill className="object-contain p-4" />
+                  </ImageLightbox>
                 ) : (
                   <div className="text-4xl text-white/60 lg:text-5xl">{bottle.name}</div>
                 )}
