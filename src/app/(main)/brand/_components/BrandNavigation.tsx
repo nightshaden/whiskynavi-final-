@@ -3,13 +3,14 @@
 import { Brand } from "@/types/brand";
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
+import { useBrandScroll } from "../_context/BrandScrollContext";
 
 interface Props {
   brands: Brand[];
-  scrollToBrand: (brandId: string) => void;
 }
 
-const BrandNavigation = ({ brands, scrollToBrand }: Props) => {
+const BrandNavigation = ({ brands }: Props) => {
+  const { scrollTo: scrollToBrand } = useBrandScroll();
   return (
     <>
       <div className="bg-[#1d2429] py-6 pb-16 transition-all duration-500 lg:py-4 lg:pb-8">

@@ -1,31 +1,25 @@
 import type { BottleResponse } from "@/apis/generated/api";
 import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
+import type { Carousel3DPosition } from "@/components/ui/carousel-3d";
 import { memo } from "react";
-import { getProductPosition } from "../_utils";
 
 interface Props {
   bottle: BottleResponse;
   bottleIndex: number;
-  currentIndex: number;
-  totalBottles: number;
-  brandId: string;
+  position: Carousel3DPosition;
+  isCenter: boolean;
   brandName: string;
   onSelect: (index: number) => void;
 }
 
-const DesktopCarouselCard = memo(function DesktopCarouselCard({
+const CarouselBottleCard = memo(function CarouselBottleCard({
   bottle,
   bottleIndex,
-  currentIndex,
-  totalBottles,
-  brandId,
+  position,
+  isCenter,
   brandName,
   onSelect,
 }: Props) {
-  const position = getProductPosition(currentIndex, bottleIndex, totalBottles);
-  if (!position) return null;
-
-  const isCenter = bottleIndex === currentIndex;
   const baseWidth = 240;
   const cardWidth = baseWidth * position.scale;
   const cardHeight = cardWidth * 1.25;
@@ -60,24 +54,14 @@ const DesktopCarouselCard = memo(function DesktopCarouselCard({
           <ImageWithFallback
             src={bottle.imgUrl ?? "/default-bottle-v2.png"}
             alt={bottle.name ?? ""}
-            width={Math.round(
-              cardWidth - (isCenter ? 40 : position.scale === 0.85 ? 32 : 24),
-            )}
-            height={Math.round(
-              (cardWidth -
-                (isCenter ? 40 : position.scale === 0.85 ? 32 : 24)) *
-                1.2,
-            )}
+            width={Math.round(cardWidth - (isCenter ? 40 : position.scale === 0.85 ? 32 : 24))}
+            height={Math.round((cardWidth - (isCenter ? 40 : position.scale === 0.85 ? 32 : 24)) * 1.2)}
             className="h-full w-full object-contain"
           />
         </div>
         <div className="shrink-0">
-          <span className="mb-2 inline-block bg-amber-100 px-2 py-0.5 text-xs text-amber-800">
-            {brandName}
-          </span>
-          <h4
-            className={`mb-2 line-clamp-2 break-all text-white ${isCenter ? "text-base" : "text-sm"}`}
-          >
+          <span className="mb-2 inline-block bg-amber-100 px-2 py-0.5 text-xs text-amber-800">{brandName}</span>
+          <h4 className={`mb-2 line-clamp-2 break-all text-white ${isCenter ? "text-base" : "text-sm"}`}>
             {bottle.name}
           </h4>
         </div>
@@ -86,4 +70,4 @@ const DesktopCarouselCard = memo(function DesktopCarouselCard({
   );
 });
 
-export default DesktopCarouselCard;
+export default CarouselBottleCard;
