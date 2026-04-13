@@ -2,6 +2,7 @@ import type { BottleResponse } from "@/apis/generated/api";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 import type { Carousel3DPosition } from "@/components/ui/carousel-3d";
+import Link from "next/link";
 import { memo } from "react";
 
 interface Props {
@@ -73,10 +74,25 @@ const CarouselBottleCard = memo(function CarouselBottleCard({
           )}
         </div>
         <div className="shrink-0">
-          <span className="mb-2 inline-block bg-amber-100 px-2 py-0.5 text-xs text-amber-800">{brandName}</span>
-          <h4 className={`mb-2 line-clamp-2 break-all text-white ${isCenter ? "text-base" : "text-sm"}`}>
-            {bottle.name}
-          </h4>
+          {isCenter ? (
+            <Link
+              href={`/archive/${bottle.id}`}
+              className="block transition-colors hover:opacity-80"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <span className="mb-2 inline-block bg-amber-100 px-2 py-0.5 text-xs text-amber-800">{brandName}</span>
+              <h4 className="mb-2 line-clamp-2 break-all text-base text-white">
+                {bottle.name}
+              </h4>
+            </Link>
+          ) : (
+            <>
+              <span className="mb-2 inline-block bg-amber-100 px-2 py-0.5 text-xs text-amber-800">{brandName}</span>
+              <h4 className={`mb-2 line-clamp-2 break-all text-sm text-white`}>
+                {bottle.name}
+              </h4>
+            </>
+          )}
         </div>
       </div>
     </div>
