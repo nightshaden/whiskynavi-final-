@@ -1,5 +1,7 @@
+import { AuthError } from "./errors";
+
 import { authLogger } from "./auth-logger";
-import { ApiError, AuthError, NetworkError } from "./errors";
+import { ApiError, NetworkError } from "./errors";
 import { refreshSessionToken } from "./refresh-token";
 
 /**
@@ -101,6 +103,14 @@ export const customFetch = async <T>(url: string, options: RequestInit): Promise
     // refresh 실패 → 로그인 페이지로
     authLogger.error("refresh returned null → redirect");
     await handleAuthFailure();
+  }
+
+  if (res.status === 403) {
+    if (typeof window !== "undefined") {
+      const { signOut } = await import("next-auth/react");
+      await signOut({ callbackUrl: "/sign-in" });
+    }
+    throw new AuthError();
   }
 
   if (!res.ok) {
