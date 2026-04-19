@@ -642,6 +642,176 @@ export interface BottleAdminResponse {
   updatedAt?: string;
 }
 
+/**
+ * 추가 메타데이터(key/value)입니다.
+ */
+export type BottleCreateRequestExtraInfos = {[key: string]: string};
+
+/**
+ * 새 병 정보를 등록할 때 사용하는 요청 본문입니다.
+ */
+export interface BottleCreateRequest {
+  /** 알코올 도수(ABV)입니다. */
+  abv?: number;
+  /** 병입 일자입니다. */
+  bottledDate?: string;
+  /**
+   * 병이 속한 브랜드명입니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  brand?: string;
+  /** 병 용량(ml)입니다. */
+  capacity?: number;
+  /**
+   * 캐스크 번호입니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  caskNumber?: string;
+  /**
+   * 캐스크 타입입니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  caskType?: string;
+  /**
+   * 제조사 또는 회사명입니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  company?: string;
+  /** Consumer price (admin only). */
+  consumerPrice?: number;
+  /** 병에 대한 설명입니다. */
+  description?: string;
+  /** 증류된 날짜입니다. */
+  distillationDate?: string;
+  /**
+   * 증류소 이름입니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  distillery?: string;
+  /** 추가 메타데이터(key/value)입니다. */
+  extraInfos?: BottleCreateRequestExtraInfos;
+  /**
+   * 업로드된 라벨 이미지의 S3 키입니다.
+   * @minLength 0
+   * @maxLength 500
+   */
+  labelImgKey?: string;
+  /**
+   * 몰트 타입입니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  maltType?: string;
+  /**
+   * 병의 표시명입니다.
+   * @minLength 0
+   * @maxLength 200
+   */
+  name?: string;
+  /**
+   * 해당되는 경우 시리즈명을 입력합니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  series?: string;
+  /** Stock quantity (admin only). */
+  stockQuantity?: number;
+  /** Supply price (admin only). */
+  supplyPrice?: number;
+  /** Whether the bottle is visible to users. */
+  visible?: boolean;
+}
+
+/**
+ * 수정할 추가 메타데이터입니다.
+ */
+export type BottlePatchRequestExtraInfos = {[key: string]: string};
+
+/**
+ * 기존 병 정보를 부분 수정할 때 사용하는 요청 본문입니다.
+ */
+export interface BottlePatchRequest {
+  /** 수정할 알코올 도수입니다. */
+  abv?: number;
+  /** 수정할 병입 일자입니다. */
+  bottledDate?: string;
+  /**
+   * 수정할 브랜드명입니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  brand?: string;
+  /** 수정할 용량입니다. */
+  capacity?: number;
+  /**
+   * 수정할 캐스크 번호입니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  caskNumber?: string;
+  /**
+   * 수정할 캐스크 타입입니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  caskType?: string;
+  /**
+   * 수정할 제조사/회사명입니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  company?: string;
+  /** 소비자가(관리자 전용)입니다. */
+  consumerPrice?: number;
+  /** 수정할 설명입니다. */
+  description?: string;
+  /** 수정할 증류 일자입니다. */
+  distillationDate?: string;
+  /**
+   * 수정할 증류소입니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  distillery?: string;
+  /** 수정할 추가 메타데이터입니다. */
+  extraInfos?: BottlePatchRequestExtraInfos;
+  /**
+   * 새로 교체할 라벨 이미지의 S3 키입니다.
+   * @minLength 0
+   * @maxLength 500
+   */
+  labelImgKey?: string;
+  /**
+   * 수정할 몰트 타입입니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  maltType?: string;
+  /**
+   * 수정할 병의 표시명입니다.
+   * @minLength 0
+   * @maxLength 200
+   */
+  name?: string;
+  /**
+   * 수정할 시리즈명(선택)입니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  series?: string;
+  /** 재고 수량(관리자 전용)입니다. */
+  stockQuantity?: number;
+  /** 공급가(관리자 전용)입니다. */
+  supplyPrice?: number;
+  /** 사용자 노출 여부입니다. */
+  visible?: boolean;
+}
+
 export interface BottleReservationApplicantResponse {
   email?: string;
   name?: string;
@@ -2485,8 +2655,9 @@ export interface SignupRequest {
   snsAgree?: boolean;
   /**
    * 사용자 아이디
-   * @minLength 3
-   * @maxLength 50
+   * @minLength 2
+   * @maxLength 16
+   * @pattern ^[가-힣A-Za-z0-9]{2,16}$
    */
   username?: string;
 }
@@ -2585,8 +2756,9 @@ export interface UpdateEmailRequest {
 export interface UpdateNicknameRequest {
   /**
    * 변경할 닉네임
-   * @minLength 3
-   * @maxLength 50
+   * @minLength 2
+   * @maxLength 16
+   * @pattern ^[가-힣A-Za-z0-9]{2,16}$
    */
   nickname?: string;
 }
@@ -2655,7 +2827,9 @@ export interface UsernameAvailabilityResponse {
 export interface UsernameRequest {
   /**
    * 중복 확인할 사용자명
-   * @minLength 1
+   * @minLength 2
+   * @maxLength 16
+   * @pattern ^[가-힣A-Za-z0-9]{2,16}$
    */
   username?: string;
 }
@@ -2788,29 +2962,89 @@ export const GetApiAdminBottlesFiltersReservationStatus = {
   RESERVATION_COMPLETED: 'RESERVATION_COMPLETED',
 } as const;
 
-export type PostApiAdminBottlesParams = {
-name: string;
-company?: string;
-brand?: string;
-series?: string;
-extraInfos?: string;
-maltType?: string;
-distillery?: string;
-distillationDate?: string;
-bottledDate?: string;
-caskType?: string;
-caskNumber?: string;
-abv?: number;
-capacity?: number;
-description?: string;
-supplyPrice?: number;
-consumerPrice?: number;
-stockQuantity?: number;
-visible?: boolean;
-};
+/**
+ * 추가 메타데이터(key/value)입니다.
+ */
+export type PostApiAdminBottlesBodyExtraInfos = {[key: string]: string};
 
+/**
+ * 새 병 정보를 등록할 때 사용하는 요청 본문입니다.
+ */
 export type PostApiAdminBottlesBody = {
-  labelImg: Blob;
+  /** 알코올 도수(ABV)입니다. */
+  abv?: number;
+  /** 병입 일자입니다. */
+  bottledDate?: string;
+  /**
+   * 병이 속한 브랜드명입니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  brand?: string;
+  /** 병 용량(ml)입니다. */
+  capacity?: number;
+  /**
+   * 캐스크 번호입니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  caskNumber?: string;
+  /**
+   * 캐스크 타입입니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  caskType?: string;
+  /**
+   * 제조사 또는 회사명입니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  company?: string;
+  /** Consumer price (admin only). */
+  consumerPrice?: number;
+  /** 병에 대한 설명입니다. */
+  description?: string;
+  /** 증류된 날짜입니다. */
+  distillationDate?: string;
+  /**
+   * 증류소 이름입니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  distillery?: string;
+  /** 추가 메타데이터(key/value)입니다. */
+  extraInfos?: PostApiAdminBottlesBodyExtraInfos;
+  /**
+   * 업로드된 라벨 이미지의 S3 키입니다.
+   * @minLength 0
+   * @maxLength 500
+   */
+  labelImgKey?: string;
+  /**
+   * 몰트 타입입니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  maltType?: string;
+  /**
+   * 병의 표시명입니다.
+   * @minLength 0
+   * @maxLength 200
+   */
+  name?: string;
+  /**
+   * 해당되는 경우 시리즈명을 입력합니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  series?: string;
+  /** Stock quantity (admin only). */
+  stockQuantity?: number;
+  /** Supply price (admin only). */
+  supplyPrice?: number;
+  /** Whether the bottle is visible to users. */
+  visible?: boolean;
 };
 
 export type GetApiAdminBottlesReservationsApplicationsParams = {
@@ -2924,29 +3158,89 @@ export type PutApiAdminBottlesReservationsNoticesNoticeidBody = {
   reservationStartAt: string;
 };
 
-export type PatchApiAdminBottlesIdParams = {
-name?: string;
-company?: string;
-brand?: string;
-series?: string;
-extraInfos?: string;
-maltType?: string;
-distillery?: string;
-distillationDate?: string;
-bottledDate?: string;
-caskType?: string;
-caskNumber?: string;
-abv?: number;
-capacity?: number;
-description?: string;
-supplyPrice?: number;
-consumerPrice?: number;
-stockQuantity?: number;
-visible?: boolean;
-};
+/**
+ * 수정할 추가 메타데이터입니다.
+ */
+export type PatchApiAdminBottlesIdBodyExtraInfos = {[key: string]: string};
 
+/**
+ * 기존 병 정보를 부분 수정할 때 사용하는 요청 본문입니다.
+ */
 export type PatchApiAdminBottlesIdBody = {
-  labelImg?: Blob;
+  /** 수정할 알코올 도수입니다. */
+  abv?: number;
+  /** 수정할 병입 일자입니다. */
+  bottledDate?: string;
+  /**
+   * 수정할 브랜드명입니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  brand?: string;
+  /** 수정할 용량입니다. */
+  capacity?: number;
+  /**
+   * 수정할 캐스크 번호입니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  caskNumber?: string;
+  /**
+   * 수정할 캐스크 타입입니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  caskType?: string;
+  /**
+   * 수정할 제조사/회사명입니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  company?: string;
+  /** 소비자가(관리자 전용)입니다. */
+  consumerPrice?: number;
+  /** 수정할 설명입니다. */
+  description?: string;
+  /** 수정할 증류 일자입니다. */
+  distillationDate?: string;
+  /**
+   * 수정할 증류소입니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  distillery?: string;
+  /** 수정할 추가 메타데이터입니다. */
+  extraInfos?: PatchApiAdminBottlesIdBodyExtraInfos;
+  /**
+   * 새로 교체할 라벨 이미지의 S3 키입니다.
+   * @minLength 0
+   * @maxLength 500
+   */
+  labelImgKey?: string;
+  /**
+   * 수정할 몰트 타입입니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  maltType?: string;
+  /**
+   * 수정할 병의 표시명입니다.
+   * @minLength 0
+   * @maxLength 200
+   */
+  name?: string;
+  /**
+   * 수정할 시리즈명(선택)입니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  series?: string;
+  /** 재고 수량(관리자 전용)입니다. */
+  stockQuantity?: number;
+  /** 공급가(관리자 전용)입니다. */
+  supplyPrice?: number;
+  /** 사용자 노출 여부입니다. */
+  visible?: boolean;
 };
 
 export type GetApiAdminBusinessesApplicationsParams = {
@@ -3386,7 +3680,9 @@ export type PostApiAuthCheckEmailBody = {
 export type PostApiAuthCheckUsernameBody = {
   /**
    * 중복 확인할 사용자명
-   * @minLength 1
+   * @minLength 2
+   * @maxLength 16
+   * @pattern ^[가-힣A-Za-z0-9]{2,16}$
    */
   username?: string;
 };
@@ -3567,8 +3863,9 @@ export type PostApiAuthSignupBody = {
   snsAgree?: boolean;
   /**
    * 사용자 아이디
-   * @minLength 3
-   * @maxLength 50
+   * @minLength 2
+   * @maxLength 16
+   * @pattern ^[가-힣A-Za-z0-9]{2,16}$
    */
   username?: string;
 };
@@ -3837,10 +4134,10 @@ export type GetApiBottlesReservationsNoticesStatus = typeof GetApiBottlesReserva
 
 
 export const GetApiBottlesReservationsNoticesStatus = {
-  UPCOMING: 'UPCOMING',
-  ACTIVE: 'ACTIVE',
-  ENDED: 'ENDED',
-  ALL: 'ALL',
+  DRAFT: 'DRAFT',
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED',
+  SOLD_OUT: 'SOLD_OUT',
 } as const;
 
 export type PostApiBottlesReservationsNoticesNoticeidApplicationsBody = {
@@ -4540,8 +4837,9 @@ export type PostApiUsersMeEmailVerificationVerify200 = {[key: string]: string};
 export type PutApiUsersMeNicknameBody = {
   /**
    * 변경할 닉네임
-   * @minLength 3
-   * @maxLength 50
+   * @minLength 2
+   * @maxLength 16
+   * @pattern ^[가-힣A-Za-z0-9]{2,16}$
    */
   nickname?: string;
 };
@@ -4834,7 +5132,7 @@ export const getApiAdminBottles = async (params: GetApiAdminBottlesParams, optio
 
 
 /**
- * 라벨 이미지를 업로드하고 병의 메타데이터를 저장합니다.
+ * 병 메타데이터를 JSON RequestBody 로 받아 저장합니다.
  * @summary 병 정보 등록(관리자)
  */
 export type postApiAdminBottlesResponse200 = {
@@ -4849,41 +5147,23 @@ export type postApiAdminBottlesResponseSuccess = (postApiAdminBottlesResponse200
 
 export type postApiAdminBottlesResponse = (postApiAdminBottlesResponseSuccess)
 
-export const getPostApiAdminBottlesUrl = (params: PostApiAdminBottlesParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getPostApiAdminBottlesUrl = () => {
 
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
-    }
-  });
 
-  const stringifiedParams = normalizedParams.toString();
+  
 
-  return stringifiedParams.length > 0 ? `/api/admin/bottles?${stringifiedParams}` : `/api/admin/bottles`
+  return `/api/admin/bottles`
 }
 
-export const postApiAdminBottles = async (postApiAdminBottlesBody: PostApiAdminBottlesBody,
-    params: PostApiAdminBottlesParams, options?: RequestInit): Promise<postApiAdminBottlesResponse> => {
-    const formData = new FormData();
-formData.append(`labelImg`, postApiAdminBottlesBody.labelImg);
-
-  return customFetch<postApiAdminBottlesResponse>(getPostApiAdminBottlesUrl(params),
+export const postApiAdminBottles = async (postApiAdminBottlesBody: PostApiAdminBottlesBody, options?: RequestInit): Promise<postApiAdminBottlesResponse> => {
+  
+  return customFetch<postApiAdminBottlesResponse>(getPostApiAdminBottlesUrl(),
   {      
     ...options,
-    method: 'POST'
-    ,
-    body: 
-      formData,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiAdminBottlesBody,)
   }
 );}
 
@@ -5406,7 +5686,7 @@ export const getApiAdminBottlesId = async (id: number, options?: RequestInit): P
 
 
 /**
- * 병의 메타데이터와 라벨 이미지를 수정합니다.
+ * 병 메타데이터를 JSON RequestBody 로 받아 부분 수정합니다.
  * @summary 병 정보 수정(관리자)
  */
 export type patchApiAdminBottlesIdResponse200 = {
@@ -5421,45 +5701,24 @@ export type patchApiAdminBottlesIdResponseSuccess = (patchApiAdminBottlesIdRespo
 
 export type patchApiAdminBottlesIdResponse = (patchApiAdminBottlesIdResponseSuccess)
 
-export const getPatchApiAdminBottlesIdUrl = (id: number,
-    params?: PatchApiAdminBottlesIdParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getPatchApiAdminBottlesIdUrl = (id: number,) => {
 
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
-    }
-  });
 
-  const stringifiedParams = normalizedParams.toString();
+  
 
-  return stringifiedParams.length > 0 ? `/api/admin/bottles/${id}?${stringifiedParams}` : `/api/admin/bottles/${id}`
+  return `/api/admin/bottles/${id}`
 }
 
 export const patchApiAdminBottlesId = async (id: number,
-    patchApiAdminBottlesIdBody: PatchApiAdminBottlesIdBody,
-    params?: PatchApiAdminBottlesIdParams, options?: RequestInit): Promise<patchApiAdminBottlesIdResponse> => {
-    const formData = new FormData();
-if(patchApiAdminBottlesIdBody.labelImg !== undefined) {
- formData.append(`labelImg`, patchApiAdminBottlesIdBody.labelImg);
- }
-
-  return customFetch<patchApiAdminBottlesIdResponse>(getPatchApiAdminBottlesIdUrl(id,params),
+    patchApiAdminBottlesIdBody: PatchApiAdminBottlesIdBody, options?: RequestInit): Promise<patchApiAdminBottlesIdResponse> => {
+  
+  return customFetch<patchApiAdminBottlesIdResponse>(getPatchApiAdminBottlesIdUrl(id),
   {      
     ...options,
-    method: 'PATCH'
-    ,
-    body: 
-      formData,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      patchApiAdminBottlesIdBody,)
   }
 );}
 

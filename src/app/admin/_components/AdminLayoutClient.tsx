@@ -13,7 +13,7 @@ export default function AdminLayoutClient({ children, statsSlot }: AdminLayoutCl
 
   return (
     <div className="flex min-h-screen justify-center bg-gray-50">
-      <div className="flex w-full max-w-[1680px]">
+      <div className="flex w-full max-w-[1920px]">
         <AdminSidebar isOpen={isSidebarOpen} statsSlot={statsSlot} />
         <div className="flex-1 overflow-auto">
           <SidebarContext.Provider

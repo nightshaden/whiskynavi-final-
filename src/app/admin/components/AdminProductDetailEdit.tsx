@@ -117,6 +117,7 @@ export default function AdminProductDetailEdit({
             <input
               type="text"
               name="name"
+              maxLength={200}
               defaultValue={pickDefault(submittedValues, "name", defaultValues?.name)}
               className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
@@ -127,6 +128,7 @@ export default function AdminProductDetailEdit({
             <input
               type="text"
               name="brand"
+              maxLength={50}
               defaultValue={pickDefault(submittedValues, "brand", defaultValues?.brand)}
               className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
@@ -137,6 +139,7 @@ export default function AdminProductDetailEdit({
             <input
               type="text"
               name="series"
+              maxLength={50}
               defaultValue={pickDefault(submittedValues, "series", defaultValues?.series)}
               className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
@@ -147,6 +150,7 @@ export default function AdminProductDetailEdit({
             <input
               type="text"
               name="company"
+              maxLength={50}
               defaultValue={pickDefault(submittedValues, "company", defaultValues?.company)}
               className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
@@ -157,6 +161,7 @@ export default function AdminProductDetailEdit({
             <input
               type="text"
               name="distillery"
+              maxLength={50}
               defaultValue={pickDefault(submittedValues, "distillery", defaultValues?.distillery)}
               className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
@@ -167,6 +172,7 @@ export default function AdminProductDetailEdit({
             <input
               type="text"
               name="maltType"
+              maxLength={50}
               defaultValue={pickDefault(submittedValues, "maltType", defaultValues?.maltType)}
               className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
@@ -177,6 +183,7 @@ export default function AdminProductDetailEdit({
             <input
               type="text"
               name="caskType"
+              maxLength={50}
               defaultValue={pickDefault(submittedValues, "caskType", defaultValues?.caskType)}
               className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
@@ -187,6 +194,7 @@ export default function AdminProductDetailEdit({
             <input
               type="text"
               name="caskNumber"
+              maxLength={50}
               defaultValue={pickDefault(submittedValues, "caskNumber", defaultValues?.caskNumber)}
               className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
