@@ -53,15 +53,6 @@ export default function BannerDetailContent({ banner }: BannerDetailContentProps
             ) : null}
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="flex items-center gap-6">
-                {banner.mainUrl ? (
-                  <ImageWithFallback
-                    src={banner.mainUrl}
-                    alt="메인 이미지"
-                    width={160}
-                    height={160}
-                    className="h-32 w-32 rounded object-contain"
-                  />
-                ) : null}
                 <div className="text-white">
                   <h2 className="typo-bold-24">{banner.title ?? "(제목 없음)"}</h2>
                   {banner.description ? <p className="mt-1 text-white/80">{banner.description}</p> : null}
@@ -106,30 +97,6 @@ export default function BannerDetailContent({ banner }: BannerDetailContentProps
               </dd>
             </div>
           </dl>
-        </div>
-
-        {/* 이미지 상세 */}
-        <div className="mt-6 grid gap-6 md:grid-cols-2">
-          <div className="rounded-lg border border-gray-200 bg-white p-4">
-            <h4 className="typo-bold-14 mb-3 text-gray-700">배경 이미지</h4>
-            <div className="relative h-48 w-full overflow-hidden rounded-lg bg-gray-100">
-              {banner.backgroundUrl ? (
-                <ImageWithFallback src={banner.backgroundUrl} alt="배경 이미지" fill className="object-cover" />
-              ) : (
-                <div className="flex h-full items-center justify-center text-sm text-gray-400">이미지 없음</div>
-              )}
-            </div>
-          </div>
-          <div className="rounded-lg border border-gray-200 bg-white p-4">
-            <h4 className="typo-bold-14 mb-3 text-gray-700">메인 이미지</h4>
-            <div className="relative h-48 w-full overflow-hidden rounded-lg bg-gray-100">
-              {banner.mainUrl ? (
-                <ImageWithFallback src={banner.mainUrl} alt="메인 이미지" fill className="object-contain" />
-              ) : (
-                <div className="flex h-full items-center justify-center text-sm text-gray-400">이미지 없음</div>
-              )}
-            </div>
-          </div>
         </div>
       </div>
     </>

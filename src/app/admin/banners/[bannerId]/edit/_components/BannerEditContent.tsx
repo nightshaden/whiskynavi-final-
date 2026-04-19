@@ -26,7 +26,6 @@ export default function BannerEditContent({ banner }: BannerEditContentProps) {
   const bgInputRef = useRef<HTMLInputElement>(null);
   const mainInputRef = useRef<HTMLInputElement>(null);
   const [bgPreview, setBgPreview] = useState<string | null>(banner.backgroundUrl ?? null);
-  const [mainPreview, setMainPreview] = useState<string | null>(banner.mainUrl ?? null);
 
   const handleBgChange = (file: File | null) => {
     if (bgPreview && bgPreview.startsWith("blob:")) {
@@ -35,27 +34,12 @@ export default function BannerEditContent({ banner }: BannerEditContentProps) {
     setBgPreview(file ? URL.createObjectURL(file) : null);
   };
 
-  const handleMainChange = (file: File | null) => {
-    if (mainPreview && mainPreview.startsWith("blob:")) {
-      URL.revokeObjectURL(mainPreview);
-    }
-    setMainPreview(file ? URL.createObjectURL(file) : null);
-  };
-
   const handleBgRemove = () => {
     if (bgPreview && bgPreview.startsWith("blob:")) {
       URL.revokeObjectURL(bgPreview);
     }
     setBgPreview(null);
     if (bgInputRef.current) bgInputRef.current.value = "";
-  };
-
-  const handleMainRemove = () => {
-    if (mainPreview && mainPreview.startsWith("blob:")) {
-      URL.revokeObjectURL(mainPreview);
-    }
-    setMainPreview(null);
-    if (mainInputRef.current) mainInputRef.current.value = "";
   };
 
   return (
@@ -147,14 +131,6 @@ export default function BannerEditContent({ banner }: BannerEditContentProps) {
                 inputRef={bgInputRef}
                 onFileChange={handleBgChange}
                 onRemove={handleBgRemove}
-              />
-              <ImageUploadArea
-                label="메인 이미지"
-                name="mainImg"
-                previewUrl={mainPreview}
-                inputRef={mainInputRef}
-                onFileChange={handleMainChange}
-                onRemove={handleMainRemove}
               />
             </div>
           </div>

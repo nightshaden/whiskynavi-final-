@@ -62,17 +62,6 @@ export default function BannersContent({ searchParams, banners, totalElements }:
                       className="object-cover"
                     />
                   ) : null}
-                  {banner.mainUrl ? (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <ImageWithFallback
-                        src={banner.mainUrl}
-                        alt={banner.title ?? "배너 메인"}
-                        width={120}
-                        height={120}
-                        className="h-24 w-24 rounded object-contain"
-                      />
-                    </div>
-                  ) : null}
                 </div>
                 <div className="p-4">
                   <h3 className="font-semibold text-gray-900">{banner.title ?? "(제목 없음)"}</h3>
