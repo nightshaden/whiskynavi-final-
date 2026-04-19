@@ -83,7 +83,7 @@ export function Carousel3D<T>({
   visibleRange = 2,
   cardSpacing = 180,
   containerClassName = "",
-  containerHeight = "480px",
+  containerHeight = "440px",
   showNavButtons = true,
   showIndicators = true,
   itemKey,

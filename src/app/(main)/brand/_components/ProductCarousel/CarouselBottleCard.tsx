@@ -50,9 +50,9 @@ const CarouselBottleCard = memo(function CarouselBottleCard({
       }}
     >
       <div
-        className={`${isCenter ? "border-white/30 bg-[#2a3137]" : "border-white/10 bg-[#232a2f]"} flex h-full flex-col border shadow-2xl ${isCenter ? "p-5" : position.scale === 0.85 ? "p-4" : "p-3"} ${!isCenter ? "transition-colors hover:border-white/30" : ""}`}
+        className={`flex h-full flex-col border backdrop-blur-2xl ${isCenter ? "border-white/30 bg-[#2f3740]/75 shadow-[0_8px_32px_rgba(0,0,0,0.4)]" : "border-white/20 bg-[#2a3137]/30 shadow-[0_8px_32px_rgba(0,0,0,0.3)] transition-colors hover:border-white/40"} ${isCenter ? "p-5" : position.scale === 0.85 ? "p-4" : "p-3"}`}
       >
-        <div className="mb-3 flex w-full flex-1 items-center justify-center overflow-hidden">
+        <div className="mb-3 flex aspect-square w-full shrink-0 items-center justify-center overflow-hidden">
           {isCenter && bottle.imgUrl ? (
             <ImageLightbox src={bottle.imgUrl} alt={bottle.name ?? ""}>
               <ImageWithFallback
@@ -80,17 +80,17 @@ const CarouselBottleCard = memo(function CarouselBottleCard({
               className="block transition-colors hover:opacity-80"
               onClick={(e) => e.stopPropagation()}
             >
-              <span className="mb-2 inline-block bg-amber-100 px-2 py-0.5 text-xs text-amber-800">{brandName}</span>
-              <h4 className="mb-2 line-clamp-2 break-all text-base text-white">
-                {bottle.name}
-              </h4>
+              {/* <span className="mb-2 inline-block border border-white/20 bg-white/15 px-2.5 py-1 text-xs font-bold text-white/90 backdrop-blur-sm">
+                {brandName}
+              </span> */}
+              <h4 className="mb-2 line-clamp-2 text-base font-medium break-all text-white">{bottle.name}</h4>
             </Link>
           ) : (
             <>
-              <span className="mb-2 inline-block bg-amber-100 px-2 py-0.5 text-xs text-amber-800">{brandName}</span>
-              <h4 className={`mb-2 line-clamp-2 break-all text-sm text-white`}>
-                {bottle.name}
-              </h4>
+              {/* <span className="mb-2 inline-block border border-white/20 bg-white/15 px-2.5 py-1 text-xs font-bold text-white/90 backdrop-blur-sm">
+                {brandName}
+              </span> */}
+              <h4 className="mb-2 line-clamp-2 text-sm font-medium break-all text-white">{bottle.name}</h4>
             </>
           )}
         </div>

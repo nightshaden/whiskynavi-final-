@@ -53,7 +53,7 @@ const Hero = ({ backgroundText, title, subtitle }: HeroProps) => {
       </div>
 
       {/* Hero Content */}
-      <div className="relative z-10 flex h-full items-center justify-center px-4">
+      <div className="relative z-10 flex h-full items-center justify-center px-6">
         <div className="mx-auto w-full max-w-[1440px]">
           <div className="mx-auto max-w-4xl text-center">
             <h1

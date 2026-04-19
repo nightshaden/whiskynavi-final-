@@ -45,7 +45,7 @@ const Page = async () => {
               <div className="relative">
                 <BrandTitle brandId={brand.id} title={brand.name} subtitle={brand.subname} />
                 {/* Brand Philosophy */}
-                <div className="mx-auto mb-6 max-w-3xl px-4 text-center lg:mb-8">
+                <div className="mx-auto max-w-3xl px-6 text-center lg:mb-8">
                   <p className="text-sm leading-relaxed text-white/90 sm:text-base">{brand.description}</p>
                 </div>
 
