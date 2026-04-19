@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
   },
   // ✅ S3 이미지 호스트 허용
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",

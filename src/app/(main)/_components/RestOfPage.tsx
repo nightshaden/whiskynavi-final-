@@ -60,28 +60,41 @@ export default function RestOfPage({ youtubeEmbedUrl }: RestOfPageProps) {
               </div>
             </Link>
 
-            {/* SHOP Card */}
-            <Link
+            {/* RESERVATION Card */}
+            {/* <Link
               href="#"
+              className="group flex aspect-square flex-col items-center justify-center border border-white/10 bg-white/5 p-3 text-center transition-all hover:border-white/30 hover:bg-white/10 md:p-4"
+            > */}
+            <div
+              onClick={() =>
+                overlay.open(({ isOpen, close }) =>
+                  isOpen ? (
+                    <Dialog open={isOpen} onOpenChange={close}>
+                      <DialogContent className="sm:max-w-sm">
+                        <DialogHeader>
+                          <DialogTitle className="typo-bold-20">아직 준비중입니다.</DialogTitle>
+
+                          <DialogDescription className="pt-2 text-gray-600">
+                            예약 서비스는 아직 준비중입니다.
+                          </DialogDescription>
+                        </DialogHeader>
+
+                        <DialogFooter className="gap-2 sm:gap-2">
+                          <Button className="flex-1" onClick={close}>
+                            확인
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  ) : null,
+                )
+              }
               className="group flex aspect-square flex-col items-center justify-center border border-white/10 bg-white/5 p-3 text-center transition-all hover:border-white/30 hover:bg-white/10 md:p-4"
             >
               <div className="typo-bold-14 mb-2 text-white md:mb-3 md:text-xl lg:text-2xl">RESERVATION</div>
-              <div className="mb-3 text-[10px] leading-relaxed text-gray-400 md:mb-6 md:text-sm">
-                {/* <br className="md:hidden" />
-                <span className="hidden md:inline">
-                  전국 취급점에서 위스키내비
-                  <br />
-                </span>
-
-                <span className="hidden md:inline">
-                  제품군을 만나보실 수 있습니다.
-                </span> */}
-                준비중
-              </div>
-              {/* <div className="typo-bold-12 flex items-center gap-1 text-white/60 transition-colors group-hover:text-white md:text-sm">
-                바로가기 <ArrowRight size={12} className="md:size-4" />
-              </div> */}
-            </Link>
+              <div className="mb-3 text-[10px] leading-relaxed text-gray-400 md:mb-6 md:text-sm">준비중</div>
+            </div>
+            {/* </Link> */}
 
             {/* COMMUNITY Card */}
             <div
@@ -94,7 +107,7 @@ export default function RestOfPage({ youtubeEmbedUrl }: RestOfPageProps) {
                           <DialogTitle className="typo-bold-20">아직 준비중입니다.</DialogTitle>
 
                           <DialogDescription className="pt-2 text-gray-600">
-                            커뮤니티 기능은 아직 준비중이오니 위스키내비 단톡을 사용해주세요
+                            커뮤니티 서비스는 아직 준비중이오니 위스키내비 단톡을 사용해주세요
                           </DialogDescription>
                         </DialogHeader>
 
@@ -111,21 +124,7 @@ export default function RestOfPage({ youtubeEmbedUrl }: RestOfPageProps) {
               className="group flex aspect-square flex-col items-center justify-center border border-white/10 bg-white/5 p-3 text-center transition-all hover:border-white/30 hover:bg-white/10 md:p-4"
             >
               <div className="typo-bold-14 mb-2 text-white md:mb-3 md:text-xl lg:text-2xl">COMMUNITY</div>
-              <div className="mb-3 text-[10px] leading-relaxed text-gray-400 md:mb-6 md:text-sm">
-                {/* <br className="md:hidden" />
-                <span className="hidden md:inline">
-                  위스키내비 커뮤니티에서
-                  <br />
-                </span>
-
-                <span className="hidden md:inline">
-                  다양한 소식들을 만나보세요.
-                </span> */}
-                준비중입니다.
-              </div>
-              {/* <div className="typo-bold-12 flex items-center gap-1 text-white/60 transition-colors group-hover:text-white md:text-sm">
-                바로가기 <ArrowRight size={12} className="md:size-4" />
-              </div> */}
+              <div className="mb-3 text-[10px] leading-relaxed text-gray-400 md:mb-6 md:text-sm">준비중입니다.</div>
             </div>
           </div>
         </div>

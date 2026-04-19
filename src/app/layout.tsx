@@ -3,6 +3,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { siteConfig } from "@/config/site";
 import { AuthProvider } from "@/providers/AuthProvider";
 import { pretendard } from "@/styles/fonts";
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata, Viewport } from "next";
 import { OverlayProvider } from "overlay-kit";
 
@@ -102,6 +103,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${pretendard.className} bg-[#1D2429] antialiased`}>
+        <Analytics />
         <AuthProvider>
           <OverlayProvider>
             {/* <Header /> */}
