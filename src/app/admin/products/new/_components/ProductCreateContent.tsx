@@ -2,7 +2,7 @@
 
 import { ArrowLeft, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import AdminHeader from "../../../_components/AdminHeader";
 import { useSidebar } from "../../../_components/AdminLayoutClient";
 import AdminProductDetailEdit from "../../../components/AdminProductDetailEdit";
@@ -11,14 +11,24 @@ import { createBottleFormAction } from "../../actions";
 export default function ProductCreateContent() {
   const { toggle } = useSidebar();
   const router = useRouter();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const [formState, formAction, isPending] = useActionState(createBottleFormAction, { success: false });
+
+  const handleFormAction = (formData: FormData) => {
+    if (selectedFile) {
+      formData.set("labelImg", selectedFile);
+    } else {
+      formData.delete("labelImg");
+    }
+    formAction(formData);
+  };
 
   return (
     <>
       <AdminHeader title="제품 등록" onToggleSidebar={toggle} showSearch={false} />
 
-      <form action={formAction} className="p-8">
+      <form action={handleFormAction} className="p-8">
         <div className="mb-6 flex items-center justify-between">
           <button
             type="button"
@@ -45,7 +55,11 @@ export default function ProductCreateContent() {
           </div>
         )}
 
-        <AdminProductDetailEdit />
+        <AdminProductDetailEdit
+          submittedValues={formState.values}
+          selectedFile={selectedFile}
+          onSelectFile={setSelectedFile}
+        />
       </form>
     </>
   );

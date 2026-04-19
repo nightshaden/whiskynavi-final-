@@ -3,7 +3,7 @@
 import type { BottleAdminResponse } from "@/apis/generated/api";
 import { ArrowLeft, Save, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import AdminHeader from "../../../../_components/AdminHeader";
 import { useSidebar } from "../../../../_components/AdminLayoutClient";
 import AdminProductDetailEdit from "../../../../components/AdminProductDetailEdit";
@@ -16,17 +16,27 @@ interface ProductEditContentProps {
 export default function ProductEditContent({ product }: ProductEditContentProps) {
   const { toggle } = useSidebar();
   const router = useRouter();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const updateAction = updateBottleFormAction.bind(null, product.id as number);
   const [formState, formAction, isPending] = useActionState(updateAction, {
     success: false,
   });
 
+  const handleFormAction = (formData: FormData) => {
+    if (selectedFile) {
+      formData.set("labelImg", selectedFile);
+    } else {
+      formData.delete("labelImg");
+    }
+    formAction(formData);
+  };
+
   return (
     <>
       <AdminHeader title="제품 편집" onToggleSidebar={toggle} showSearch={false} />
 
-      <form action={formAction} className="p-8">
+      <form action={handleFormAction} className="p-8">
         <div className="mb-6 flex items-center justify-between">
           <button
             type="button"
@@ -64,7 +74,12 @@ export default function ProductEditContent({ product }: ProductEditContentProps)
           </div>
         )}
 
-        <AdminProductDetailEdit defaultValues={product} />
+        <AdminProductDetailEdit
+          defaultValues={product}
+          submittedValues={formState.values}
+          selectedFile={selectedFile}
+          onSelectFile={setSelectedFile}
+        />
       </form>
     </>
   );

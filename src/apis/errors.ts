@@ -8,6 +8,7 @@ export class AuthError extends Error {
 export class ApiError extends Error {
   readonly status: number;
   readonly userMessage: string;
+  readonly detail: string;
 
   constructor(status: number, detail: string) {
     const userMessage = extractUserMessage(status, detail);
@@ -15,6 +16,7 @@ export class ApiError extends Error {
     this.name = "ApiError";
     this.status = status;
     this.userMessage = userMessage;
+    this.detail = detail;
   }
 }
 

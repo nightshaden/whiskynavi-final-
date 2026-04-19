@@ -4,36 +4,87 @@ import type { BottleAdminResponse } from "@/apis/generated/api";
 import { Label } from "@/components/ui/label";
 import { CalendarDays, Plus, Upload, X } from "lucide-react";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import CurrencyInput from "../_components/CurrencyInput";
 
 interface AdminProductDetailEditProps {
   defaultValues?: BottleAdminResponse;
+  submittedValues?: Record<string, string>;
+  selectedFile: File | null;
+  onSelectFile: (file: File | null) => void;
 }
 
 const FALLBACK_IMAGE = "/default-bottle-v2.png";
 
-export default function AdminProductDetailEdit({ defaultValues }: AdminProductDetailEditProps) {
-  const [extraInfos, setExtraInfos] = useState<Record<string, string>>(
-    (defaultValues?.extraInfos as Record<string, string>) ?? {},
-  );
+function pickDefault(
+  submitted: Record<string, string> | undefined,
+  key: string,
+  fallback: string | number | undefined,
+): string | number | undefined {
+  if (submitted && key in submitted) return submitted[key];
+  return fallback;
+}
+
+export default function AdminProductDetailEdit({
+  defaultValues,
+  submittedValues,
+  selectedFile,
+  onSelectFile,
+}: AdminProductDetailEditProps) {
+  const initialExtraInfos = (() => {
+    if (submittedValues?.extraInfos) {
+      try {
+        const parsed = JSON.parse(submittedValues.extraInfos);
+        if (parsed && typeof parsed === "object") return parsed as Record<string, string>;
+      } catch {
+        // fall through to defaultValues
+      }
+    }
+    return (defaultValues?.extraInfos as Record<string, string>) ?? {};
+  })();
+
+  const [extraInfos, setExtraInfos] = useState<Record<string, string>>(initialExtraInfos);
   const newExtraInfoKeyRef = useRef<HTMLInputElement>(null);
   const newExtraInfoValueRef = useRef<HTMLInputElement>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | undefined>(defaultValues?.imgUrl);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const previewUrl = useMemo(() => {
+    if (selectedFile) return URL.createObjectURL(selectedFile);
+    return defaultValues?.imgUrl;
+  }, [selectedFile, defaultValues?.imgUrl]);
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl?.startsWith("blob:")) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
+
   const currentImage = previewUrl || FALLBACK_IMAGE;
 
-  const handleAddImage = (file: File) => {
-    if (previewUrl?.startsWith("blob:")) {
-      URL.revokeObjectURL(previewUrl);
-    }
-    setPreviewUrl(URL.createObjectURL(file));
+  const handleRemoveImage = () => {
+    onSelectFile(null);
   };
 
-  const handleRemoveImage = () => {
-    if (previewUrl?.startsWith("blob:")) {
-      URL.revokeObjectURL(previewUrl);
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isDragging) setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file && file.type.startsWith("image/")) {
+      onSelectFile(file);
     }
-    setPreviewUrl(undefined);
   };
 
   const handleAddExtraInfo = () => {
@@ -66,7 +117,7 @@ export default function AdminProductDetailEdit({ defaultValues }: AdminProductDe
             <input
               type="text"
               name="name"
-              defaultValue={defaultValues?.name}
+              defaultValue={pickDefault(submittedValues, "name", defaultValues?.name)}
               className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
           </div>
@@ -76,7 +127,7 @@ export default function AdminProductDetailEdit({ defaultValues }: AdminProductDe
             <input
               type="text"
               name="brand"
-              defaultValue={defaultValues?.brand}
+              defaultValue={pickDefault(submittedValues, "brand", defaultValues?.brand)}
               className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
           </div>
@@ -86,7 +137,7 @@ export default function AdminProductDetailEdit({ defaultValues }: AdminProductDe
             <input
               type="text"
               name="series"
-              defaultValue={defaultValues?.series}
+              defaultValue={pickDefault(submittedValues, "series", defaultValues?.series)}
               className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
           </div>
@@ -96,7 +147,7 @@ export default function AdminProductDetailEdit({ defaultValues }: AdminProductDe
             <input
               type="text"
               name="company"
-              defaultValue={defaultValues?.company}
+              defaultValue={pickDefault(submittedValues, "company", defaultValues?.company)}
               className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
           </div>
@@ -106,7 +157,7 @@ export default function AdminProductDetailEdit({ defaultValues }: AdminProductDe
             <input
               type="text"
               name="distillery"
-              defaultValue={defaultValues?.distillery}
+              defaultValue={pickDefault(submittedValues, "distillery", defaultValues?.distillery)}
               className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
           </div>
@@ -116,7 +167,7 @@ export default function AdminProductDetailEdit({ defaultValues }: AdminProductDe
             <input
               type="text"
               name="maltType"
-              defaultValue={defaultValues?.maltType}
+              defaultValue={pickDefault(submittedValues, "maltType", defaultValues?.maltType)}
               className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
           </div>
@@ -126,7 +177,7 @@ export default function AdminProductDetailEdit({ defaultValues }: AdminProductDe
             <input
               type="text"
               name="caskType"
-              defaultValue={defaultValues?.caskType}
+              defaultValue={pickDefault(submittedValues, "caskType", defaultValues?.caskType)}
               className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
           </div>
@@ -136,7 +187,7 @@ export default function AdminProductDetailEdit({ defaultValues }: AdminProductDe
             <input
               type="text"
               name="caskNumber"
-              defaultValue={defaultValues?.caskNumber}
+              defaultValue={pickDefault(submittedValues, "caskNumber", defaultValues?.caskNumber)}
               className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
           </div>
@@ -147,7 +198,7 @@ export default function AdminProductDetailEdit({ defaultValues }: AdminProductDe
               type="number"
               name="abv"
               step="0.1"
-              defaultValue={defaultValues?.abv}
+              defaultValue={pickDefault(submittedValues, "abv", defaultValues?.abv)}
               className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
           </div>
@@ -157,7 +208,7 @@ export default function AdminProductDetailEdit({ defaultValues }: AdminProductDe
             <input
               type="number"
               name="capacity"
-              defaultValue={defaultValues?.capacity}
+              defaultValue={pickDefault(submittedValues, "capacity", defaultValues?.capacity)}
               className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
           </div>
@@ -168,7 +219,7 @@ export default function AdminProductDetailEdit({ defaultValues }: AdminProductDe
               <input
                 type="date"
                 name="distillationDate"
-                defaultValue={defaultValues?.distillationDate}
+                defaultValue={pickDefault(submittedValues, "distillationDate", defaultValues?.distillationDate)}
                 className="w-full rounded border border-gray-300 py-1 pr-2 pl-8 text-sm"
               />
               <CalendarDays
@@ -184,7 +235,7 @@ export default function AdminProductDetailEdit({ defaultValues }: AdminProductDe
               <input
                 type="date"
                 name="bottledDate"
-                defaultValue={defaultValues?.bottledDate}
+                defaultValue={pickDefault(submittedValues, "bottledDate", defaultValues?.bottledDate)}
                 className="w-full rounded border border-gray-300 py-1 pr-2 pl-8 text-sm"
               />
               <CalendarDays
@@ -199,7 +250,7 @@ export default function AdminProductDetailEdit({ defaultValues }: AdminProductDe
             <input
               type="number"
               name="stockQuantity"
-              defaultValue={defaultValues?.stockQuantity}
+              defaultValue={pickDefault(submittedValues, "stockQuantity", defaultValues?.stockQuantity)}
               className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
           </div>
@@ -208,7 +259,7 @@ export default function AdminProductDetailEdit({ defaultValues }: AdminProductDe
             <Label className="w-32 text-sm text-gray-700">공급가</Label>
             <CurrencyInput
               name="supplyPrice"
-              defaultValue={defaultValues?.supplyPrice}
+              defaultValue={pickDefault(submittedValues, "supplyPrice", defaultValues?.supplyPrice)}
               className="w-full rounded border border-gray-300 px-2 py-1 text-sm"
             />
           </div>
@@ -217,7 +268,7 @@ export default function AdminProductDetailEdit({ defaultValues }: AdminProductDe
             <Label className="w-32 text-sm text-gray-700">소비자가</Label>
             <CurrencyInput
               name="consumerPrice"
-              defaultValue={defaultValues?.consumerPrice}
+              defaultValue={pickDefault(submittedValues, "consumerPrice", defaultValues?.consumerPrice)}
               className="w-full rounded border border-gray-300 px-2 py-1 text-sm"
             />
           </div>
@@ -296,7 +347,7 @@ export default function AdminProductDetailEdit({ defaultValues }: AdminProductDe
           <div className="mb-1 text-sm text-gray-600">설명</div>
           <textarea
             name="description"
-            defaultValue={defaultValues?.description}
+            defaultValue={pickDefault(submittedValues, "description", defaultValues?.description)}
             rows={12}
             placeholder="설명을 입력하세요."
             className="w-full resize-y rounded border border-gray-300 px-2 py-1 text-sm text-gray-900"
@@ -305,8 +356,16 @@ export default function AdminProductDetailEdit({ defaultValues }: AdminProductDe
 
         {/* 오른쪽: 이미지 */}
         <div className="flex flex-1 flex-col pl-6">
-          {/* 큰 이미지 */}
-          <div className="group relative mb-4">
+          {/* 큰 이미지 / 드롭존 */}
+          <div
+            onDragOver={handleDragOver}
+            onDragEnter={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            className={`group relative mb-4 rounded border-2 border-dashed transition-colors ${
+              isDragging ? "border-amber-600 bg-amber-50" : "border-transparent"
+            }`}
+          >
             <Image
               src={currentImage}
               width={320}
@@ -315,24 +374,33 @@ export default function AdminProductDetailEdit({ defaultValues }: AdminProductDe
               className="h-80 w-full rounded border border-gray-200 object-cover"
               unoptimized={currentImage.startsWith("blob:")}
             />
-            <div className="bg-opacity-50 absolute inset-0 flex items-center justify-center rounded bg-black opacity-0 transition-opacity group-hover:opacity-100">
-              <Label className="typo-bold-14 flex cursor-pointer items-center gap-2 rounded bg-white px-4 py-2 text-gray-900 transition-colors hover:bg-gray-100">
-                <Upload size={18} />
-                이미지 추가
-                <input
-                  type="file"
-                  name="labelImg"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      handleAddImage(file);
-                    }
-                  }}
-                  className="hidden"
-                />
-              </Label>
-            </div>
+            {isDragging ? (
+              <div className="pointer-events-none absolute inset-0 flex items-center justify-center rounded bg-amber-100/80">
+                <div className="typo-bold-14 flex items-center gap-2 rounded bg-white px-4 py-2 text-amber-700 shadow">
+                  <Upload size={18} />
+                  여기에 이미지를 놓으세요
+                </div>
+              </div>
+            ) : (
+              <div className="bg-opacity-50 absolute inset-0 flex items-center justify-center rounded bg-black opacity-0 transition-opacity group-hover:opacity-100">
+                <Label className="typo-bold-14 flex cursor-pointer items-center gap-2 rounded bg-white px-4 py-2 text-gray-900 transition-colors hover:bg-gray-100">
+                  <Upload size={18} />
+                  이미지 추가 또는 드래그 앤 드롭
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        onSelectFile(file);
+                      }
+                      e.target.value = "";
+                    }}
+                    className="hidden"
+                  />
+                </Label>
+              </div>
+            )}
           </div>
           {/* 썸네일 리스트 */}
           {previewUrl && (
