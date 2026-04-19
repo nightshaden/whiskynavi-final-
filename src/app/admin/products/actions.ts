@@ -1,7 +1,13 @@
 "use server";
 
 import { ApiError, getUserErrorMessage } from "@/apis/errors";
-import { deleteApiAdminBottlesId, patchApiAdminBottlesId, postApiAdminBottles } from "@/apis/generated/api";
+import {
+  deleteApiAdminBottlesId,
+  patchApiAdminBottlesId,
+  postApiAdminBottles,
+  postApiS3Upload,
+  type PostApiAdminBottlesBodyExtraInfos,
+} from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
@@ -61,6 +67,17 @@ const optionalText = z
   .transform((v) => v.trim() || undefined)
   .optional();
 
+// 백엔드 @maxLength 제약을 Korean 레이블과 함께 선검증한다.
+// 여기서 걸리면 "잘못된 요청 본문입니다." 대신 "브랜드는 최대 50자입니다." 같은 메시지가 나간다.
+const bounded = (max: number, label: string) =>
+  z
+    .string()
+    .transform((v) => v.trim() || undefined)
+    .optional()
+    .refine((v) => v === undefined || v.length <= max, {
+      message: `${label}은(는) 최대 ${max}자까지 입력 가능합니다.`,
+    });
+
 const optionalNum = z
   .string()
   .transform((v) => {
@@ -70,14 +87,14 @@ const optionalNum = z
   .optional();
 
 const bottleFormSchema = z.object({
-  name: optionalText,
-  company: optionalText,
-  brand: optionalText,
-  series: optionalText,
-  distillery: optionalText,
-  maltType: optionalText,
-  caskType: optionalText,
-  caskNumber: optionalText,
+  name: bounded(200, "제품명"),
+  company: bounded(50, "회사"),
+  brand: bounded(50, "브랜드"),
+  series: bounded(50, "시리즈"),
+  distillery: bounded(50, "증류소"),
+  maltType: bounded(50, "몰트 타입"),
+  caskType: bounded(50, "캐스크 타입"),
+  caskNumber: bounded(50, "캐스크 번호"),
   distillationDate: optionalText,
   bottledDate: optionalText,
   description: optionalText,
@@ -96,9 +113,42 @@ function parseBottleFormData(formData: FormData) {
   }
   const result = bottleFormSchema.safeParse(raw);
   if (!result.success) {
-    return { success: false as const, error: result.error.message };
+    const firstMessage = result.error.issues[0]?.message ?? "입력값이 올바르지 않습니다.";
+    return { success: false as const, error: firstMessage };
   }
   return { success: true as const, data: result.data };
+}
+
+function parseExtraInfos(
+  raw: string | undefined,
+): PostApiAdminBottlesBodyExtraInfos | undefined {
+  if (!raw) return undefined;
+  try {
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+      return Object.fromEntries(
+        Object.entries(parsed as Record<string, unknown>).map(([k, v]) => [k, String(v)]),
+      );
+    }
+  } catch {
+    // fall through
+  }
+  return undefined;
+}
+
+// /api/s3/upload 는 { [key: string]: string } 형태 (spec상 키 이름 미지정)라서
+// 응답 본문에서 S3 키를 유추한다. 우선순위: key → s3Key → objectKey → 첫 string 값.
+function extractLabelImgKey(data: unknown): string | undefined {
+  if (!data || typeof data !== "object") return undefined;
+  const obj = data as Record<string, unknown>;
+  for (const candidate of ["key", "s3Key", "objectKey"]) {
+    const v = obj[candidate];
+    if (typeof v === "string" && v.length > 0) return v;
+  }
+  for (const v of Object.values(obj)) {
+    if (typeof v === "string" && v.length > 0) return v;
+  }
+  return undefined;
 }
 
 export async function createBottleFormAction(_prev: FormState, formData: FormData): Promise<FormState> {
@@ -123,8 +173,38 @@ export async function createBottleFormAction(_prev: FormState, formData: FormDat
     return { success: false, error: "라벨 이미지는 필수입니다.", values };
   }
 
+  let labelImgKey: string | undefined;
   try {
-    await postApiAdminBottles({ labelImg }, { ...parsed.data, name: parsed.data.name }, withToken(token));
+    const uploaded = await postApiS3Upload({ file: labelImg }, withToken(token));
+    labelImgKey = extractLabelImgKey(uploaded.data);
+    if (!labelImgKey) {
+      return {
+        success: false,
+        error: "라벨 이미지 업로드에 실패했습니다. 잠시 후 다시 시도해주세요.",
+        values,
+      };
+    }
+  } catch (error) {
+    if (isRedirectError(error)) throw error;
+    logActionError("createBottleFormAction:s3Upload", error);
+    return {
+      success: false,
+      error: getUserErrorMessage(error, "라벨 이미지 업로드에 실패했습니다."),
+      values,
+    };
+  }
+
+  const { extraInfos: rawExtraInfos, ...rest } = parsed.data;
+  try {
+    await postApiAdminBottles(
+      {
+        ...rest,
+        name: parsed.data.name,
+        labelImgKey,
+        extraInfos: parseExtraInfos(rawExtraInfos),
+      },
+      withToken(token),
+    );
   } catch (error) {
     if (isRedirectError(error)) throw error;
     logActionError("createBottleFormAction", error);
@@ -147,16 +227,47 @@ export async function updateBottleFormAction(id: number, _prev: FormState, formD
     return { success: false, error: "인증이 필요합니다.", values };
   }
 
-  const labelImg = formData.get("labelImg") as File | null;
-  const hasImage = labelImg && labelImg.size > 0;
-
   const parsed = parseBottleFormData(formData);
   if (!parsed.success) {
     return { success: false, error: parsed.error, values };
   }
 
+  const labelImg = formData.get("labelImg") as File | null;
+  let labelImgKey: string | undefined;
+
+  if (labelImg && labelImg.size > 0) {
+    try {
+      const uploaded = await postApiS3Upload({ file: labelImg }, withToken(token));
+      labelImgKey = extractLabelImgKey(uploaded.data);
+      if (!labelImgKey) {
+        return {
+          success: false,
+          error: "라벨 이미지 업로드에 실패했습니다. 잠시 후 다시 시도해주세요.",
+          values,
+        };
+      }
+    } catch (error) {
+      if (isRedirectError(error)) throw error;
+      logActionError("updateBottleFormAction:s3Upload", error);
+      return {
+        success: false,
+        error: getUserErrorMessage(error, "라벨 이미지 업로드에 실패했습니다."),
+        values,
+      };
+    }
+  }
+
+  const { extraInfos: rawExtraInfos, ...rest } = parsed.data;
   try {
-    await patchApiAdminBottlesId(id, { labelImg: hasImage ? labelImg : undefined }, parsed.data, withToken(token));
+    await patchApiAdminBottlesId(
+      id,
+      {
+        ...rest,
+        labelImgKey,
+        extraInfos: parseExtraInfos(rawExtraInfos),
+      },
+      withToken(token),
+    );
   } catch (error) {
     if (isRedirectError(error)) throw error;
     logActionError("updateBottleFormAction", error);
