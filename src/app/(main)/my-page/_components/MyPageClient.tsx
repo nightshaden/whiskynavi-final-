@@ -29,7 +29,7 @@ export default function MyPageClient({ user, orders, businessApplicationHistory 
   };
 
   return (
-    <div className="min-h-screen bg-[#1d2429] px-4 py-8 sm:px-6 md:py-12 lg:px-8">
+    <div className="mt-20 min-h-screen bg-[#1d2429] px-4 py-8 sm:mt-16 sm:px-6 md:py-12 lg:px-8">
       <div className="mx-auto max-w-[1440px]">
         {/* Header */}
         <div className="mb-3 md:mb-8">

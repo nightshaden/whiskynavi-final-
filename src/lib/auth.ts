@@ -144,7 +144,7 @@ export const authOptions: NextAuthOptions = {
   },
 
   callbacks: {
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account, trigger, session }) {
       // 최초 로그인 시 user 정보를 token에 저장
       if (user) {
         token.id = user.id;
@@ -156,6 +156,18 @@ export const authOptions: NextAuthOptions = {
         if (account) {
           token.provider = account.provider;
           token.providerAccountId = account.providerAccountId;
+        }
+        return token;
+      }
+
+      // 클라이언트에서 useSession().update({ user: { name } }) 호출 시
+      // 프로필 변경(닉네임 등)을 JWT에 반영
+      if (trigger === "update" && session?.user) {
+        if (typeof session.user.name === "string") {
+          token.name = session.user.name;
+        }
+        if (typeof session.user.email === "string") {
+          token.email = session.user.email;
         }
         return token;
       }

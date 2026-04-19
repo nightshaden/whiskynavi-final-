@@ -7,6 +7,7 @@ import { FormMessage } from "@/components/ui/form-message";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CalendarDays } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { useActionState, useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { sendEmailVerification, updateProfile, verifyEmailCode } from "../actions";
 
@@ -19,6 +20,7 @@ interface ProfileEditFormProps {
 
 export default function ProfileEditForm({ user, onClose }: ProfileEditFormProps) {
   const [profileState, profileAction, profilePending] = useActionState(updateProfile, { success: false });
+  const { update: updateSession } = useSession();
 
   // Email verification state
   const [email, setEmail] = useState(user.email ?? "");
@@ -30,12 +32,22 @@ export default function ProfileEditForm({ user, onClose }: ProfileEditFormProps)
 
   const emailChanged = email !== (user.email ?? "");
 
-  // 성공 시 모달 닫기
+  // 성공 시 세션 동기화 후 모달 닫기
   useEffect(() => {
-    if (profileState.success) {
+    if (!profileState.success) return;
+
+    const { updatedUsername, updatedEmail } = profileState;
+    const userPatch: { name?: string; email?: string } = {};
+    if (updatedUsername) userPatch.name = updatedUsername;
+    if (updatedEmail) userPatch.email = updatedEmail;
+
+    if (Object.keys(userPatch).length > 0) {
+      // jwt callback의 trigger === "update" 분기를 태워 JWT.name/email을 최신값으로 갱신
+      updateSession({ user: userPatch }).finally(onClose);
+    } else {
       onClose();
     }
-  }, [profileState.success, onClose]);
+  }, [profileState, onClose, updateSession]);
 
   const handleEmailChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

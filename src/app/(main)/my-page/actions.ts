@@ -140,10 +140,17 @@ const updateProfileSchema = z.object({
   emailVerified: z.string(),
 });
 
+type UpdateProfileState = {
+  success: boolean;
+  error?: string;
+  updatedUsername?: string;
+  updatedEmail?: string;
+};
+
 export async function updateProfile(
-  _prevState: { success: boolean; error?: string },
+  _prevState: UpdateProfileState,
   formData: FormData,
-): Promise<{ success: boolean; error?: string }> {
+): Promise<UpdateProfileState> {
   try {
     const token = await getAuthToken();
     if (!token) {
@@ -184,7 +191,11 @@ export async function updateProfile(
     }
 
     revalidatePath("/my-page");
-    return { success: true };
+    return {
+      success: true,
+      updatedUsername: nicknameChanged ? username : undefined,
+      updatedEmail: emailChanged ? email : undefined,
+    };
   } catch (error) {
     if (isRedirectError(error)) throw error;
     return {
