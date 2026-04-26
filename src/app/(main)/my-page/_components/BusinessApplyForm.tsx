@@ -15,7 +15,6 @@ import { submitBusinessApplication } from "../actions";
 
 export default function BusinessApplyForm({ onClose }: { onClose?: () => void }) {
   const [state, formAction, pending] = useActionState(submitBusinessApplication, { success: false });
-  const [isPickupStore, setIsPickupStore] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
   const [openingDate, setOpeningDate] = useState<Date>();
   const [calendarOpen, setCalendarOpen] = useState(false);
@@ -32,37 +31,31 @@ export default function BusinessApplyForm({ onClose }: { onClose?: () => void })
           name="businessName"
           type="text"
           required
-          placeholder="사업자명을 입력하세요"
+          placeholder="사업자명을 입력해주세요"
           className="w-full"
         />
       </div>
 
       <div className="flex items-center space-x-2">
-        <Checkbox
-          id="pickupStore"
-          checked={isPickupStore}
-          onCheckedChange={(checked) => setIsPickupStore(checked as boolean)}
-        />
+        <Checkbox id="pickupStore" name="pickupStore" value="true" />
         <Label htmlFor="pickupStore" className="typo-medium-14 cursor-pointer text-gray-900">
           픽업매장 등록
         </Label>
       </div>
 
-      {isPickupStore && (
-        <div>
-          <Label htmlFor="pickupAddress" className="typo-bold-14 mb-2 block text-gray-900">
-            픽업매장 주소 *
-          </Label>
-          <Input
-            id="pickupAddress"
-            name="pickupAddress"
-            type="text"
-            required
-            placeholder="픽업매장 주소를 입력하세요"
-            className="w-full"
-          />
-        </div>
-      )}
+      <div>
+        <Label htmlFor="pickupAddress" className="typo-bold-14 mb-2 block text-gray-900">
+          사업장 주소 *
+        </Label>
+        <Input
+          id="pickupAddress"
+          name="pickupAddress"
+          type="text"
+          required
+          placeholder="사업장 주소를 입력해주세요"
+          className="w-full"
+        />
+      </div>
 
       <div>
         <Label htmlFor="contact" className="typo-bold-14 mb-2 block text-gray-900">
@@ -73,7 +66,7 @@ export default function BusinessApplyForm({ onClose }: { onClose?: () => void })
           name="contact"
           type="text"
           required
-          placeholder="이메일 또는 전화번호를 입력하세요"
+          placeholder="이메일 또는 전화번호를 입력해주세요"
           className="w-full"
         />
       </div>
@@ -121,7 +114,7 @@ export default function BusinessApplyForm({ onClose }: { onClose?: () => void })
           name="representativeName"
           type="text"
           required
-          placeholder="대표자 이름을 입력하세요"
+          placeholder="대표자 이름을 입력해주세요"
           className="w-full"
         />
       </div>
@@ -135,7 +128,7 @@ export default function BusinessApplyForm({ onClose }: { onClose?: () => void })
           name="businessRegistrationNumber"
           type="text"
           required
-          placeholder="사업자 등록번호를 입력하세요 (예: 123-45-67890)"
+          placeholder="사업자 등록번호를 입력해주세요 (예: 123-45-67890)"
           className="w-full"
         />
       </div>
