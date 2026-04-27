@@ -206,6 +206,9 @@ const businessApplySchema = z.object({
   businessName: z.string().min(1, "사업자 이름을 입력해주세요."),
   contact: z.string().min(1, "연락처를 입력해주세요."),
   businessRegistrationNumber: z.string().min(1, "사업자 등록번호를 입력해주세요."),
+  businessType: z.enum(["HOUSEHOLD", "ENTERTAINMENT"], {
+    message: "사업자 구분을 선택해주세요.",
+  }),
   pickupAddress: z.string().optional().default(""),
   openingDate: z.string().min(1, "개업일을 입력해주세요."),
   representativeName: z.string().min(1, "대표자 이름을 입력해주세요."),
@@ -225,6 +228,7 @@ export async function submitBusinessApplication(
       businessName: formData.get("businessName"),
       contact: formData.get("contact"),
       businessRegistrationNumber: formData.get("businessRegistrationNumber"),
+      businessType: formData.get("businessType"),
       pickupAddress: formData.get("pickupAddress"),
       openingDate: formData.get("openingDate"),
       representativeName: formData.get("representativeName"),
@@ -249,9 +253,12 @@ export async function submitBusinessApplication(
         businessName: parsed.data.businessName,
         contact: parsed.data.contact,
         businessRegistrationNumber: parsed.data.businessRegistrationNumber,
+        businessType: parsed.data.businessType,
         pickupAddress: parsed.data.pickupAddress || "",
         openingDate: parsed.data.openingDate,
         representativeName: parsed.data.representativeName,
+      } as Parameters<typeof postApiUsersBusinessesApplications>[1] & {
+        businessType: "HOUSEHOLD" | "ENTERTAINMENT";
       },
       withToken(token),
     );

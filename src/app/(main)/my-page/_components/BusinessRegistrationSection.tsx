@@ -15,6 +15,17 @@ interface BusinessRegistrationSectionProps {
   businessApplicationHistory: UserBusinessApplicationResponse[] | null;
 }
 
+const BUSINESS_TYPE_LABEL: Record<string, string> = {
+  HOUSEHOLD: "가정용",
+  ENTERTAINMENT: "유흥용",
+};
+
+const formatBusinessType = (application: UserBusinessApplicationResponse & { businessType?: string }): string => {
+  const businessType = application.businessType;
+  if (!businessType) return "-";
+  return BUSINESS_TYPE_LABEL[businessType] ?? businessType;
+};
+
 export default function BusinessRegistrationSection({ businessApplicationHistory }: BusinessRegistrationSectionProps) {
   const isDesktop = useIsDesktop();
   const [isPending, startTransition] = useTransition();
@@ -152,7 +163,8 @@ export default function BusinessRegistrationSection({ businessApplicationHistory
           <div className="flex gap-3">
             <button
               onClick={handleBusinessCancel}
-              className="border border-red-600/30 bg-red-600/20 px-6 py-3 text-sm font-semibold text-red-400 transition-colors hover:bg-red-600/30 md:text-base"
+              disabled={isPending}
+              className="border border-red-600/30 bg-red-600/20 px-6 py-3 text-sm font-semibold text-red-400 transition-colors hover:bg-red-600/30 disabled:opacity-50 md:text-base"
             >
               사업자 등록 취소하기
             </button>
@@ -207,6 +219,7 @@ export default function BusinessRegistrationSection({ businessApplicationHistory
               </div>
               <div className="space-y-1 text-xs text-gray-400 md:text-sm">
                 <p>사업자 등록번호: {latestBusinessApplication.businessRegistrationNumber}</p>
+                <p>사업자 구분: {formatBusinessType(latestBusinessApplication)}</p>
                 <p>대표자: {latestBusinessApplication.representativeName}</p>
                 <p>연락처: {latestBusinessApplication.contact}</p>
                 {latestBusinessApplication.pickupAddress && <p>픽업 주소: {latestBusinessApplication.pickupAddress}</p>}
