@@ -32,6 +32,7 @@ export default function BusinessRegistrationSection({ businessApplicationHistory
   const latestBusinessApplication = businessApplicationHistory?.[0] ?? null;
 
   const isPendingApplication = latestBusinessApplication?.status === "PENDING";
+  const isApprovedApplication = latestBusinessApplication?.status === "APPROVED";
 
   const handleBusinessRegister = () => {
     overlay.open(({ isOpen, close }) => {
@@ -175,6 +176,13 @@ export default function BusinessRegistrationSection({ businessApplicationHistory
               신청내역보기
             </button>
           </div>
+        ) : isApprovedApplication ? (
+          <button
+            onClick={handleBusinessHistory}
+            className="border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/20 md:text-base"
+          >
+            신청내역보기
+          </button>
         ) : (
           <button
             onClick={handleBusinessRegister}

@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { addYears, format, isValid, parse } from "date-fns";
 import { ko } from "date-fns/locale";
 import { CalendarDays, Loader2, Upload } from "lucide-react";
-import { useActionState, useRef, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { submitBusinessApplication } from "../actions";
 
 const parseOpeningDate = (value: string): Date | undefined => {
@@ -21,6 +21,19 @@ const parseOpeningDate = (value: string): Date | undefined => {
   if (!isValid(date) || format(date, "yyyy-MM-dd") !== value) return undefined;
 
   return date;
+};
+
+const formatOpeningDateInput = (value: string, inputType?: string): string => {
+  if (inputType === "deleteContentBackward" && (/^\d{4}$/.test(value) || /^\d{4}-\d{2}$/.test(value))) {
+    return value;
+  }
+
+  const digits = value.replace(/\D/g, "").slice(0, 8);
+  if (digits.length <= 3) return digits;
+  if (digits.length <= 4) return `${digits.slice(0, 4)}-`;
+  if (digits.length <= 5) return `${digits.slice(0, 4)}-${digits.slice(4)}`;
+  if (digits.length <= 6) return `${digits.slice(0, 4)}-${digits.slice(4, 6)}-`;
+  return `${digits.slice(0, 4)}-${digits.slice(4, 6)}-${digits.slice(6)}`;
 };
 
 export default function BusinessApplyForm({ onClose }: { onClose?: () => void }) {
@@ -42,6 +55,12 @@ export default function BusinessApplyForm({ onClose }: { onClose?: () => void })
   const moveCalendarYear = (amount: number) => {
     setCalendarMonth((month) => addYears(month, amount));
   };
+
+  useEffect(() => {
+    if (state.success) {
+      onClose?.();
+    }
+  }, [onClose, state.success]);
 
   return (
     <form action={formAction} className="space-y-4 md:space-y-6">
@@ -110,16 +129,23 @@ export default function BusinessApplyForm({ onClose }: { onClose?: () => void })
             placeholder="yyyy-MM-dd"
             value={openingDateInput}
             onChange={(e) => {
-              const value = e.target.value;
+              const inputType = "inputType" in e.nativeEvent ? String(e.nativeEvent.inputType) : undefined;
+              const value = formatOpeningDateInput(e.target.value, inputType);
               setOpeningDateInput(value);
 
               const parsed = parseOpeningDate(value);
               e.currentTarget.setCustomValidity(
-                value.length === 10 && !parsed ? "yyyy-MM-dd 형식의 올바른 날짜를 입력해주세요." : "",
+                value.length > 0 && value.length !== 10
+                  ? "yyyy-MM-dd 형식으로 입력해주세요."
+                  : value.length === 10 && !parsed
+                    ? "올바른 날짜를 입력해주세요."
+                    : "",
               );
               if (parsed) {
                 setOpeningDate(parsed);
                 setCalendarMonth(parsed);
+              } else {
+                setOpeningDate(undefined);
               }
             }}
             className="w-full"

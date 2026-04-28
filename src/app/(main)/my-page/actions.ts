@@ -71,6 +71,14 @@ const cancelOrderSchema = z.object({
   reason: z.string().max(500).optional(),
 });
 
+const isValidDateString = (value: string): boolean => {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+
+  const [year, month, day] = value.split("-").map(Number);
+  const date = new Date(year, month - 1, day);
+  return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+};
+
 export async function cancelOrder(orderId: number, reason?: string): Promise<{ success: boolean; error?: string }> {
   try {
     const token = await getAuthToken();
@@ -210,7 +218,9 @@ const businessApplySchema = z.object({
     message: "사업자 구분을 선택해주세요.",
   }),
   pickupAddress: z.string().optional().default(""),
-  openingDate: z.string().min(1, "개업일을 입력해주세요."),
+  openingDate: z.string().min(1, "개업일을 입력해주세요.").refine(isValidDateString, {
+    message: "개업일은 yyyy-MM-dd 형식의 올바른 날짜여야 합니다.",
+  }),
   representativeName: z.string().min(1, "대표자 이름을 입력해주세요."),
 });
 
