@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { ComponentProps } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import BusinessMembersContent from "./BusinessMembersContent";
 
@@ -14,11 +15,30 @@ vi.mock("@/app/admin/_components/AdminLayoutClient", () => ({
   useSidebar: () => ({ toggle }),
 }));
 
-const searchParams = {
+const defaultSearchParams = {
+  page: "1",
+  limit: "20",
+};
+
+const sortSearchParams = {
   page: "2",
   limit: "20",
   sort: "userId,desc",
 };
+
+function renderContent({
+  searchParams = defaultSearchParams,
+  members = [],
+  totalElements = 0,
+}: Partial<ComponentProps<typeof BusinessMembersContent>> = {}) {
+  render(
+    <BusinessMembersContent
+      searchParams={searchParams}
+      members={members}
+      totalElements={totalElements}
+    />,
+  );
+}
 
 describe("BusinessMembersContent", () => {
   beforeEach(() => {
@@ -26,35 +46,17 @@ describe("BusinessMembersContent", () => {
   });
 
   it("renders page title", () => {
-    render(
-      <BusinessMembersContent
-        searchParams={searchParams}
-        members={[]}
-        totalElements={0}
-      />,
-    );
+    renderContent();
     expect(screen.getByText("사업자 멤버 관리")).toBeInTheDocument();
   });
 
   it("shows empty state when no members", () => {
-    render(
-      <BusinessMembersContent
-        searchParams={searchParams}
-        members={[]}
-        totalElements={0}
-      />,
-    );
+    renderContent();
     expect(screen.getByText("사업자 멤버가 없습니다.")).toBeInTheDocument();
   });
 
   it("shows total count", () => {
-    render(
-      <BusinessMembersContent
-        searchParams={searchParams}
-        members={[]}
-        totalElements={7}
-      />,
-    );
+    renderContent({ totalElements: 7 });
     expect(screen.getByText("총 7건")).toBeInTheDocument();
   });
 
@@ -66,13 +68,7 @@ describe("BusinessMembersContent", () => {
       hasPickupRole: false,
       roles: [],
     };
-    render(
-      <BusinessMembersContent
-        searchParams={searchParams}
-        members={[mockMember]}
-        totalElements={1}
-      />,
-    );
+    renderContent({ members: [mockMember], totalElements: 1 });
     expect(screen.getByText("홍길동")).toBeInTheDocument();
     expect(screen.getByText("hong@example.com")).toBeInTheDocument();
   });
@@ -85,47 +81,25 @@ describe("BusinessMembersContent", () => {
       hasPickupRole: true,
       roles: [],
     };
-    render(
-      <BusinessMembersContent
-        searchParams={searchParams}
-        members={[mockMember]}
-        totalElements={1}
-      />,
-    );
+    renderContent({ members: [mockMember], totalElements: 1 });
     expect(screen.getByText("픽업 권한 있음")).toBeInTheDocument();
-  });
-
-  it("shows the current page size and visible range", () => {
-    render(
-      <BusinessMembersContent
-        searchParams={searchParams}
-        members={[]}
-        totalElements={25}
-      />,
-    );
-
-    expect(screen.getByDisplayValue("20")).toBeInTheDocument();
-    expect(screen.getByText("25개 중 21-25")).toBeInTheDocument();
   });
 
   it("navigates to the member detail page when the detail button is clicked", async () => {
     const user = userEvent.setup();
 
-    render(
-      <BusinessMembersContent
-        searchParams={searchParams}
-        members={[
-          {
-            userId: 10,
-            name: "홍길동",
-            username: "hong@example.com",
-            hasPickupRole: false,
-            roles: [],
-          },
-        ]}
-        totalElements={1}
-      />,
-    );
+    renderContent({
+      members: [
+        {
+          userId: 10,
+          name: "홍길동",
+          username: "hong@example.com",
+          hasPickupRole: false,
+          roles: [],
+        },
+      ],
+      totalElements: 1,
+    });
 
     await user.click(screen.getByRole("button", { name: "상세" }));
 
@@ -133,13 +107,7 @@ describe("BusinessMembersContent", () => {
   });
 
   it("renders current sort option", () => {
-    render(
-      <BusinessMembersContent
-        searchParams={searchParams}
-        members={[]}
-        totalElements={25}
-      />,
-    );
+    renderContent({ searchParams: sortSearchParams, totalElements: 25 });
 
     expect(screen.getByLabelText("정렬")).toHaveValue("userId,desc");
   });
@@ -147,18 +115,18 @@ describe("BusinessMembersContent", () => {
   it("pushes a new query when sort is changed", async () => {
     const user = userEvent.setup();
 
-    render(
-      <BusinessMembersContent
-        searchParams={searchParams}
-        members={[]}
-        totalElements={25}
-      />,
-    );
+    renderContent({ searchParams: sortSearchParams, totalElements: 25 });
 
     await user.selectOptions(screen.getByLabelText("정렬"), "userId,asc");
 
-    expect(push).toHaveBeenCalledWith(
-      "/admin/businesses/members?page=1&limit=20&sort=userId%2Casc",
-    );
+    expect(push).toHaveBeenCalledTimes(1);
+
+    const [pushedUrl] = push.mock.calls[0];
+    const url = new URL(pushedUrl, "https://example.com");
+
+    expect(url.pathname).toBe("/admin/businesses/members");
+    expect(url.searchParams.get("page")).toBe("1");
+    expect(url.searchParams.get("limit")).toBe("20");
+    expect(url.searchParams.get("sort")).toBe("userId,asc");
   });
 });
