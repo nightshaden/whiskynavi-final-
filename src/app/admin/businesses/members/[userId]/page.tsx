@@ -14,17 +14,18 @@ export default async function BusinessMemberDetailPage({
   const { userId } = await params;
   const token = await getAuthToken();
 
+  let res;
   try {
-    const res = await getApiAdminBusinessesMembersUserid(
+    res = await getApiAdminBusinessesMembersUserid(
       Number(userId),
       withToken(token),
     );
-
-    return <BusinessMemberDetailContent member={res.data} />;
   } catch (error) {
     if (error instanceof Error && error.message.startsWith("[404]")) {
       notFound();
     }
     throw error;
   }
+
+  return <BusinessMemberDetailContent member={res.data} />;
 }

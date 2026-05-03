@@ -17,8 +17,10 @@ export default async function BusinessApplicationDetailPage({
   const { applicationId } = await params;
   const token = await getAuthToken();
 
+  let applicationRes;
+  let auditLogsRes;
   try {
-    const [applicationRes, auditLogsRes] = await Promise.all([
+    [applicationRes, auditLogsRes] = await Promise.all([
       getApiAdminBusinessesApplicationsApplicationid(
         Number(applicationId),
         withToken(token),
@@ -28,17 +30,17 @@ export default async function BusinessApplicationDetailPage({
         withToken(token),
       ),
     ]);
-
-    return (
-      <BusinessApplicationDetailContent
-        application={applicationRes.data}
-        auditLogs={auditLogsRes.data}
-      />
-    );
   } catch (error) {
     if (error instanceof Error && error.message.startsWith("[404]")) {
       notFound();
     }
     throw error;
   }
+
+  return (
+    <BusinessApplicationDetailContent
+      application={applicationRes.data}
+      auditLogs={auditLogsRes.data}
+    />
+  );
 }

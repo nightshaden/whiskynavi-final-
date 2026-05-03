@@ -55,7 +55,7 @@ export const Icon${name}: React.FC<IconProps> = ({ size = 20, title, ...rest }) 
   //   lines.push(`\nexport { ${exports} };\n`);
 
   fs.writeFileSync(OUTPUT, lines.join("\n"), "utf8");
-  // eslint-disable-next-line no-console
+   
   console.log(`Generated: ${path.relative(process.cwd(), OUTPUT)} with ${files.length} icons.`);
 }
 
