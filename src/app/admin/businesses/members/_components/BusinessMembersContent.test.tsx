@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { ComponentProps } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { BusinessMembersSort } from "../sort";
 import BusinessMembersContent from "./BusinessMembersContent";
 
 const push = vi.fn();
@@ -23,7 +24,7 @@ const defaultSearchParams = {
 const sortSearchParams = {
   page: "2",
   limit: "20",
-  sort: "userId,desc",
+  sort: "userId,desc" as BusinessMembersSort,
 };
 
 function renderContent({

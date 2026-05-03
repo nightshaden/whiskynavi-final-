@@ -52,7 +52,7 @@ describe("admin business member actions", () => {
   });
 
   it("returns auth error when update is called without token", async () => {
-    mockedGetAuthToken.mockResolvedValue(null);
+    mockedGetAuthToken.mockResolvedValue(undefined);
 
     await expect(
       updateBusinessAction(10, {
@@ -167,7 +167,7 @@ describe("admin business member actions", () => {
   });
 
   it("returns auth error when grant is called without token", async () => {
-    mockedGetAuthToken.mockResolvedValue(null);
+    mockedGetAuthToken.mockResolvedValue(undefined);
 
     await expect(grantPickupRoleAction(10)).resolves.toEqual({
       success: false,
@@ -227,7 +227,7 @@ describe("admin business member actions", () => {
   });
 
   it("returns auth error when revoke is called without token", async () => {
-    mockedGetAuthToken.mockResolvedValue(null);
+    mockedGetAuthToken.mockResolvedValue(undefined);
 
     await expect(revokePickupRoleAction(10)).resolves.toEqual({
       success: false,
