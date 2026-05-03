@@ -52,6 +52,14 @@ export interface AdminBusinessApplicationDecisionRequest {
   rejectReason?: string;
 }
 
+export type AdminBusinessApplicationResponseBusinessType = typeof AdminBusinessApplicationResponseBusinessType[keyof typeof AdminBusinessApplicationResponseBusinessType];
+
+
+export const AdminBusinessApplicationResponseBusinessType = {
+  HOUSEHOLD: 'HOUSEHOLD',
+  ENTERTAINMENT: 'ENTERTAINMENT',
+} as const;
+
 export type AdminBusinessApplicationResponseStatus = typeof AdminBusinessApplicationResponseStatus[keyof typeof AdminBusinessApplicationResponseStatus];
 
 
@@ -68,6 +76,7 @@ export interface AdminBusinessApplicationResponse {
   businessRegistrationNumber?: string;
   businessStatus?: string;
   businessStatusCode?: string;
+  businessType?: AdminBusinessApplicationResponseBusinessType;
   contact?: string;
   createdAt?: string;
   documentDownloadUrl?: string;
@@ -83,6 +92,41 @@ export interface AdminBusinessApplicationResponse {
   updatedAt?: string;
   userId?: number;
 }
+
+/**
+ * 사업 사용 목적 유형입니다.
+ */
+export type AdminBusinessUpdateRequestBusinessType = typeof AdminBusinessUpdateRequestBusinessType[keyof typeof AdminBusinessUpdateRequestBusinessType];
+
+
+export const AdminBusinessUpdateRequestBusinessType = {
+  HOUSEHOLD: 'HOUSEHOLD',
+  ENTERTAINMENT: 'ENTERTAINMENT',
+} as const;
+
+/**
+ * 관리자 비즈니스 정보 수정 요청입니다. null 필드는 기존 값을 유지합니다.
+ */
+export interface AdminBusinessUpdateRequest {
+  /** 사업장 이름입니다. */
+  businessName?: string;
+  /** 사업자등록번호입니다. */
+  businessRegistrationNumber?: string;
+  /** 사업 사용 목적 유형입니다. */
+  businessType?: AdminBusinessUpdateRequestBusinessType;
+  /** 문의 연락처입니다. 빈 값이면 저장 값을 비웁니다. */
+  contact?: string;
+  /** 픽업 주소 또는 위치 설명입니다. */
+  pickupAddress?: string;
+}
+
+export type AdminBusinessUserDetailResponseBusinessType = typeof AdminBusinessUserDetailResponseBusinessType[keyof typeof AdminBusinessUserDetailResponseBusinessType];
+
+
+export const AdminBusinessUserDetailResponseBusinessType = {
+  HOUSEHOLD: 'HOUSEHOLD',
+  ENTERTAINMENT: 'ENTERTAINMENT',
+} as const;
 
 export type AdminBusinessUserDetailResponseRolesItem = typeof AdminBusinessUserDetailResponseRolesItem[keyof typeof AdminBusinessUserDetailResponseRolesItem];
 
@@ -106,6 +150,7 @@ export interface AdminBusinessUserDetailResponse {
   businessCreatedAt?: string;
   businessName?: string;
   businessRegistrationNumber?: string;
+  businessType?: AdminBusinessUserDetailResponseBusinessType;
   businessUpdatedAt?: string;
   contact?: string;
   hasPickupRole?: boolean;
@@ -158,6 +203,32 @@ export interface AdminUserBanRequest {
 }
 
 /**
+ * 주문 배송 정보
+ */
+export interface OrderDeliveryResponse {
+  /** 배송지 주소 */
+  address?: string;
+  /** 배송 완료 시각 */
+  deliveredAt?: string;
+  /** 배송 메모 */
+  deliveryMemo?: string;
+  /** 배송 방식 */
+  deliveryMethod?: string;
+  /** 배송 정보 ID */
+  id?: number;
+  /** 주문 ID */
+  orderId?: number;
+  /** 수령인 이름 */
+  receiverName?: string;
+  /** 수령인 연락처 */
+  receiverPhone?: string;
+  /** 발송 시각 */
+  shippedAt?: string;
+  /** 운송장 번호 */
+  trackingNumber?: string;
+}
+
+/**
  * 주문 상태
  */
 export type OrderResponseOrderStatus = typeof OrderResponseOrderStatus[keyof typeof OrderResponseOrderStatus];
@@ -197,7 +268,7 @@ export type OrderResponseProductType = typeof OrderResponseProductType[keyof typ
 
 export const OrderResponseProductType = {
   BOTTLE: 'BOTTLE',
-  MERCH: 'MERCH',
+  ITEM: 'ITEM',
 } as const;
 
 /**
@@ -224,6 +295,7 @@ export interface OrderResponse {
   cancelReason?: string;
   /** 생성 시각 */
   createdAt?: string;
+  delivery?: OrderDeliveryResponse;
   /** 주문 ID */
   id?: number;
   /** 수입사 ID */
@@ -573,6 +645,11 @@ export interface BottleAdminParameterValues {
   distilleries?: string[];
   maltTypes?: string[];
   series?: string[];
+}
+
+export interface BottleAdminReferenceValues {
+  caskTypes?: string[];
+  distilleries?: string[];
 }
 
 /**
@@ -1196,7 +1273,10 @@ export interface BottleSearchRequest {
 export interface ChangePasswordRequest {
   /** @minLength 1 */
   currentPassword?: string;
-  /** @minLength 1 */
+  /**
+   * @minLength 6
+   * @maxLength 100
+   */
   newPassword?: string;
 }
 
@@ -1215,6 +1295,104 @@ export interface CreatePostRequest {
    * @maxLength 200
    */
   title?: string;
+}
+
+/**
+ * 배송지 주소록 저장 요청
+ */
+export interface DeliveryAddressRequest {
+  /**
+   * 기본 주소
+   * @minLength 0
+   * @maxLength 500
+   */
+  address?: string;
+  /**
+   * 상세 주소
+   * @minLength 0
+   * @maxLength 500
+   */
+  addressDetail?: string;
+  /**
+   * 배송지 이름
+   * @minLength 0
+   * @maxLength 100
+   */
+  addressName?: string;
+  /** 기본 배송지 여부 */
+  defaultAddress?: boolean;
+  /**
+   * 배송 요청 메모
+   * @minLength 0
+   * @maxLength 500
+   */
+  deliveryMemo?: string;
+  /**
+   * 우편번호
+   * @minLength 0
+   * @maxLength 20
+   */
+  postalCode?: string;
+  /**
+   * 수령인 이름
+   * @minLength 0
+   * @maxLength 100
+   */
+  receiverName?: string;
+  /**
+   * 수령인 연락처
+   * @minLength 0
+   * @maxLength 20
+   */
+  receiverPhone?: string;
+}
+
+/**
+ * 배송지 주소록 응답
+ */
+export interface DeliveryAddressResponse {
+  address?: string;
+  addressDetail?: string;
+  addressName?: string;
+  createdAt?: string;
+  defaultAddress?: boolean;
+  deliveryMemo?: string;
+  id?: number;
+  postalCode?: string;
+  receiverName?: string;
+  receiverPhone?: string;
+  updatedAt?: string;
+}
+
+/**
+ * 기부자 인원수 조회 응답
+ */
+export interface DonationCountResponse {
+  /** 기부자 인원수 */
+  count?: number;
+}
+
+/**
+ * 기부 링크 조회 응답
+ */
+export interface DonationLinkResponse {
+  campaignId?: number;
+  campaignTitle?: string;
+  id?: number;
+  title?: string;
+  url?: string;
+}
+
+/**
+ * 기부 신청자 조회 응답
+ */
+export interface DonationResponse {
+  campaignId?: number;
+  campaignTitle?: string;
+  email?: string;
+  id?: number;
+  name?: string;
+  phoneNumber?: string;
 }
 
 /**
@@ -1263,16 +1441,445 @@ export interface EmailVerificationVerifyRequest {
   email?: string;
 }
 
+/**
+ * 모금 캠페인 조회 응답
+ */
+export interface FundraisingCampaignResponse {
+  active?: boolean;
+  currentAmount?: number;
+  description?: string;
+  googleFormLink?: string;
+  id?: number;
+  imageUrl?: string;
+  targetAmount?: number;
+  title?: string;
+}
+
+export interface HealthCheckResponse {
+  checkedAt?: string;
+  service?: string;
+  status?: string;
+}
+
+/**
+ * 추가 정보 JSON
+ */
+export type ItemAdminResponseExtraInfos = {[key: string]: { [key: string]: unknown }};
+
+/**
+ * 관리자 일반 상품 응답
+ */
+export interface ItemAdminResponse {
+  /** 소비자가 */
+  consumerPrice?: number;
+  /** 생성 시각 */
+  createdAt?: string;
+  /** 상품 설명 */
+  description?: string;
+  /** 추가 정보 JSON */
+  extraInfos?: ItemAdminResponseExtraInfos;
+  /** 상품 ID */
+  id?: number;
+  /** 대표 이미지 S3 키 */
+  imageKey?: string;
+  /** 대표 이미지 URL */
+  imageUrl?: string;
+  /** 상품명 */
+  name?: string;
+  /** 재고 수량 */
+  stockQuantity?: number;
+  /** 공급가 */
+  supplyPrice?: number;
+  /** 수정 시각 */
+  updatedAt?: string;
+  /** 노출 여부 */
+  visible?: boolean;
+}
+
+/**
+ * 추가 정보 JSON
+ */
+export type ItemCreateRequestExtraInfos = {[key: string]: { [key: string]: unknown }};
+
+/**
+ * 일반 상품 생성 요청
+ */
+export interface ItemCreateRequest {
+  /** 소비자가 */
+  consumerPrice?: number;
+  /** 상품 설명 */
+  description?: string;
+  /** 추가 정보 JSON */
+  extraInfos?: ItemCreateRequestExtraInfos;
+  /**
+   * 대표 이미지 S3 키
+   * @minLength 0
+   * @maxLength 500
+   */
+  imageKey?: string;
+  /**
+   * 상품명
+   * @minLength 0
+   * @maxLength 200
+   */
+  name?: string;
+  /** 재고 수량 */
+  stockQuantity?: number;
+  /** 공급가 */
+  supplyPrice?: number;
+  /** 노출 여부 */
+  visible?: boolean;
+}
+
+/**
+ * 추가 정보 JSON
+ */
+export type ItemPatchRequestExtraInfos = {[key: string]: { [key: string]: unknown }};
+
+/**
+ * 일반 상품 수정 요청
+ */
+export interface ItemPatchRequest {
+  /** 소비자가 */
+  consumerPrice?: number;
+  /** 상품 설명 */
+  description?: string;
+  /** 추가 정보 JSON */
+  extraInfos?: ItemPatchRequestExtraInfos;
+  /**
+   * 대표 이미지 S3 키
+   * @minLength 0
+   * @maxLength 500
+   */
+  imageKey?: string;
+  /**
+   * 상품명
+   * @minLength 0
+   * @maxLength 200
+   */
+  name?: string;
+  /** 재고 수량 */
+  stockQuantity?: number;
+  /** 공급가 */
+  supplyPrice?: number;
+  /** 노출 여부 */
+  visible?: boolean;
+}
+
+export interface ItemReservationApplicantResponse {
+  email?: string;
+  name?: string;
+  phone?: string;
+  roles?: string[];
+  userId?: number;
+  username?: string;
+}
+
+export type ItemReservationApplicationPublicResponseStatus = typeof ItemReservationApplicationPublicResponseStatus[keyof typeof ItemReservationApplicationPublicResponseStatus];
+
+
+export const ItemReservationApplicationPublicResponseStatus = {
+  APPLIED: 'APPLIED',
+  CANCELLED: 'CANCELLED',
+  CONFIRMED: 'CONFIRMED',
+  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
+  WAITING_PICKUP: 'WAITING_PICKUP',
+  RECEIVED: 'RECEIVED',
+  REJECTED: 'REJECTED',
+} as const;
+
+export interface ItemReservationApplicationPublicResponse {
+  confirmedQuantity?: number;
+  createdAt?: string;
+  id?: number;
+  itemId?: number;
+  itemImgUrl?: string;
+  itemName?: string;
+  noticeId?: number;
+  pickupAddress?: string;
+  pickupBusinessName?: string;
+  pickupUserBusinessId?: number;
+  quantity?: number;
+  status?: ItemReservationApplicationPublicResponseStatus;
+  updatedAt?: string;
+}
+
+export interface ItemReservationApplicationRequest {
+  /** @minimum 1 */
+  quantity: number;
+  userBusinessId: number;
+}
+
+export type ItemReservationApplicationResponseStatus = typeof ItemReservationApplicationResponseStatus[keyof typeof ItemReservationApplicationResponseStatus];
+
+
+export const ItemReservationApplicationResponseStatus = {
+  APPLIED: 'APPLIED',
+  CANCELLED: 'CANCELLED',
+  CONFIRMED: 'CONFIRMED',
+  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
+  WAITING_PICKUP: 'WAITING_PICKUP',
+  RECEIVED: 'RECEIVED',
+  REJECTED: 'REJECTED',
+} as const;
+
+export interface ItemReservationPickupBusinessResponse {
+  businessId?: number;
+  businessName?: string;
+  contact?: string;
+  pickupAddress?: string;
+  user?: ItemReservationApplicantResponse;
+}
+
+export interface ItemReservationApplicationResponse {
+  applicantUser?: ItemReservationApplicantResponse;
+  confirmedQuantity?: number;
+  createdAt?: string;
+  id?: number;
+  itemId?: number;
+  itemImgUrl?: string;
+  itemName?: string;
+  noticeId?: number;
+  pickupBusiness?: ItemReservationPickupBusinessResponse;
+  pickupUserBusinessId?: number;
+  quantity?: number;
+  status?: ItemReservationApplicationResponseStatus;
+  updatedAt?: string;
+}
+
+export interface ItemReservationAutoConfirmResponse {
+  applications?: ItemReservationApplicationResponse[];
+  availableQuantityAfterConfirm?: number;
+  availableQuantityBeforeConfirm?: number;
+  confirmedApplicationCount?: number;
+  noticeId?: number;
+  rejectedApplicationCount?: number;
+  targetApplicationCount?: number;
+  totalConfirmedQuantity?: number;
+  totalRequestedQuantity?: number;
+}
+
+export interface ItemReservationDecisionRequest {
+  /** @minimum 1 */
+  confirmedQuantity: number;
+}
+
+export type ItemReservationGradeConditionRequestRequiredRole = typeof ItemReservationGradeConditionRequestRequiredRole[keyof typeof ItemReservationGradeConditionRequestRequiredRole];
+
+
+export const ItemReservationGradeConditionRequestRequiredRole = {
+  ROLE_GUEST: 'ROLE_GUEST',
+  ROLE_USER: 'ROLE_USER',
+  ROLE_ADMIN: 'ROLE_ADMIN',
+  ROLE_SUPER_ADMIN: 'ROLE_SUPER_ADMIN',
+  ROLE_CONSUMER: 'ROLE_CONSUMER',
+  ROLE_WHISKYNAVI_MEMBER: 'ROLE_WHISKYNAVI_MEMBER',
+  ROLE_WHISKYTALES_MEMBER: 'ROLE_WHISKYTALES_MEMBER',
+  ROLE_BLIND_MEMBER: 'ROLE_BLIND_MEMBER',
+  ROLE_BUSINESS: 'ROLE_BUSINESS',
+  ROLE_TRAILNTALE_BUSINESS: 'ROLE_TRAILNTALE_BUSINESS',
+  ROLE_COMMUNITY_BUSINESS: 'ROLE_COMMUNITY_BUSINESS',
+  ROLE_PICK_UP_BUSINESS: 'ROLE_PICK_UP_BUSINESS',
+} as const;
+
+export interface ItemReservationGradeConditionRequest {
+  applicableFrom: string;
+  requiredRole: ItemReservationGradeConditionRequestRequiredRole;
+}
+
+export type ItemReservationGradeConditionResponseRequiredRole = typeof ItemReservationGradeConditionResponseRequiredRole[keyof typeof ItemReservationGradeConditionResponseRequiredRole];
+
+
+export const ItemReservationGradeConditionResponseRequiredRole = {
+  ROLE_GUEST: 'ROLE_GUEST',
+  ROLE_USER: 'ROLE_USER',
+  ROLE_ADMIN: 'ROLE_ADMIN',
+  ROLE_SUPER_ADMIN: 'ROLE_SUPER_ADMIN',
+  ROLE_CONSUMER: 'ROLE_CONSUMER',
+  ROLE_WHISKYNAVI_MEMBER: 'ROLE_WHISKYNAVI_MEMBER',
+  ROLE_WHISKYTALES_MEMBER: 'ROLE_WHISKYTALES_MEMBER',
+  ROLE_BLIND_MEMBER: 'ROLE_BLIND_MEMBER',
+  ROLE_BUSINESS: 'ROLE_BUSINESS',
+  ROLE_TRAILNTALE_BUSINESS: 'ROLE_TRAILNTALE_BUSINESS',
+  ROLE_COMMUNITY_BUSINESS: 'ROLE_COMMUNITY_BUSINESS',
+  ROLE_PICK_UP_BUSINESS: 'ROLE_PICK_UP_BUSINESS',
+} as const;
+
+export interface ItemReservationGradeConditionResponse {
+  applicableFrom?: string;
+  requiredRole?: ItemReservationGradeConditionResponseRequiredRole;
+}
+
+export interface ItemReservationNoticePublicResponse {
+  availableQuantity?: number;
+  createdAt?: string;
+  gradeConditions?: ItemReservationGradeConditionResponse[];
+  id?: number;
+  itemBrand?: string;
+  itemId?: number;
+  itemImgUrl?: string;
+  itemName?: string;
+  maxOrderQuantity?: number;
+  price?: number;
+  reservationEndAt?: string;
+  reservationStartAt?: string;
+  updatedAt?: string;
+}
+
+export type ItemReservationNoticeRequestGradeConditionsItemRequiredRole = typeof ItemReservationNoticeRequestGradeConditionsItemRequiredRole[keyof typeof ItemReservationNoticeRequestGradeConditionsItemRequiredRole];
+
+
+export const ItemReservationNoticeRequestGradeConditionsItemRequiredRole = {
+  ROLE_GUEST: 'ROLE_GUEST',
+  ROLE_USER: 'ROLE_USER',
+  ROLE_ADMIN: 'ROLE_ADMIN',
+  ROLE_SUPER_ADMIN: 'ROLE_SUPER_ADMIN',
+  ROLE_CONSUMER: 'ROLE_CONSUMER',
+  ROLE_WHISKYNAVI_MEMBER: 'ROLE_WHISKYNAVI_MEMBER',
+  ROLE_WHISKYTALES_MEMBER: 'ROLE_WHISKYTALES_MEMBER',
+  ROLE_BLIND_MEMBER: 'ROLE_BLIND_MEMBER',
+  ROLE_BUSINESS: 'ROLE_BUSINESS',
+  ROLE_TRAILNTALE_BUSINESS: 'ROLE_TRAILNTALE_BUSINESS',
+  ROLE_COMMUNITY_BUSINESS: 'ROLE_COMMUNITY_BUSINESS',
+  ROLE_PICK_UP_BUSINESS: 'ROLE_PICK_UP_BUSINESS',
+} as const;
+
+export type ItemReservationNoticeRequestGradeConditionsItem = {
+  applicableFrom: string;
+  requiredRole: ItemReservationNoticeRequestGradeConditionsItemRequiredRole;
+};
+
+export interface ItemReservationNoticeRequest {
+  availableQuantity?: number;
+  /** @minItems 1 */
+  gradeConditions?: ItemReservationNoticeRequestGradeConditionsItem[];
+  itemId: number;
+  maxOrderQuantity?: number;
+  /** @minimum 0 */
+  price: number;
+  reservationEndAt: string;
+  reservationStartAt: string;
+}
+
+export interface ItemReservationNoticeResponse {
+  appliedQuantity?: number;
+  approvedQuantity?: number;
+  availableQuantity?: number;
+  createdAt?: string;
+  gradeConditions?: ItemReservationGradeConditionResponse[];
+  id?: number;
+  itemBrand?: string;
+  itemId?: number;
+  itemImgUrl?: string;
+  itemName?: string;
+  maxOrderQuantity?: number;
+  price?: number;
+  reservationEndAt?: string;
+  reservationStartAt?: string;
+  updatedAt?: string;
+}
+
+export interface ItemReservationPickupApplicantResponse {
+  email?: string;
+  name?: string;
+  nickname?: string;
+  phone?: string;
+}
+
+export type ItemReservationPickupApplicationResponseStatus = typeof ItemReservationPickupApplicationResponseStatus[keyof typeof ItemReservationPickupApplicationResponseStatus];
+
+
+export const ItemReservationPickupApplicationResponseStatus = {
+  APPLIED: 'APPLIED',
+  CANCELLED: 'CANCELLED',
+  CONFIRMED: 'CONFIRMED',
+  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
+  WAITING_PICKUP: 'WAITING_PICKUP',
+  RECEIVED: 'RECEIVED',
+  REJECTED: 'REJECTED',
+} as const;
+
+export interface ItemReservationPickupApplicationResponse {
+  applicantUser?: ItemReservationPickupApplicantResponse;
+  confirmedQuantity?: number;
+  createdAt?: string;
+  id?: number;
+  itemId?: number;
+  itemImgUrl?: string;
+  itemName?: string;
+  noticeId?: number;
+  quantity?: number;
+  status?: ItemReservationPickupApplicationResponseStatus;
+  updatedAt?: string;
+}
+
+export type ItemReservationPickupBulkUpdateResponseStatus = typeof ItemReservationPickupBulkUpdateResponseStatus[keyof typeof ItemReservationPickupBulkUpdateResponseStatus];
+
+
+export const ItemReservationPickupBulkUpdateResponseStatus = {
+  APPLIED: 'APPLIED',
+  CANCELLED: 'CANCELLED',
+  CONFIRMED: 'CONFIRMED',
+  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
+  WAITING_PICKUP: 'WAITING_PICKUP',
+  RECEIVED: 'RECEIVED',
+  REJECTED: 'REJECTED',
+} as const;
+
+export interface ItemReservationPickupBulkUpdateResponse {
+  applicationIds?: number[];
+  itemId?: number;
+  noticeId?: number;
+  status?: ItemReservationPickupBulkUpdateResponseStatus;
+  updatedCount?: number;
+}
+
+export interface ItemReservationPickupWaitingPickupRequest {
+  /** 단건 변경 시 사용하는 예약 신청 ID */
+  applicationId?: number;
+  /** 여러 건을 한 번에 변경할 때 사용하는 예약 신청 ID 목록 */
+  applicationIds?: number[];
+  /** 특정 아이템 기준으로 일괄 변경할 때 사용하는 아이템 ID */
+  itemId?: number;
+  /** 같은 아이템이 여러 공고에 걸쳐 있을 때 범위를 좁히는 예약 공고 ID */
+  noticeId?: number;
+}
+
+/**
+ * 추가 정보 JSON
+ */
+export type ItemResponseExtraInfos = {[key: string]: { [key: string]: unknown }};
+
+/**
+ * 일반 상품 응답
+ */
+export interface ItemResponse {
+  /** 소비자가 */
+  consumerPrice?: number;
+  /** 생성 시각 */
+  createdAt?: string;
+  /** 상품 설명 */
+  description?: string;
+  /** 추가 정보 JSON */
+  extraInfos?: ItemResponseExtraInfos;
+  /** 상품 ID */
+  id?: number;
+  /** 대표 이미지 URL */
+  imageUrl?: string;
+  /** 상품명 */
+  name?: string;
+  /** 재고 수량 */
+  stockQuantity?: number;
+  /** 수정 시각 */
+  updatedAt?: string;
+}
+
 export interface KvStoreCreateRequest {
   /**
    * @minLength 0
    * @maxLength 32
    */
   key?: string;
-  /**
-   * @minLength 0
-   * @maxLength 255
-   */
   value?: string;
 }
 
@@ -1402,7 +2009,7 @@ export type OrderCreateRequestProductType = typeof OrderCreateRequestProductType
 
 export const OrderCreateRequestProductType = {
   BOTTLE: 'BOTTLE',
-  MERCH: 'MERCH',
+  ITEM: 'ITEM',
 } as const;
 
 /**
@@ -1423,6 +2030,12 @@ export const OrderCreateRequestSaleType = {
 export interface OrderCreateRequest {
   /** 사업장 ID */
   businessId?: number;
+  /**
+   * 일반 배송 주문지 주소
+   * @minLength 0
+   * @maxLength 500
+   */
+  deliveryAddress?: string;
   /** 수입사 ID */
   importerId?: number;
   /** 상품명 */
@@ -1457,11 +2070,63 @@ export interface OrderCreateRequest {
   userId?: number;
 }
 
+/**
+ * 주문 배송 정보 수정 요청
+ */
+export interface OrderDeliveryUpdateRequest {
+  /**
+   * 배송지 주소
+   * @minLength 0
+   * @maxLength 500
+   */
+  address?: string;
+  /** 배송 완료 시각 */
+  deliveredAt?: string;
+  /**
+   * 배송 메모
+   * @minLength 0
+   * @maxLength 500
+   */
+  deliveryMemo?: string;
+  /**
+   * 배송 방식
+   * @minLength 0
+   * @maxLength 30
+   */
+  deliveryMethod?: string;
+  /**
+   * 수령인 이름
+   * @minLength 0
+   * @maxLength 100
+   */
+  receiverName?: string;
+  /**
+   * 수령인 연락처
+   * @minLength 0
+   * @maxLength 20
+   */
+  receiverPhone?: string;
+  /** 발송 시각 */
+  shippedAt?: string;
+  /**
+   * 운송장 번호
+   * @minLength 0
+   * @maxLength 100
+   */
+  trackingNumber?: string;
+}
+
 export interface OrderPaymentConfirmRequest {
   /** 토스페이먼츠 승인 금액 */
   amount: number;
   /** 사업자 ID */
   businessId?: number;
+  /**
+   * 일반 배송 주문지 주소
+   * @minLength 0
+   * @maxLength 500
+   */
+  deliveryAddress?: string;
   /** 수입사 ID */
   importerId?: number;
   /**
@@ -1555,6 +2220,12 @@ export interface OrderStatusUpdateRequest {
 export interface OrderTicketIssueRequest {
   /** 사업자 ID */
   businessId?: number;
+  /**
+   * 일반 배송 주문지 주소
+   * @minLength 0
+   * @maxLength 500
+   */
+  deliveryAddress?: string;
   /** 수입사 ID */
   importerId?: number;
   /**
@@ -1809,6 +2480,146 @@ export interface PageBottleResponse {
   totalPages?: number;
 }
 
+export interface PageDonationLinkResponse {
+  content?: DonationLinkResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+export interface PageDonationResponse {
+  content?: DonationResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+export interface PageFundraisingCampaignResponse {
+  content?: FundraisingCampaignResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+export interface PageItemAdminResponse {
+  content?: ItemAdminResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+export interface PageItemReservationApplicationPublicResponse {
+  content?: ItemReservationApplicationPublicResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+export interface PageItemReservationApplicationResponse {
+  content?: ItemReservationApplicationResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+export interface PageItemReservationNoticePublicResponse {
+  content?: ItemReservationNoticePublicResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+export interface PageItemReservationNoticeResponse {
+  content?: ItemReservationNoticeResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+export interface PageItemReservationPickupApplicationResponse {
+  content?: ItemReservationPickupApplicationResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+export interface PageItemResponse {
+  content?: ItemResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
 export interface PageOrderResponse {
   content?: OrderResponse[];
   empty?: boolean;
@@ -1823,8 +2634,17 @@ export interface PageOrderResponse {
   totalPages?: number;
 }
 
+export type PickupLocationResponseBusinessType = typeof PickupLocationResponseBusinessType[keyof typeof PickupLocationResponseBusinessType];
+
+
+export const PickupLocationResponseBusinessType = {
+  HOUSEHOLD: 'HOUSEHOLD',
+  ENTERTAINMENT: 'ENTERTAINMENT',
+} as const;
+
 export interface PickupLocationResponse {
   businessName?: string;
+  businessType?: PickupLocationResponseBusinessType;
   contact?: string;
   createdAt?: string;
   id?: number;
@@ -1888,7 +2708,7 @@ export type SaleAnnouncementResponseProductType = typeof SaleAnnouncementRespons
 
 export const SaleAnnouncementResponseProductType = {
   BOTTLE: 'BOTTLE',
-  MERCH: 'MERCH',
+  ITEM: 'ITEM',
 } as const;
 
 /**
@@ -1968,6 +2788,14 @@ export interface PageSaleAnnouncementResponse {
   totalPages?: number;
 }
 
+export type UserBusinessApplicationResponseBusinessType = typeof UserBusinessApplicationResponseBusinessType[keyof typeof UserBusinessApplicationResponseBusinessType];
+
+
+export const UserBusinessApplicationResponseBusinessType = {
+  HOUSEHOLD: 'HOUSEHOLD',
+  ENTERTAINMENT: 'ENTERTAINMENT',
+} as const;
+
 export type UserBusinessApplicationResponseStatus = typeof UserBusinessApplicationResponseStatus[keyof typeof UserBusinessApplicationResponseStatus];
 
 
@@ -1983,6 +2811,7 @@ export interface UserBusinessApplicationResponse {
   businessRegistrationNumber?: string;
   businessStatus?: string;
   businessStatusCode?: string;
+  businessType?: UserBusinessApplicationResponseBusinessType;
   contact?: string;
   createdAt?: string;
   id?: number;
@@ -2473,7 +3302,7 @@ export type SaleAnnouncementCreateRequestProductType = typeof SaleAnnouncementCr
 
 export const SaleAnnouncementCreateRequestProductType = {
   BOTTLE: 'BOTTLE',
-  MERCH: 'MERCH',
+  ITEM: 'ITEM',
 } as const;
 
 /**
@@ -2549,7 +3378,7 @@ export type SaleAnnouncementUpdateRequestProductType = typeof SaleAnnouncementUp
 
 export const SaleAnnouncementUpdateRequestProductType = {
   BOTTLE: 'BOTTLE',
-  MERCH: 'MERCH',
+  ITEM: 'ITEM',
 } as const;
 
 /**
@@ -2785,6 +3614,14 @@ export interface UserBusinessApplicationCancelRequest {
   cancelReason?: string;
 }
 
+export type UserBusinessApplicationSubmitResponseBusinessType = typeof UserBusinessApplicationSubmitResponseBusinessType[keyof typeof UserBusinessApplicationSubmitResponseBusinessType];
+
+
+export const UserBusinessApplicationSubmitResponseBusinessType = {
+  HOUSEHOLD: 'HOUSEHOLD',
+  ENTERTAINMENT: 'ENTERTAINMENT',
+} as const;
+
 export type UserBusinessApplicationSubmitResponseStatus = typeof UserBusinessApplicationSubmitResponseStatus[keyof typeof UserBusinessApplicationSubmitResponseStatus];
 
 
@@ -2800,6 +3637,7 @@ export interface UserBusinessApplicationSubmitResponse {
   businessRegistrationNumber?: string;
   businessStatus?: string;
   businessStatusCode?: string;
+  businessType?: UserBusinessApplicationSubmitResponseBusinessType;
   contact?: string;
   createdAt?: string;
   id?: number;
@@ -3301,16 +4139,238 @@ size?: number;
 sort?: string[];
 };
 
+/**
+ * 사업 사용 목적 유형입니다.
+ */
+export type PatchApiAdminBusinessesMembersUseridBusinessBodyBusinessType = typeof PatchApiAdminBusinessesMembersUseridBusinessBodyBusinessType[keyof typeof PatchApiAdminBusinessesMembersUseridBusinessBodyBusinessType];
+
+
+export const PatchApiAdminBusinessesMembersUseridBusinessBodyBusinessType = {
+  HOUSEHOLD: 'HOUSEHOLD',
+  ENTERTAINMENT: 'ENTERTAINMENT',
+} as const;
+
+/**
+ * 관리자 비즈니스 정보 수정 요청입니다. null 필드는 기존 값을 유지합니다.
+ */
+export type PatchApiAdminBusinessesMembersUseridBusinessBody = {
+  /** 사업장 이름입니다. */
+  businessName?: string;
+  /** 사업자등록번호입니다. */
+  businessRegistrationNumber?: string;
+  /** 사업 사용 목적 유형입니다. */
+  businessType?: PatchApiAdminBusinessesMembersUseridBusinessBodyBusinessType;
+  /** 문의 연락처입니다. 빈 값이면 저장 값을 비웁니다. */
+  contact?: string;
+  /** 픽업 주소 또는 위치 설명입니다. */
+  pickupAddress?: string;
+};
+
+export type GetApiAdminItemsParams = {
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
+keyword?: string;
+};
+
+/**
+ * 추가 정보 JSON
+ */
+export type PostApiAdminItemsBodyExtraInfos = {[key: string]: { [key: string]: unknown }};
+
+/**
+ * 일반 상품 생성 요청
+ */
+export type PostApiAdminItemsBody = {
+  /** 소비자가 */
+  consumerPrice?: number;
+  /** 상품 설명 */
+  description?: string;
+  /** 추가 정보 JSON */
+  extraInfos?: PostApiAdminItemsBodyExtraInfos;
+  /**
+   * 대표 이미지 S3 키
+   * @minLength 0
+   * @maxLength 500
+   */
+  imageKey?: string;
+  /**
+   * 상품명
+   * @minLength 0
+   * @maxLength 200
+   */
+  name?: string;
+  /** 재고 수량 */
+  stockQuantity?: number;
+  /** 공급가 */
+  supplyPrice?: number;
+  /** 노출 여부 */
+  visible?: boolean;
+};
+
+export type GetApiAdminItemsReservationsApplicationsParams = {
+userId?: number;
+noticeId?: number;
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
+};
+
+export type PostApiAdminItemsReservationsApplicationsApplicationidConfirmBody = {
+  /** @minimum 1 */
+  confirmedQuantity: number;
+};
+
+export type GetApiAdminItemsReservationsNoticesParams = {
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
+};
+
+export type PostApiAdminItemsReservationsNoticesBodyGradeConditionsItemRequiredRole = typeof PostApiAdminItemsReservationsNoticesBodyGradeConditionsItemRequiredRole[keyof typeof PostApiAdminItemsReservationsNoticesBodyGradeConditionsItemRequiredRole];
+
+
+export const PostApiAdminItemsReservationsNoticesBodyGradeConditionsItemRequiredRole = {
+  ROLE_GUEST: 'ROLE_GUEST',
+  ROLE_USER: 'ROLE_USER',
+  ROLE_ADMIN: 'ROLE_ADMIN',
+  ROLE_SUPER_ADMIN: 'ROLE_SUPER_ADMIN',
+  ROLE_CONSUMER: 'ROLE_CONSUMER',
+  ROLE_WHISKYNAVI_MEMBER: 'ROLE_WHISKYNAVI_MEMBER',
+  ROLE_WHISKYTALES_MEMBER: 'ROLE_WHISKYTALES_MEMBER',
+  ROLE_BLIND_MEMBER: 'ROLE_BLIND_MEMBER',
+  ROLE_BUSINESS: 'ROLE_BUSINESS',
+  ROLE_TRAILNTALE_BUSINESS: 'ROLE_TRAILNTALE_BUSINESS',
+  ROLE_COMMUNITY_BUSINESS: 'ROLE_COMMUNITY_BUSINESS',
+  ROLE_PICK_UP_BUSINESS: 'ROLE_PICK_UP_BUSINESS',
+} as const;
+
+export type PostApiAdminItemsReservationsNoticesBodyGradeConditionsItem = {
+  applicableFrom: string;
+  requiredRole: PostApiAdminItemsReservationsNoticesBodyGradeConditionsItemRequiredRole;
+};
+
+export type PostApiAdminItemsReservationsNoticesBody = {
+  availableQuantity?: number;
+  /** @minItems 1 */
+  gradeConditions?: PostApiAdminItemsReservationsNoticesBodyGradeConditionsItem[];
+  itemId: number;
+  maxOrderQuantity?: number;
+  /** @minimum 0 */
+  price: number;
+  reservationEndAt: string;
+  reservationStartAt: string;
+};
+
+export type PutApiAdminItemsReservationsNoticesNoticeidBodyGradeConditionsItemRequiredRole = typeof PutApiAdminItemsReservationsNoticesNoticeidBodyGradeConditionsItemRequiredRole[keyof typeof PutApiAdminItemsReservationsNoticesNoticeidBodyGradeConditionsItemRequiredRole];
+
+
+export const PutApiAdminItemsReservationsNoticesNoticeidBodyGradeConditionsItemRequiredRole = {
+  ROLE_GUEST: 'ROLE_GUEST',
+  ROLE_USER: 'ROLE_USER',
+  ROLE_ADMIN: 'ROLE_ADMIN',
+  ROLE_SUPER_ADMIN: 'ROLE_SUPER_ADMIN',
+  ROLE_CONSUMER: 'ROLE_CONSUMER',
+  ROLE_WHISKYNAVI_MEMBER: 'ROLE_WHISKYNAVI_MEMBER',
+  ROLE_WHISKYTALES_MEMBER: 'ROLE_WHISKYTALES_MEMBER',
+  ROLE_BLIND_MEMBER: 'ROLE_BLIND_MEMBER',
+  ROLE_BUSINESS: 'ROLE_BUSINESS',
+  ROLE_TRAILNTALE_BUSINESS: 'ROLE_TRAILNTALE_BUSINESS',
+  ROLE_COMMUNITY_BUSINESS: 'ROLE_COMMUNITY_BUSINESS',
+  ROLE_PICK_UP_BUSINESS: 'ROLE_PICK_UP_BUSINESS',
+} as const;
+
+export type PutApiAdminItemsReservationsNoticesNoticeidBodyGradeConditionsItem = {
+  applicableFrom: string;
+  requiredRole: PutApiAdminItemsReservationsNoticesNoticeidBodyGradeConditionsItemRequiredRole;
+};
+
+export type PutApiAdminItemsReservationsNoticesNoticeidBody = {
+  availableQuantity?: number;
+  /** @minItems 1 */
+  gradeConditions?: PutApiAdminItemsReservationsNoticesNoticeidBodyGradeConditionsItem[];
+  itemId: number;
+  maxOrderQuantity?: number;
+  /** @minimum 0 */
+  price: number;
+  reservationEndAt: string;
+  reservationStartAt: string;
+};
+
+/**
+ * 추가 정보 JSON
+ */
+export type PatchApiAdminItemsIdBodyExtraInfos = {[key: string]: { [key: string]: unknown }};
+
+/**
+ * 일반 상품 수정 요청
+ */
+export type PatchApiAdminItemsIdBody = {
+  /** 소비자가 */
+  consumerPrice?: number;
+  /** 상품 설명 */
+  description?: string;
+  /** 추가 정보 JSON */
+  extraInfos?: PatchApiAdminItemsIdBodyExtraInfos;
+  /**
+   * 대표 이미지 S3 키
+   * @minLength 0
+   * @maxLength 500
+   */
+  imageKey?: string;
+  /**
+   * 상품명
+   * @minLength 0
+   * @maxLength 200
+   */
+  name?: string;
+  /** 재고 수량 */
+  stockQuantity?: number;
+  /** 공급가 */
+  supplyPrice?: number;
+  /** 노출 여부 */
+  visible?: boolean;
+};
+
 export type PostApiAdminKvStoreBody = {
   /**
    * @minLength 0
    * @maxLength 32
    */
   key?: string;
-  /**
-   * @minLength 0
-   * @maxLength 255
-   */
   value?: string;
 };
 
@@ -3398,6 +4458,144 @@ export type PatchApiAdminOrdersOrderidApproveBody = {
 };
 
 /**
+ * 주문 배송 정보 수정 요청
+ */
+export type PatchApiAdminOrdersOrderidDeliveryBody = {
+  /**
+   * 배송지 주소
+   * @minLength 0
+   * @maxLength 500
+   */
+  address?: string;
+  /** 배송 완료 시각 */
+  deliveredAt?: string;
+  /**
+   * 배송 메모
+   * @minLength 0
+   * @maxLength 500
+   */
+  deliveryMemo?: string;
+  /**
+   * 배송 방식
+   * @minLength 0
+   * @maxLength 30
+   */
+  deliveryMethod?: string;
+  /**
+   * 수령인 이름
+   * @minLength 0
+   * @maxLength 100
+   */
+  receiverName?: string;
+  /**
+   * 수령인 연락처
+   * @minLength 0
+   * @maxLength 20
+   */
+  receiverPhone?: string;
+  /** 발송 시각 */
+  shippedAt?: string;
+  /**
+   * 운송장 번호
+   * @minLength 0
+   * @maxLength 100
+   */
+  trackingNumber?: string;
+};
+
+/**
+ * 주문 배송 정보 수정 요청
+ */
+export type PatchApiAdminOrdersOrderidDeliveryCompleteBody = {
+  /**
+   * 배송지 주소
+   * @minLength 0
+   * @maxLength 500
+   */
+  address?: string;
+  /** 배송 완료 시각 */
+  deliveredAt?: string;
+  /**
+   * 배송 메모
+   * @minLength 0
+   * @maxLength 500
+   */
+  deliveryMemo?: string;
+  /**
+   * 배송 방식
+   * @minLength 0
+   * @maxLength 30
+   */
+  deliveryMethod?: string;
+  /**
+   * 수령인 이름
+   * @minLength 0
+   * @maxLength 100
+   */
+  receiverName?: string;
+  /**
+   * 수령인 연락처
+   * @minLength 0
+   * @maxLength 20
+   */
+  receiverPhone?: string;
+  /** 발송 시각 */
+  shippedAt?: string;
+  /**
+   * 운송장 번호
+   * @minLength 0
+   * @maxLength 100
+   */
+  trackingNumber?: string;
+};
+
+/**
+ * 주문 배송 정보 수정 요청
+ */
+export type PatchApiAdminOrdersOrderidDeliveryShipBody = {
+  /**
+   * 배송지 주소
+   * @minLength 0
+   * @maxLength 500
+   */
+  address?: string;
+  /** 배송 완료 시각 */
+  deliveredAt?: string;
+  /**
+   * 배송 메모
+   * @minLength 0
+   * @maxLength 500
+   */
+  deliveryMemo?: string;
+  /**
+   * 배송 방식
+   * @minLength 0
+   * @maxLength 30
+   */
+  deliveryMethod?: string;
+  /**
+   * 수령인 이름
+   * @minLength 0
+   * @maxLength 100
+   */
+  receiverName?: string;
+  /**
+   * 수령인 연락처
+   * @minLength 0
+   * @maxLength 20
+   */
+  receiverPhone?: string;
+  /** 발송 시각 */
+  shippedAt?: string;
+  /**
+   * 운송장 번호
+   * @minLength 0
+   * @maxLength 100
+   */
+  trackingNumber?: string;
+};
+
+/**
  * 변경할 주문 상태
  */
 export type PatchApiAdminOrdersOrderidStatusBodyOrderStatus = typeof PatchApiAdminOrdersOrderidStatusBodyOrderStatus[keyof typeof PatchApiAdminOrdersOrderidStatusBodyOrderStatus];
@@ -3439,7 +4637,7 @@ export type PostApiAdminSalesBodyProductType = typeof PostApiAdminSalesBodyProdu
 
 export const PostApiAdminSalesBodyProductType = {
   BOTTLE: 'BOTTLE',
-  MERCH: 'MERCH',
+  ITEM: 'ITEM',
 } as const;
 
 /**
@@ -3515,7 +4713,7 @@ export type PatchApiAdminSalesSaleidBodyProductType = typeof PatchApiAdminSalesS
 
 export const PatchApiAdminSalesSaleidBodyProductType = {
   BOTTLE: 'BOTTLE',
-  MERCH: 'MERCH',
+  ITEM: 'ITEM',
 } as const;
 
 /**
@@ -3659,7 +4857,10 @@ export type PatchApiAdminUsersIdStatusBody = {
 export type PutApiAuthChangePasswordBody = {
   /** @minLength 1 */
   currentPassword?: string;
-  /** @minLength 1 */
+  /**
+   * @minLength 6
+   * @maxLength 100
+   */
   newPassword?: string;
 };
 
@@ -4146,6 +5347,164 @@ export type PostApiBottlesReservationsNoticesNoticeidApplicationsBody = {
   userBusinessId: number;
 };
 
+export type GetApiFundraisingCampaignsParams = {
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
+};
+
+export type GetApiDonationLinksParams = {
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
+};
+
+export type GetApiDonationsParams = {
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
+};
+
+export type GetApiItemsParams = {
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
+keyword?: string;
+};
+
+export type GetApiItemsReservationsApplicationsMeParams = {
+/**
+ * 예약 신청 상태 필터
+ */
+status?: GetApiItemsReservationsApplicationsMeStatus;
+/**
+ * 특정 예약 공고의 신청 내역만 조회할 때 사용하는 공고 ID
+ */
+noticeId?: number;
+/**
+ * 특정 아이템의 신청 내역만 조회할 때 사용하는 아이템 ID
+ */
+itemId?: number;
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
+};
+
+export type GetApiItemsReservationsApplicationsMeStatus = typeof GetApiItemsReservationsApplicationsMeStatus[keyof typeof GetApiItemsReservationsApplicationsMeStatus];
+
+
+export const GetApiItemsReservationsApplicationsMeStatus = {
+  APPLIED: 'APPLIED',
+  CANCELLED: 'CANCELLED',
+  CONFIRMED: 'CONFIRMED',
+  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
+  WAITING_PICKUP: 'WAITING_PICKUP',
+  RECEIVED: 'RECEIVED',
+  REJECTED: 'REJECTED',
+} as const;
+
+export type PutApiItemsReservationsApplicationsApplicationidBody = {
+  /** @minimum 1 */
+  quantity: number;
+  userBusinessId: number;
+};
+
+export type GetApiItemsReservationsNoticesParams = {
+/**
+ * 공고 상태 필터. 미입력 시 현재 진행 중인 공고만 조회합니다.
+ */
+status?: GetApiItemsReservationsNoticesStatus;
+/**
+ * 특정 아이템의 예약 공고만 조회할 때 사용하는 아이템 ID
+ */
+itemId?: number;
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
+};
+
+export type GetApiItemsReservationsNoticesStatus = typeof GetApiItemsReservationsNoticesStatus[keyof typeof GetApiItemsReservationsNoticesStatus];
+
+
+export const GetApiItemsReservationsNoticesStatus = {
+  DRAFT: 'DRAFT',
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED',
+  SOLD_OUT: 'SOLD_OUT',
+} as const;
+
+export type PostApiItemsReservationsNoticesNoticeidApplicationsBody = {
+  /** @minimum 1 */
+  quantity: number;
+  userBusinessId: number;
+};
+
 export type GetApiOrdersParams = {
 /**
  * Zero-based page index (0..N)
@@ -4184,7 +5543,7 @@ export type PostApiOrdersBodyProductType = typeof PostApiOrdersBodyProductType[k
 
 export const PostApiOrdersBodyProductType = {
   BOTTLE: 'BOTTLE',
-  MERCH: 'MERCH',
+  ITEM: 'ITEM',
 } as const;
 
 /**
@@ -4205,6 +5564,12 @@ export const PostApiOrdersBodySaleType = {
 export type PostApiOrdersBody = {
   /** 사업장 ID */
   businessId?: number;
+  /**
+   * 일반 배송 주문지 주소
+   * @minLength 0
+   * @maxLength 500
+   */
+  deliveryAddress?: string;
   /** 수입사 ID */
   importerId?: number;
   /** 상품명 */
@@ -4244,6 +5609,12 @@ export type PostApiOrdersPaymentsConfirmBody = {
   amount: number;
   /** 사업자 ID */
   businessId?: number;
+  /**
+   * 일반 배송 주문지 주소
+   * @minLength 0
+   * @maxLength 500
+   */
+  deliveryAddress?: string;
   /** 수입사 ID */
   importerId?: number;
   /**
@@ -4276,6 +5647,12 @@ saleAnnouncementId: number;
 export type PostApiOrdersTicketsBody = {
   /** 사업자 ID */
   businessId?: number;
+  /**
+   * 일반 배송 주문지 주소
+   * @minLength 0
+   * @maxLength 500
+   */
+  deliveryAddress?: string;
   /** 수입사 ID */
   importerId?: number;
   /**
@@ -4685,9 +6062,18 @@ businessName: string;
 pickupAddress: string;
 contact: string;
 businessRegistrationNumber: string;
+businessType?: PostApiUsersBusinessesApplicationsBusinessType;
 openingDate: string;
 representativeName: string;
 };
+
+export type PostApiUsersBusinessesApplicationsBusinessType = typeof PostApiUsersBusinessesApplicationsBusinessType[keyof typeof PostApiUsersBusinessesApplicationsBusinessType];
+
+
+export const PostApiUsersBusinessesApplicationsBusinessType = {
+  HOUSEHOLD: 'HOUSEHOLD',
+  ENTERTAINMENT: 'ENTERTAINMENT',
+} as const;
 
 export type PostApiUsersBusinessesApplicationsBody = {
   document: Blob;
@@ -4716,6 +6102,59 @@ export type PostApiUsersBusinessesApplicationsApplicationidCancelBody = {
    * @minLength 1
    */
   cancelReason?: string;
+};
+
+export type GetApiUsersBusinessesItemsReservationsApplicationsParams = {
+/**
+ * 예약 상태 필터
+ */
+status?: GetApiUsersBusinessesItemsReservationsApplicationsStatus;
+/**
+ * 특정 예약 공고만 조회할 때 사용하는 공고 ID
+ */
+noticeId?: number;
+/**
+ * 특정 아이템만 조회할 때 사용하는 아이템 ID
+ */
+itemId?: number;
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
+};
+
+export type GetApiUsersBusinessesItemsReservationsApplicationsStatus = typeof GetApiUsersBusinessesItemsReservationsApplicationsStatus[keyof typeof GetApiUsersBusinessesItemsReservationsApplicationsStatus];
+
+
+export const GetApiUsersBusinessesItemsReservationsApplicationsStatus = {
+  APPLIED: 'APPLIED',
+  CANCELLED: 'CANCELLED',
+  CONFIRMED: 'CONFIRMED',
+  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
+  WAITING_PICKUP: 'WAITING_PICKUP',
+  RECEIVED: 'RECEIVED',
+  REJECTED: 'REJECTED',
+} as const;
+
+export type PostApiUsersBusinessesItemsReservationsApplicationsWaitingPickupBody = {
+  /** 단건 변경 시 사용하는 예약 신청 ID */
+  applicationId?: number;
+  /** 여러 건을 한 번에 변경할 때 사용하는 예약 신청 ID 목록 */
+  applicationIds?: number[];
+  /** 특정 아이템 기준으로 일괄 변경할 때 사용하는 아이템 ID */
+  itemId?: number;
+  /** 같은 아이템이 여러 공고에 걸쳐 있을 때 범위를 좁히는 예약 공고 ID */
+  noticeId?: number;
 };
 
 export type GetApiUsersBusinessesPickupLocationsParams = {
@@ -4786,6 +6225,106 @@ export type PostApiUsersBusinessesPickupReservationsApplicationsWaitingPickupBod
   bottleId?: number;
   /** 같은 병이 여러 공고에 걸쳐 있을 때 범위를 좁히는 예약 공고 ID */
   noticeId?: number;
+};
+
+/**
+ * 배송지 주소록 저장 요청
+ */
+export type PostApiUsersMeDeliveryAddressesBody = {
+  /**
+   * 기본 주소
+   * @minLength 0
+   * @maxLength 500
+   */
+  address?: string;
+  /**
+   * 상세 주소
+   * @minLength 0
+   * @maxLength 500
+   */
+  addressDetail?: string;
+  /**
+   * 배송지 이름
+   * @minLength 0
+   * @maxLength 100
+   */
+  addressName?: string;
+  /** 기본 배송지 여부 */
+  defaultAddress?: boolean;
+  /**
+   * 배송 요청 메모
+   * @minLength 0
+   * @maxLength 500
+   */
+  deliveryMemo?: string;
+  /**
+   * 우편번호
+   * @minLength 0
+   * @maxLength 20
+   */
+  postalCode?: string;
+  /**
+   * 수령인 이름
+   * @minLength 0
+   * @maxLength 100
+   */
+  receiverName?: string;
+  /**
+   * 수령인 연락처
+   * @minLength 0
+   * @maxLength 20
+   */
+  receiverPhone?: string;
+};
+
+/**
+ * 배송지 주소록 저장 요청
+ */
+export type PutApiUsersMeDeliveryAddressesAddressidBody = {
+  /**
+   * 기본 주소
+   * @minLength 0
+   * @maxLength 500
+   */
+  address?: string;
+  /**
+   * 상세 주소
+   * @minLength 0
+   * @maxLength 500
+   */
+  addressDetail?: string;
+  /**
+   * 배송지 이름
+   * @minLength 0
+   * @maxLength 100
+   */
+  addressName?: string;
+  /** 기본 배송지 여부 */
+  defaultAddress?: boolean;
+  /**
+   * 배송 요청 메모
+   * @minLength 0
+   * @maxLength 500
+   */
+  deliveryMemo?: string;
+  /**
+   * 우편번호
+   * @minLength 0
+   * @maxLength 20
+   */
+  postalCode?: string;
+  /**
+   * 수령인 이름
+   * @minLength 0
+   * @maxLength 100
+   */
+  receiverName?: string;
+  /**
+   * 수령인 연락처
+   * @minLength 0
+   * @maxLength 20
+   */
+  receiverPhone?: string;
 };
 
 /**
@@ -5196,6 +6735,43 @@ export const getGetApiAdminBottlesParametersUrl = () => {
 export const getApiAdminBottlesParameters = async ( options?: RequestInit): Promise<getApiAdminBottlesParametersResponse> => {
   
   return customFetch<getApiAdminBottlesParametersResponse>(getGetApiAdminBottlesParametersUrl(),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 관리자가 보틀에 등록된 증류소와 캐스크 타입 목록을 한 번에 조회합니다.
+ * @summary 보틀 참조값 조회(관리자)
+ */
+export type getApiAdminBottlesReferenceValuesResponse200 = {
+  data: BottleAdminReferenceValues
+  status: 200
+}
+    
+export type getApiAdminBottlesReferenceValuesResponseSuccess = (getApiAdminBottlesReferenceValuesResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiAdminBottlesReferenceValuesResponse = (getApiAdminBottlesReferenceValuesResponseSuccess)
+
+export const getGetApiAdminBottlesReferenceValuesUrl = () => {
+
+
+  
+
+  return `/api/admin/bottles/reference-values`
+}
+
+export const getApiAdminBottlesReferenceValues = async ( options?: RequestInit): Promise<getApiAdminBottlesReferenceValuesResponse> => {
+  
+  return customFetch<getApiAdminBottlesReferenceValuesResponse>(getGetApiAdminBottlesReferenceValuesUrl(),
   {      
     ...options,
     method: 'GET'
@@ -6016,6 +7592,45 @@ export const getApiAdminBusinessesMembersUserid = async (userId: number, options
 
 
 /**
+ * 관리자가 등록된 비즈니스 회원의 사업장명, 픽업 주소, 연락처, 사업자등록번호, 사업 유형을 수정합니다.
+ * @summary 비즈니스 회원 사업장 정보 수정(관리자)
+ */
+export type patchApiAdminBusinessesMembersUseridBusinessResponse200 = {
+  data: AdminBusinessUserDetailResponse
+  status: 200
+}
+    
+export type patchApiAdminBusinessesMembersUseridBusinessResponseSuccess = (patchApiAdminBusinessesMembersUseridBusinessResponse200) & {
+  headers: Headers;
+};
+;
+
+export type patchApiAdminBusinessesMembersUseridBusinessResponse = (patchApiAdminBusinessesMembersUseridBusinessResponseSuccess)
+
+export const getPatchApiAdminBusinessesMembersUseridBusinessUrl = (userId: number,) => {
+
+
+  
+
+  return `/api/admin/businesses/members/${userId}/business`
+}
+
+export const patchApiAdminBusinessesMembersUseridBusiness = async (userId: number,
+    patchApiAdminBusinessesMembersUseridBusinessBody: PatchApiAdminBusinessesMembersUseridBusinessBody, options?: RequestInit): Promise<patchApiAdminBusinessesMembersUseridBusinessResponse> => {
+  
+  return customFetch<patchApiAdminBusinessesMembersUseridBusinessResponse>(getPatchApiAdminBusinessesMembersUseridBusinessUrl(userId),
+  {      
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      patchApiAdminBusinessesMembersUseridBusinessBody,)
+  }
+);}
+
+
+
+/**
  * 비즈니스 권한 회원에게 픽업 권한을 부여합니다.
  * @summary 픽업 권한 부여(관리자)
  */
@@ -6084,6 +7699,609 @@ export const postApiAdminBusinessesMembersUseridPickupRevoke = async (userId: nu
     method: 'POST'
     
     
+  }
+);}
+
+
+
+/**
+ * @summary 일반 상품 목록 조회(관리자)
+ */
+export type getApiAdminItemsResponse200 = {
+  data: PageItemAdminResponse
+  status: 200
+}
+    
+export type getApiAdminItemsResponseSuccess = (getApiAdminItemsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiAdminItemsResponse = (getApiAdminItemsResponseSuccess)
+
+export const getGetApiAdminItemsUrl = (params?: GetApiAdminItemsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
+    } else {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/admin/items?${stringifiedParams}` : `/api/admin/items`
+}
+
+export const getApiAdminItems = async (params?: GetApiAdminItemsParams, options?: RequestInit): Promise<getApiAdminItemsResponse> => {
+  
+  return customFetch<getApiAdminItemsResponse>(getGetApiAdminItemsUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * @summary 일반 상품 등록(관리자)
+ */
+export type postApiAdminItemsResponse200 = {
+  data: ItemAdminResponse
+  status: 200
+}
+    
+export type postApiAdminItemsResponseSuccess = (postApiAdminItemsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiAdminItemsResponse = (postApiAdminItemsResponseSuccess)
+
+export const getPostApiAdminItemsUrl = () => {
+
+
+  
+
+  return `/api/admin/items`
+}
+
+export const postApiAdminItems = async (postApiAdminItemsBody: PostApiAdminItemsBody, options?: RequestInit): Promise<postApiAdminItemsResponse> => {
+  
+  return customFetch<postApiAdminItemsResponse>(getPostApiAdminItemsUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiAdminItemsBody,)
+  }
+);}
+
+
+
+/**
+ * 모든 신청 목록을 조회하고 사용자와 공고 ID로 필터링할 수 있습니다.
+ * @summary 예약 신청 목록(관리자)
+ */
+export type getApiAdminItemsReservationsApplicationsResponse200 = {
+  data: PageItemReservationApplicationResponse
+  status: 200
+}
+    
+export type getApiAdminItemsReservationsApplicationsResponseSuccess = (getApiAdminItemsReservationsApplicationsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiAdminItemsReservationsApplicationsResponse = (getApiAdminItemsReservationsApplicationsResponseSuccess)
+
+export const getGetApiAdminItemsReservationsApplicationsUrl = (params?: GetApiAdminItemsReservationsApplicationsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
+    } else {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/admin/items/reservations/applications?${stringifiedParams}` : `/api/admin/items/reservations/applications`
+}
+
+export const getApiAdminItemsReservationsApplications = async (params?: GetApiAdminItemsReservationsApplicationsParams, options?: RequestInit): Promise<getApiAdminItemsReservationsApplicationsResponse> => {
+  
+  return customFetch<getApiAdminItemsReservationsApplicationsResponse>(getGetApiAdminItemsReservationsApplicationsUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 관리자가 예약 신청 상세 정보를 조회합니다.
+ * @summary 예약 신청 상세(관리자)
+ */
+export type getApiAdminItemsReservationsApplicationsApplicationidResponse200 = {
+  data: ItemReservationApplicationResponse
+  status: 200
+}
+    
+export type getApiAdminItemsReservationsApplicationsApplicationidResponseSuccess = (getApiAdminItemsReservationsApplicationsApplicationidResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiAdminItemsReservationsApplicationsApplicationidResponse = (getApiAdminItemsReservationsApplicationsApplicationidResponseSuccess)
+
+export const getGetApiAdminItemsReservationsApplicationsApplicationidUrl = (applicationId: number,) => {
+
+
+  
+
+  return `/api/admin/items/reservations/applications/${applicationId}`
+}
+
+export const getApiAdminItemsReservationsApplicationsApplicationid = async (applicationId: number, options?: RequestInit): Promise<getApiAdminItemsReservationsApplicationsApplicationidResponse> => {
+  
+  return customFetch<getApiAdminItemsReservationsApplicationsApplicationidResponse>(getGetApiAdminItemsReservationsApplicationsApplicationidUrl(applicationId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 관리자가 신청을 취소 처리합니다.
+ * @summary 예약 신청 취소
+ */
+export type postApiAdminItemsReservationsApplicationsApplicationidCancelResponse200 = {
+  data: ItemReservationApplicationResponse
+  status: 200
+}
+    
+export type postApiAdminItemsReservationsApplicationsApplicationidCancelResponseSuccess = (postApiAdminItemsReservationsApplicationsApplicationidCancelResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiAdminItemsReservationsApplicationsApplicationidCancelResponse = (postApiAdminItemsReservationsApplicationsApplicationidCancelResponseSuccess)
+
+export const getPostApiAdminItemsReservationsApplicationsApplicationidCancelUrl = (applicationId: number,) => {
+
+
+  
+
+  return `/api/admin/items/reservations/applications/${applicationId}/cancel`
+}
+
+export const postApiAdminItemsReservationsApplicationsApplicationidCancel = async (applicationId: number, options?: RequestInit): Promise<postApiAdminItemsReservationsApplicationsApplicationidCancelResponse> => {
+  
+  return customFetch<postApiAdminItemsReservationsApplicationsApplicationidCancelResponse>(getPostApiAdminItemsReservationsApplicationsApplicationidCancelUrl(applicationId),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 관리자가 신청을 확인하고 최종 승인 수량을 입력합니다.
+ * @summary 예약 신청 확정
+ */
+export type postApiAdminItemsReservationsApplicationsApplicationidConfirmResponse200 = {
+  data: ItemReservationApplicationResponse
+  status: 200
+}
+    
+export type postApiAdminItemsReservationsApplicationsApplicationidConfirmResponseSuccess = (postApiAdminItemsReservationsApplicationsApplicationidConfirmResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiAdminItemsReservationsApplicationsApplicationidConfirmResponse = (postApiAdminItemsReservationsApplicationsApplicationidConfirmResponseSuccess)
+
+export const getPostApiAdminItemsReservationsApplicationsApplicationidConfirmUrl = (applicationId: number,) => {
+
+
+  
+
+  return `/api/admin/items/reservations/applications/${applicationId}/confirm`
+}
+
+export const postApiAdminItemsReservationsApplicationsApplicationidConfirm = async (applicationId: number,
+    postApiAdminItemsReservationsApplicationsApplicationidConfirmBody: PostApiAdminItemsReservationsApplicationsApplicationidConfirmBody, options?: RequestInit): Promise<postApiAdminItemsReservationsApplicationsApplicationidConfirmResponse> => {
+  
+  return customFetch<postApiAdminItemsReservationsApplicationsApplicationidConfirmResponse>(getPostApiAdminItemsReservationsApplicationsApplicationidConfirmUrl(applicationId),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiAdminItemsReservationsApplicationsApplicationidConfirmBody,)
+  }
+);}
+
+
+
+/**
+ * 관리자가 신청을 거절 처리합니다.
+ * @summary 예약 신청 거절
+ */
+export type postApiAdminItemsReservationsApplicationsApplicationidRejectResponse200 = {
+  data: ItemReservationApplicationResponse
+  status: 200
+}
+    
+export type postApiAdminItemsReservationsApplicationsApplicationidRejectResponseSuccess = (postApiAdminItemsReservationsApplicationsApplicationidRejectResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiAdminItemsReservationsApplicationsApplicationidRejectResponse = (postApiAdminItemsReservationsApplicationsApplicationidRejectResponseSuccess)
+
+export const getPostApiAdminItemsReservationsApplicationsApplicationidRejectUrl = (applicationId: number,) => {
+
+
+  
+
+  return `/api/admin/items/reservations/applications/${applicationId}/reject`
+}
+
+export const postApiAdminItemsReservationsApplicationsApplicationidReject = async (applicationId: number, options?: RequestInit): Promise<postApiAdminItemsReservationsApplicationsApplicationidRejectResponse> => {
+  
+  return customFetch<postApiAdminItemsReservationsApplicationsApplicationidRejectResponse>(getPostApiAdminItemsReservationsApplicationsApplicationidRejectUrl(applicationId),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 관리자가 예약 공고 목록을 조회합니다.
+ * @summary 예약 공고 목록(관리자)
+ */
+export type getApiAdminItemsReservationsNoticesResponse200 = {
+  data: PageItemReservationNoticeResponse
+  status: 200
+}
+    
+export type getApiAdminItemsReservationsNoticesResponseSuccess = (getApiAdminItemsReservationsNoticesResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiAdminItemsReservationsNoticesResponse = (getApiAdminItemsReservationsNoticesResponseSuccess)
+
+export const getGetApiAdminItemsReservationsNoticesUrl = (params?: GetApiAdminItemsReservationsNoticesParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
+    } else {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/admin/items/reservations/notices?${stringifiedParams}` : `/api/admin/items/reservations/notices`
+}
+
+export const getApiAdminItemsReservationsNotices = async (params?: GetApiAdminItemsReservationsNoticesParams, options?: RequestInit): Promise<getApiAdminItemsReservationsNoticesResponse> => {
+  
+  return customFetch<getApiAdminItemsReservationsNoticesResponse>(getGetApiAdminItemsReservationsNoticesUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 예약 기간과 가격 정보를 입력해 특정 아이템 예약 공고를 등록합니다.
+ * @summary 예약 공고 생성(관리자)
+ */
+export type postApiAdminItemsReservationsNoticesResponse200 = {
+  data: ItemReservationNoticeResponse
+  status: 200
+}
+    
+export type postApiAdminItemsReservationsNoticesResponseSuccess = (postApiAdminItemsReservationsNoticesResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiAdminItemsReservationsNoticesResponse = (postApiAdminItemsReservationsNoticesResponseSuccess)
+
+export const getPostApiAdminItemsReservationsNoticesUrl = () => {
+
+
+  
+
+  return `/api/admin/items/reservations/notices`
+}
+
+export const postApiAdminItemsReservationsNotices = async (postApiAdminItemsReservationsNoticesBody: PostApiAdminItemsReservationsNoticesBody, options?: RequestInit): Promise<postApiAdminItemsReservationsNoticesResponse> => {
+  
+  return customFetch<postApiAdminItemsReservationsNoticesResponse>(getPostApiAdminItemsReservationsNoticesUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiAdminItemsReservationsNoticesBody,)
+  }
+);}
+
+
+
+/**
+ * 관리자가 예약 공고 상세 정보를 조회합니다.
+ * @summary 예약 공고 상세(관리자)
+ */
+export type getApiAdminItemsReservationsNoticesNoticeidResponse200 = {
+  data: ItemReservationNoticeResponse
+  status: 200
+}
+    
+export type getApiAdminItemsReservationsNoticesNoticeidResponseSuccess = (getApiAdminItemsReservationsNoticesNoticeidResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiAdminItemsReservationsNoticesNoticeidResponse = (getApiAdminItemsReservationsNoticesNoticeidResponseSuccess)
+
+export const getGetApiAdminItemsReservationsNoticesNoticeidUrl = (noticeId: number,) => {
+
+
+  
+
+  return `/api/admin/items/reservations/notices/${noticeId}`
+}
+
+export const getApiAdminItemsReservationsNoticesNoticeid = async (noticeId: number, options?: RequestInit): Promise<getApiAdminItemsReservationsNoticesNoticeidResponse> => {
+  
+  return customFetch<getApiAdminItemsReservationsNoticesNoticeidResponse>(getGetApiAdminItemsReservationsNoticesNoticeidUrl(noticeId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 등록된 예약 공고의 기간, 가격, 수량 정보를 수정합니다.
+ * @summary 예약 공고 수정(관리자)
+ */
+export type putApiAdminItemsReservationsNoticesNoticeidResponse200 = {
+  data: ItemReservationNoticeResponse
+  status: 200
+}
+    
+export type putApiAdminItemsReservationsNoticesNoticeidResponseSuccess = (putApiAdminItemsReservationsNoticesNoticeidResponse200) & {
+  headers: Headers;
+};
+;
+
+export type putApiAdminItemsReservationsNoticesNoticeidResponse = (putApiAdminItemsReservationsNoticesNoticeidResponseSuccess)
+
+export const getPutApiAdminItemsReservationsNoticesNoticeidUrl = (noticeId: number,) => {
+
+
+  
+
+  return `/api/admin/items/reservations/notices/${noticeId}`
+}
+
+export const putApiAdminItemsReservationsNoticesNoticeid = async (noticeId: number,
+    putApiAdminItemsReservationsNoticesNoticeidBody: PutApiAdminItemsReservationsNoticesNoticeidBody, options?: RequestInit): Promise<putApiAdminItemsReservationsNoticesNoticeidResponse> => {
+  
+  return customFetch<putApiAdminItemsReservationsNoticesNoticeidResponse>(getPutApiAdminItemsReservationsNoticesNoticeidUrl(noticeId),
+  {      
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      putApiAdminItemsReservationsNoticesNoticeidBody,)
+  }
+);}
+
+
+
+/**
+ * 공고 하나에 연결된 대기 중 예약 신청을 최대 다수·균등 배정 원칙으로 자동 확정합니다.
+ * @summary 예약 공고 자동 확정
+ */
+export type postApiAdminItemsReservationsNoticesNoticeidAutoConfirmResponse200 = {
+  data: ItemReservationAutoConfirmResponse
+  status: 200
+}
+    
+export type postApiAdminItemsReservationsNoticesNoticeidAutoConfirmResponseSuccess = (postApiAdminItemsReservationsNoticesNoticeidAutoConfirmResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiAdminItemsReservationsNoticesNoticeidAutoConfirmResponse = (postApiAdminItemsReservationsNoticesNoticeidAutoConfirmResponseSuccess)
+
+export const getPostApiAdminItemsReservationsNoticesNoticeidAutoConfirmUrl = (noticeId: number,) => {
+
+
+  
+
+  return `/api/admin/items/reservations/notices/${noticeId}/auto-confirm`
+}
+
+export const postApiAdminItemsReservationsNoticesNoticeidAutoConfirm = async (noticeId: number, options?: RequestInit): Promise<postApiAdminItemsReservationsNoticesNoticeidAutoConfirmResponse> => {
+  
+  return customFetch<postApiAdminItemsReservationsNoticesNoticeidAutoConfirmResponse>(getPostApiAdminItemsReservationsNoticesNoticeidAutoConfirmUrl(noticeId),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+);}
+
+
+
+/**
+ * @summary 일반 상품 삭제(관리자)
+ */
+export type deleteApiAdminItemsIdResponse200 = {
+  data: boolean
+  status: 200
+}
+    
+export type deleteApiAdminItemsIdResponseSuccess = (deleteApiAdminItemsIdResponse200) & {
+  headers: Headers;
+};
+;
+
+export type deleteApiAdminItemsIdResponse = (deleteApiAdminItemsIdResponseSuccess)
+
+export const getDeleteApiAdminItemsIdUrl = (id: number,) => {
+
+
+  
+
+  return `/api/admin/items/${id}`
+}
+
+export const deleteApiAdminItemsId = async (id: number, options?: RequestInit): Promise<deleteApiAdminItemsIdResponse> => {
+  
+  return customFetch<deleteApiAdminItemsIdResponse>(getDeleteApiAdminItemsIdUrl(id),
+  {      
+    ...options,
+    method: 'DELETE'
+    
+    
+  }
+);}
+
+
+
+/**
+ * @summary 일반 상품 상세 조회(관리자)
+ */
+export type getApiAdminItemsIdResponse200 = {
+  data: ItemAdminResponse
+  status: 200
+}
+    
+export type getApiAdminItemsIdResponseSuccess = (getApiAdminItemsIdResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiAdminItemsIdResponse = (getApiAdminItemsIdResponseSuccess)
+
+export const getGetApiAdminItemsIdUrl = (id: number,) => {
+
+
+  
+
+  return `/api/admin/items/${id}`
+}
+
+export const getApiAdminItemsId = async (id: number, options?: RequestInit): Promise<getApiAdminItemsIdResponse> => {
+  
+  return customFetch<getApiAdminItemsIdResponse>(getGetApiAdminItemsIdUrl(id),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * @summary 일반 상품 수정(관리자)
+ */
+export type patchApiAdminItemsIdResponse200 = {
+  data: ItemAdminResponse
+  status: 200
+}
+    
+export type patchApiAdminItemsIdResponseSuccess = (patchApiAdminItemsIdResponse200) & {
+  headers: Headers;
+};
+;
+
+export type patchApiAdminItemsIdResponse = (patchApiAdminItemsIdResponseSuccess)
+
+export const getPatchApiAdminItemsIdUrl = (id: number,) => {
+
+
+  
+
+  return `/api/admin/items/${id}`
+}
+
+export const patchApiAdminItemsId = async (id: number,
+    patchApiAdminItemsIdBody: PatchApiAdminItemsIdBody, options?: RequestInit): Promise<patchApiAdminItemsIdResponse> => {
+  
+  return customFetch<patchApiAdminItemsIdResponse>(getPatchApiAdminItemsIdUrl(id),
+  {      
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      patchApiAdminItemsIdBody,)
   }
 );}
 
@@ -6397,6 +8615,156 @@ export const patchApiAdminOrdersOrderidApprove = async (orderId: number,
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
       patchApiAdminOrdersOrderidApproveBody,)
+  }
+);}
+
+
+
+/**
+ * @summary 관리자 주문 배송 정보 조회
+ */
+export type getApiAdminOrdersOrderidDeliveryResponse200 = {
+  data: OrderDeliveryResponse
+  status: 200
+}
+    
+export type getApiAdminOrdersOrderidDeliveryResponseSuccess = (getApiAdminOrdersOrderidDeliveryResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiAdminOrdersOrderidDeliveryResponse = (getApiAdminOrdersOrderidDeliveryResponseSuccess)
+
+export const getGetApiAdminOrdersOrderidDeliveryUrl = (orderId: number,) => {
+
+
+  
+
+  return `/api/admin/orders/${orderId}/delivery`
+}
+
+export const getApiAdminOrdersOrderidDelivery = async (orderId: number, options?: RequestInit): Promise<getApiAdminOrdersOrderidDeliveryResponse> => {
+  
+  return customFetch<getApiAdminOrdersOrderidDeliveryResponse>(getGetApiAdminOrdersOrderidDeliveryUrl(orderId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * @summary 관리자 주문 배송 정보 수정
+ */
+export type patchApiAdminOrdersOrderidDeliveryResponse200 = {
+  data: OrderDeliveryResponse
+  status: 200
+}
+    
+export type patchApiAdminOrdersOrderidDeliveryResponseSuccess = (patchApiAdminOrdersOrderidDeliveryResponse200) & {
+  headers: Headers;
+};
+;
+
+export type patchApiAdminOrdersOrderidDeliveryResponse = (patchApiAdminOrdersOrderidDeliveryResponseSuccess)
+
+export const getPatchApiAdminOrdersOrderidDeliveryUrl = (orderId: number,) => {
+
+
+  
+
+  return `/api/admin/orders/${orderId}/delivery`
+}
+
+export const patchApiAdminOrdersOrderidDelivery = async (orderId: number,
+    patchApiAdminOrdersOrderidDeliveryBody: PatchApiAdminOrdersOrderidDeliveryBody, options?: RequestInit): Promise<patchApiAdminOrdersOrderidDeliveryResponse> => {
+  
+  return customFetch<patchApiAdminOrdersOrderidDeliveryResponse>(getPatchApiAdminOrdersOrderidDeliveryUrl(orderId),
+  {      
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      patchApiAdminOrdersOrderidDeliveryBody,)
+  }
+);}
+
+
+
+/**
+ * @summary 관리자 주문 배송 완료 처리
+ */
+export type patchApiAdminOrdersOrderidDeliveryCompleteResponse200 = {
+  data: OrderDeliveryResponse
+  status: 200
+}
+    
+export type patchApiAdminOrdersOrderidDeliveryCompleteResponseSuccess = (patchApiAdminOrdersOrderidDeliveryCompleteResponse200) & {
+  headers: Headers;
+};
+;
+
+export type patchApiAdminOrdersOrderidDeliveryCompleteResponse = (patchApiAdminOrdersOrderidDeliveryCompleteResponseSuccess)
+
+export const getPatchApiAdminOrdersOrderidDeliveryCompleteUrl = (orderId: number,) => {
+
+
+  
+
+  return `/api/admin/orders/${orderId}/delivery/complete`
+}
+
+export const patchApiAdminOrdersOrderidDeliveryComplete = async (orderId: number,
+    patchApiAdminOrdersOrderidDeliveryCompleteBody: PatchApiAdminOrdersOrderidDeliveryCompleteBody, options?: RequestInit): Promise<patchApiAdminOrdersOrderidDeliveryCompleteResponse> => {
+  
+  return customFetch<patchApiAdminOrdersOrderidDeliveryCompleteResponse>(getPatchApiAdminOrdersOrderidDeliveryCompleteUrl(orderId),
+  {      
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      patchApiAdminOrdersOrderidDeliveryCompleteBody,)
+  }
+);}
+
+
+
+/**
+ * @summary 관리자 주문 발송 처리
+ */
+export type patchApiAdminOrdersOrderidDeliveryShipResponse200 = {
+  data: OrderDeliveryResponse
+  status: 200
+}
+    
+export type patchApiAdminOrdersOrderidDeliveryShipResponseSuccess = (patchApiAdminOrdersOrderidDeliveryShipResponse200) & {
+  headers: Headers;
+};
+;
+
+export type patchApiAdminOrdersOrderidDeliveryShipResponse = (patchApiAdminOrdersOrderidDeliveryShipResponseSuccess)
+
+export const getPatchApiAdminOrdersOrderidDeliveryShipUrl = (orderId: number,) => {
+
+
+  
+
+  return `/api/admin/orders/${orderId}/delivery/ship`
+}
+
+export const patchApiAdminOrdersOrderidDeliveryShip = async (orderId: number,
+    patchApiAdminOrdersOrderidDeliveryShipBody: PatchApiAdminOrdersOrderidDeliveryShipBody, options?: RequestInit): Promise<patchApiAdminOrdersOrderidDeliveryShipResponse> => {
+  
+  return customFetch<patchApiAdminOrdersOrderidDeliveryShipResponse>(getPatchApiAdminOrdersOrderidDeliveryShipUrl(orderId),
+  {      
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      patchApiAdminOrdersOrderidDeliveryShipBody,)
   }
 );}
 
@@ -8456,6 +10824,801 @@ export const getApiBottlesId = async (id: number, options?: RequestInit): Promis
 
 
 
+/**
+ * @summary 모금 캠페인 목록 조회
+ */
+export type getApiFundraisingCampaignsResponse200 = {
+  data: PageFundraisingCampaignResponse
+  status: 200
+}
+    
+export type getApiFundraisingCampaignsResponseSuccess = (getApiFundraisingCampaignsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiFundraisingCampaignsResponse = (getApiFundraisingCampaignsResponseSuccess)
+
+export const getGetApiFundraisingCampaignsUrl = (params?: GetApiFundraisingCampaignsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
+    } else {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/fundraising/campaigns?${stringifiedParams}` : `/api/fundraising/campaigns`
+}
+
+export const getApiFundraisingCampaigns = async (params?: GetApiFundraisingCampaignsParams, options?: RequestInit): Promise<getApiFundraisingCampaignsResponse> => {
+  
+  return customFetch<getApiFundraisingCampaignsResponse>(getGetApiFundraisingCampaignsUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * @summary 기부 링크 목록 조회
+ */
+export type getApiDonationLinksResponse200 = {
+  data: PageDonationLinkResponse
+  status: 200
+}
+    
+export type getApiDonationLinksResponseSuccess = (getApiDonationLinksResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiDonationLinksResponse = (getApiDonationLinksResponseSuccess)
+
+export const getGetApiDonationLinksUrl = (campaignId: number,
+    params?: GetApiDonationLinksParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
+    } else {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/fundraising/campaigns/${campaignId}/donation-links?${stringifiedParams}` : `/api/fundraising/campaigns/${campaignId}/donation-links`
+}
+
+export const getApiDonationLinks = async (campaignId: number,
+    params?: GetApiDonationLinksParams, options?: RequestInit): Promise<getApiDonationLinksResponse> => {
+  
+  return customFetch<getApiDonationLinksResponse>(getGetApiDonationLinksUrl(campaignId,params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * @summary 기부 링크 상세 조회
+ */
+export type getApiDonationLinksIdResponse200 = {
+  data: DonationLinkResponse
+  status: 200
+}
+    
+export type getApiDonationLinksIdResponseSuccess = (getApiDonationLinksIdResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiDonationLinksIdResponse = (getApiDonationLinksIdResponseSuccess)
+
+export const getGetApiDonationLinksIdUrl = (campaignId: number,
+    id: number,) => {
+
+
+  
+
+  return `/api/fundraising/campaigns/${campaignId}/donation-links/${id}`
+}
+
+export const getApiDonationLinksId = async (campaignId: number,
+    id: number, options?: RequestInit): Promise<getApiDonationLinksIdResponse> => {
+  
+  return customFetch<getApiDonationLinksIdResponse>(getGetApiDonationLinksIdUrl(campaignId,id),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * @summary 기부 신청 목록 조회
+ */
+export type getApiDonationsResponse200 = {
+  data: PageDonationResponse
+  status: 200
+}
+    
+export type getApiDonationsResponseSuccess = (getApiDonationsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiDonationsResponse = (getApiDonationsResponseSuccess)
+
+export const getGetApiDonationsUrl = (campaignId: number,
+    params?: GetApiDonationsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
+    } else {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/fundraising/campaigns/${campaignId}/donations?${stringifiedParams}` : `/api/fundraising/campaigns/${campaignId}/donations`
+}
+
+export const getApiDonations = async (campaignId: number,
+    params?: GetApiDonationsParams, options?: RequestInit): Promise<getApiDonationsResponse> => {
+  
+  return customFetch<getApiDonationsResponse>(getGetApiDonationsUrl(campaignId,params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * @summary 기부자 인원수 조회
+ */
+export type getApiFundraisingCampaignDonationsCountResponse200 = {
+  data: DonationCountResponse
+  status: 200
+}
+    
+export type getApiFundraisingCampaignDonationsCountResponseSuccess = (getApiFundraisingCampaignDonationsCountResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiFundraisingCampaignDonationsCountResponse = (getApiFundraisingCampaignDonationsCountResponseSuccess)
+
+export const getGetApiFundraisingCampaignDonationsCountUrl = (campaignId: number,) => {
+
+
+  
+
+  return `/api/fundraising/campaigns/${campaignId}/donations/count`
+}
+
+export const getApiFundraisingCampaignDonationsCount = async (campaignId: number, options?: RequestInit): Promise<getApiFundraisingCampaignDonationsCountResponse> => {
+  
+  return customFetch<getApiFundraisingCampaignDonationsCountResponse>(getGetApiFundraisingCampaignDonationsCountUrl(campaignId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * @summary 기부 신청 상세 조회
+ */
+export type getApiDonationsIdResponse200 = {
+  data: DonationResponse
+  status: 200
+}
+    
+export type getApiDonationsIdResponseSuccess = (getApiDonationsIdResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiDonationsIdResponse = (getApiDonationsIdResponseSuccess)
+
+export const getGetApiDonationsIdUrl = (campaignId: number,
+    id: number,) => {
+
+
+  
+
+  return `/api/fundraising/campaigns/${campaignId}/donations/${id}`
+}
+
+export const getApiDonationsId = async (campaignId: number,
+    id: number, options?: RequestInit): Promise<getApiDonationsIdResponse> => {
+  
+  return customFetch<getApiDonationsIdResponse>(getGetApiDonationsIdUrl(campaignId,id),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * @summary 모금 캠페인 상세 조회
+ */
+export type getApiFundraisingCampaignsIdResponse200 = {
+  data: FundraisingCampaignResponse
+  status: 200
+}
+    
+export type getApiFundraisingCampaignsIdResponseSuccess = (getApiFundraisingCampaignsIdResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiFundraisingCampaignsIdResponse = (getApiFundraisingCampaignsIdResponseSuccess)
+
+export const getGetApiFundraisingCampaignsIdUrl = (id: number,) => {
+
+
+  
+
+  return `/api/fundraising/campaigns/${id}`
+}
+
+export const getApiFundraisingCampaignsId = async (id: number, options?: RequestInit): Promise<getApiFundraisingCampaignsIdResponse> => {
+  
+  return customFetch<getApiFundraisingCampaignsIdResponse>(getGetApiFundraisingCampaignsIdUrl(id),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * @summary 전체 기부자 인원수 조회
+ */
+export type getApiFundraisingDonationsCountResponse200 = {
+  data: DonationCountResponse
+  status: 200
+}
+    
+export type getApiFundraisingDonationsCountResponseSuccess = (getApiFundraisingDonationsCountResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiFundraisingDonationsCountResponse = (getApiFundraisingDonationsCountResponseSuccess)
+
+export const getGetApiFundraisingDonationsCountUrl = () => {
+
+
+  
+
+  return `/api/fundraising/donations/count`
+}
+
+export const getApiFundraisingDonationsCount = async ( options?: RequestInit): Promise<getApiFundraisingDonationsCountResponse> => {
+  
+  return customFetch<getApiFundraisingDonationsCountResponse>(getGetApiFundraisingDonationsCountUrl(),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 서비스가 요청을 처리할 수 있는 상태인지 확인합니다.
+ * @summary 헬스체크
+ */
+export type getApiHealthResponse200 = {
+  data: HealthCheckResponse
+  status: 200
+}
+    
+export type getApiHealthResponseSuccess = (getApiHealthResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiHealthResponse = (getApiHealthResponseSuccess)
+
+export const getGetApiHealthUrl = () => {
+
+
+  
+
+  return `/api/health`
+}
+
+export const getApiHealth = async ( options?: RequestInit): Promise<getApiHealthResponse> => {
+  
+  return customFetch<getApiHealthResponse>(getGetApiHealthUrl(),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * @summary 일반 상품 목록 조회
+ */
+export type getApiItemsResponse200 = {
+  data: PageItemResponse
+  status: 200
+}
+    
+export type getApiItemsResponseSuccess = (getApiItemsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiItemsResponse = (getApiItemsResponseSuccess)
+
+export const getGetApiItemsUrl = (params?: GetApiItemsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
+    } else {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/items?${stringifiedParams}` : `/api/items`
+}
+
+export const getApiItems = async (params?: GetApiItemsParams, options?: RequestInit): Promise<getApiItemsResponse> => {
+  
+  return customFetch<getApiItemsResponse>(getGetApiItemsUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 사용자가 자신의 예약 신청 내역을 페이지 단위로 조회합니다.
+ * @summary 내 예약 신청 목록
+ */
+export type getApiItemsReservationsApplicationsMeResponse200 = {
+  data: PageItemReservationApplicationPublicResponse
+  status: 200
+}
+    
+export type getApiItemsReservationsApplicationsMeResponseSuccess = (getApiItemsReservationsApplicationsMeResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiItemsReservationsApplicationsMeResponse = (getApiItemsReservationsApplicationsMeResponseSuccess)
+
+export const getGetApiItemsReservationsApplicationsMeUrl = (params?: GetApiItemsReservationsApplicationsMeParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
+    } else {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/items/reservations/applications/me?${stringifiedParams}` : `/api/items/reservations/applications/me`
+}
+
+export const getApiItemsReservationsApplicationsMe = async (params?: GetApiItemsReservationsApplicationsMeParams, options?: RequestInit): Promise<getApiItemsReservationsApplicationsMeResponse> => {
+  
+  return customFetch<getApiItemsReservationsApplicationsMeResponse>(getGetApiItemsReservationsApplicationsMeUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 예약 기간 동안 본인의 신청을 취소합니다. 취소 후 재신청은 불가합니다.
+ * @summary 예약 신청 취소
+ */
+export type deleteApiItemsReservationsApplicationsApplicationidResponse200 = {
+  data: boolean
+  status: 200
+}
+    
+export type deleteApiItemsReservationsApplicationsApplicationidResponseSuccess = (deleteApiItemsReservationsApplicationsApplicationidResponse200) & {
+  headers: Headers;
+};
+;
+
+export type deleteApiItemsReservationsApplicationsApplicationidResponse = (deleteApiItemsReservationsApplicationsApplicationidResponseSuccess)
+
+export const getDeleteApiItemsReservationsApplicationsApplicationidUrl = (applicationId: number,) => {
+
+
+  
+
+  return `/api/items/reservations/applications/${applicationId}`
+}
+
+export const deleteApiItemsReservationsApplicationsApplicationid = async (applicationId: number, options?: RequestInit): Promise<deleteApiItemsReservationsApplicationsApplicationidResponse> => {
+  
+  return customFetch<deleteApiItemsReservationsApplicationsApplicationidResponse>(getDeleteApiItemsReservationsApplicationsApplicationidUrl(applicationId),
+  {      
+    ...options,
+    method: 'DELETE'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 예약 기간 동안 본인의 신청 정보를 수정합니다.
+ * @summary 예약 신청 수정
+ */
+export type putApiItemsReservationsApplicationsApplicationidResponse200 = {
+  data: ItemReservationApplicationPublicResponse
+  status: 200
+}
+    
+export type putApiItemsReservationsApplicationsApplicationidResponseSuccess = (putApiItemsReservationsApplicationsApplicationidResponse200) & {
+  headers: Headers;
+};
+;
+
+export type putApiItemsReservationsApplicationsApplicationidResponse = (putApiItemsReservationsApplicationsApplicationidResponseSuccess)
+
+export const getPutApiItemsReservationsApplicationsApplicationidUrl = (applicationId: number,) => {
+
+
+  
+
+  return `/api/items/reservations/applications/${applicationId}`
+}
+
+export const putApiItemsReservationsApplicationsApplicationid = async (applicationId: number,
+    putApiItemsReservationsApplicationsApplicationidBody: PutApiItemsReservationsApplicationsApplicationidBody, options?: RequestInit): Promise<putApiItemsReservationsApplicationsApplicationidResponse> => {
+  
+  return customFetch<putApiItemsReservationsApplicationsApplicationidResponse>(getPutApiItemsReservationsApplicationsApplicationidUrl(applicationId),
+  {      
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      putApiItemsReservationsApplicationsApplicationidBody,)
+  }
+);}
+
+
+
+/**
+ * 예약이 가능한 공고 목록을 페이지 단위로 조회합니다.
+ * @summary 예약 공고 목록
+ */
+export type getApiItemsReservationsNoticesResponse200 = {
+  data: PageItemReservationNoticePublicResponse
+  status: 200
+}
+    
+export type getApiItemsReservationsNoticesResponseSuccess = (getApiItemsReservationsNoticesResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiItemsReservationsNoticesResponse = (getApiItemsReservationsNoticesResponseSuccess)
+
+export const getGetApiItemsReservationsNoticesUrl = (params?: GetApiItemsReservationsNoticesParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
+    } else {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/items/reservations/notices?${stringifiedParams}` : `/api/items/reservations/notices`
+}
+
+export const getApiItemsReservationsNotices = async (params?: GetApiItemsReservationsNoticesParams, options?: RequestInit): Promise<getApiItemsReservationsNoticesResponse> => {
+  
+  return customFetch<getApiItemsReservationsNoticesResponse>(getGetApiItemsReservationsNoticesUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 종료되지 않은 예약 공고 중 가장 최근에 생성된 공고를 조회합니다.
+ * @summary 최근 생성된 종료되지 않은 예약 공고
+ */
+export type getApiItemsReservationsNoticesLatestActiveResponse200 = {
+  data: ItemReservationNoticePublicResponse
+  status: 200
+}
+    
+export type getApiItemsReservationsNoticesLatestActiveResponseSuccess = (getApiItemsReservationsNoticesLatestActiveResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiItemsReservationsNoticesLatestActiveResponse = (getApiItemsReservationsNoticesLatestActiveResponseSuccess)
+
+export const getGetApiItemsReservationsNoticesLatestActiveUrl = () => {
+
+
+  
+
+  return `/api/items/reservations/notices/latest-active`
+}
+
+export const getApiItemsReservationsNoticesLatestActive = async ( options?: RequestInit): Promise<getApiItemsReservationsNoticesLatestActiveResponse> => {
+  
+  return customFetch<getApiItemsReservationsNoticesLatestActiveResponse>(getGetApiItemsReservationsNoticesLatestActiveUrl(),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 최근 종료된 예약 공고 10건을 조회합니다.
+ * @summary 최근 종료된 예약 공고 10건
+ */
+export type getApiItemsReservationsNoticesRecentEndedResponse200 = {
+  data: ItemReservationNoticePublicResponse[]
+  status: 200
+}
+    
+export type getApiItemsReservationsNoticesRecentEndedResponseSuccess = (getApiItemsReservationsNoticesRecentEndedResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiItemsReservationsNoticesRecentEndedResponse = (getApiItemsReservationsNoticesRecentEndedResponseSuccess)
+
+export const getGetApiItemsReservationsNoticesRecentEndedUrl = () => {
+
+
+  
+
+  return `/api/items/reservations/notices/recent-ended`
+}
+
+export const getApiItemsReservationsNoticesRecentEnded = async ( options?: RequestInit): Promise<getApiItemsReservationsNoticesRecentEndedResponse> => {
+  
+  return customFetch<getApiItemsReservationsNoticesRecentEndedResponse>(getGetApiItemsReservationsNoticesRecentEndedUrl(),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 예약 공고의 상세 정보를 조회합니다.
+ * @summary 예약 공고 상세
+ */
+export type getApiItemsReservationsNoticesNoticeidResponse200 = {
+  data: ItemReservationNoticePublicResponse
+  status: 200
+}
+    
+export type getApiItemsReservationsNoticesNoticeidResponseSuccess = (getApiItemsReservationsNoticesNoticeidResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiItemsReservationsNoticesNoticeidResponse = (getApiItemsReservationsNoticesNoticeidResponseSuccess)
+
+export const getGetApiItemsReservationsNoticesNoticeidUrl = (noticeId: number,) => {
+
+
+  
+
+  return `/api/items/reservations/notices/${noticeId}`
+}
+
+export const getApiItemsReservationsNoticesNoticeid = async (noticeId: number, options?: RequestInit): Promise<getApiItemsReservationsNoticesNoticeidResponse> => {
+  
+  return customFetch<getApiItemsReservationsNoticesNoticeidResponse>(getGetApiItemsReservationsNoticesNoticeidUrl(noticeId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 예약 기간 동안 수량과 수령지 정보를 입력해 신청합니다.
+ * @summary 예약 신청
+ */
+export type postApiItemsReservationsNoticesNoticeidApplicationsResponse200 = {
+  data: ItemReservationApplicationPublicResponse
+  status: 200
+}
+    
+export type postApiItemsReservationsNoticesNoticeidApplicationsResponseSuccess = (postApiItemsReservationsNoticesNoticeidApplicationsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiItemsReservationsNoticesNoticeidApplicationsResponse = (postApiItemsReservationsNoticesNoticeidApplicationsResponseSuccess)
+
+export const getPostApiItemsReservationsNoticesNoticeidApplicationsUrl = (noticeId: number,) => {
+
+
+  
+
+  return `/api/items/reservations/notices/${noticeId}/applications`
+}
+
+export const postApiItemsReservationsNoticesNoticeidApplications = async (noticeId: number,
+    postApiItemsReservationsNoticesNoticeidApplicationsBody: PostApiItemsReservationsNoticesNoticeidApplicationsBody, options?: RequestInit): Promise<postApiItemsReservationsNoticesNoticeidApplicationsResponse> => {
+  
+  return customFetch<postApiItemsReservationsNoticesNoticeidApplicationsResponse>(getPostApiItemsReservationsNoticesNoticeidApplicationsUrl(noticeId),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiItemsReservationsNoticesNoticeidApplicationsBody,)
+  }
+);}
+
+
+
+/**
+ * @summary 일반 상품 상세 조회
+ */
+export type getApiItemsIdResponse200 = {
+  data: ItemResponse
+  status: 200
+}
+    
+export type getApiItemsIdResponseSuccess = (getApiItemsIdResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiItemsIdResponse = (getApiItemsIdResponseSuccess)
+
+export const getGetApiItemsIdUrl = (id: number,) => {
+
+
+  
+
+  return `/api/items/${id}`
+}
+
+export const getApiItemsId = async (id: number, options?: RequestInit): Promise<getApiItemsIdResponse> => {
+  
+  return customFetch<getApiItemsIdResponse>(getGetApiItemsIdUrl(id),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
 export type getApiKvStoreResponse200 = {
   data: KvStoreUserResponse
   status: 200
@@ -8808,6 +11971,42 @@ export const patchApiOrdersOrderidCancel = async (orderId: number,
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
       patchApiOrdersOrderidCancelBody,)
+  }
+);}
+
+
+
+/**
+ * @summary 내 주문 배송 정보 조회
+ */
+export type getApiOrdersOrderidDeliveryResponse200 = {
+  data: OrderDeliveryResponse
+  status: 200
+}
+    
+export type getApiOrdersOrderidDeliveryResponseSuccess = (getApiOrdersOrderidDeliveryResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiOrdersOrderidDeliveryResponse = (getApiOrdersOrderidDeliveryResponseSuccess)
+
+export const getGetApiOrdersOrderidDeliveryUrl = (orderId: number,) => {
+
+
+  
+
+  return `/api/orders/${orderId}/delivery`
+}
+
+export const getApiOrdersOrderidDelivery = async (orderId: number, options?: RequestInit): Promise<getApiOrdersOrderidDeliveryResponse> => {
+  
+  return customFetch<getApiOrdersOrderidDeliveryResponse>(getGetApiOrdersOrderidDeliveryUrl(orderId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
   }
 );}
 
@@ -9771,6 +12970,244 @@ export const postApiUsersBusinessesApplicationsApplicationidCancel = async (appl
 
 
 /**
+ * 현재 로그인한 픽업 사업장에 배정된 예약 신청 목록을 조회합니다.
+ * @summary 픽업 사업장 예약 목록 조회
+ */
+export type getApiUsersBusinessesItemsReservationsApplicationsResponse200 = {
+  data: PageItemReservationPickupApplicationResponse
+  status: 200
+}
+    
+export type getApiUsersBusinessesItemsReservationsApplicationsResponseSuccess = (getApiUsersBusinessesItemsReservationsApplicationsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiUsersBusinessesItemsReservationsApplicationsResponse = (getApiUsersBusinessesItemsReservationsApplicationsResponseSuccess)
+
+export const getGetApiUsersBusinessesItemsReservationsApplicationsUrl = (params?: GetApiUsersBusinessesItemsReservationsApplicationsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
+    } else {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/users/businesses/items/reservations/applications?${stringifiedParams}` : `/api/users/businesses/items/reservations/applications`
+}
+
+export const getApiUsersBusinessesItemsReservationsApplications = async (params?: GetApiUsersBusinessesItemsReservationsApplicationsParams, options?: RequestInit): Promise<getApiUsersBusinessesItemsReservationsApplicationsResponse> => {
+  
+  return customFetch<getApiUsersBusinessesItemsReservationsApplicationsResponse>(getGetApiUsersBusinessesItemsReservationsApplicationsUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 단건, 여러 예약 ID, 혹은 특정 아이템 기준으로 결제 완료 상태 예약을 수령 대기 상태로 일괄 변경합니다.
+ * @summary 픽업 사업장 수령 대기 일괄 처리
+ */
+export type postApiUsersBusinessesItemsReservationsApplicationsWaitingPickupResponse200 = {
+  data: ItemReservationPickupBulkUpdateResponse
+  status: 200
+}
+    
+export type postApiUsersBusinessesItemsReservationsApplicationsWaitingPickupResponseSuccess = (postApiUsersBusinessesItemsReservationsApplicationsWaitingPickupResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiUsersBusinessesItemsReservationsApplicationsWaitingPickupResponse = (postApiUsersBusinessesItemsReservationsApplicationsWaitingPickupResponseSuccess)
+
+export const getPostApiUsersBusinessesItemsReservationsApplicationsWaitingPickupUrl = () => {
+
+
+  
+
+  return `/api/users/businesses/items/reservations/applications/waiting-pickup`
+}
+
+export const postApiUsersBusinessesItemsReservationsApplicationsWaitingPickup = async (postApiUsersBusinessesItemsReservationsApplicationsWaitingPickupBody: PostApiUsersBusinessesItemsReservationsApplicationsWaitingPickupBody, options?: RequestInit): Promise<postApiUsersBusinessesItemsReservationsApplicationsWaitingPickupResponse> => {
+  
+  return customFetch<postApiUsersBusinessesItemsReservationsApplicationsWaitingPickupResponse>(getPostApiUsersBusinessesItemsReservationsApplicationsWaitingPickupUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiUsersBusinessesItemsReservationsApplicationsWaitingPickupBody,)
+  }
+);}
+
+
+
+/**
+ * 현재 로그인한 픽업 사업장에 배정된 예약 신청 상세를 조회합니다.
+ * @summary 픽업 사업장 예약 상세 조회
+ */
+export type getApiUsersBusinessesItemsReservationsApplicationsApplicationidResponse200 = {
+  data: ItemReservationPickupApplicationResponse
+  status: 200
+}
+    
+export type getApiUsersBusinessesItemsReservationsApplicationsApplicationidResponseSuccess = (getApiUsersBusinessesItemsReservationsApplicationsApplicationidResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiUsersBusinessesItemsReservationsApplicationsApplicationidResponse = (getApiUsersBusinessesItemsReservationsApplicationsApplicationidResponseSuccess)
+
+export const getGetApiUsersBusinessesItemsReservationsApplicationsApplicationidUrl = (applicationId: number,) => {
+
+
+  
+
+  return `/api/users/businesses/items/reservations/applications/${applicationId}`
+}
+
+export const getApiUsersBusinessesItemsReservationsApplicationsApplicationid = async (applicationId: number, options?: RequestInit): Promise<getApiUsersBusinessesItemsReservationsApplicationsApplicationidResponse> => {
+  
+  return customFetch<getApiUsersBusinessesItemsReservationsApplicationsApplicationidResponse>(getGetApiUsersBusinessesItemsReservationsApplicationsApplicationidUrl(applicationId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 예약 확정 상태의 신청을 픽업 사업장 결제 완료 상태로 변경합니다.
+ * @summary 픽업 사업장 결제 완료 처리
+ */
+export type postApiUsersBusinessesItemsReservationsApplicationsApplicationidPaymentCompleteResponse200 = {
+  data: ItemReservationPickupApplicationResponse
+  status: 200
+}
+    
+export type postApiUsersBusinessesItemsReservationsApplicationsApplicationidPaymentCompleteResponseSuccess = (postApiUsersBusinessesItemsReservationsApplicationsApplicationidPaymentCompleteResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiUsersBusinessesItemsReservationsApplicationsApplicationidPaymentCompleteResponse = (postApiUsersBusinessesItemsReservationsApplicationsApplicationidPaymentCompleteResponseSuccess)
+
+export const getPostApiUsersBusinessesItemsReservationsApplicationsApplicationidPaymentCompleteUrl = (applicationId: number,) => {
+
+
+  
+
+  return `/api/users/businesses/items/reservations/applications/${applicationId}/payment-complete`
+}
+
+export const postApiUsersBusinessesItemsReservationsApplicationsApplicationidPaymentComplete = async (applicationId: number, options?: RequestInit): Promise<postApiUsersBusinessesItemsReservationsApplicationsApplicationidPaymentCompleteResponse> => {
+  
+  return customFetch<postApiUsersBusinessesItemsReservationsApplicationsApplicationidPaymentCompleteResponse>(getPostApiUsersBusinessesItemsReservationsApplicationsApplicationidPaymentCompleteUrl(applicationId),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 수령 대기 상태의 신청을 수령 완료 상태로 변경합니다.
+ * @summary 픽업 사업장 수령 완료 처리
+ */
+export type postApiUsersBusinessesItemsReservationsApplicationsApplicationidReceiveCompleteResponse200 = {
+  data: ItemReservationPickupApplicationResponse
+  status: 200
+}
+    
+export type postApiUsersBusinessesItemsReservationsApplicationsApplicationidReceiveCompleteResponseSuccess = (postApiUsersBusinessesItemsReservationsApplicationsApplicationidReceiveCompleteResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiUsersBusinessesItemsReservationsApplicationsApplicationidReceiveCompleteResponse = (postApiUsersBusinessesItemsReservationsApplicationsApplicationidReceiveCompleteResponseSuccess)
+
+export const getPostApiUsersBusinessesItemsReservationsApplicationsApplicationidReceiveCompleteUrl = (applicationId: number,) => {
+
+
+  
+
+  return `/api/users/businesses/items/reservations/applications/${applicationId}/receive-complete`
+}
+
+export const postApiUsersBusinessesItemsReservationsApplicationsApplicationidReceiveComplete = async (applicationId: number, options?: RequestInit): Promise<postApiUsersBusinessesItemsReservationsApplicationsApplicationidReceiveCompleteResponse> => {
+  
+  return customFetch<postApiUsersBusinessesItemsReservationsApplicationsApplicationidReceiveCompleteResponse>(getPostApiUsersBusinessesItemsReservationsApplicationsApplicationidReceiveCompleteUrl(applicationId),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 결제 완료 상태의 신청을 수령 대기 상태로 변경합니다.
+ * @summary 픽업 사업장 수령 대기 처리
+ */
+export type postApiUsersBusinessesItemsReservationsApplicationsApplicationidWaitingPickupResponse200 = {
+  data: ItemReservationPickupApplicationResponse
+  status: 200
+}
+    
+export type postApiUsersBusinessesItemsReservationsApplicationsApplicationidWaitingPickupResponseSuccess = (postApiUsersBusinessesItemsReservationsApplicationsApplicationidWaitingPickupResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiUsersBusinessesItemsReservationsApplicationsApplicationidWaitingPickupResponse = (postApiUsersBusinessesItemsReservationsApplicationsApplicationidWaitingPickupResponseSuccess)
+
+export const getPostApiUsersBusinessesItemsReservationsApplicationsApplicationidWaitingPickupUrl = (applicationId: number,) => {
+
+
+  
+
+  return `/api/users/businesses/items/reservations/applications/${applicationId}/waiting-pickup`
+}
+
+export const postApiUsersBusinessesItemsReservationsApplicationsApplicationidWaitingPickup = async (applicationId: number, options?: RequestInit): Promise<postApiUsersBusinessesItemsReservationsApplicationsApplicationidWaitingPickupResponse> => {
+  
+  return customFetch<postApiUsersBusinessesItemsReservationsApplicationsApplicationidWaitingPickupResponse>(getPostApiUsersBusinessesItemsReservationsApplicationsApplicationidWaitingPickupUrl(applicationId),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+);}
+
+
+
+/**
  * ROLE_PICK_UP_BUSINESS 권한을 가진 유저의 사업장 정보를 반환합니다.
  * @summary 픽업 가능 사업장 목록
  */
@@ -10090,6 +13527,225 @@ export const getApiUsersMe = async ( options?: RequestInit): Promise<getApiUsers
   {      
     ...options,
     method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * @summary 내 배송지 주소록 목록 조회
+ */
+export type getApiUsersMeDeliveryAddressesResponse200 = {
+  data: DeliveryAddressResponse[]
+  status: 200
+}
+    
+export type getApiUsersMeDeliveryAddressesResponseSuccess = (getApiUsersMeDeliveryAddressesResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiUsersMeDeliveryAddressesResponse = (getApiUsersMeDeliveryAddressesResponseSuccess)
+
+export const getGetApiUsersMeDeliveryAddressesUrl = () => {
+
+
+  
+
+  return `/api/users/me/delivery-addresses`
+}
+
+export const getApiUsersMeDeliveryAddresses = async ( options?: RequestInit): Promise<getApiUsersMeDeliveryAddressesResponse> => {
+  
+  return customFetch<getApiUsersMeDeliveryAddressesResponse>(getGetApiUsersMeDeliveryAddressesUrl(),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * @summary 내 배송지 주소록 등록
+ */
+export type postApiUsersMeDeliveryAddressesResponse200 = {
+  data: DeliveryAddressResponse
+  status: 200
+}
+    
+export type postApiUsersMeDeliveryAddressesResponseSuccess = (postApiUsersMeDeliveryAddressesResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiUsersMeDeliveryAddressesResponse = (postApiUsersMeDeliveryAddressesResponseSuccess)
+
+export const getPostApiUsersMeDeliveryAddressesUrl = () => {
+
+
+  
+
+  return `/api/users/me/delivery-addresses`
+}
+
+export const postApiUsersMeDeliveryAddresses = async (postApiUsersMeDeliveryAddressesBody: PostApiUsersMeDeliveryAddressesBody, options?: RequestInit): Promise<postApiUsersMeDeliveryAddressesResponse> => {
+  
+  return customFetch<postApiUsersMeDeliveryAddressesResponse>(getPostApiUsersMeDeliveryAddressesUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiUsersMeDeliveryAddressesBody,)
+  }
+);}
+
+
+
+/**
+ * @summary 내 배송지 주소록 삭제
+ */
+export type deleteApiUsersMeDeliveryAddressesAddressidResponse200 = {
+  data: void
+  status: 200
+}
+    
+export type deleteApiUsersMeDeliveryAddressesAddressidResponseSuccess = (deleteApiUsersMeDeliveryAddressesAddressidResponse200) & {
+  headers: Headers;
+};
+;
+
+export type deleteApiUsersMeDeliveryAddressesAddressidResponse = (deleteApiUsersMeDeliveryAddressesAddressidResponseSuccess)
+
+export const getDeleteApiUsersMeDeliveryAddressesAddressidUrl = (addressId: number,) => {
+
+
+  
+
+  return `/api/users/me/delivery-addresses/${addressId}`
+}
+
+export const deleteApiUsersMeDeliveryAddressesAddressid = async (addressId: number, options?: RequestInit): Promise<deleteApiUsersMeDeliveryAddressesAddressidResponse> => {
+  
+  return customFetch<deleteApiUsersMeDeliveryAddressesAddressidResponse>(getDeleteApiUsersMeDeliveryAddressesAddressidUrl(addressId),
+  {      
+    ...options,
+    method: 'DELETE'
+    
+    
+  }
+);}
+
+
+
+/**
+ * @summary 내 배송지 주소록 상세 조회
+ */
+export type getApiUsersMeDeliveryAddressesAddressidResponse200 = {
+  data: DeliveryAddressResponse
+  status: 200
+}
+    
+export type getApiUsersMeDeliveryAddressesAddressidResponseSuccess = (getApiUsersMeDeliveryAddressesAddressidResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiUsersMeDeliveryAddressesAddressidResponse = (getApiUsersMeDeliveryAddressesAddressidResponseSuccess)
+
+export const getGetApiUsersMeDeliveryAddressesAddressidUrl = (addressId: number,) => {
+
+
+  
+
+  return `/api/users/me/delivery-addresses/${addressId}`
+}
+
+export const getApiUsersMeDeliveryAddressesAddressid = async (addressId: number, options?: RequestInit): Promise<getApiUsersMeDeliveryAddressesAddressidResponse> => {
+  
+  return customFetch<getApiUsersMeDeliveryAddressesAddressidResponse>(getGetApiUsersMeDeliveryAddressesAddressidUrl(addressId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * @summary 내 배송지 주소록 수정
+ */
+export type putApiUsersMeDeliveryAddressesAddressidResponse200 = {
+  data: DeliveryAddressResponse
+  status: 200
+}
+    
+export type putApiUsersMeDeliveryAddressesAddressidResponseSuccess = (putApiUsersMeDeliveryAddressesAddressidResponse200) & {
+  headers: Headers;
+};
+;
+
+export type putApiUsersMeDeliveryAddressesAddressidResponse = (putApiUsersMeDeliveryAddressesAddressidResponseSuccess)
+
+export const getPutApiUsersMeDeliveryAddressesAddressidUrl = (addressId: number,) => {
+
+
+  
+
+  return `/api/users/me/delivery-addresses/${addressId}`
+}
+
+export const putApiUsersMeDeliveryAddressesAddressid = async (addressId: number,
+    putApiUsersMeDeliveryAddressesAddressidBody: PutApiUsersMeDeliveryAddressesAddressidBody, options?: RequestInit): Promise<putApiUsersMeDeliveryAddressesAddressidResponse> => {
+  
+  return customFetch<putApiUsersMeDeliveryAddressesAddressidResponse>(getPutApiUsersMeDeliveryAddressesAddressidUrl(addressId),
+  {      
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      putApiUsersMeDeliveryAddressesAddressidBody,)
+  }
+);}
+
+
+
+/**
+ * @summary 기본 배송지 설정
+ */
+export type patchApiUsersMeDeliveryAddressesAddressidDefaultResponse200 = {
+  data: DeliveryAddressResponse
+  status: 200
+}
+    
+export type patchApiUsersMeDeliveryAddressesAddressidDefaultResponseSuccess = (patchApiUsersMeDeliveryAddressesAddressidDefaultResponse200) & {
+  headers: Headers;
+};
+;
+
+export type patchApiUsersMeDeliveryAddressesAddressidDefaultResponse = (patchApiUsersMeDeliveryAddressesAddressidDefaultResponseSuccess)
+
+export const getPatchApiUsersMeDeliveryAddressesAddressidDefaultUrl = (addressId: number,) => {
+
+
+  
+
+  return `/api/users/me/delivery-addresses/${addressId}/default`
+}
+
+export const patchApiUsersMeDeliveryAddressesAddressidDefault = async (addressId: number, options?: RequestInit): Promise<patchApiUsersMeDeliveryAddressesAddressidDefaultResponse> => {
+  
+  return customFetch<patchApiUsersMeDeliveryAddressesAddressidDefaultResponse>(getPatchApiUsersMeDeliveryAddressesAddressidDefaultUrl(addressId),
+  {      
+    ...options,
+    method: 'PATCH'
     
     
   }
