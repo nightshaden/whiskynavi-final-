@@ -179,11 +179,24 @@ describe("admin business member actions", () => {
   });
 
   it("returns fallback message when grant fails unexpectedly", async () => {
-    mockedGrantPickup.mockRejectedValue(new Error("boom"));
+    mockedGrantPickup.mockRejectedValue("boom");
 
     await expect(grantPickupRoleAction(10)).resolves.toEqual({
       success: false,
-      error: "boom",
+      error: "픽업 권한 부여에 실패했습니다.",
+    });
+
+    expect(mockedRevalidatePath).not.toHaveBeenCalled();
+  });
+
+  it("returns backend user message when grant api throws ApiError", async () => {
+    mockedGrantPickup.mockRejectedValue(
+      new ApiError(409, '{"message":"이미 처리된 요청입니다."}'),
+    );
+
+    await expect(grantPickupRoleAction(10)).resolves.toEqual({
+      success: false,
+      error: "이미 처리된 요청입니다.",
     });
 
     expect(mockedRevalidatePath).not.toHaveBeenCalled();
@@ -226,11 +239,24 @@ describe("admin business member actions", () => {
   });
 
   it("returns fallback message when revoke fails unexpectedly", async () => {
-    mockedRevokePickup.mockRejectedValue(new Error("boom"));
+    mockedRevokePickup.mockRejectedValue("boom");
 
     await expect(revokePickupRoleAction(10)).resolves.toEqual({
       success: false,
-      error: "boom",
+      error: "픽업 권한 회수에 실패했습니다.",
+    });
+
+    expect(mockedRevalidatePath).not.toHaveBeenCalled();
+  });
+
+  it("returns backend user message when revoke api throws ApiError", async () => {
+    mockedRevokePickup.mockRejectedValue(
+      new ApiError(409, '{"message":"이미 처리된 요청입니다."}'),
+    );
+
+    await expect(revokePickupRoleAction(10)).resolves.toEqual({
+      success: false,
+      error: "이미 처리된 요청입니다.",
     });
 
     expect(mockedRevalidatePath).not.toHaveBeenCalled();
