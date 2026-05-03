@@ -102,11 +102,11 @@ export function SignInForm() {
         </Button>
       </form>
       <div className="mt-5 flex w-full items-center justify-center gap-14">
-        <Link href="/sign-up" className="typo-medium-16 w-25 text-center font-semibold text-[#FFF]">
+        <Link href="/sign-up" className="typo-medium-16 min-w-25 text-center font-semibold text-[#FFF]">
           회원가입
         </Link>
         <span className="text-[#FFF]">|</span>
-        <Link href="/find-password" className="typo-medium-16 w-25 text-center font-semibold text-[#FFF]">
+        <Link href="/find-password" className="typo-medium-16 min-w-25 text-center font-semibold text-[#FFF]">
           비밀번호 초기화
         </Link>
       </div>
