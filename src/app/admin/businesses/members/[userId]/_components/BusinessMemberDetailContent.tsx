@@ -36,6 +36,13 @@ const BUSINESS_TYPE_LABEL: Record<string, string> = {
   ENTERTAINMENT: "유흥용",
 };
 
+const FALLBACK_SAVE_ERROR_MESSAGE = "사업자 정보 수정에 실패했습니다.";
+
+const isBusinessType = (
+  value: string,
+): value is PatchApiAdminBusinessesMembersUseridBusinessBodyBusinessType =>
+  value === "HOUSEHOLD" || value === "ENTERTAINMENT";
+
 type BusinessEditForm = {
   businessName: string;
   businessRegistrationNumber: string;
@@ -102,7 +109,7 @@ export default function BusinessMemberDetailContent({
   };
 
   const handleChange = (
-    field: keyof BusinessEditForm,
+    field: Exclude<keyof BusinessEditForm, "businessType">,
     value: string,
   ) => {
     setForm((current) => ({
@@ -112,34 +119,51 @@ export default function BusinessMemberDetailContent({
     setMessage(null);
   };
 
+  const handleBusinessTypeChange = (
+    value: PatchApiAdminBusinessesMembersUseridBusinessBodyBusinessType,
+  ) => {
+    setForm((current) => ({
+      ...current,
+      businessType: value,
+    }));
+    setMessage(null);
+  };
+
   const handleSave = async () => {
     setIsPending(true);
     setMessage(null);
 
-    const result = await updateBusinessAction(member.userId!, {
-      businessName: form.businessName,
-      businessRegistrationNumber: form.businessRegistrationNumber,
-      businessType: form.businessType,
-      contact: form.contact,
-      pickupAddress: form.pickupAddress,
-    });
-
-    if (result.success) {
-      setMessage({
-        text: "사업자 정보가 수정되었습니다.",
-        variant: "success",
+    try {
+      const result = await updateBusinessAction(member.userId!, {
+        businessName: form.businessName,
+        businessRegistrationNumber: form.businessRegistrationNumber,
+        businessType: form.businessType,
+        contact: form.contact,
+        pickupAddress: form.pickupAddress,
       });
-      setIsEditing(false);
-      setIsPending(false);
-      router.refresh();
-      return;
-    }
 
-    setMessage({
-      text: result.error ?? "사업자 정보 수정에 실패했습니다.",
-      variant: "error",
-    });
-    setIsPending(false);
+      if (result.success) {
+        setMessage({
+          text: "사업자 정보가 수정되었습니다.",
+          variant: "success",
+        });
+        setIsEditing(false);
+        router.refresh();
+        return;
+      }
+
+      setMessage({
+        text: result.error ?? FALLBACK_SAVE_ERROR_MESSAGE,
+        variant: "error",
+      });
+    } catch {
+      setMessage({
+        text: FALLBACK_SAVE_ERROR_MESSAGE,
+        variant: "error",
+      });
+    } finally {
+      setIsPending(false);
+    }
   };
 
   return (
@@ -320,9 +344,11 @@ export default function BusinessMemberDetailContent({
                   <select
                     id="businessType"
                     value={form.businessType}
-                    onChange={(event) =>
-                      handleChange("businessType", event.target.value)
-                    }
+                    onChange={(event) => {
+                      if (isBusinessType(event.target.value)) {
+                        handleBusinessTypeChange(event.target.value);
+                      }
+                    }}
                     disabled={isPending}
                     className="border-input focus-visible:border-ring focus-visible:ring-ring/50 h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50"
                   >
