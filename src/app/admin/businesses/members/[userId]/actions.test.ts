@@ -105,6 +105,7 @@ describe("admin business member actions", () => {
     expect(mockedRevalidatePath).toHaveBeenCalledWith(
       "/admin/businesses/members",
     );
+    expect(mockedRevalidatePath).toHaveBeenCalledTimes(2);
   });
 
   it("returns fallback message when update fails unexpectedly", async () => {
@@ -162,6 +163,30 @@ describe("admin business member actions", () => {
     expect(mockedRevalidatePath).toHaveBeenCalledWith(
       "/admin/businesses/members",
     );
+    expect(mockedRevalidatePath).toHaveBeenCalledTimes(2);
+  });
+
+  it("returns auth error when grant is called without token", async () => {
+    mockedGetAuthToken.mockResolvedValue(null);
+
+    await expect(grantPickupRoleAction(10)).resolves.toEqual({
+      success: false,
+      error: "인증이 필요합니다.",
+    });
+
+    expect(mockedGrantPickup).not.toHaveBeenCalled();
+    expect(mockedRevalidatePath).not.toHaveBeenCalled();
+  });
+
+  it("returns fallback message when grant fails unexpectedly", async () => {
+    mockedGrantPickup.mockRejectedValue(new Error("boom"));
+
+    await expect(grantPickupRoleAction(10)).resolves.toEqual({
+      success: false,
+      error: "boom",
+    });
+
+    expect(mockedRevalidatePath).not.toHaveBeenCalled();
   });
 
   it("calls revoke api and revalidates on success", async () => {
@@ -185,5 +210,29 @@ describe("admin business member actions", () => {
     expect(mockedRevalidatePath).toHaveBeenCalledWith(
       "/admin/businesses/members",
     );
+    expect(mockedRevalidatePath).toHaveBeenCalledTimes(2);
+  });
+
+  it("returns auth error when revoke is called without token", async () => {
+    mockedGetAuthToken.mockResolvedValue(null);
+
+    await expect(revokePickupRoleAction(10)).resolves.toEqual({
+      success: false,
+      error: "인증이 필요합니다.",
+    });
+
+    expect(mockedRevokePickup).not.toHaveBeenCalled();
+    expect(mockedRevalidatePath).not.toHaveBeenCalled();
+  });
+
+  it("returns fallback message when revoke fails unexpectedly", async () => {
+    mockedRevokePickup.mockRejectedValue(new Error("boom"));
+
+    await expect(revokePickupRoleAction(10)).resolves.toEqual({
+      success: false,
+      error: "boom",
+    });
+
+    expect(mockedRevalidatePath).not.toHaveBeenCalled();
   });
 });
