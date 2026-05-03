@@ -23,6 +23,30 @@ describe("FindPasswordForm", () => {
     vi.resetAllMocks();
   });
 
+  it("locks email input while sending reset code", async () => {
+    const user = userEvent.setup();
+    let resolveSend: ((value: { success: boolean; error?: string }) => void) | undefined;
+    mockSendResetCode.mockReturnValue(
+      new Promise((resolve) => {
+        resolveSend = resolve;
+      }),
+    );
+
+    render(<FindPasswordForm />);
+
+    const emailInput = screen.getByLabelText("이메일 주소");
+    await user.type(emailInput, "user@example.com");
+    await user.click(screen.getByRole("button", { name: "인증코드 발송" }));
+
+    await waitFor(() => {
+      expect(emailInput).toHaveAttribute("readonly");
+    });
+
+    resolveSend?.({ success: true });
+
+    expect(await screen.findByPlaceholderText("인증 코드 입력")).toBeInTheDocument();
+  });
+
   it("reveals verification input after send succeeds", async () => {
     const user = userEvent.setup();
     mockSendResetCode.mockResolvedValue({ success: true });
@@ -64,6 +88,9 @@ describe("FindPasswordForm", () => {
     await user.type(screen.getByLabelText("이메일 주소"), "user@example.com");
     await user.click(screen.getByRole("button", { name: "인증코드 발송" }));
     await user.type(await screen.findByPlaceholderText("인증 코드 입력"), "999999");
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: "확인" })).toBeEnabled();
+    });
     await user.click(screen.getByRole("button", { name: "확인" }));
 
     expect(await screen.findByText("인증 코드가 올바르지 않습니다.")).toBeInTheDocument();
@@ -80,6 +107,9 @@ describe("FindPasswordForm", () => {
     await user.type(screen.getByLabelText("이메일 주소"), "user@example.com");
     await user.click(screen.getByRole("button", { name: "인증코드 발송" }));
     await user.type(await screen.findByPlaceholderText("인증 코드 입력"), "123456");
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: "확인" })).toBeEnabled();
+    });
     await user.click(screen.getByRole("button", { name: "확인" }));
 
     await waitFor(() => {

@@ -96,7 +96,7 @@ export default function FindPasswordForm() {
               type="email"
               value={email}
               onChange={handleEmailChange}
-              readOnly={step === "resetting"}
+              readOnly={isPending || step === "resetting"}
               placeholder="ex) whiskynavi@whiskynavi.com"
               className="typo-medium-13 rounded-none border-0 border-b border-gray-200 bg-transparent px-0 py-3 font-semibold text-white placeholder:text-gray-200 focus-visible:border-white focus-visible:ring-0"
             />
