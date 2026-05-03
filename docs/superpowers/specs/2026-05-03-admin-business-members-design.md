@@ -1,65 +1,65 @@
-# Admin Business Members Design
+# 관리자 사업자 멤버 관리 페이지 설계
 
 Date: 2026-05-03
-Topic: `/admin/businesses/members` business member management page
+Topic: `/admin/businesses/members` 사업자 멤버 관리 페이지
 
-## Summary
+## 요약
 
-Implement the admin business member management flow using the existing admin businesses member APIs.
+기존 관리자 사업자 멤버 API를 사용해 관리자 콘솔의 사업자 멤버 관리 흐름을 구현한다.
 
-The feature includes:
+이번 기능은 다음을 포함한다.
 
-1. A paginated member list at `/admin/businesses/members`
-2. A member detail page at `/admin/businesses/members/{userId}`
-3. Inline read-only and edit-mode switching on the detail page
-4. Business information updates through `PATCH /api/admin/businesses/members/{userId}/business`
-5. Pickup role grant and revoke actions through dedicated POST endpoints
+1. `/admin/businesses/members` 의 페이지네이션 목록
+2. `/admin/businesses/members/{userId}` 상세 페이지
+3. 상세 페이지 내부의 read-only / edit mode 전환
+4. `PATCH /api/admin/businesses/members/{userId}/business` 를 통한 사업자 정보 수정
+5. 전용 POST API를 통한 pickup 권한 부여와 회수
 
-This work should support the full currently exposed API interface without inventing frontend-only business capabilities beyond that contract.
+이 작업은 현재 백엔드가 노출한 API 인터페이스를 빠짐없이 지원하되, 그 계약을 넘어서는 프론트 전용 기능은 만들지 않는다.
 
-## Goals
+## 목표
 
-- Add a usable admin business member list page for operators.
-- Preserve fast lookup and fast action handling for support and operations work.
-- Support the full editable business payload currently exposed by the admin PATCH API.
-- Keep GET requests in RSC and PATCH or POST requests in server actions.
-- Add unit tests for server actions and UI tests for client rendering and mode transitions.
+- 운영자가 사용할 수 있는 사업자 멤버 목록 페이지를 추가한다.
+- 빠른 조회와 빠른 액션 처리 흐름을 유지한다.
+- 관리자 PATCH API가 노출한 사업자 수정 필드를 모두 지원한다.
+- GET 요청은 RSC, PATCH 또는 POST 요청은 server action으로 유지한다.
+- server action 단위 테스트와 클라이언트 UI 테스트를 모두 추가한다.
 
-## Non-Goals
+## 비목표
 
-- Adding frontend-only search or filters not supported by the current list API.
-- Creating a separate edit page for business members.
-- Refactoring unrelated admin pages.
-- Introducing optimistic updates or local cache layers.
+- 현재 목록 API가 지원하지 않는 프론트 전용 검색이나 필터 추가
+- 사업자 멤버 전용 별도 edit 페이지 생성
+- 이번 작업과 무관한 관리자 페이지 리팩터링
+- 낙관적 업데이트나 별도 캐시 레이어 도입
 
-## Existing Context
+## 현재 맥락
 
-- `src/app/admin/businesses/members/page.tsx` already fetches the member list through RSC.
-- `src/app/admin/businesses/members/[userId]/page.tsx` already fetches detail data through RSC.
-- `src/app/admin/businesses/members/_components/BusinessMembersContent.tsx` already renders the current list UI with pagination wiring.
-- `src/app/admin/businesses/members/[userId]/_components/BusinessMemberDetailContent.tsx` already renders read-only member and business information plus pickup role actions.
-- `src/app/admin/businesses/members/[userId]/actions.ts` already contains pickup grant and revoke server actions.
-- `src/apis/generated/api.ts` exposes the relevant API surface:
+- `src/app/admin/businesses/members/page.tsx` 는 이미 RSC에서 멤버 목록을 조회하고 있다.
+- `src/app/admin/businesses/members/[userId]/page.tsx` 는 이미 RSC에서 상세 데이터를 조회하고 있다.
+- `src/app/admin/businesses/members/_components/BusinessMembersContent.tsx` 는 현재 목록 UI와 페이지네이션 연결을 렌더링하고 있다.
+- `src/app/admin/businesses/members/[userId]/_components/BusinessMemberDetailContent.tsx` 는 현재 read-only 멤버 정보와 pickup 권한 액션을 렌더링하고 있다.
+- `src/app/admin/businesses/members/[userId]/actions.ts` 는 이미 pickup 권한 부여와 회수 server action을 포함하고 있다.
+- `src/apis/generated/api.ts` 는 이번 작업에 필요한 API surface를 이미 노출하고 있다.
   - `getApiAdminBusinessesMembers`
   - `getApiAdminBusinessesMembersUserid`
   - `patchApiAdminBusinessesMembersUseridBusiness`
   - `postApiAdminBusinessesMembersUseridPickupGrant`
   - `postApiAdminBusinessesMembersUseridPickupRevoke`
-- The recent `find-password` work establishes the preferred pattern for server action unit tests and focused UI tests.
+- 최근 `find-password` 작업은 server action 단위 테스트와 범위가 좁은 UI 테스트 패턴의 기준이 된다.
 
-## API Contract
+## API 계약
 
-### List API
+### 목록 API
 
 `GET /api/admin/businesses/members`
 
-Supported query interface:
+지원하는 query interface:
 
 - `page`
 - `size`
 - `sort[]`
 
-Current response shape is limited to:
+현재 응답 shape는 다음 정도로 제한된다.
 
 - `userId`
 - `name`
@@ -67,24 +67,24 @@ Current response shape is limited to:
 - `hasPickupRole`
 - `roles`
 
-This means the list page should not promise business-name search or richer filters that the backend does not currently support.
+즉 목록 페이지는 백엔드가 지원하지 않는 업체명 검색이나 추가 필터를 약속하면 안 된다.
 
-### Detail API
+### 상세 API
 
 `GET /api/admin/businesses/members/{userId}`
 
-Detail data includes:
+상세 데이터는 다음을 포함한다.
 
-- member identity fields
-- role information
-- pickup-role state
-- business fields such as name, registration number, type, contact, address, and timestamps
+- 멤버 기본 식별 정보
+- role 정보
+- pickup 권한 상태
+- 사업자명, 사업자등록번호, 사업 유형, 연락처, 주소, 생성일, 수정일 같은 사업자 필드
 
-### Update API
+### 수정 API
 
 `PATCH /api/admin/businesses/members/{userId}/business`
 
-Editable fields:
+수정 가능한 필드:
 
 - `businessName`
 - `businessRegistrationNumber`
@@ -92,132 +92,132 @@ Editable fields:
 - `contact`
 - `pickupAddress`
 
-Important contract detail:
+중요한 계약:
 
-- `null` means keep current value
-- empty string for `contact` means clear the stored contact value
+- `null` 은 기존 값을 유지한다.
+- `contact` 에 빈 문자열을 보내면 저장된 연락처를 비운다.
 
-### Pickup Role APIs
+### Pickup 권한 API
 
 - `POST /api/admin/businesses/members/{userId}/pickup/grant`
 - `POST /api/admin/businesses/members/{userId}/pickup/revoke`
 
-These remain dedicated actions rather than being merged into the edit form.
+이 둘은 수정 폼에 합치지 않고 전용 액션으로 유지한다.
 
-## Recommended Approach
+## 권장 접근
 
-Use the existing route structure and enhance the current implementation rather than rebuilding it.
+기존 라우트 구조를 유지하면서 현재 구현을 확장한다.
 
-- Keep list and detail data fetching in RSC `page.tsx` files.
-- Keep all mutations in server actions.
-- Extend the existing detail client component with an explicit edit mode.
-- Add server action unit tests first, then implement update behavior, then update UI tests.
+- 목록과 상세 조회는 계속 RSC `page.tsx` 에서 처리한다.
+- 모든 변경 요청은 server action에서 처리한다.
+- 기존 상세 클라이언트 컴포넌트에 명시적인 edit mode를 추가한다.
+- 먼저 server action 단위 테스트를 추가하고, 그 다음 수정 동작을 구현하고, 마지막으로 UI 테스트를 보강한다.
 
-This is the minimal approach that still honors the API contract and operator workflow.
+이 방식이 API 계약과 운영 흐름을 지키면서도 가장 단순한 구현이다.
 
-## Information Architecture
+## 정보 구조
 
 ### `/admin/businesses/members`
 
-Responsibilities:
+책임:
 
-- show a paginated list of business members
-- expose page navigation
-- expose page size control
-- optionally expose a minimal sort selector tied to the supported `sort[]` interface
-- route to member detail on row click
+- 사업자 멤버 목록을 페이지네이션으로 보여준다.
+- 페이지 이동을 노출한다.
+- 페이지 크기 조절 UI를 노출한다.
+- 필요하면 지원되는 `sort[]` 인터페이스에 매핑되는 최소 수준의 정렬 선택 UI를 노출한다.
+- 행 클릭으로 상세 페이지에 진입시킨다.
 
-The page should stay list-focused and not embed edit actions directly into the table.
+이 페이지는 목록 역할에 집중하고, 테이블 안에서 수정 액션까지 직접 수행하지 않는다.
 
 ### `/admin/businesses/members/{userId}`
 
-Responsibilities:
+책임:
 
-- show read-only member and business information by default
-- allow operators to switch into edit mode on the same page
-- allow pickup role grant or revoke from the same screen
-- provide a quick path back to the list page
+- 기본적으로 read-only 멤버와 사업자 정보를 보여준다.
+- 같은 페이지 안에서 edit mode로 전환할 수 있게 한다.
+- 같은 화면에서 pickup 권한 부여와 회수를 처리한다.
+- 목록으로 빠르게 돌아갈 수 있게 한다.
 
-This preserves the current operational flow: browse list, inspect detail, act immediately, return when done.
+이 구조는 목록 탐색 → 상세 확인 → 즉시 액션 → 목록 복귀라는 운영 흐름을 유지한다.
 
-## RSC and Server Action Boundaries
+## RSC 와 Server Action 경계
 
-### RSC Responsibilities
+### RSC 책임
 
-Use RSC for:
+다음 조회는 RSC에서 처리한다.
 
 - `GET /api/admin/businesses/members`
 - `GET /api/admin/businesses/members/{userId}`
 
-Reasons:
+이유:
 
-- aligns with current admin route structure
-- keeps initial data loading on the server
-- avoids client-side bootstrapping for protected admin pages
+- 현재 관리자 라우트 구조와 일치한다.
+- 초기 렌더 데이터를 서버에서 바로 준비할 수 있다.
+- 보호된 관리자 페이지에서 클라이언트 부트스트랩 복잡도를 줄일 수 있다.
 
-### Server Action Responsibilities
+### Server Action 책임
 
-Use server actions for:
+다음 변경은 server action에서 처리한다.
 
 - `PATCH /api/admin/businesses/members/{userId}/business`
 - `POST /api/admin/businesses/members/{userId}/pickup/grant`
 - `POST /api/admin/businesses/members/{userId}/pickup/revoke`
 
-Reasons:
+이유:
 
-- centralizes token handling and user-facing error normalization
-- keeps mutation side effects close to `revalidatePath`
-- matches the project pattern used in recent work such as `find-password`
+- 토큰 처리와 사용자용 에러 메시지 정규화를 한 곳에 모을 수 있다.
+- `revalidatePath` 와 mutation side effect를 같은 경계에서 관리할 수 있다.
+- 최근 `find-password` 작업에서 쓴 프로젝트 패턴과 맞다.
 
-## List Page Design
+## 목록 페이지 설계
 
-### Data Flow
+### 데이터 흐름
 
-- `page.tsx` reads `page`, `limit` or `size`, and sort-related search params
-- converts them into the generated API parameter shape
-- calls `getApiAdminBusinessesMembers(...)`
-- passes the response into `BusinessMembersContent`
+- `page.tsx` 가 `page`, `limit` 또는 `size`, 정렬 관련 search params를 읽는다.
+- 이를 generated API parameter shape로 변환한다.
+- `getApiAdminBusinessesMembers(...)` 를 호출한다.
+- 응답을 `BusinessMembersContent` 에 전달한다.
 
-### UI Behavior
+### UI 동작
 
-- show title and total count
-- render empty state when no members exist
-- keep row click behavior for detail navigation
-- preserve pagination
-- add an explicit page-size control if not already exposed
-- if sort UI is added, keep it minimal and directly mapped to one supported backend sort value at a time
+- 제목과 총 건수를 보여준다.
+- 데이터가 없으면 empty state를 렌더링한다.
+- 행 클릭으로 상세 페이지에 이동한다.
+- 페이지네이션은 유지한다.
+- 아직 없다면 명시적인 페이지 크기 조절 UI를 추가한다.
+- 정렬 UI를 추가할 경우, 한 번에 하나의 backend sort 값에 직접 매핑되는 최소 수준으로 유지한다.
 
-### Intentional Omissions
+### 의도적으로 제외하는 것
 
-- no search box
-- no pickup-role filter
-- no business-name filter
+- 검색창 없음
+- pickup 권한 필터 없음
+- 업체명 필터 없음
 
-These are omitted because the current list API does not support them.
+이 기능들은 현재 목록 API가 지원하지 않기 때문에 범위에서 제외한다.
 
-## Detail Page Design
+## 상세 페이지 설계
 
-### Default Mode
+### 기본 모드
 
-The page opens in read-only mode and shows:
+페이지는 read-only mode로 열리고 다음을 보여준다.
 
-- member section
-- business section
-- pickup role badge
-- pickup role action button
-- back navigation
-- edit trigger
+- 멤버 정보 섹션
+- 사업자 정보 섹션
+- pickup 권한 badge
+- pickup 권한 액션 버튼
+- 목록 복귀 버튼
+- 수정 진입 버튼
 
 ### Edit Mode
 
-When the operator clicks `수정`:
+운영자가 `수정` 을 누르면:
 
-- the same page layout stays in place
-- editable business fields switch to form controls
-- member identity fields remain read-only
-- the page shows `저장` and `취소`
+- 같은 페이지 레이아웃을 유지한다.
+- 수정 가능한 사업자 필드만 입력 컴포넌트로 바뀐다.
+- 멤버 식별 정보는 계속 read-only 상태로 둔다.
+- `저장` 과 `취소` 버튼을 보여준다.
 
-Editable form fields:
+수정 가능한 폼 필드:
 
 - `businessName`
 - `businessRegistrationNumber`
@@ -225,154 +225,154 @@ Editable form fields:
 - `contact`
 - `pickupAddress`
 
-`businessType` should be shown as a select with Korean labels mapped from:
+`businessType` 은 다음 매핑의 select로 보여준다.
 
 - `HOUSEHOLD` → `가정용`
 - `ENTERTAINMENT` → `유흥용`
 
-### Save and Cancel Behavior
+### 저장과 취소 동작
 
-- `저장` calls the update server action with the current form values
-- successful save exits edit mode and refreshes the rendered detail state
-- `취소` discards local edits and returns to read-only mode
-- failed save keeps the user in edit mode and preserves entered values
+- `저장` 은 현재 폼 값을 update server action으로 전달한다.
+- 저장 성공 시 edit mode를 종료하고 최신 상세 데이터를 다시 보여준다.
+- `취소` 시 수정 중 값은 버리고 read-only mode로 복귀한다.
+- 저장 실패 시 edit mode를 유지하고 사용자가 입력한 값도 유지한다.
 
-### Pickup Role During Edit
+### Edit Mode 중 Pickup 권한
 
-Pickup role actions should be visually separated from form editing.
+pickup 권한 액션은 수정 폼과 시각적으로 분리한다.
 
-Recommended behavior:
+권장 동작:
 
-- disable or hide pickup role buttons while edit mode is active
+- edit mode가 활성화된 동안 pickup 권한 버튼은 비활성화하거나 숨긴다.
 
-This avoids combining two different mutation types in the same moment and reduces operator confusion.
+이렇게 해야 성격이 다른 mutation 두 개를 같은 순간에 섞지 않아 운영자 혼동을 줄일 수 있다.
 
-## Server Action Design
+## Server Action 설계
 
 ### `updateBusinessAction(userId, input)`
 
-Responsibilities:
+책임:
 
-- validate and normalize the editable payload
-- call `patchApiAdminBusinessesMembersUseridBusiness`
-- return `{ success: boolean; error?: string }`
-- revalidate:
+- 수정 가능한 payload를 검증하고 정규화한다.
+- `patchApiAdminBusinessesMembersUseridBusiness` 를 호출한다.
+- `{ success: boolean; error?: string }` 을 반환한다.
+- 다음 경로를 revalidate 한다.
   - `/admin/businesses/members`
   - `/admin/businesses/members/{userId}`
 
-Notes:
+메모:
 
-- treat cleared `contact` as an intentional empty string
-- avoid sending unrelated fields
+- 비워진 `contact` 는 의도적인 빈 문자열로 취급한다.
+- 관련 없는 필드는 보내지 않는다.
 
 ### `grantPickupRoleAction(userId)`
 
-Responsibilities:
+책임:
 
-- call the grant endpoint
-- revalidate list and detail paths
-- return success or user-facing error
+- grant endpoint를 호출한다.
+- 목록과 상세 경로를 revalidate 한다.
+- 성공 또는 사용자용 에러를 반환한다.
 
 ### `revokePickupRoleAction(userId)`
 
-Responsibilities:
+책임:
 
-- call the revoke endpoint
-- revalidate list and detail paths
-- return success or user-facing error
+- revoke endpoint를 호출한다.
+- 목록과 상세 경로를 revalidate 한다.
+- 성공 또는 사용자용 에러를 반환한다.
 
-## Validation and Error Handling
+## 검증과 에러 처리
 
-### Update Validation
+### 수정값 검증
 
-- `businessName`: allow existing backend rules to remain authoritative unless obvious frontend validation already exists elsewhere
-- `businessRegistrationNumber`: preserve raw string input unless the backend requires strict formatting
-- `businessType`: restrict to the two generated enum values
-- `contact`: allow empty string to support clearing
-- `pickupAddress`: allow free text
+- `businessName`: 명백한 프론트 검증 규칙이 이미 없다면 기존 backend 규칙을 우선한다.
+- `businessRegistrationNumber`: backend가 강제하지 않는 이상 raw string 입력을 유지한다.
+- `businessType`: generated enum 두 값으로 제한한다.
+- `contact`: 비우기 동작을 위해 빈 문자열을 허용한다.
+- `pickupAddress`: 자유 텍스트를 허용한다.
 
-This work should avoid over-validating beyond the backend contract.
+즉 이번 작업은 backend 계약을 넘는 과도한 프론트 검증을 하지 않는다.
 
-### Error Handling
+### 에러 처리
 
-- mutation failures should return user-facing error text from the action boundary
-- detail form should keep user input on save failure
-- pickup role failures should not navigate away or reset unrelated page state
+- mutation 실패는 action 경계에서 사용자용 에러 문자열로 반환한다.
+- 상세 폼은 저장 실패 시 사용자가 입력한 값을 유지한다.
+- pickup 권한 실패 시 다른 페이지 상태를 초기화하거나 강제 이동하지 않는다.
 
-## Testing Strategy
+## 테스트 전략
 
-Follow the pattern proven in `find-password`: lock action boundaries first, then verify UI behavior.
+`find-password` 와 같은 패턴을 따른다. 먼저 action 경계를 고정하고, 그 다음 UI 동작을 검증한다.
 
-### Server Action Unit Tests
+### Server Action 단위 테스트
 
-Add a dedicated test file for detail-page actions.
+상세 페이지 actions 전용 테스트 파일을 추가한다.
 
-Test coverage should include:
+포함할 테스트 범위:
 
-- update action succeeds with valid payload
-- update action returns validation or fallback errors correctly
-- update action calls the PATCH API with the expected payload
-- update action revalidates both list and detail paths
-- grant action calls the correct POST API and revalidates paths
-- revoke action calls the correct POST API and revalidates paths
-- mutation failures return stable fallback messages
+- update action이 유효한 payload로 성공한다.
+- update action이 validation 또는 fallback error를 올바르게 반환한다.
+- update action이 PATCH API를 기대한 payload로 호출한다.
+- update action이 목록과 상세 경로를 모두 revalidate 한다.
+- grant action이 올바른 POST API를 호출하고 경로를 revalidate 한다.
+- revoke action이 올바른 POST API를 호출하고 경로를 revalidate 한다.
+- mutation 실패 시 안정적인 fallback message를 반환한다.
 
-### Client UI Tests
+### 클라이언트 UI 테스트
 
-List component tests:
+목록 컴포넌트 테스트:
 
-- title renders
-- empty state renders
-- total count renders
-- member rows render correctly
-- pagination remains visible
+- 제목 렌더링
+- empty state 렌더링
+- 총 건수 렌더링
+- 멤버 행 렌더링
+- 페이지네이션 유지 확인
 
-Detail component tests:
+상세 컴포넌트 테스트:
 
-- read-only view renders member and business fields
-- pickup role button changes by `hasPickupRole`
-- edit mode toggles on
-- editable controls appear in edit mode
-- cancel returns to read-only mode
+- read-only 뷰에서 멤버와 사업자 정보 렌더링
+- `hasPickupRole` 값에 따른 pickup 버튼 분기
+- edit mode 진입
+- edit mode에서 입력 컨트롤 렌더링
+- 취소 시 read-only mode 복귀
 
-Server actions and client UI should be tested separately so each layer has one clear responsibility.
+server action과 client UI는 분리해서 테스트해 각 레이어의 책임을 명확히 유지한다.
 
-## File Plan
+## 파일 계획
 
-- Update `src/app/admin/businesses/members/page.tsx`
-- Update `src/app/admin/businesses/members/_components/BusinessMembersContent.tsx`
-- Update `src/app/admin/businesses/members/_components/BusinessMembersContent.test.tsx`
-- Update `src/app/admin/businesses/members/[userId]/page.tsx`
-- Update `src/app/admin/businesses/members/[userId]/_components/BusinessMemberDetailContent.tsx`
-- Update `src/app/admin/businesses/members/[userId]/_components/BusinessMemberDetailContent.test.tsx`
-- Update `src/app/admin/businesses/members/[userId]/actions.ts`
-- Add `src/app/admin/businesses/members/[userId]/actions.test.ts`
+- 수정 `src/app/admin/businesses/members/page.tsx`
+- 수정 `src/app/admin/businesses/members/_components/BusinessMembersContent.tsx`
+- 수정 `src/app/admin/businesses/members/_components/BusinessMembersContent.test.tsx`
+- 수정 `src/app/admin/businesses/members/[userId]/page.tsx`
+- 수정 `src/app/admin/businesses/members/[userId]/_components/BusinessMemberDetailContent.tsx`
+- 수정 `src/app/admin/businesses/members/[userId]/_components/BusinessMemberDetailContent.test.tsx`
+- 수정 `src/app/admin/businesses/members/[userId]/actions.ts`
+- 추가 `src/app/admin/businesses/members/[userId]/actions.test.ts`
 
-No separate edit route is required.
+별도 edit route는 만들지 않는다.
 
-## Risks and Constraints
+## 리스크와 제약
 
-- The list API currently supports only pagination and sorting, so the page must not imply richer search capabilities.
-- Existing detail UI already contains pickup-role actions, so edit mode integration should avoid clutter or conflicting action states.
-- The generated API comment about `null` preserving current values should be respected when shaping the PATCH payload.
-- Because the work extends an already partially implemented feature, tests must protect against regressions in existing pickup-role behavior.
+- 목록 API는 현재 페이지네이션과 정렬만 지원하므로, UI가 더 풍부한 검색 기능을 암시하면 안 된다.
+- 기존 상세 UI에는 이미 pickup 권한 액션이 있으므로, edit mode 통합 시 액션 충돌이나 시각적 혼잡을 막아야 한다.
+- PATCH payload를 만들 때 generated API 주석의 `null` 유지 규칙을 존중해야 한다.
+- 이미 부분 구현된 기능을 확장하는 작업이므로, 기존 pickup 권한 동작에 대한 회귀 테스트가 중요하다.
 
-## Acceptance Criteria
+## 완료 기준
 
-- `/admin/businesses/members` shows a working paginated member list.
-- Operators can navigate from the list to a member detail page.
-- Detail page shows read-only business member information by default.
-- Operators can enter edit mode on the same detail page.
-- Operators can update all business fields exposed by the PATCH API.
-- Operators can grant or revoke pickup role from the detail page.
-- GET requests remain in RSC.
-- PATCH and POST requests are handled by server actions.
-- Server actions have dedicated unit tests.
-- Existing and new UI behavior is covered by focused component tests.
+- `/admin/businesses/members` 에서 동작하는 페이지네이션 목록을 볼 수 있다.
+- 운영자가 목록에서 상세 페이지로 이동할 수 있다.
+- 상세 페이지는 기본적으로 read-only 사업자 멤버 정보를 보여준다.
+- 운영자가 같은 페이지에서 edit mode로 들어갈 수 있다.
+- 운영자가 PATCH API가 노출한 모든 사업자 필드를 수정할 수 있다.
+- 운영자가 상세 페이지에서 pickup 권한을 부여하거나 회수할 수 있다.
+- GET 요청은 계속 RSC에 남아 있다.
+- PATCH 와 POST 요청은 server action으로 처리된다.
+- server action에 전용 단위 테스트가 있다.
+- 기존 및 신규 UI 동작이 범위가 좁은 컴포넌트 테스트로 검증된다.
 
-## Out of Scope Follow-Ups
+## 후속 범위
 
-- Search support once the backend adds query parameters
-- Additional role filters on the list page
-- Audit trail UI for admin changes
-- Bulk member actions
+- backend가 query parameter를 추가한 뒤의 검색 지원
+- 목록 페이지의 추가 role 필터
+- 관리자 변경 이력 UI
+- 멤버 일괄 액션
