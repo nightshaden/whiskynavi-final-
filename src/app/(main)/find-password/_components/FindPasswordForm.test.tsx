@@ -1,21 +1,26 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { sendResetCode, verifyAndResetPassword } from "../actions";
 import FindPasswordForm from "./FindPasswordForm";
 
-const mockSendResetCode = vi.fn();
-const mockVerifyAndResetPassword = vi.fn();
+const mockSendResetCode = vi.fn<typeof sendResetCode>();
+const mockVerifyAndResetPassword = vi.fn<typeof verifyAndResetPassword>();
 
 vi.mock("next/link", () => ({
   default: ({ href, children }: { href: string; children: React.ReactNode }) => <a href={href}>{children}</a>,
 }));
 
 vi.mock("../actions", () => ({
-  sendResetCode: (...args: unknown[]) => mockSendResetCode(...args),
-  verifyAndResetPassword: (...args: unknown[]) => mockVerifyAndResetPassword(...args),
+  sendResetCode: mockSendResetCode,
+  verifyAndResetPassword: mockVerifyAndResetPassword,
 }));
 
 describe("FindPasswordForm", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it("reveals verification input after send succeeds", async () => {
     const user = userEvent.setup();
     mockSendResetCode.mockResolvedValue({ success: true });
