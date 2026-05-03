@@ -1,9 +1,10 @@
 "use client";
 
+import type { PostApiAuthSignupBody } from "@/apis/generated/api";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { Check, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 
 // --- 약관 내용 ---
@@ -56,29 +57,12 @@ const TERMS_CONTENT: Record<string, { title: string; content: string }> = {
 4. 동의를 거부할 권리
 귀하는 위 개인정보 수집 및 이용에 대한 동의를 거부할 권리가 있습니다. 다만, 필수 항목에 대한 동의를 거부하실 경우 회원가입이 제한됩니다.`,
   },
-  "privacy-optional": {
-    title: "개인정보 수집 및 이용 동의 (선택)",
-    content: `1. 수집하는 개인정보 항목
-- 선택항목: 관심 위스키 카테고리, 선호 주종, 방문 매장 이력
-
-2. 개인정보의 수집 및 이용 목적
-- 맞춤형 위스키 추천 서비스 제공
-- 이용자 관심사 기반 콘텐츠 제공
-- 서비스 개선을 위한 통계 분석
-
-3. 개인정보의 보유 및 이용 기간
-- 회원 탈퇴 시 또는 동의 철회 시까지
-
-4. 동의를 거부할 권리
-귀하는 위 개인정보 수집 및 이용에 대한 동의를 거부할 권리가 있습니다. 선택 항목에 대한 동의를 거부하셔도 서비스 이용에 제한이 없습니다.`,
-  },
 };
 
 // --- 타입 ---
 
 interface AgreementItem {
   id: string;
-  name: string;
   label: string;
   required: boolean;
   hasExpand?: boolean;
@@ -87,25 +71,16 @@ interface AgreementItem {
 const agreementItems: AgreementItem[] = [
   {
     id: "terms",
-    name: "privacyAgree",
     label: "[필수] 이용약관 동의",
     required: true,
   },
   {
     id: "privacy",
-    name: "privacyAgree",
     label: "[필수] 개인 정보 수집 및 이용 동의",
     required: true,
   },
   {
-    id: "privacy-optional",
-    name: "marketingAgree",
-    label: "[선택] 개인 정보 수집 및 이용 동의",
-    required: false,
-  },
-  {
     id: "marketing",
-    name: "emailAgree",
     label: "[선택] 광고성 정보 수신 모두 동의",
     required: false,
     hasExpand: true,
@@ -113,10 +88,15 @@ const agreementItems: AgreementItem[] = [
 ];
 
 const marketingSubItems = [
-  { id: "sub-email", name: "emailAgree", label: "이메일 수신 동의" },
-  { id: "sub-sms", name: "smsAgree", label: "SMS 수신 동의" },
-  { id: "sub-sns", name: "snsAgree", label: "SNS 수신 동의" },
+  { id: "sub-email", label: "이메일 수신 동의" },
+  { id: "sub-sms", label: "SMS 수신 동의" },
+  { id: "sub-sns", label: "SNS 수신 동의" },
 ];
+
+type SignupAgreementField = keyof Pick<
+  PostApiAuthSignupBody,
+  "privacyAgree" | "marketingAgree" | "emailAgree" | "smsAgree" | "snsAgree"
+>;
 
 // --- Component ---
 
@@ -159,7 +139,18 @@ export function AgreementSection() {
   };
 
   const requiredAgreed = agreementItems.filter((item) => item.required).every((item) => agreements[item.id]);
-
+  const marketingAgreed = agreements.marketing ?? false;
+  const emailAgreed = agreements["sub-email"] ?? false;
+  const smsAgreed = agreements["sub-sms"] ?? false;
+  const snsAgreed = agreements["sub-sns"] ?? false;
+  const signupAgreementValues: Record<SignupAgreementField, boolean> = {
+    privacyAgree: requiredAgreed,
+    marketingAgree: marketingAgreed,
+    emailAgree: emailAgreed,
+    smsAgree: smsAgreed,
+    snsAgree: snsAgreed,
+  };
+  console.log("signupAgreementValues", signupAgreementValues);
   const termsData = viewingTerms ? TERMS_CONTENT[viewingTerms] : null;
 
   return (
@@ -185,23 +176,17 @@ export function AgreementSection() {
         {agreementItems.map((item) => (
           <div key={item.id}>
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div
-                  className={cn(
-                    "flex size-5 items-center justify-center",
-                    agreements[item.id] ? "text-gray-600" : "text-gray-200",
-                  )}
-                >
-                  <Check className="size-4" strokeWidth={2.5} />
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleAgreementChange(item.id, !agreements[item.id])}
-                  className={cn("typo-regular-14 text-left", agreements[item.id] ? "text-black" : "text-gray-500")}
-                >
+              <label htmlFor={`agreement-${item.id}`} className="flex cursor-pointer items-center gap-3">
+                <Checkbox
+                  id={`agreement-${item.id}`}
+                  checked={agreements[item.id] ?? false}
+                  onCheckedChange={(checked) => handleAgreementChange(item.id, checked === true)}
+                  className="size-5 rounded border-gray-200 data-[state=checked]:border-gray-900 data-[state=checked]:bg-gray-900 data-[state=checked]:text-white"
+                />
+                <span className={cn("typo-regular-14 text-left", agreements[item.id] ? "text-black" : "text-gray-500")}>
                   {item.label}
-                </button>
-              </div>
+                </span>
+              </label>
               {item.hasExpand ? (
                 <button
                   type="button"
@@ -226,23 +211,23 @@ export function AgreementSection() {
             {item.hasExpand && isMarketingExpanded && (
               <div className="mt-2 flex flex-col gap-2 pl-8">
                 {marketingSubItems.map((sub) => (
-                  <div key={sub.id} className="flex items-center gap-3">
-                    <div
-                      className={cn(
-                        "flex size-4 items-center justify-center",
-                        agreements[sub.id] ? "text-gray-600" : "text-gray-200",
-                      )}
-                    >
-                      <Check className="size-3.5" strokeWidth={2.5} />
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => handleAgreementChange(sub.id, !agreements[sub.id])}
+                  <label
+                    htmlFor={`agreement-${sub.id}`}
+                    key={sub.id}
+                    className="flex cursor-pointer items-center gap-3"
+                  >
+                    <Checkbox
+                      id={`agreement-${sub.id}`}
+                      checked={agreements[sub.id] ?? false}
+                      onCheckedChange={(checked) => handleAgreementChange(sub.id, checked === true)}
+                      className="size-4 rounded border-gray-200 data-[state=checked]:border-gray-900 data-[state=checked]:bg-gray-900 data-[state=checked]:text-white"
+                    />
+                    <span
                       className={cn("typo-regular-13 text-left", agreements[sub.id] ? "text-black" : "text-gray-500")}
                     >
                       {sub.label}
-                    </button>
-                  </div>
+                    </span>
+                  </label>
                 ))}
               </div>
             )}
@@ -261,11 +246,9 @@ export function AgreementSection() {
       </Dialog>
 
       {/* Hidden inputs for form submission */}
-      <input type="hidden" name="privacyAgree" value={String(agreements.terms && agreements.privacy)} />
-      <input type="hidden" name="marketingAgree" value={String(agreements["privacy-optional"] || false)} />
-      <input type="hidden" name="emailAgree" value={String(agreements["sub-email"] || false)} />
-      <input type="hidden" name="smsAgree" value={String(agreements["sub-sms"] || false)} />
-      <input type="hidden" name="snsAgree" value={String(agreements["sub-sns"] || false)} />
+      {Object.entries(signupAgreementValues).map(([name, value]) => (
+        <input key={name} type="hidden" name={name} value={String(value)} />
+      ))}
       <input type="hidden" name="requiredAgreed" value={String(requiredAgreed)} />
     </div>
   );

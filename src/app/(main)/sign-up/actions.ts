@@ -1,7 +1,7 @@
 "use server";
 
 import { ApiError, getUserErrorMessage } from "@/apis/errors";
-import type { SignupRequest } from "@/apis/generated/api";
+import type { PostApiAuthSignupBody, SignupRequest } from "@/apis/generated/api";
 import { postApiAuthSignup } from "@/apis/generated/api";
 import { redirect } from "next/navigation";
 import { signUpSchema } from "./schemas";
@@ -78,6 +78,15 @@ export async function signUpAction(_prevState: SignUpState | null, formData: For
   }
 
   const { data } = result;
+  const agreementData: Required<
+    Pick<PostApiAuthSignupBody, "privacyAgree" | "marketingAgree" | "emailAgree" | "smsAgree" | "snsAgree">
+  > = {
+    privacyAgree: data.privacyAgree === "true",
+    marketingAgree: data.marketingAgree === "true",
+    emailAgree: data.emailAgree === "true",
+    smsAgree: data.smsAgree === "true",
+    snsAgree: data.snsAgree === "true",
+  };
 
   // API 요청 데이터 구성
   const signupData: SignupRequest = {
@@ -90,11 +99,7 @@ export async function signUpAction(_prevState: SignUpState | null, formData: For
     gender: data.gender,
     niceRequestNo: data.niceRequestNo,
     niceWebTransactionId: data.niceWebTransactionId,
-    privacyAgree: true,
-    marketingAgree: data.marketingAgree === "true",
-    emailAgree: data.emailAgree === "true",
-    smsAgree: data.smsAgree === "true",
-    snsAgree: data.snsAgree === "true",
+    ...agreementData,
   };
 
   try {
