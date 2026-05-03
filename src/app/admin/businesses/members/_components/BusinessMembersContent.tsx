@@ -5,13 +5,20 @@ import AdminHeader from "@/app/admin/_components/AdminHeader";
 import { useSidebar } from "@/app/admin/_components/AdminLayoutClient";
 import Pagination from "@/app/admin/_components/Pagination";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import { Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
+
+const SORT_OPTIONS = [
+  { value: "userId,desc", label: "최신 등록순" },
+  { value: "userId,asc", label: "오래된 등록순" },
+] as const;
 
 interface BusinessMembersContentProps {
   searchParams: {
     page?: string;
     limit?: string;
+    sort?: string;
   };
   members: AdminBusinessUserResponse[];
   totalElements: number;
@@ -27,6 +34,27 @@ export default function BusinessMembersContent({
 
   const currentPage = Number(searchParams.page) || 1;
   const itemsPerPage = Number(searchParams.limit) || 20;
+  const currentSort = searchParams.sort || "userId,desc";
+
+  const buildParams = () => {
+    const params = new URLSearchParams();
+
+    Object.entries(searchParams).forEach(([key, value]) => {
+      if (value) {
+        params.set(key, value);
+      }
+    });
+
+    return params;
+  };
+
+  const handleSortChange = (value: string) => {
+    const params = buildParams();
+    params.set("sort", value);
+    params.set("page", "1");
+
+    router.push(`/admin/businesses/members?${params.toString()}`);
+  };
 
   return (
     <>
@@ -37,8 +65,26 @@ export default function BusinessMembersContent({
       />
 
       <div className="p-8">
-        <div className="mb-4">
+        <div className="mb-4 flex items-center justify-between gap-4">
           <p className="text-sm text-gray-600">총 {totalElements}건</p>
+
+          <div className="flex items-center gap-2">
+            <Label htmlFor="business-members-sort" className="text-sm text-gray-600">
+              정렬
+            </Label>
+            <select
+              id="business-members-sort"
+              value={currentSort}
+              onChange={(e) => handleSortChange(e.target.value)}
+              className="rounded border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-700 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+            >
+              {SORT_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">

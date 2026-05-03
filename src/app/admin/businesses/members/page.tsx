@@ -7,6 +7,7 @@ interface BusinessMembersPageProps {
   searchParams: Promise<{
     page?: string;
     limit?: string;
+    sort?: string;
   }>;
 }
 
@@ -20,6 +21,7 @@ export default async function BusinessMembersPage({
     {
       page: params.page ? Number(params.page) - 1 : 0,
       size: params.limit ? Number(params.limit) : 20,
+      sort: params.sort ? [params.sort] : undefined,
     },
     withToken(token),
   );
