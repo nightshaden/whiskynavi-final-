@@ -6,7 +6,7 @@ import { Session } from "next-auth";
 import Link from "next/link";
 import { overlay } from "overlay-kit";
 import { FC } from "react";
-import { hasSession, isAdminUser } from "../utils";
+import { hasSession, isAdminUser, isBusinessUser } from "../utils";
 import { AUTH_NAV_LINKS, NAV_LINKS } from "./constants";
 import MobileAuthSection from "./MobileAuthSection";
 
@@ -69,6 +69,7 @@ const MobileNavMenu: FC<Props> = ({ session, pathname }) => {
                   userName={session?.user?.name ?? ""}
                   hasSession={hasSession(session)}
                   isAdmin={isAdminUser(session)}
+                  isBusiness={isBusinessUser(session)}
                   close={close}
                 />
               </div>

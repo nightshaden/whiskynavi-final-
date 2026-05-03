@@ -4,7 +4,7 @@ import { Session } from "next-auth";
 import Link from "next/link";
 import { overlay } from "overlay-kit";
 import { FC, useRef } from "react";
-import { hasSession, isAdminUser } from "../utils";
+import { hasSession, isAdminUser, isBusinessUser } from "../utils";
 import { AUTH_NAV_LINKS, NAV_LINKS } from "./constants";
 import DesktopAuthArea from "./DesktopAuthArea";
 import UserMenuDropdown from "./UserMenuDropdown";
@@ -20,7 +20,14 @@ const DesktopNavMenu: FC<Props> = ({ session, pathname }) => {
   const openUserMenu = () => {
     const rect = authAreaRef.current?.getBoundingClientRect();
     overlay.open(({ isOpen, close }) =>
-      isOpen ? <UserMenuDropdown isAdminUser={isAdminUser(session)} close={close} anchorRect={rect} /> : null,
+      isOpen ? (
+        <UserMenuDropdown
+          isAdminUser={isAdminUser(session)}
+          isBusinessUser={isBusinessUser(session)}
+          close={close}
+          anchorRect={rect}
+        />
+      ) : null,
     );
   };
 

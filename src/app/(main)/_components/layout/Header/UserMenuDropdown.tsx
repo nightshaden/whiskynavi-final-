@@ -5,9 +5,10 @@ interface UserMenuDropdownProps {
   close: () => void;
   anchorRect?: DOMRect;
   isAdminUser: boolean;
+  isBusinessUser: boolean;
 }
 
-export default function UserMenuDropdown({ close, anchorRect, isAdminUser }: UserMenuDropdownProps) {
+export default function UserMenuDropdown({ close, anchorRect, isAdminUser, isBusinessUser }: UserMenuDropdownProps) {
   const top = anchorRect ? anchorRect.bottom + 8 : 80;
   const right = anchorRect ? window.innerWidth - anchorRect.right : 32;
 
@@ -32,6 +33,15 @@ export default function UserMenuDropdown({ close, anchorRect, isAdminUser }: Use
             className="typo-regular-14 block px-4 py-2.5 text-white/90 transition-colors hover:bg-white/10 hover:text-white"
           >
             관리자 페이지
+          </Link>
+        ) : null}
+        {isBusinessUser ? (
+          <Link
+            href="/business/pickup-reservations"
+            onClick={close}
+            className="typo-regular-14 block px-4 py-2.5 text-white/90 transition-colors hover:bg-white/10 hover:text-white"
+          >
+            픽업 예약 관리
           </Link>
         ) : null}
         <div className="my-1 border-t border-white/10" />

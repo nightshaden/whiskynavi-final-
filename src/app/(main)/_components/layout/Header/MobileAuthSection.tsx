@@ -5,10 +5,17 @@ interface MobileAuthSectionProps {
   userName: string;
   hasSession: boolean;
   isAdmin: boolean;
+  isBusiness: boolean;
   close: () => void;
 }
 
-export default function MobileAuthSection({ userName, hasSession, isAdmin, close }: MobileAuthSectionProps) {
+export default function MobileAuthSection({
+  userName,
+  hasSession,
+  isAdmin,
+  isBusiness,
+  close,
+}: MobileAuthSectionProps) {
   if (!hasSession) {
     return (
       <Link
@@ -42,6 +49,15 @@ export default function MobileAuthSection({ userName, hasSession, isAdmin, close
           className="typo-medium-14 rounded-lg px-3 py-3 text-white/80 transition-colors hover:bg-white/5 hover:text-white"
         >
           관리자 페이지
+        </Link>
+      ) : null}
+      {isBusiness ? (
+        <Link
+          href="/business/pickup-reservations"
+          onClick={close}
+          className="typo-medium-14 rounded-lg px-3 py-3 text-white/80 transition-colors hover:bg-white/5 hover:text-white"
+        >
+          픽업 예약 관리
         </Link>
       ) : null}
       <LogoutButton
