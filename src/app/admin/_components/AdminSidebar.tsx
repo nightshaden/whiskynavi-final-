@@ -33,7 +33,7 @@ const menuItems = [
   },
   {
     id: "businesses",
-    label: "사업자 관리",
+    label: "사업자 신청 관리",
     icon: Briefcase,
     href: "/admin/businesses",
   },

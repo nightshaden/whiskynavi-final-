@@ -55,7 +55,7 @@ import { Award, Ban, Briefcase, Calendar, Home, ImageIcon, Package, Users, Youtu
 ```typescript
 {
   id: "businesses",
-  label: "사업자 관리",
+  label: "사업자 신청 관리",
   icon: Briefcase,
   href: "/admin/businesses",
 },
@@ -87,7 +87,7 @@ const menuItems = [
   },
   {
     id: "businesses",
-    label: "사업자 관리",
+    label: "사업자 신청 관리",
     icon: Briefcase,
     href: "/admin/businesses",
   },
@@ -2283,7 +2283,7 @@ pnpm dev
 ```
 
 브라우저에서 확인:
-- `http://localhost:3000/admin` → 사이드바에 "사업자 관리" 메뉴 표시
+- `http://localhost:3000/admin` → 사이드바에 "사업자 신청 관리" 메뉴 표시
 - `http://localhost:3000/admin/businesses` → `/admin/businesses/applications`로 리디렉션
 - `http://localhost:3000/admin/businesses/applications` → 신청 목록 테이블 렌더링
 - `http://localhost:3000/admin/businesses/applications/1` → 신청 상세 렌더링 (실제 ID 사용)
