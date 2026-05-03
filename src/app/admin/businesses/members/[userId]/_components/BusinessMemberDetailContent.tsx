@@ -22,6 +22,7 @@ const formatDate = (dateStr?: string): string => {
     .replace(/\.$/, "");
 };
 
+
 const BUSINESS_TYPE_LABEL: Record<string, string> = {
   HOUSEHOLD: "가정용",
   ENTERTAINMENT: "유흥용",

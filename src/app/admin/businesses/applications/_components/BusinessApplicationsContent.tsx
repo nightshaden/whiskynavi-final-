@@ -24,6 +24,7 @@ const APPLICATION_STATUS_COLOR: Record<string, string> = {
   CANCELED: "bg-gray-100 text-gray-700",
 };
 
+
 const BUSINESS_TYPE_LABEL: Record<string, string> = {
   HOUSEHOLD: "가정용",
   ENTERTAINMENT: "유흥용",
@@ -110,6 +111,7 @@ export default function BusinessApplicationsContent({
                     대표자
                   </th>
                   <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
+
                     사업자 구분
                   </th>
                   <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">
