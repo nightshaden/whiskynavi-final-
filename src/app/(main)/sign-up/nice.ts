@@ -1,3 +1,5 @@
+import type { SignupAgreementBooleanValues } from "./agreement-fields";
+
 export interface VerifiedSignupProfile {
   niceRequestNo: string;
   niceWebTransactionId: string;
@@ -11,11 +13,11 @@ export interface SignupFormState {
   username: string;
   email: string;
   password: string;
-  privacyAgree: boolean;
-  marketingAgree: boolean;
-  smsAgree: boolean;
-  snsAgree: boolean;
-  emailAgree: boolean;
+  privacyAgree: SignupAgreementBooleanValues["privacyAgree"];
+  marketingAgree: SignupAgreementBooleanValues["marketingAgree"];
+  smsAgree: SignupAgreementBooleanValues["smsAgree"];
+  snsAgree: SignupAgreementBooleanValues["snsAgree"];
+  emailAgree: SignupAgreementBooleanValues["emailAgree"];
 }
 
 export function toIsoBirthDate(value: string) {

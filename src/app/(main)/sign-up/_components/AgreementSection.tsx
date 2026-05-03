@@ -1,11 +1,11 @@
 "use client";
 
-import type { PostApiAuthSignupBody } from "@/apis/generated/api";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { signupAgreementFieldNames, type SignupAgreementBooleanValues } from "../agreement-fields";
 
 // --- 약관 내용 ---
 
@@ -93,11 +93,6 @@ const marketingSubItems = [
   { id: "sub-sns", label: "SNS 수신 동의" },
 ];
 
-type SignupAgreementField = keyof Pick<
-  PostApiAuthSignupBody,
-  "privacyAgree" | "marketingAgree" | "emailAgree" | "smsAgree" | "snsAgree"
->;
-
 // --- Component ---
 
 export function AgreementSection() {
@@ -143,7 +138,7 @@ export function AgreementSection() {
   const emailAgreed = agreements["sub-email"] ?? false;
   const smsAgreed = agreements["sub-sms"] ?? false;
   const snsAgreed = agreements["sub-sns"] ?? false;
-  const signupAgreementValues: Record<SignupAgreementField, boolean> = {
+  const signupAgreementValues: SignupAgreementBooleanValues = {
     privacyAgree: requiredAgreed,
     marketingAgree: marketingAgreed,
     emailAgree: emailAgreed,
@@ -246,8 +241,8 @@ export function AgreementSection() {
       </Dialog>
 
       {/* Hidden inputs for form submission */}
-      {Object.entries(signupAgreementValues).map(([name, value]) => (
-        <input key={name} type="hidden" name={name} value={String(value)} />
+      {signupAgreementFieldNames.map((name) => (
+        <input key={name} type="hidden" name={name} value={String(signupAgreementValues[name])} />
       ))}
       <input type="hidden" name="requiredAgreed" value={String(requiredAgreed)} />
     </div>

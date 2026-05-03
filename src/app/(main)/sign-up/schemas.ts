@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { signupAgreementFieldNames } from "./agreement-fields";
 
 export const emailSchema = z
   .email("올바른 이메일 형식이 아닙니다.")
@@ -13,6 +14,12 @@ export const passwordSchema = z
   .max(100, "비밀번호는 100자 이하여야 합니다.");
 
 export const nameSchema = z.string().min(1, "이름을 입력해주세요.").max(100, "이름은 100자 이하여야 합니다.");
+
+const optionalAgreementSchema = Object.fromEntries(
+  signupAgreementFieldNames
+    .filter((field) => field !== "privacyAgree")
+    .map((field) => [field, z.string()]),
+);
 
 // 회원가입 폼 전체 스키마
 export const signUpSchema = z
@@ -38,10 +45,7 @@ export const signUpSchema = z
     privacyAgree: z.literal("true", {
       message: "필수 약관에 동의해주세요.",
     }),
-    marketingAgree: z.string(),
-    emailAgree: z.string(),
-    smsAgree: z.string(),
-    snsAgree: z.string(),
+    ...optionalAgreementSchema,
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "비밀번호가 일치하지 않습니다.",

@@ -1,9 +1,10 @@
 "use server";
 
 import { ApiError, getUserErrorMessage } from "@/apis/errors";
-import type { PostApiAuthSignupBody, SignupRequest } from "@/apis/generated/api";
+import type { SignupRequest } from "@/apis/generated/api";
 import { postApiAuthSignup } from "@/apis/generated/api";
 import { redirect } from "next/navigation";
+import { signupAgreementFieldNames, type SignupAgreementBooleanValues, type SignupAgreementFormValues } from "./agreement-fields";
 import { signUpSchema } from "./schemas";
 
 export type SignUpState = {
@@ -18,6 +19,10 @@ export type SignUpState = {
 };
 
 export async function signUpAction(_prevState: SignUpState | null, formData: FormData): Promise<SignUpState> {
+  const agreementRawData = Object.fromEntries(
+    signupAgreementFieldNames.map((field) => [field, formData.get(field) ?? ""]),
+  ) as SignupAgreementFormValues;
+
   // FormData를 객체로 변환
   const rawData = {
     email: formData.get("email") ?? "",
@@ -32,11 +37,7 @@ export async function signUpAction(_prevState: SignUpState | null, formData: For
     niceWebTransactionId: formData.get("niceWebTransactionId") ?? "",
     emailVerified: formData.get("emailVerified") ?? "",
     usernameVerified: formData.get("usernameVerified") ?? "",
-    privacyAgree: formData.get("privacyAgree") ?? "",
-    marketingAgree: formData.get("marketingAgree") ?? "",
-    emailAgree: formData.get("emailAgree") ?? "",
-    smsAgree: formData.get("smsAgree") ?? "",
-    snsAgree: formData.get("snsAgree") ?? "",
+    ...agreementRawData,
   };
 
   // Zod 유효성 검사
@@ -78,15 +79,9 @@ export async function signUpAction(_prevState: SignUpState | null, formData: For
   }
 
   const { data } = result;
-  const agreementData: Required<
-    Pick<PostApiAuthSignupBody, "privacyAgree" | "marketingAgree" | "emailAgree" | "smsAgree" | "snsAgree">
-  > = {
-    privacyAgree: data.privacyAgree === "true",
-    marketingAgree: data.marketingAgree === "true",
-    emailAgree: data.emailAgree === "true",
-    smsAgree: data.smsAgree === "true",
-    snsAgree: data.snsAgree === "true",
-  };
+  const agreementData = Object.fromEntries(
+    signupAgreementFieldNames.map((field) => [field, rawData[field] === "true"]),
+  ) as SignupAgreementBooleanValues;
 
   // API 요청 데이터 구성
   const signupData: SignupRequest = {
