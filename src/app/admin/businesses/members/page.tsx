@@ -1,10 +1,8 @@
 import { getApiAdminBusinessesMembers } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
+import { resolveBusinessMembersSort } from "./sort";
 import BusinessMembersContent from "./_components/BusinessMembersContent";
-
-const DEFAULT_SORT = "userId,desc";
-const ALLOWED_SORTS = [DEFAULT_SORT, "userId,asc"] as const;
 
 interface BusinessMembersPageProps {
   searchParams: Promise<{
@@ -14,16 +12,12 @@ interface BusinessMembersPageProps {
   }>;
 }
 
-function resolveSort(sort?: string) {
-  return ALLOWED_SORTS.find((allowedSort) => allowedSort === sort) ?? DEFAULT_SORT;
-}
-
 export default async function BusinessMembersPage({
   searchParams,
 }: BusinessMembersPageProps) {
   const params = await searchParams;
   const token = await getAuthToken();
-  const resolvedSort = resolveSort(params.sort);
+  const resolvedSort = resolveBusinessMembersSort(params.sort);
 
   const res = await getApiAdminBusinessesMembers(
     {

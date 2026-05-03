@@ -4,21 +4,20 @@ import type { AdminBusinessUserResponse } from "@/apis/generated/api";
 import AdminHeader from "@/app/admin/_components/AdminHeader";
 import { useSidebar } from "@/app/admin/_components/AdminLayoutClient";
 import Pagination from "@/app/admin/_components/Pagination";
+import {
+  BUSINESS_MEMBERS_SORT_OPTIONS,
+  type BusinessMembersSort,
+} from "@/app/admin/businesses/members/sort";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-const SORT_OPTIONS = [
-  { value: "userId,desc", label: "최신 등록순" },
-  { value: "userId,asc", label: "오래된 등록순" },
-] as const;
-
 interface BusinessMembersContentProps {
   searchParams: {
     page?: string;
     limit?: string;
-    sort?: string;
+    sort?: BusinessMembersSort;
   };
   members: AdminBusinessUserResponse[];
   totalElements: number;
@@ -78,7 +77,7 @@ export default function BusinessMembersContent({
               onChange={(e) => handleSortChange(e.target.value)}
               className="rounded border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-700 focus:ring-2 focus:ring-amber-500 focus:outline-none"
             >
-              {SORT_OPTIONS.map((option) => (
+              {BUSINESS_MEMBERS_SORT_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
