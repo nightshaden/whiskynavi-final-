@@ -34,7 +34,7 @@ export default function BusinessMembersContent({
 
   const currentPage = Number(searchParams.page) || 1;
   const itemsPerPage = Number(searchParams.limit) || 20;
-  const currentSort = searchParams.sort || "userId,desc";
+  const currentSort = searchParams.sort;
 
   const buildParams = () => {
     const params = new URLSearchParams();
