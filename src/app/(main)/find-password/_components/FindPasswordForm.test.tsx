@@ -4,8 +4,10 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { sendResetCode, verifyAndResetPassword } from "../actions";
 import FindPasswordForm from "./FindPasswordForm";
 
-const mockSendResetCode = vi.fn<typeof sendResetCode>();
-const mockVerifyAndResetPassword = vi.fn<typeof verifyAndResetPassword>();
+const { mockSendResetCode, mockVerifyAndResetPassword } = vi.hoisted(() => ({
+  mockSendResetCode: vi.fn<typeof sendResetCode>(),
+  mockVerifyAndResetPassword: vi.fn<typeof verifyAndResetPassword>(),
+}));
 
 vi.mock("next/link", () => ({
   default: ({ href, children }: { href: string; children: React.ReactNode }) => <a href={href}>{children}</a>,
