@@ -13,6 +13,22 @@ import { useTableFilter } from "../../_components/useTableFilter";
 import { ROLE_COLOR_MAP, ROLE_LABEL_MAP } from "../../constants";
 import UserDeleteModal from "../[userId]/_components/UserDeleteModal";
 
+const USER_SEARCH_FIELD_OPTIONS = [
+  { value: "name", label: "이름" },
+  { value: "username", label: "사용자명" },
+  { value: "email", label: "이메일" },
+] as const;
+
+type UserSearchField = (typeof USER_SEARCH_FIELD_OPTIONS)[number]["value"];
+
+const resolveSearchField = (value?: string): UserSearchField => {
+  if (value === "username" || value === "email") {
+    return value;
+  }
+
+  return "name";
+};
+
 // 헬퍼 함수: 회원 유형 (SUPER_ADMIN > ADMIN > 나머지 일반 roles)
 const MEMBER_TYPE_ROLES: string[] = ["ROLE_SUPER_ADMIN", "ROLE_ADMIN"];
 
@@ -97,6 +113,7 @@ interface UsersContentProps {
     page?: string;
     limit?: string;
     q?: string;
+    searchField?: string;
     role?: string;
     navi?: string;
     tales?: string;
@@ -116,28 +133,51 @@ export default function UsersContent({ searchParams, users, totalElements }: Use
   const currentPage = Number(searchParams.page) || 1;
   const itemsPerPage = Number(searchParams.limit) || 20;
   const searchQuery = searchParams.q || "";
+  const searchField = resolveSearchField(searchParams.searchField);
 
   const { getFilterValue, updateFilter } = useTableFilter({
     searchParams,
     basePath: "/admin/users",
   });
 
-  const handleSearch = (value: string) => {
+  const buildParams = () => {
     const params = new URLSearchParams();
-    Object.entries(searchParams).forEach(([k, v]) => {
-      if (v) params.set(k, v);
+    Object.entries(searchParams).forEach(([key, value]) => {
+      if (value) params.set(key, value);
     });
+    return params;
+  };
+
+  const handleSearch = (value: string) => {
+    const params = buildParams();
     if (value) {
       params.set("q", value);
     } else {
       params.delete("q");
     }
+    params.set("searchField", searchField);
     params.set("page", "1");
     router.push(`/admin/users?${params.toString()}`);
   };
+
+  const handleSearchFieldChange = (value: string) => {
+    const params = buildParams();
+    params.set("searchField", resolveSearchField(value));
+    params.set("page", "1");
+    router.push(`/admin/users?${params.toString()}`);
+  };
+
   return (
     <>
-      <AdminHeader title="회원 관리" onToggleSidebar={toggle} searchQuery={searchQuery} onSearch={handleSearch} />
+      <AdminHeader
+        title="회원 관리"
+        onToggleSidebar={toggle}
+        searchQuery={searchQuery}
+        searchField={searchField}
+        searchFieldOptions={[...USER_SEARCH_FIELD_OPTIONS]}
+        onSearch={handleSearch}
+        onSearchFieldChange={handleSearchFieldChange}
+      />
 
       <div className="p-8">
         <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">

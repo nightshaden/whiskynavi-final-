@@ -3,11 +3,20 @@ import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
 import UsersContent from "./_components/UsersContent";
 
+const USER_SEARCH_FIELDS = ["name", "username", "email"] as const;
+
+type UserSearchField = (typeof USER_SEARCH_FIELDS)[number];
+
+function resolveSearchField(searchField?: string): UserSearchField {
+  return USER_SEARCH_FIELDS.find((field) => field === searchField) ?? "name";
+}
+
 interface UsersPageProps {
   searchParams: Promise<{
     page?: string;
     limit?: string;
     q?: string;
+    searchField?: string;
     role?: string;
     navi?: string;
     tales?: string;
@@ -21,13 +30,17 @@ interface UsersPageProps {
 export default async function UsersPage({ searchParams }: UsersPageProps) {
   const params = await searchParams;
   const token = await getAuthToken();
+  const searchField = resolveSearchField(params.searchField);
+  const keyword = params.q || undefined;
 
   const res = await getApiAdminUsers(
     {
       filters: {
         pageNumber: params.page ? Number(params.page) - 1 : 0,
         pageSize: params.limit ? Number(params.limit) : 20,
-        name: params.q || undefined,
+        name: searchField === "name" ? keyword : undefined,
+        username: searchField === "username" ? keyword : undefined,
+        email: searchField === "email" ? keyword : undefined,
         role: params.role || undefined,
         status: params.status || undefined,
         sortBy: params.sortBy || "createdAt",
