@@ -107,7 +107,7 @@ export function SignInForm() {
         </Link>
         <span className="text-[#FFF]">|</span>
         <Link href="/find-password" className="typo-medium-16 w-25 text-center font-semibold text-[#FFF]">
-          비밀번호 찾기
+          비밀번호 초기화
         </Link>
       </div>
     </>
