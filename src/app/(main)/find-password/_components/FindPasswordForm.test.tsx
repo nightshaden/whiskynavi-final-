@@ -18,7 +18,7 @@ vi.mock("../actions", () => ({
 
 describe("FindPasswordForm", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.resetAllMocks();
   });
 
   it("reveals verification input after send succeeds", async () => {
