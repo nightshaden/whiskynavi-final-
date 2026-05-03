@@ -11,10 +11,6 @@ vi.mock("overlay-kit", () => ({
   overlay: { open: vi.fn() },
 }));
 
-vi.mock("../actions", () => ({
-  updateBusinessAction: vi.fn(),
-}));
-
 const mockMember = {
   userId: 10,
   name: "홍길동",
@@ -42,10 +38,38 @@ describe("BusinessMemberDetailContent", () => {
     expect(screen.queryByDisplayValue("테스트 주류")).not.toBeInTheDocument();
   });
 
+  it("renders member name in read-only mode", () => {
+    render(<BusinessMemberDetailContent member={mockMember} />);
+    expect(screen.getByText("홍길동")).toBeInTheDocument();
+  });
+
+  it("shows pickup badge when hasPickupRole is false", () => {
+    render(<BusinessMemberDetailContent member={mockMember} />);
+    expect(screen.getByText("픽업 권한 없음")).toBeInTheDocument();
+  });
+
   it("shows grant button when hasPickupRole is false", () => {
     render(<BusinessMemberDetailContent member={mockMember} />);
     expect(screen.getByText("픽업 권한 부여")).toBeInTheDocument();
     expect(screen.queryByText("픽업 권한 회수")).not.toBeInTheDocument();
+  });
+
+  it("shows revoke button when hasPickupRole is true", () => {
+    render(
+      <BusinessMemberDetailContent
+        member={{ ...mockMember, hasPickupRole: true }}
+      />,
+    );
+
+    expect(screen.getByText("픽업 권한 회수")).toBeInTheDocument();
+    expect(screen.queryByText("픽업 권한 부여")).not.toBeInTheDocument();
+  });
+
+  it("renders back button", () => {
+    render(<BusinessMemberDetailContent member={mockMember} />);
+    expect(
+      screen.getByRole("button", { name: "멤버 목록으로 돌아가기" }),
+    ).toBeInTheDocument();
   });
 
   it("enters edit mode when clicking 수정", async () => {
