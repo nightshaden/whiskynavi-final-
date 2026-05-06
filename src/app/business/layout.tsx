@@ -1,6 +1,7 @@
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
+import BusinessSidebar from "./_components/BusinessSidebar";
 import BusinessUnauthorizedPage from "./_components/BusinessUnauthorizedPage";
 
 export const metadata = {
@@ -19,9 +20,14 @@ export default async function BusinessLayout({
     redirect("/sign-in");
   }
 
-  if (!session.user.roles?.includes("ROLE_PICK_UP_BUSINESS")) {
+  if (!session.user.roles?.includes("ROLE_BUSINESS")) {
     return <BusinessUnauthorizedPage />;
   }
 
-  return <main className="min-h-screen bg-gray-50">{children}</main>;
+  return (
+    <main className="flex min-h-screen bg-gray-50">
+      <BusinessSidebar />
+      <div className="min-w-0 flex-1">{children}</div>
+    </main>
+  );
 }

@@ -947,6 +947,8 @@ export interface BottleReservationApplicationPublicResponse {
   pickupUserBusinessId?: number;
   quantity?: number;
   status?: BottleReservationApplicationPublicResponseStatus;
+  totalPrice?: number;
+  unitPrice?: number;
   updatedAt?: string;
 }
 
@@ -990,6 +992,8 @@ export interface BottleReservationApplicationResponse {
   pickupUserBusinessId?: number;
   quantity?: number;
   status?: BottleReservationApplicationResponseStatus;
+  totalPrice?: number;
+  unitPrice?: number;
   updatedAt?: string;
 }
 
@@ -1156,6 +1160,8 @@ export interface BottleReservationPickupApplicationResponse {
   noticeId?: number;
   quantity?: number;
   status?: BottleReservationPickupApplicationResponseStatus;
+  totalPrice?: number;
+  unitPrice?: number;
   updatedAt?: string;
 }
 
@@ -1178,6 +1184,43 @@ export interface BottleReservationPickupBulkUpdateResponse {
   noticeId?: number;
   status?: BottleReservationPickupBulkUpdateResponseStatus;
   updatedCount?: number;
+}
+
+/**
+ * 공고 상태
+ */
+export type BottleReservationPickupNoticeReservationStatusResponseNoticeStatus = typeof BottleReservationPickupNoticeReservationStatusResponseNoticeStatus[keyof typeof BottleReservationPickupNoticeReservationStatusResponseNoticeStatus];
+
+
+export const BottleReservationPickupNoticeReservationStatusResponseNoticeStatus = {
+  DRAFT: 'DRAFT',
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED',
+  SOLD_OUT: 'SOLD_OUT',
+} as const;
+
+/**
+ * 픽업 업장 예약 공고별 신청 현황
+ */
+export interface BottleReservationPickupNoticeReservationStatusResponse {
+  /** 병 ID */
+  bottleId?: number;
+  /** 병 이미지 URL */
+  bottleImgUrl?: string;
+  /** 병 이름 */
+  bottleName?: string;
+  /** 예약 공고 ID */
+  noticeId?: number;
+  /** 공고 상태 */
+  noticeStatus?: BottleReservationPickupNoticeReservationStatusResponseNoticeStatus;
+  /** 공고 판매 단가 */
+  price?: number;
+  /** 전체 신청 건수 */
+  totalApplicationCount?: number;
+  /** 전체 확정 수량 합계 */
+  totalConfirmedQuantity?: number;
+  /** 전체 신청 수량 합계 */
+  totalRequestedQuantity?: number;
 }
 
 export interface BottleReservationPickupWaitingPickupRequest {
@@ -1624,6 +1667,8 @@ export interface ItemReservationApplicationPublicResponse {
   pickupUserBusinessId?: number;
   quantity?: number;
   status?: ItemReservationApplicationPublicResponseStatus;
+  totalPrice?: number;
+  unitPrice?: number;
   updatedAt?: string;
 }
 
@@ -1667,6 +1712,8 @@ export interface ItemReservationApplicationResponse {
   pickupUserBusinessId?: number;
   quantity?: number;
   status?: ItemReservationApplicationResponseStatus;
+  totalPrice?: number;
+  unitPrice?: number;
   updatedAt?: string;
 }
 
@@ -1833,6 +1880,8 @@ export interface ItemReservationPickupApplicationResponse {
   noticeId?: number;
   quantity?: number;
   status?: ItemReservationPickupApplicationResponseStatus;
+  totalPrice?: number;
+  unitPrice?: number;
   updatedAt?: string;
 }
 
@@ -2477,6 +2526,20 @@ export interface PageBottleReservationNoticeResponse {
 
 export interface PageBottleReservationPickupApplicationResponse {
   content?: BottleReservationPickupApplicationResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+export interface PageBottleReservationPickupNoticeReservationStatusResponse {
+  content?: BottleReservationPickupNoticeReservationStatusResponse[];
   empty?: boolean;
   first?: boolean;
   last?: boolean;
@@ -6237,6 +6300,18 @@ noticeId?: number;
  */
 bottleId?: number;
 /**
+ * 신청자 이름 부분 일치 검색
+ */
+userName?: string;
+/**
+ * 신청자 별명 부분 일치 검색. 현재 별명은 사용자명(username)을 사용합니다.
+ */
+nickname?: string;
+/**
+ * 신청자 전화번호 부분 일치 검색
+ */
+phone?: string;
+/**
  * Zero-based page index (0..N)
  * @minimum 0
  */
@@ -6274,6 +6349,23 @@ export type PostApiUsersBusinessesPickupReservationsApplicationsWaitingPickupBod
   bottleId?: number;
   /** 같은 병이 여러 공고에 걸쳐 있을 때 범위를 좁히는 예약 공고 ID */
   noticeId?: number;
+};
+
+export type GetApiUsersBusinessesPickupReservationsNoticesStatusesParams = {
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
 };
 
 /**
@@ -7680,81 +7772,8 @@ export const patchApiAdminBusinessesMembersUseridBusiness = async (userId: numbe
 
 
 /**
- * 비즈니스 권한 회원에게 픽업 권한을 부여합니다.
- * @summary 픽업 권한 부여(관리자)
- */
-export type postApiAdminBusinessesMembersUseridPickupGrantResponse200 = {
-  data: AdminBusinessUserResponse
-  status: 200
-}
-    
-export type postApiAdminBusinessesMembersUseridPickupGrantResponseSuccess = (postApiAdminBusinessesMembersUseridPickupGrantResponse200) & {
-  headers: Headers;
-};
-;
-
-export type postApiAdminBusinessesMembersUseridPickupGrantResponse = (postApiAdminBusinessesMembersUseridPickupGrantResponseSuccess)
-
-export const getPostApiAdminBusinessesMembersUseridPickupGrantUrl = (userId: number,) => {
-
-
-  
-
-  return `/api/admin/businesses/members/${userId}/pickup/grant`
-}
-
-export const postApiAdminBusinessesMembersUseridPickupGrant = async (userId: number, options?: RequestInit): Promise<postApiAdminBusinessesMembersUseridPickupGrantResponse> => {
-  
-  return customFetch<postApiAdminBusinessesMembersUseridPickupGrantResponse>(getPostApiAdminBusinessesMembersUseridPickupGrantUrl(userId),
-  {      
-    ...options,
-    method: 'POST'
-    
-    
-  }
-);}
-
-
-
-/**
- * 비즈니스 권한 회원에게서 픽업 권한을 회수합니다.
- * @summary 픽업 권한 회수(관리자)
- */
-export type postApiAdminBusinessesMembersUseridPickupRevokeResponse200 = {
-  data: AdminBusinessUserResponse
-  status: 200
-}
-    
-export type postApiAdminBusinessesMembersUseridPickupRevokeResponseSuccess = (postApiAdminBusinessesMembersUseridPickupRevokeResponse200) & {
-  headers: Headers;
-};
-;
-
-export type postApiAdminBusinessesMembersUseridPickupRevokeResponse = (postApiAdminBusinessesMembersUseridPickupRevokeResponseSuccess)
-
-export const getPostApiAdminBusinessesMembersUseridPickupRevokeUrl = (userId: number,) => {
-
-
-  
-
-  return `/api/admin/businesses/members/${userId}/pickup/revoke`
-}
-
-export const postApiAdminBusinessesMembersUseridPickupRevoke = async (userId: number, options?: RequestInit): Promise<postApiAdminBusinessesMembersUseridPickupRevokeResponse> => {
-  
-  return customFetch<postApiAdminBusinessesMembersUseridPickupRevokeResponse>(getPostApiAdminBusinessesMembersUseridPickupRevokeUrl(userId),
-  {      
-    ...options,
-    method: 'POST'
-    
-    
-  }
-);}
-
-
-
-/**
- * @summary 일반 상품 목록 조회(관리자)
+ * 등록된 사업장 회원에게 사업자 권한을 부여합니다. role은 ROLE_BUSINESS, ROLE_TRAILNTALE_BUSINESS, ROLE_COMMUNITY_BUSINESS, ROLE_PICK_UP_BUSINESS 중 하나만 입력할 수 있습니다.
+ * @summary 사업자 권한 부여(관리자)
  */
 export type postApiAdminBusinessesMembersUseridRolesRoleGrantResponse200 = {
   data: AdminBusinessUserResponse
@@ -7790,6 +7809,11 @@ export const postApiAdminBusinessesMembersUseridRolesRoleGrant = async (userId: 
 );}
 
 
+
+/**
+ * 등록된 사업장 회원에게서 사업자 권한을 회수합니다. role은 ROLE_BUSINESS, ROLE_TRAILNTALE_BUSINESS, ROLE_COMMUNITY_BUSINESS, ROLE_PICK_UP_BUSINESS 중 하나만 입력할 수 있습니다.
+ * @summary 사업자 권한 회수(관리자)
+ */
 export type postApiAdminBusinessesMembersUseridRolesRoleRevokeResponse200 = {
   data: AdminBusinessUserResponse
   status: 200
@@ -7824,6 +7848,10 @@ export const postApiAdminBusinessesMembersUseridRolesRoleRevoke = async (userId:
 );}
 
 
+
+/**
+ * @summary 일반 상품 목록 조회(관리자)
+ */
 export type getApiAdminItemsResponse200 = {
   data: PageItemAdminResponse
   status: 200
@@ -13429,7 +13457,7 @@ export const getApiUsersBusinessesPickupReservationsApplications = async (params
 
 
 /**
- * 단건, 여러 예약 ID, 혹은 특정 병 기준으로 결제 완료 상태 예약을 수령 대기 상태로 일괄 변경합니다.
+ * 여러 예약 ID 또는 특정 병/공고 기준으로 결제 완료 상태 예약을 수령 대기 상태로 일괄 변경합니다.
  * @summary 픽업 사업장 수령 대기 일괄 처리
  */
 export type postApiUsersBusinessesPickupReservationsApplicationsWaitingPickupResponse200 = {
@@ -13607,6 +13635,58 @@ export const postApiUsersBusinessesPickupReservationsApplicationsApplicationidWa
   {      
     ...options,
     method: 'POST'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 현재 로그인한 픽업 업장에 할당된 예약을 공고별 신청 건수와 수량으로 집계해 최근 생성된 공고 순으로 페이지 조회합니다.
+ * @summary 픽업 업장 예약 공고별 신청 현황 목록 조회
+ */
+export type getApiUsersBusinessesPickupReservationsNoticesStatusesResponse200 = {
+  data: PageBottleReservationPickupNoticeReservationStatusResponse
+  status: 200
+}
+    
+export type getApiUsersBusinessesPickupReservationsNoticesStatusesResponseSuccess = (getApiUsersBusinessesPickupReservationsNoticesStatusesResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiUsersBusinessesPickupReservationsNoticesStatusesResponse = (getApiUsersBusinessesPickupReservationsNoticesStatusesResponseSuccess)
+
+export const getGetApiUsersBusinessesPickupReservationsNoticesStatusesUrl = (params?: GetApiUsersBusinessesPickupReservationsNoticesStatusesParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
+    } else {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/users/businesses/pickup-reservations/notices/statuses?${stringifiedParams}` : `/api/users/businesses/pickup-reservations/notices/statuses`
+}
+
+export const getApiUsersBusinessesPickupReservationsNoticesStatuses = async (params?: GetApiUsersBusinessesPickupReservationsNoticesStatusesParams, options?: RequestInit): Promise<getApiUsersBusinessesPickupReservationsNoticesStatusesResponse> => {
+  
+  return customFetch<getApiUsersBusinessesPickupReservationsNoticesStatusesResponse>(getGetApiUsersBusinessesPickupReservationsNoticesStatusesUrl(params),
+  {      
+    ...options,
+    method: 'GET'
     
     
   }

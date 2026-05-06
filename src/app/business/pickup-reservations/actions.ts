@@ -1,6 +1,7 @@
 "use server";
 
 import {
+  type BottleReservationPickupWaitingPickupRequest,
   postApiUsersBusinessesPickupReservationsApplicationsApplicationidPaymentComplete,
   postApiUsersBusinessesPickupReservationsApplicationsApplicationidReceiveComplete,
   postApiUsersBusinessesPickupReservationsApplicationsApplicationidWaitingPickup,
@@ -76,14 +77,14 @@ export async function receiveCompleteAction(
 }
 
 export async function bulkWaitingPickupAction(
-  applicationIds: number[],
+  request: BottleReservationPickupWaitingPickupRequest,
 ): Promise<ActionResult> {
   const token = await getAuthToken();
   if (!token) return { success: false, error: "인증이 필요합니다." };
 
   try {
     await postApiUsersBusinessesPickupReservationsApplicationsWaitingPickup(
-      { applicationIds },
+      request,
       withToken(token),
     );
     revalidatePath("/business/pickup-reservations");

@@ -21,7 +21,7 @@ import {
   PICKUP_STATUS_COLOR,
   PICKUP_STATUS_LABEL,
 } from "../../../constants";
-import { formatDate } from "../../../utils";
+import { formatCurrency, formatDate } from "../../../utils";
 import {
   paymentCompleteAction,
   receiveCompleteAction,
@@ -257,6 +257,18 @@ export default function PickupApplicationDetailContent({
                 <p className="text-xs text-gray-500">확정수량</p>
                 <p className="text-sm font-medium text-amber-600">
                   {application.confirmedQuantity ?? "-"}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">단가</p>
+                <p className="text-sm font-medium text-gray-900">
+                  {formatCurrency(application.unitPrice)}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">총액</p>
+                <p className="text-sm font-medium text-gray-900">
+                  {formatCurrency(application.totalPrice)}
                 </p>
               </div>
               <div>
