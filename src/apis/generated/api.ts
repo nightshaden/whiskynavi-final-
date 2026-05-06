@@ -1433,6 +1433,16 @@ export interface DeliveryAddressResponse {
 }
 
 /**
+ * 택배사 코드 응답
+ */
+export interface DeliveryCompanyResponse {
+  /** 택배사 코드 */
+  code?: string;
+  /** 택배사 표시명 */
+  displayName?: string;
+}
+
+/**
  * 기부자 인원수 조회 응답
  */
 export interface DonationCountResponse {
@@ -3375,6 +3385,150 @@ export interface Resend {
 }
 
 /**
+ * 택배사 코드
+ */
+export type ReservationBusinessDeliveryRequestCarrierCode = typeof ReservationBusinessDeliveryRequestCarrierCode[keyof typeof ReservationBusinessDeliveryRequestCarrierCode];
+
+
+export const ReservationBusinessDeliveryRequestCarrierCode = {
+  CJ_LOGISTICS: 'CJ_LOGISTICS',
+  HANJIN: 'HANJIN',
+  LOTTE: 'LOTTE',
+  LOGEN: 'LOGEN',
+  POST_OFFICE: 'POST_OFFICE',
+  KGB: 'KGB',
+  ILYANG: 'ILYANG',
+  KDEXP: 'KDEXP',
+  DAESIN: 'DAESIN',
+  HAPDONG: 'HAPDONG',
+  CU_POST: 'CU_POST',
+  GS_POSTBOX: 'GS_POSTBOX',
+  EMS: 'EMS',
+  DHL: 'DHL',
+  FEDEX: 'FEDEX',
+  UPS: 'UPS',
+  TNT: 'TNT',
+  OTHER: 'OTHER',
+} as const;
+
+/**
+ * 배송 방식
+ */
+export type ReservationBusinessDeliveryRequestDeliveryMethod = typeof ReservationBusinessDeliveryRequestDeliveryMethod[keyof typeof ReservationBusinessDeliveryRequestDeliveryMethod];
+
+
+export const ReservationBusinessDeliveryRequestDeliveryMethod = {
+  PARCEL: 'PARCEL',
+  PRIVATE_CARGO: 'PRIVATE_CARGO',
+} as const;
+
+/**
+ * 배송 상태
+ */
+export type ReservationBusinessDeliveryRequestDeliveryStatus = typeof ReservationBusinessDeliveryRequestDeliveryStatus[keyof typeof ReservationBusinessDeliveryRequestDeliveryStatus];
+
+
+export const ReservationBusinessDeliveryRequestDeliveryStatus = {
+  READY: 'READY',
+  SHIPPED: 'SHIPPED',
+  IN_TRANSIT: 'IN_TRANSIT',
+  OUT_FOR_DELIVERY: 'OUT_FOR_DELIVERY',
+  DELIVERED: 'DELIVERED',
+} as const;
+
+/**
+ * 예약 공고 업장별 입고 배송 정보 저장 요청
+ */
+export interface ReservationBusinessDeliveryRequest {
+  /** 택배사 코드 */
+  carrierCode?: ReservationBusinessDeliveryRequestCarrierCode;
+  /** 배송 완료 시각 */
+  deliveredAt?: string;
+  /**
+   * 배송 메모
+   * @minLength 0
+   * @maxLength 500
+   */
+  deliveryMemo?: string;
+  /** 배송 방식 */
+  deliveryMethod: ReservationBusinessDeliveryRequestDeliveryMethod;
+  /** 배송 상태 */
+  deliveryStatus?: ReservationBusinessDeliveryRequestDeliveryStatus;
+  /** 발송 시각 */
+  shippedAt?: string;
+  /**
+   * 송장번호
+   * @minLength 0
+   * @maxLength 100
+   */
+  trackingNumber?: string;
+}
+
+export type ReservationBusinessDeliveryResponseCarrierCode = typeof ReservationBusinessDeliveryResponseCarrierCode[keyof typeof ReservationBusinessDeliveryResponseCarrierCode];
+
+
+export const ReservationBusinessDeliveryResponseCarrierCode = {
+  CJ_LOGISTICS: 'CJ_LOGISTICS',
+  HANJIN: 'HANJIN',
+  LOTTE: 'LOTTE',
+  LOGEN: 'LOGEN',
+  POST_OFFICE: 'POST_OFFICE',
+  KGB: 'KGB',
+  ILYANG: 'ILYANG',
+  KDEXP: 'KDEXP',
+  DAESIN: 'DAESIN',
+  HAPDONG: 'HAPDONG',
+  CU_POST: 'CU_POST',
+  GS_POSTBOX: 'GS_POSTBOX',
+  EMS: 'EMS',
+  DHL: 'DHL',
+  FEDEX: 'FEDEX',
+  UPS: 'UPS',
+  TNT: 'TNT',
+  OTHER: 'OTHER',
+} as const;
+
+export type ReservationBusinessDeliveryResponseDeliveryMethod = typeof ReservationBusinessDeliveryResponseDeliveryMethod[keyof typeof ReservationBusinessDeliveryResponseDeliveryMethod];
+
+
+export const ReservationBusinessDeliveryResponseDeliveryMethod = {
+  PARCEL: 'PARCEL',
+  PRIVATE_CARGO: 'PRIVATE_CARGO',
+} as const;
+
+export type ReservationBusinessDeliveryResponseDeliveryStatus = typeof ReservationBusinessDeliveryResponseDeliveryStatus[keyof typeof ReservationBusinessDeliveryResponseDeliveryStatus];
+
+
+export const ReservationBusinessDeliveryResponseDeliveryStatus = {
+  READY: 'READY',
+  SHIPPED: 'SHIPPED',
+  IN_TRANSIT: 'IN_TRANSIT',
+  OUT_FOR_DELIVERY: 'OUT_FOR_DELIVERY',
+  DELIVERED: 'DELIVERED',
+} as const;
+
+/**
+ * 예약 공고 업장별 입고 배송 정보 응답
+ */
+export interface ReservationBusinessDeliveryResponse {
+  businessId?: number;
+  businessName?: string;
+  carrierCode?: ReservationBusinessDeliveryResponseCarrierCode;
+  carrierName?: string;
+  createdAt?: string;
+  deliveredAt?: string;
+  deliveryMemo?: string;
+  deliveryMethod?: ReservationBusinessDeliveryResponseDeliveryMethod;
+  deliveryStatus?: ReservationBusinessDeliveryResponseDeliveryStatus;
+  id?: number;
+  noticeId?: number;
+  shippedAt?: string;
+  trackable?: boolean;
+  trackingNumber?: string;
+  updatedAt?: string;
+}
+
+/**
  * 임시 비밀번호가 발급되었음을 알려주는 응답입니다.
  */
 export interface ResetPasswordResponse {
@@ -4211,23 +4365,41 @@ export type PostApiAdminBusinessesApplicationsApplicationidRejectBody = {
 };
 
 export type GetApiAdminBusinessesMembersParams = {
-/** 사용자 이름 부분 일치 검색 */
+/**
+ * 사용자 이름 부분 일치 검색
+ */
 userName?: string;
-/** 사용자 전화번호 부분 일치 검색 */
+/**
+ * 사용자 전화번호 부분 일치 검색
+ */
 userPhone?: string;
-/** 사업장 이름 부분 일치 검색 */
+/**
+ * 사업장 이름 부분 일치 검색
+ */
 businessName?: string;
-/** 사업장 연락처 부분 일치 검색 */
+/**
+ * 사업장 연락처 부분 일치 검색
+ */
 businessContact?: string;
-/** 현재 비즈니스 권한 보유 여부 */
+/**
+ * 현재 비즈니스 권한 보유 여부
+ */
 hasBusinessRole?: boolean;
-/** 현재 트레일앤테일 사업자 권한 보유 여부 */
+/**
+ * 현재 트레일앤테일 사업자 권한 보유 여부
+ */
 hasTrailntaleBusinessRole?: boolean;
-/** 현재 커뮤니티 사업자 권한 보유 여부 */
+/**
+ * 현재 커뮤니티 사업자 권한 보유 여부
+ */
 hasCommunityBusinessRole?: boolean;
-/** 현재 픽업 권한 보유 여부 */
+/**
+ * 현재 픽업 권한 보유 여부
+ */
 hasPickupRole?: boolean;
-/** 사업장 유형 */
+/**
+ * 사업장 유형
+ */
 businessType?: GetApiAdminBusinessesMembersBusinessType;
 /**
  * Zero-based page index (0..N)
@@ -4741,6 +4913,166 @@ export type PatchApiAdminOrdersOrderidStatusBody = {
    * @maxLength 500
    */
   reason?: string;
+};
+
+/**
+ * 택배사 코드
+ */
+export type PutApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidBodyCarrierCode = typeof PutApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidBodyCarrierCode[keyof typeof PutApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidBodyCarrierCode];
+
+
+export const PutApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidBodyCarrierCode = {
+  CJ_LOGISTICS: 'CJ_LOGISTICS',
+  HANJIN: 'HANJIN',
+  LOTTE: 'LOTTE',
+  LOGEN: 'LOGEN',
+  POST_OFFICE: 'POST_OFFICE',
+  KGB: 'KGB',
+  ILYANG: 'ILYANG',
+  KDEXP: 'KDEXP',
+  DAESIN: 'DAESIN',
+  HAPDONG: 'HAPDONG',
+  CU_POST: 'CU_POST',
+  GS_POSTBOX: 'GS_POSTBOX',
+  EMS: 'EMS',
+  DHL: 'DHL',
+  FEDEX: 'FEDEX',
+  UPS: 'UPS',
+  TNT: 'TNT',
+  OTHER: 'OTHER',
+} as const;
+
+/**
+ * 배송 방식
+ */
+export type PutApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidBodyDeliveryMethod = typeof PutApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidBodyDeliveryMethod[keyof typeof PutApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidBodyDeliveryMethod];
+
+
+export const PutApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidBodyDeliveryMethod = {
+  PARCEL: 'PARCEL',
+  PRIVATE_CARGO: 'PRIVATE_CARGO',
+} as const;
+
+/**
+ * 배송 상태
+ */
+export type PutApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidBodyDeliveryStatus = typeof PutApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidBodyDeliveryStatus[keyof typeof PutApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidBodyDeliveryStatus];
+
+
+export const PutApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidBodyDeliveryStatus = {
+  READY: 'READY',
+  SHIPPED: 'SHIPPED',
+  IN_TRANSIT: 'IN_TRANSIT',
+  OUT_FOR_DELIVERY: 'OUT_FOR_DELIVERY',
+  DELIVERED: 'DELIVERED',
+} as const;
+
+/**
+ * 예약 공고 업장별 입고 배송 정보 저장 요청
+ */
+export type PutApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidBody = {
+  /** 택배사 코드 */
+  carrierCode?: PutApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidBodyCarrierCode;
+  /** 배송 완료 시각 */
+  deliveredAt?: string;
+  /**
+   * 배송 메모
+   * @minLength 0
+   * @maxLength 500
+   */
+  deliveryMemo?: string;
+  /** 배송 방식 */
+  deliveryMethod: PutApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidBodyDeliveryMethod;
+  /** 배송 상태 */
+  deliveryStatus?: PutApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidBodyDeliveryStatus;
+  /** 발송 시각 */
+  shippedAt?: string;
+  /**
+   * 송장번호
+   * @minLength 0
+   * @maxLength 100
+   */
+  trackingNumber?: string;
+};
+
+/**
+ * 택배사 코드
+ */
+export type PatchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumberBodyCarrierCode = typeof PatchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumberBodyCarrierCode[keyof typeof PatchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumberBodyCarrierCode];
+
+
+export const PatchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumberBodyCarrierCode = {
+  CJ_LOGISTICS: 'CJ_LOGISTICS',
+  HANJIN: 'HANJIN',
+  LOTTE: 'LOTTE',
+  LOGEN: 'LOGEN',
+  POST_OFFICE: 'POST_OFFICE',
+  KGB: 'KGB',
+  ILYANG: 'ILYANG',
+  KDEXP: 'KDEXP',
+  DAESIN: 'DAESIN',
+  HAPDONG: 'HAPDONG',
+  CU_POST: 'CU_POST',
+  GS_POSTBOX: 'GS_POSTBOX',
+  EMS: 'EMS',
+  DHL: 'DHL',
+  FEDEX: 'FEDEX',
+  UPS: 'UPS',
+  TNT: 'TNT',
+  OTHER: 'OTHER',
+} as const;
+
+/**
+ * 배송 방식
+ */
+export type PatchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumberBodyDeliveryMethod = typeof PatchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumberBodyDeliveryMethod[keyof typeof PatchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumberBodyDeliveryMethod];
+
+
+export const PatchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumberBodyDeliveryMethod = {
+  PARCEL: 'PARCEL',
+  PRIVATE_CARGO: 'PRIVATE_CARGO',
+} as const;
+
+/**
+ * 배송 상태
+ */
+export type PatchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumberBodyDeliveryStatus = typeof PatchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumberBodyDeliveryStatus[keyof typeof PatchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumberBodyDeliveryStatus];
+
+
+export const PatchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumberBodyDeliveryStatus = {
+  READY: 'READY',
+  SHIPPED: 'SHIPPED',
+  IN_TRANSIT: 'IN_TRANSIT',
+  OUT_FOR_DELIVERY: 'OUT_FOR_DELIVERY',
+  DELIVERED: 'DELIVERED',
+} as const;
+
+/**
+ * 예약 공고 업장별 입고 배송 정보 저장 요청
+ */
+export type PatchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumberBody = {
+  /** 택배사 코드 */
+  carrierCode?: PatchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumberBodyCarrierCode;
+  /** 배송 완료 시각 */
+  deliveredAt?: string;
+  /**
+   * 배송 메모
+   * @minLength 0
+   * @maxLength 500
+   */
+  deliveryMemo?: string;
+  /** 배송 방식 */
+  deliveryMethod: PatchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumberBodyDeliveryMethod;
+  /** 배송 상태 */
+  deliveryStatus?: PatchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumberBodyDeliveryStatus;
+  /** 발송 시각 */
+  shippedAt?: string;
+  /**
+   * 송장번호
+   * @minLength 0
+   * @maxLength 100
+   */
+  trackingNumber?: string;
 };
 
 /**
@@ -6370,6 +6702,10 @@ size?: number;
 sort?: string[];
 };
 
+export type GetApiUsersBusinessesReservationDeliveriesParams = {
+noticeId?: number;
+};
+
 /**
  * 배송지 주소록 저장 요청
  */
@@ -7533,7 +7869,7 @@ export const getApiAdminBusinessesApplicationsApplicationid = async (application
 
 
 /**
- * 관리자가 신청을 승인하고 영업 사업장으로 등록합니다.
+ * 관리자가 신청을 승인하고 사업장 정보와 기본 사업자 권한을 반영합니다.
  * @summary 비즈니스 신청 승인(관리자)
  */
 export type postApiAdminBusinessesApplicationsApplicationidApproveResponse200 = {
@@ -7646,7 +7982,7 @@ export const postApiAdminBusinessesApplicationsApplicationidReject = async (appl
 
 
 /**
- * 비즈니스 권한을 가진 회원 목록을 조회합니다.
+ * 등록된 사업장 정보를 기준으로 비즈니스 회원 목록을 조회합니다.
  * @summary 비즈니스 회원 목록 조회(관리자)
  */
 export type getApiAdminBusinessesMembersResponse200 = {
@@ -7698,7 +8034,7 @@ export const getApiAdminBusinessesMembers = async (params?: GetApiAdminBusinesse
 
 
 /**
- * 비즈니스 권한 회원의 기본 정보와 사업장 정보를 조회합니다.
+ * 등록된 사업장 회원의 기본 정보, 권한 상태, 사업장 정보를 조회합니다.
  * @summary 비즈니스 회원 상세 조회(관리자)
  */
 export type getApiAdminBusinessesMembersUseridResponse200 = {
@@ -7735,7 +8071,7 @@ export const getApiAdminBusinessesMembersUserid = async (userId: number, options
 
 
 /**
- * 관리자가 등록된 비즈니스 회원의 사업장명, 픽업 주소, 연락처, 사업자등록번호, 사업 유형을 수정합니다.
+ * 관리자가 등록된 사업장 회원의 사업장명, 픽업 주소, 연락처, 사업자등록번호, 사업 유형을 수정합니다.
  * @summary 비즈니스 회원 사업장 정보 수정(관리자)
  */
 export type patchApiAdminBusinessesMembersUseridBusinessResponse200 = {
@@ -8950,6 +9286,201 @@ export const patchApiAdminOrdersOrderidStatus = async (orderId: number,
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
       patchApiAdminOrdersOrderidStatusBody,)
+  }
+);}
+
+
+
+/**
+ * 예약 입고 배송 송장번호 등록 화면에서 사용할 택배사 코드와 표시명을 조회합니다.
+ * @summary 택배사 코드 목록 조회
+ */
+export type getApiAdminReservationDeliveriesCompaniesResponse200 = {
+  data: DeliveryCompanyResponse[]
+  status: 200
+}
+    
+export type getApiAdminReservationDeliveriesCompaniesResponseSuccess = (getApiAdminReservationDeliveriesCompaniesResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiAdminReservationDeliveriesCompaniesResponse = (getApiAdminReservationDeliveriesCompaniesResponseSuccess)
+
+export const getGetApiAdminReservationDeliveriesCompaniesUrl = () => {
+
+
+  
+
+  return `/api/admin/reservation-deliveries/companies`
+}
+
+export const getApiAdminReservationDeliveriesCompanies = async ( options?: RequestInit): Promise<getApiAdminReservationDeliveriesCompaniesResponse> => {
+  
+  return customFetch<getApiAdminReservationDeliveriesCompaniesResponse>(getGetApiAdminReservationDeliveriesCompaniesUrl(),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 예약 주문이 배정된 모든 업장을 기준으로 택배사와 송장번호 정보를 조회합니다. 아직 배송 정보를 입력하지 않은 업장도 포함됩니다.
+ * @summary 예약 공고 업장별 입고 배송 정보 목록 조회
+ */
+export type getApiAdminReservationDeliveriesNoticesNoticeidResponse200 = {
+  data: ReservationBusinessDeliveryResponse[]
+  status: 200
+}
+    
+export type getApiAdminReservationDeliveriesNoticesNoticeidResponseSuccess = (getApiAdminReservationDeliveriesNoticesNoticeidResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiAdminReservationDeliveriesNoticesNoticeidResponse = (getApiAdminReservationDeliveriesNoticesNoticeidResponseSuccess)
+
+export const getGetApiAdminReservationDeliveriesNoticesNoticeidUrl = (noticeId: number,) => {
+
+
+  
+
+  return `/api/admin/reservation-deliveries/notices/${noticeId}`
+}
+
+export const getApiAdminReservationDeliveriesNoticesNoticeid = async (noticeId: number, options?: RequestInit): Promise<getApiAdminReservationDeliveriesNoticesNoticeidResponse> => {
+  
+  return customFetch<getApiAdminReservationDeliveriesNoticesNoticeidResponse>(getGetApiAdminReservationDeliveriesNoticesNoticeidUrl(noticeId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 예약 공고와 수령 업장 조합의 택배사와 송장번호 정보를 조회합니다.
+ * @summary 예약 공고 업장별 입고 배송 정보 조회
+ */
+export type getApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidResponse200 = {
+  data: ReservationBusinessDeliveryResponse
+  status: 200
+}
+    
+export type getApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidResponseSuccess = (getApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidResponse = (getApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidResponseSuccess)
+
+export const getGetApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidUrl = (noticeId: number,
+    businessId: number,) => {
+
+
+  
+
+  return `/api/admin/reservation-deliveries/notices/${noticeId}/businesses/${businessId}`
+}
+
+export const getApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessid = async (noticeId: number,
+    businessId: number, options?: RequestInit): Promise<getApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidResponse> => {
+  
+  return customFetch<getApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidResponse>(getGetApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidUrl(noticeId,businessId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 예약 공고와 수령 업장 조합에 택배 송장번호 또는 개인 용달 배송 정보를 등록합니다.
+ * @summary 예약 공고 업장별 입고 배송 정보 저장
+ */
+export type putApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidResponse200 = {
+  data: ReservationBusinessDeliveryResponse
+  status: 200
+}
+    
+export type putApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidResponseSuccess = (putApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidResponse200) & {
+  headers: Headers;
+};
+;
+
+export type putApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidResponse = (putApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidResponseSuccess)
+
+export const getPutApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidUrl = (noticeId: number,
+    businessId: number,) => {
+
+
+  
+
+  return `/api/admin/reservation-deliveries/notices/${noticeId}/businesses/${businessId}`
+}
+
+export const putApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessid = async (noticeId: number,
+    businessId: number,
+    putApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidBody: PutApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidBody, options?: RequestInit): Promise<putApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidResponse> => {
+  
+  return customFetch<putApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidResponse>(getPutApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidUrl(noticeId,businessId),
+  {      
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      putApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidBody,)
+  }
+);}
+
+
+
+/**
+ * 예약 공고와 수령 업장 조합의 택배사 정보와 송장번호만 등록하거나 수정합니다.
+ * @summary 예약 공고 업장별 택배 송장번호 수정
+ */
+export type patchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumberResponse200 = {
+  data: ReservationBusinessDeliveryResponse
+  status: 200
+}
+    
+export type patchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumberResponseSuccess = (patchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumberResponse200) & {
+  headers: Headers;
+};
+;
+
+export type patchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumberResponse = (patchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumberResponseSuccess)
+
+export const getPatchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumberUrl = (noticeId: number,
+    businessId: number,) => {
+
+
+  
+
+  return `/api/admin/reservation-deliveries/notices/${noticeId}/businesses/${businessId}/tracking-number`
+}
+
+export const patchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumber = async (noticeId: number,
+    businessId: number,
+    patchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumberBody: PatchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumberBody, options?: RequestInit): Promise<patchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumberResponse> => {
+  
+  return customFetch<patchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumberResponse>(getPatchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumberUrl(noticeId,businessId),
+  {      
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      patchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumberBody,)
   }
 );}
 
@@ -13686,6 +14217,58 @@ export const getGetApiUsersBusinessesPickupReservationsNoticesStatusesUrl = (par
 export const getApiUsersBusinessesPickupReservationsNoticesStatuses = async (params?: GetApiUsersBusinessesPickupReservationsNoticesStatusesParams, options?: RequestInit): Promise<getApiUsersBusinessesPickupReservationsNoticesStatusesResponse> => {
   
   return customFetch<getApiUsersBusinessesPickupReservationsNoticesStatusesResponse>(getGetApiUsersBusinessesPickupReservationsNoticesStatusesUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
+ * 현재 로그인한 업장이 관리자로부터 받을 예약 공고별 택배사와 송장번호 정보를 조회합니다.
+ * @summary 내 업장 예약 입고 배송 정보 목록 조회
+ */
+export type getApiUsersBusinessesReservationDeliveriesResponse200 = {
+  data: ReservationBusinessDeliveryResponse[]
+  status: 200
+}
+    
+export type getApiUsersBusinessesReservationDeliveriesResponseSuccess = (getApiUsersBusinessesReservationDeliveriesResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiUsersBusinessesReservationDeliveriesResponse = (getApiUsersBusinessesReservationDeliveriesResponseSuccess)
+
+export const getGetApiUsersBusinessesReservationDeliveriesUrl = (params?: GetApiUsersBusinessesReservationDeliveriesParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
+    } else {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/users/businesses/reservation-deliveries?${stringifiedParams}` : `/api/users/businesses/reservation-deliveries`
+}
+
+export const getApiUsersBusinessesReservationDeliveries = async (params?: GetApiUsersBusinessesReservationDeliveriesParams, options?: RequestInit): Promise<getApiUsersBusinessesReservationDeliveriesResponse> => {
+  
+  return customFetch<getApiUsersBusinessesReservationDeliveriesResponse>(getGetApiUsersBusinessesReservationDeliveriesUrl(params),
   {      
     ...options,
     method: 'GET'

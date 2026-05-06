@@ -2,12 +2,16 @@
 
 import {
   type PostApiAdminBottlesReservationsNoticesBodyGradeConditionsItem,
+  type PutApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidBodyCarrierCode,
+  type PutApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidBodyDeliveryMethod,
+  type PutApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidBodyDeliveryStatus,
   getApiAdminBottles,
   postApiAdminBottlesReservationsApplicationsApplicationidCancel,
   postApiAdminBottlesReservationsApplicationsApplicationidConfirm,
   postApiAdminBottlesReservationsApplicationsApplicationidReject,
   postApiAdminBottlesReservationsNotices,
   putApiAdminBottlesReservationsNoticesNoticeid,
+  putApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessid,
 } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
@@ -16,6 +20,8 @@ import { redirect } from "next/navigation";
 import { z } from "zod/v4";
 
 export type FormState = { success: boolean; error?: string };
+
+const DEFAULT_DELIVERY_CARRIER_CODE = "CJ_LOGISTICS";
 
 // ─── Zod 스키마 ──────────────────────────────────────────
 
@@ -239,6 +245,59 @@ export async function cancelApplicationAction(applicationId: number) {
     return { success: true };
   } catch (error) {
     const message = error instanceof Error ? error.message : "취소에 실패했습니다.";
+    return { success: false, error: message };
+  }
+}
+
+// ─── 예약 공고 배송 액션 ─────────────────────────────────
+
+export async function updateReservationDeliveryAction({
+  noticeId,
+  businessId,
+  deliveryMethod,
+  carrierCode,
+  trackingNumber,
+  deliveryStatus,
+  deliveryMemo,
+}: {
+  noticeId: number;
+  businessId: number;
+  deliveryMethod: string;
+  carrierCode?: string;
+  trackingNumber?: string;
+  deliveryStatus?: string;
+  deliveryMemo?: string;
+}) {
+  const token = await getAuthToken();
+  if (!token) return { success: false, error: "인증이 필요합니다." };
+
+  const isPrivateCargo = deliveryMethod === "PRIVATE_CARGO";
+
+  try {
+    await putApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessid(
+      noticeId,
+      businessId,
+      {
+        deliveryMethod:
+          deliveryMethod as PutApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidBodyDeliveryMethod,
+        ...(isPrivateCargo
+          ? {}
+          : {
+              carrierCode: (carrierCode ||
+                DEFAULT_DELIVERY_CARRIER_CODE) as PutApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidBodyCarrierCode,
+              trackingNumber: trackingNumber?.trim() || undefined,
+            }),
+        deliveryStatus: deliveryStatus
+          ? (deliveryStatus as PutApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidBodyDeliveryStatus)
+          : undefined,
+        deliveryMemo: deliveryMemo?.trim() || undefined,
+      },
+      withToken(token),
+    );
+    revalidatePath(`/admin/reservations/${noticeId}`);
+    return { success: true };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "배송정보 수정에 실패했습니다.";
     return { success: false, error: message };
   }
 }

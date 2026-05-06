@@ -1,6 +1,9 @@
 "use client";
 
-import type { BottleReservationPickupNoticeReservationStatusResponse } from "@/apis/generated/api";
+import type {
+  BottleReservationPickupNoticeReservationStatusResponse,
+  ReservationBusinessDeliveryResponse,
+} from "@/apis/generated/api";
 import Pagination from "@/app/admin/_components/Pagination";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -27,6 +30,7 @@ interface PickupReservationsContentProps {
   };
   notices: BottleReservationPickupNoticeReservationStatusResponse[];
   totalElements: number;
+  deliveries: ReservationBusinessDeliveryResponse[];
 }
 
 interface NoticeGroup {
@@ -55,10 +59,16 @@ const mapNoticesToGroups = (notices: BottleReservationPickupNoticeReservationSta
   }));
 };
 
+const formatTrackingNumber = (delivery?: ReservationBusinessDeliveryResponse) => {
+  if (delivery?.deliveryMethod === "PRIVATE_CARGO") return "해당 없음 (용달)";
+  return delivery?.trackingNumber?.trim() || "-";
+};
+
 export default function PickupReservationsContent({
   searchParams,
   notices,
   totalElements,
+  deliveries,
 }: PickupReservationsContentProps) {
   const router = useRouter();
   const [bulkNotice, setBulkNotice] = useState<NoticeGroup | null>(null);
@@ -67,6 +77,7 @@ export default function PickupReservationsContent({
   const currentPage = Number(searchParams.page) || 1;
   const itemsPerPage = Number(searchParams.limit) || 20;
   const noticeGroups = mapNoticesToGroups(notices);
+  const deliveryMap = new Map(deliveries.map((delivery) => [delivery.noticeId, delivery]));
 
   const handleBulkWaitingPickup = () => {
     if (!bulkNotice) return;
@@ -89,7 +100,7 @@ export default function PickupReservationsContent({
       <div className="p-6">
         <div className="mb-4">
           <p className="text-sm text-gray-600">공고 {totalElements}개</p>
-          <p className="mt-1 text-xs text-gray-500">공고별 신청 목록은 상세 화면에서 조회하고 처리합니다.</p>
+          <p className="mt-1 text-xs text-gray-500">공고별 신청 내역은 상세조회 화면에서 확인하고 처리합니다.</p>
         </div>
 
         <Dialog open={bulkNotice != null} onOpenChange={(open) => !open && setBulkNotice(null)}>
@@ -120,54 +131,86 @@ export default function PickupReservationsContent({
           {noticeGroups.length === 0 ? (
             <div className="px-4 py-12 text-center text-gray-500">픽업 예약 공고가 없습니다.</div>
           ) : (
-            <div className="divide-y divide-gray-100">
-              {noticeGroups.map((group) => (
-                <section key={group.noticeId} className="px-4 py-4 transition-colors hover:bg-gray-50">
-                  <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                    <button
-                      type="button"
-                      onClick={() => router.push(`/business/pickup-reservations/notices/${group.noticeId}`)}
-                      className="min-w-0 cursor-pointer text-left"
-                    >
-                      <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="truncate text-sm font-bold text-gray-900">{group.bottleName}</h3>
-                        <span className="text-xs text-gray-500">공고 #{group.noticeId || "-"}</span>
-                        {group.bottleId != null && <span className="text-xs text-gray-500">병 #{group.bottleId}</span>}
-                      </div>
-                      <div className="mt-2 flex flex-wrap gap-2">
-                        {group.noticeStatus && (
-                          <Badge className="bg-gray-100 text-gray-700">공고 {group.noticeStatus}</Badge>
-                        )}
-                        <Badge className="bg-emerald-100 text-emerald-700">단가 {formatCurrency(group.price)}</Badge>
-                        <Badge className="bg-gray-100 text-gray-700">신청 {group.totalApplicationCount}건</Badge>
-                        <Badge className="bg-blue-100 text-blue-700">요청 {group.totalRequestedQuantity}병</Badge>
-                        <Badge className="bg-amber-100 text-amber-700">확정 {group.totalConfirmedQuantity}병</Badge>
-                      </div>
-                    </button>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="border-b border-gray-200 bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs font-bold text-gray-700">공고</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold text-gray-700">공고상태</th>
+                    <th className="px-4 py-3 text-right text-xs font-bold text-gray-700">단가</th>
+                    <th className="px-4 py-3 text-center text-xs font-bold text-gray-700">신청</th>
+                    <th className="px-4 py-3 text-center text-xs font-bold text-gray-700">요청</th>
+                    <th className="px-4 py-3 text-center text-xs font-bold text-gray-700">확정</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold text-gray-700">송장번호</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold text-gray-700">관리</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {noticeGroups.map((group) => {
+                    const delivery = deliveryMap.get(group.noticeId);
 
-                    <div className="flex shrink-0 flex-wrap gap-2">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => router.push(`/business/pickup-reservations/notices/${group.noticeId}`)}
-                      >
-                        <Eye size={16} />
-                        신청 목록
-                      </Button>
-                      <Button
-                        type="button"
-                        size="sm"
-                        onClick={() => setBulkNotice(group)}
-                        disabled={isPending || group.totalApplicationCount === 0}
-                        className="bg-amber-600 text-white hover:bg-amber-700"
-                      >
-                        공고 일괄 픽업대기
-                      </Button>
-                    </div>
-                  </div>
-                </section>
-              ))}
+                    return (
+                      <tr key={group.noticeId} className="transition-colors hover:bg-gray-50">
+                        <td className="px-4 py-3">
+                          <button
+                            type="button"
+                            onClick={() => router.push(`/business/pickup-reservations/notices/${group.noticeId}`)}
+                            className="min-w-0 cursor-pointer text-left"
+                          >
+                            <div className="text-sm font-bold text-gray-900">{group.bottleName}</div>
+                            <div className="mt-1 flex flex-wrap gap-2 text-xs text-gray-500">
+                              <span>공고 #{group.noticeId || "-"}</span>
+                              {group.bottleId != null && <span>병 #{group.bottleId}</span>}
+                            </div>
+                          </button>
+                        </td>
+                        <td className="px-4 py-3 text-sm whitespace-nowrap">
+                          {group.noticeStatus ? (
+                            <Badge className="bg-gray-100 text-gray-700">공고 {group.noticeStatus}</Badge>
+                          ) : (
+                            "-"
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-right text-sm whitespace-nowrap text-gray-900">
+                          {formatCurrency(group.price)}
+                        </td>
+                        <td className="px-4 py-3 text-center text-sm text-gray-900">{group.totalApplicationCount}건</td>
+                        <td className="px-4 py-3 text-center text-sm text-gray-900">
+                          {group.totalRequestedQuantity}병
+                        </td>
+                        <td className="px-4 py-3 text-center text-sm font-medium text-amber-600">
+                          {group.totalConfirmedQuantity}병
+                        </td>
+                        <td className="px-4 py-3 text-sm whitespace-nowrap text-gray-900">
+                          {formatTrackingNumber(delivery)}
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex shrink-0 flex-wrap gap-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => router.push(`/business/pickup-reservations/notices/${group.noticeId}`)}
+                            >
+                              <Eye size={16} />
+                              상세조회
+                            </Button>
+                            <Button
+                              type="button"
+                              size="sm"
+                              onClick={() => setBulkNotice(group)}
+                              disabled={isPending || group.totalApplicationCount === 0}
+                              className="bg-amber-600 text-white hover:bg-amber-700"
+                            >
+                              공고 일괄 픽업대기
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           )}
 

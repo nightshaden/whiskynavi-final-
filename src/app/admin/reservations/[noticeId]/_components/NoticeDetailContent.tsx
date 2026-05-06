@@ -1,6 +1,11 @@
 "use client";
 
-import type { BottleReservationApplicationResponse, BottleReservationNoticeResponse } from "@/apis/generated/api";
+import type {
+  BottleReservationApplicationResponse,
+  BottleReservationNoticeResponse,
+  DeliveryCompanyResponse,
+  ReservationBusinessDeliveryResponse,
+} from "@/apis/generated/api";
 import { ArrowLeft, Edit2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import AdminHeader from "../../../_components/AdminHeader";
@@ -8,6 +13,7 @@ import { useSidebar } from "../../../_components/AdminLayoutClient";
 import ApplicationsTableSection from "./ApplicationsTableSection";
 import ApprovalSummarySection from "./ApprovalSummarySection";
 import NoticeInfoSection from "./NoticeInfoSection";
+import ReservationDeliverySection from "./ReservationDeliverySection";
 
 interface NoticeDetailContentProps {
   notice?: BottleReservationNoticeResponse;
@@ -15,6 +21,8 @@ interface NoticeDetailContentProps {
   applicationsTotalElements: number;
   applicationsPage: number;
   applicationsLimit: number;
+  deliveries: ReservationBusinessDeliveryResponse[];
+  deliveryCompanies: DeliveryCompanyResponse[];
 }
 
 export default function NoticeDetailContent({
@@ -23,6 +31,8 @@ export default function NoticeDetailContent({
   applicationsTotalElements,
   applicationsPage,
   applicationsLimit,
+  deliveries,
+  deliveryCompanies,
 }: NoticeDetailContentProps) {
   const { toggle } = useSidebar();
   const router = useRouter();
@@ -57,6 +67,8 @@ export default function NoticeDetailContent({
         <NoticeInfoSection notice={notice} />
 
         <ApprovalSummarySection notice={notice} />
+
+        <ReservationDeliverySection noticeId={notice.id!} deliveries={deliveries} companies={deliveryCompanies} />
 
         <ApplicationsTableSection
           noticeId={notice.id!}

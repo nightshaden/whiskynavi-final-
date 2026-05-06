@@ -1,6 +1,9 @@
 "use client";
 
-import type { BottleReservationPickupApplicationResponse } from "@/apis/generated/api";
+import type {
+  BottleReservationPickupApplicationResponse,
+  ReservationBusinessDeliveryResponse,
+} from "@/apis/generated/api";
 import FilterHeader from "@/app/admin/_components/FilterHeader";
 import Pagination from "@/app/admin/_components/Pagination";
 import { useTableFilter } from "@/app/admin/_components/useTableFilter";
@@ -33,6 +36,7 @@ interface PickupNoticeApplicationsContentProps {
   };
   applications: BottleReservationPickupApplicationResponse[];
   totalElements: number;
+  deliveries: ReservationBusinessDeliveryResponse[];
 }
 
 type ActionType = "payment-complete" | "waiting-pickup" | "receive-complete";
@@ -78,6 +82,29 @@ const STATUS_TO_ACTION: Record<string, ActionType> = {
   CONFIRMED: "payment-complete",
   PAYMENT_COMPLETED: "waiting-pickup",
   WAITING_PICKUP: "receive-complete",
+};
+
+const DELIVERY_METHOD_LABEL: Record<string, string> = {
+  PARCEL: "택배",
+  PRIVATE_CARGO: "개인 용달",
+};
+
+const DELIVERY_STATUS_LABEL: Record<string, string> = {
+  READY: "배송 준비",
+  SHIPPED: "발송 완료",
+  IN_TRANSIT: "배송 중",
+  OUT_FOR_DELIVERY: "배송 출발",
+  DELIVERED: "배송 완료",
+};
+
+const formatCarrierName = (delivery: ReservationBusinessDeliveryResponse) => {
+  if (delivery.deliveryMethod === "PRIVATE_CARGO") return "해당 없음 (용달)";
+  return delivery.carrierName ?? delivery.carrierCode ?? "-";
+};
+
+const formatTrackingNumber = (delivery: ReservationBusinessDeliveryResponse) => {
+  if (delivery.deliveryMethod === "PRIVATE_CARGO") return "해당 없음 (용달)";
+  return delivery.trackingNumber?.trim() || "-";
 };
 
 interface StatusActionButtonProps {
@@ -150,6 +177,7 @@ export default function PickupNoticeApplicationsContent({
   searchParams,
   applications,
   totalElements,
+  deliveries,
 }: PickupNoticeApplicationsContentProps) {
   const router = useRouter();
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
@@ -302,6 +330,52 @@ export default function PickupNoticeApplicationsContent({
               </Button>
             )}
           </div>
+        </div>
+
+        <div className="mb-4 overflow-hidden rounded-lg border border-gray-200 bg-white">
+          <div className="border-b border-gray-200 bg-gray-50 px-6 py-4">
+            <h3 className="font-bold text-gray-900">배송정보</h3>
+          </div>
+          {deliveries.length === 0 ? (
+            <div className="px-4 py-6 text-sm text-gray-500">등록된 배송정보가 없습니다.</div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="border-b border-gray-200 bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs font-bold text-gray-700">배송 방식</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold text-gray-700">택배사</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold text-gray-700">송장번호</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold text-gray-700">배송 진행</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold text-gray-700">메모</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {deliveries.map((delivery) => (
+                    <tr key={`${delivery.noticeId}-${delivery.businessId}-${delivery.id ?? "empty"}`}>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap text-gray-900">
+                        {delivery.deliveryMethod
+                          ? (DELIVERY_METHOD_LABEL[delivery.deliveryMethod] ?? delivery.deliveryMethod)
+                          : "-"}
+                      </td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap text-gray-900">
+                        {formatCarrierName(delivery)}
+                      </td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap text-gray-900">
+                        {formatTrackingNumber(delivery)}
+                      </td>
+                      <td className="px-4 py-3 text-sm whitespace-nowrap text-gray-900">
+                        {delivery.deliveryStatus
+                          ? (DELIVERY_STATUS_LABEL[delivery.deliveryStatus] ?? delivery.deliveryStatus)
+                          : "-"}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-600">{delivery.deliveryMemo ?? "-"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
 
         <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
