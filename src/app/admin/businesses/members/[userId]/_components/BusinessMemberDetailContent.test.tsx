@@ -43,9 +43,10 @@ describe("BusinessMemberDetailContent", () => {
     expect(screen.getByText("홍길동")).toBeInTheDocument();
   });
 
-  it("shows pickup badge when hasPickupRole is false", () => {
+  it("does not show pickup role text in the member info section", () => {
     render(<BusinessMemberDetailContent member={mockMember} />);
-    expect(screen.getByText("픽업 권한 없음")).toBeInTheDocument();
+    expect(screen.queryByText("픽업 권한 없음")).not.toBeInTheDocument();
+    expect(screen.queryByText("픽업 권한 있음")).not.toBeInTheDocument();
   });
 
   it("shows grant button when hasPickupRole is false", () => {

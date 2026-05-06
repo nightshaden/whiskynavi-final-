@@ -239,14 +239,7 @@ export default function BusinessMemberDetailContent({ member }: BusinessMemberDe
           {/* 멤버 정보 */}
           <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
             <div className="border-b border-gray-200 bg-gray-50 px-6 py-4">
-              <div className="flex items-center justify-between">
-                <h3 className="font-bold text-gray-900">멤버 정보</h3>
-                {member.hasPickupRole ? (
-                  <Badge className="bg-amber-100 text-amber-700">픽업 권한 있음</Badge>
-                ) : (
-                  <Badge className="bg-gray-100 text-gray-500">픽업 권한 없음</Badge>
-                )}
-              </div>
+              <h3 className="font-bold text-gray-900">멤버 정보</h3>
             </div>
             <div className="grid grid-cols-2 gap-6 p-6 md:grid-cols-3">
               <div>
