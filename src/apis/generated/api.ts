@@ -153,6 +153,8 @@ export interface AdminBusinessUserDetailResponse {
   businessType?: AdminBusinessUserDetailResponseBusinessType;
   businessUpdatedAt?: string;
   contact?: string;
+  documentDownloadUrl?: string;
+  documentOriginalFilename?: string;
   hasBusinessRole?: boolean;
   hasCommunityBusinessRole?: boolean;
   hasPickupRole?: boolean;

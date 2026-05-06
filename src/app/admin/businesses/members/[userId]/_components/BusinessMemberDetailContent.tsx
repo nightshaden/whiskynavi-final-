@@ -386,6 +386,19 @@ export default function BusinessMemberDetailContent({ member }: BusinessMemberDe
                 <p className="text-xs text-gray-500">사업자 수정일</p>
                 <p className="text-sm font-medium text-gray-900">{formatDate(member.businessUpdatedAt)}</p>
               </div>
+              {member.documentDownloadUrl && (
+                <div>
+                  <p className="text-xs text-gray-500">사업자등록증</p>
+                  <a
+                    href={member.documentDownloadUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm font-medium text-amber-600 hover:underline"
+                  >
+                    {member.documentOriginalFilename ?? "다운로드"}
+                  </a>
+                </div>
+              )}
             </div>
           </div>
 
