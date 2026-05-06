@@ -4209,41 +4209,23 @@ export type PostApiAdminBusinessesApplicationsApplicationidRejectBody = {
 };
 
 export type GetApiAdminBusinessesMembersParams = {
-/**
- * 사용자 이름 부분 일치 검색
- */
+/** 사용자 이름 부분 일치 검색 */
 userName?: string;
-/**
- * 사용자 전화번호 부분 일치 검색
- */
+/** 사용자 전화번호 부분 일치 검색 */
 userPhone?: string;
-/**
- * 사업장 이름 부분 일치 검색
- */
+/** 사업장 이름 부분 일치 검색 */
 businessName?: string;
-/**
- * 사업장 연락처 부분 일치 검색
- */
+/** 사업장 연락처 부분 일치 검색 */
 businessContact?: string;
-/**
- * 현재 비즈니스 권한 보유 여부
- */
+/** 현재 비즈니스 권한 보유 여부 */
 hasBusinessRole?: boolean;
-/**
- * 현재 트레일앤테일 사업자 권한 보유 여부
- */
+/** 현재 트레일앤테일 사업자 권한 보유 여부 */
 hasTrailntaleBusinessRole?: boolean;
-/**
- * 현재 커뮤니티 사업자 권한 보유 여부
- */
+/** 현재 커뮤니티 사업자 권한 보유 여부 */
 hasCommunityBusinessRole?: boolean;
-/**
- * 현재 픽업 권한 보유 여부
- */
+/** 현재 픽업 권한 보유 여부 */
 hasPickupRole?: boolean;
-/**
- * 사업장 유형
- */
+/** 사업장 유형 */
 businessType?: GetApiAdminBusinessesMembersBusinessType;
 /**
  * Zero-based page index (0..N)
@@ -7549,7 +7531,7 @@ export const getApiAdminBusinessesApplicationsApplicationid = async (application
 
 
 /**
- * 관리자가 신청을 승인하고 사업장 정보와 기본 사업자 권한을 반영합니다.
+ * 관리자가 신청을 승인하고 영업 사업장으로 등록합니다.
  * @summary 비즈니스 신청 승인(관리자)
  */
 export type postApiAdminBusinessesApplicationsApplicationidApproveResponse200 = {
@@ -7662,7 +7644,7 @@ export const postApiAdminBusinessesApplicationsApplicationidReject = async (appl
 
 
 /**
- * 등록된 사업장 정보를 기준으로 비즈니스 회원 목록을 조회합니다.
+ * 비즈니스 권한을 가진 회원 목록을 조회합니다.
  * @summary 비즈니스 회원 목록 조회(관리자)
  */
 export type getApiAdminBusinessesMembersResponse200 = {
@@ -7714,7 +7696,7 @@ export const getApiAdminBusinessesMembers = async (params?: GetApiAdminBusinesse
 
 
 /**
- * 등록된 사업장 회원의 기본 정보, 권한 상태, 사업장 정보를 조회합니다.
+ * 비즈니스 권한 회원의 기본 정보와 사업장 정보를 조회합니다.
  * @summary 비즈니스 회원 상세 조회(관리자)
  */
 export type getApiAdminBusinessesMembersUseridResponse200 = {
@@ -7751,7 +7733,7 @@ export const getApiAdminBusinessesMembersUserid = async (userId: number, options
 
 
 /**
- * 관리자가 등록된 사업장 회원의 사업장명, 픽업 주소, 연락처, 사업자등록번호, 사업 유형을 수정합니다.
+ * 관리자가 등록된 비즈니스 회원의 사업장명, 픽업 주소, 연락처, 사업자등록번호, 사업 유형을 수정합니다.
  * @summary 비즈니스 회원 사업장 정보 수정(관리자)
  */
 export type patchApiAdminBusinessesMembersUseridBusinessResponse200 = {
