@@ -1,6 +1,6 @@
 "use client";
 
-import { ClipboardList, Layers } from "lucide-react";
+import { ClipboardList, Home, Layers } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -54,6 +54,17 @@ export default function BusinessSidebar() {
             </Link>
           );
         })}
+
+        {/* 일반 페이지로 돌아가기 */}
+        <div className="mt-4 border-t border-gray-200 pt-4">
+          <Link
+            href="/"
+            className="flex items-center gap-3 rounded-md px-3 py-3 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
+          >
+            <Home size={18} className="shrink-0" />
+            <span className="text-sm font-bold">일반 페이지로 돌아가기</span>
+          </Link>
+        </div>
       </nav>
     </aside>
   );
