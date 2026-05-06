@@ -43,33 +43,52 @@ describe("BusinessMemberDetailContent", () => {
     expect(screen.getByText("홍길동")).toBeInTheDocument();
   });
 
-  it("shows pickup badge when hasPickupRole is false", () => {
+  it("does not show pickup role text in the member info section", () => {
     render(<BusinessMemberDetailContent member={mockMember} />);
-    expect(screen.getByText("픽업 권한 없음")).toBeInTheDocument();
+    expect(screen.queryByText("픽업 권한 없음")).not.toBeInTheDocument();
+    expect(screen.queryByText("픽업 권한 있음")).not.toBeInTheDocument();
   });
 
   it("shows grant button when hasPickupRole is false", () => {
     render(<BusinessMemberDetailContent member={mockMember} />);
-    expect(screen.getByText("픽업 권한 부여")).toBeInTheDocument();
-    expect(screen.queryByText("픽업 권한 회수")).not.toBeInTheDocument();
+    expect(screen.getByText("권한 정보")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "픽업 부여" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "픽업 회수" })).toBeDisabled();
   });
 
-  it("shows revoke button when hasPickupRole is true", () => {
+  it("renders grant and revoke buttons for each business role", () => {
     render(
       <BusinessMemberDetailContent
-        member={{ ...mockMember, hasPickupRole: true }}
+        member={{
+          ...mockMember,
+          hasBusinessRole: true,
+          hasTrailntaleBusinessRole: false,
+          hasCommunityBusinessRole: true,
+          hasPickupRole: false,
+        }}
       />,
     );
 
-    expect(screen.getByText("픽업 권한 회수")).toBeInTheDocument();
-    expect(screen.queryByText("픽업 권한 부여")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "사업자 권한 부여" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "사업자 권한 회수" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "트레일앤테일 부여" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "트레일앤테일 회수" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "커뮤니티 부여" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "커뮤니티 회수" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "픽업 부여" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "픽업 회수" })).toBeDisabled();
+  });
+
+  it("shows revoke button when hasPickupRole is true", () => {
+    render(<BusinessMemberDetailContent member={{ ...mockMember, hasPickupRole: true }} />);
+
+    expect(screen.getByRole("button", { name: "픽업 부여" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "픽업 회수" })).toBeEnabled();
   });
 
   it("renders back button", () => {
     render(<BusinessMemberDetailContent member={mockMember} />);
-    expect(
-      screen.getByRole("button", { name: "멤버 목록으로 돌아가기" }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "멤버 목록으로 돌아가기" })).toBeInTheDocument();
   });
 
   it("enters edit mode when clicking 수정", async () => {
@@ -109,15 +128,14 @@ describe("BusinessMemberDetailContent", () => {
     expect(screen.getByText("테스트 주류")).toBeInTheDocument();
   });
 
-  it("hides pickup action while edit mode is active", async () => {
+  it("keeps role action buttons disabled according to role state while edit mode is active", async () => {
     const user = userEvent.setup();
 
     render(<BusinessMemberDetailContent member={mockMember} />);
 
     await user.click(screen.getByRole("button", { name: "수정" }));
 
-    expect(
-      screen.queryByRole("button", { name: "픽업 권한 부여" }),
-    ).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "픽업 부여" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "픽업 회수" })).toBeDisabled();
   });
 });

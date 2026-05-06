@@ -32,10 +32,16 @@ const menuItems = [
     href: "/admin/banners",
   },
   {
-    id: "businesses",
+    id: "business-applications",
     label: "사업자 신청 관리",
     icon: Briefcase,
-    href: "/admin/businesses",
+    href: "/admin/businesses/applications",
+  },
+  {
+    id: "business-members",
+    label: "사업자 관리",
+    icon: Briefcase,
+    href: "/admin/businesses/members",
   },
   { id: "blacklist", label: "블랙리스트", icon: Ban, href: "/admin/blacklist" },
   {

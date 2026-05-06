@@ -32,13 +32,7 @@ function renderContent({
   members = [],
   totalElements = 0,
 }: Partial<ComponentProps<typeof BusinessMembersContent>> = {}) {
-  render(
-    <BusinessMembersContent
-      searchParams={searchParams}
-      members={members}
-      totalElements={totalElements}
-    />,
-  );
+  render(<BusinessMembersContent searchParams={searchParams} members={members} totalElements={totalElements} />);
 }
 
 describe("BusinessMembersContent", () => {
@@ -61,29 +55,29 @@ describe("BusinessMembersContent", () => {
     expect(screen.getByText("총 7건")).toBeInTheDocument();
   });
 
-  it("renders member row with name and username", () => {
-    const mockMember = {
-      userId: 10,
-      name: "홍길동",
-      username: "hong@example.com",
-      hasPickupRole: false,
-      roles: [],
-    };
-    renderContent({ members: [mockMember], totalElements: 1 });
-    expect(screen.getByText("홍길동")).toBeInTheDocument();
-    expect(screen.getByText("hong@example.com")).toBeInTheDocument();
-  });
+  it("renders business type before business name and shows all role badges", () => {
+    renderContent({
+      members: [
+        {
+          userId: 10,
+          businessName: "테스트 주류",
+          businessType: "HOUSEHOLD",
+          username: "hong@example.com",
+          hasBusinessRole: true,
+          hasTrailntaleBusinessRole: false,
+          hasPickupRole: true,
+          roles: ["ROLE_COMMUNITY_BUSINESS"],
+        },
+      ],
+      totalElements: 1,
+    });
 
-  it("shows 픽업 권한 있음 badge when hasPickupRole is true", () => {
-    const mockMember = {
-      userId: 11,
-      name: "김철수",
-      username: "kim@example.com",
-      hasPickupRole: true,
-      roles: [],
-    };
-    renderContent({ members: [mockMember], totalElements: 1 });
-    expect(screen.getByText("픽업 권한 있음")).toBeInTheDocument();
+    expect(screen.getByText("사용자ID")).toBeInTheDocument();
+    expect(screen.getByText("테스트 주류")).toBeInTheDocument();
+    expect(screen.getByText("가정용")).toBeInTheDocument();
+    expect(screen.getByText("hong@example.com")).toBeInTheDocument();
+    expect(screen.getAllByText("있음")).toHaveLength(3);
+    expect(screen.getAllByText("없음")).toHaveLength(1);
   });
 
   it("navigates to the member detail page when the detail button is clicked", async () => {
@@ -93,8 +87,11 @@ describe("BusinessMembersContent", () => {
       members: [
         {
           userId: 10,
-          name: "홍길동",
+          businessName: "테스트 주류",
+          businessType: "HOUSEHOLD",
           username: "hong@example.com",
+          hasBusinessRole: true,
+          hasTrailntaleBusinessRole: false,
           hasPickupRole: false,
           roles: [],
         },
@@ -129,5 +126,27 @@ describe("BusinessMembersContent", () => {
     expect(url.searchParams.get("page")).toBe("1");
     expect(url.searchParams.get("limit")).toBe("20");
     expect(url.searchParams.get("sort")).toBe("userId,asc");
+  });
+
+  it("pushes business name search query", async () => {
+    const user = userEvent.setup();
+
+    renderContent({
+      searchParams: {
+        page: "3",
+        limit: "20",
+        searchField: "businessName",
+      },
+    });
+
+    await user.type(screen.getByPlaceholderText("사업장 명으로 검색..."), "테스트");
+
+    const [pushedUrl] = push.mock.calls.at(-1) ?? [];
+    const url = new URL(pushedUrl, "https://example.com");
+
+    expect(url.pathname).toBe("/admin/businesses/members");
+    expect(url.searchParams.get("page")).toBe("1");
+    expect(url.searchParams.get("searchField")).toBe("businessName");
+    expect(url.searchParams.get("q")).toBe("테스트");
   });
 });
