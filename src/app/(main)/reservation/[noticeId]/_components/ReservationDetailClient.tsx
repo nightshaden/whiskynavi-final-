@@ -15,11 +15,7 @@ interface ReservationDetailClientProps {
   initialHasApplied: boolean;
 }
 
-export default function ReservationDetailClient({
-  notice,
-  pickupLocations,
-  initialHasApplied,
-}: ReservationDetailClientProps) {
+export default function ReservationDetailClient({ notice, pickupLocations, initialHasApplied }: ReservationDetailClientProps) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [isApplied, setIsApplied] = useState(initialHasApplied);

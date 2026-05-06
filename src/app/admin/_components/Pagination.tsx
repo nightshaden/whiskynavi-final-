@@ -14,14 +14,7 @@ interface PaginationProps {
   alwaysVisible?: boolean;
 }
 
-export default function Pagination({
-  totalItems,
-  itemsPerPage,
-  currentPage,
-  searchParams,
-  basePath,
-  alwaysVisible = false,
-}: PaginationProps) {
+export default function Pagination({ totalItems, itemsPerPage, currentPage, searchParams, basePath, alwaysVisible = false }: PaginationProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 

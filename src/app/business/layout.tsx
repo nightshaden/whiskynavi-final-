@@ -9,7 +9,11 @@ export const metadata = {
   description: "픽업 예약 관리",
 };
 
-export default async function BusinessLayout({ children }: { children: React.ReactNode }) {
+export default async function BusinessLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const session = await getServerSession(authOptions);
 
   if (!session?.accessToken) {

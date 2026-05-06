@@ -10,7 +10,9 @@ interface PickupReservationsPageProps {
   }>;
 }
 
-export default async function PickupReservationsPage({ searchParams }: PickupReservationsPageProps) {
+export default async function PickupReservationsPage({
+  searchParams,
+}: PickupReservationsPageProps) {
   const params = await searchParams;
   const token = await getAuthToken();
 
