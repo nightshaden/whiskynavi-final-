@@ -1,6 +1,6 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import BusinessMemberDetailContent from "./BusinessMemberDetailContent";
 
 vi.mock("next/navigation", () => ({
@@ -26,6 +26,10 @@ const mockMember = {
   businessUpdatedAt: "2024-01-15T00:00:00Z",
 };
 
+afterEach(() => {
+  vi.useRealTimers();
+});
+
 describe("BusinessMemberDetailContent", () => {
   it("renders page title", () => {
     render(<BusinessMemberDetailContent member={mockMember} />);
@@ -44,6 +48,9 @@ describe("BusinessMemberDetailContent", () => {
   });
 
   it("renders submitted business registration document link", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-05-06T00:00:00.000Z"));
+
     render(
       <BusinessMemberDetailContent
         member={{
@@ -51,6 +58,8 @@ describe("BusinessMemberDetailContent", () => {
           documentDownloadUrl: "https://example.com/business-document.pdf",
           documentOriginalFilename: "사업자등록증.pdf",
         }}
+        documentDownloadExpiresAt="2026-05-06T00:09:30.000Z"
+        documentDownloadInitialRemainingSeconds={570}
       />,
     );
 
@@ -58,6 +67,32 @@ describe("BusinessMemberDetailContent", () => {
     expect(screen.getByText("사업자등록증")).toBeInTheDocument();
     expect(link).toHaveAttribute("href", "https://example.com/business-document.pdf");
     expect(link).toHaveAttribute("target", "_blank");
+    expect(screen.getByText("남은 시간 9:30")).toBeInTheDocument();
+  });
+
+  it("updates business registration document countdown", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-05-06T00:00:00.000Z"));
+
+    render(
+      <BusinessMemberDetailContent
+        member={{
+          ...mockMember,
+          documentDownloadUrl: "https://example.com/business-document.pdf",
+          documentOriginalFilename: "사업자등록증.pdf",
+        }}
+        documentDownloadExpiresAt="2026-05-06T00:09:30.000Z"
+        documentDownloadInitialRemainingSeconds={570}
+      />,
+    );
+
+    expect(screen.getByText("남은 시간 9:30")).toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+
+    expect(screen.getByText("남은 시간 9:29")).toBeInTheDocument();
   });
 
   it("does not show pickup role text in the member info section", () => {

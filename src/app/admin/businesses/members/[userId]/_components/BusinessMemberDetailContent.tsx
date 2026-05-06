@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AdminHeader from "../../../../_components/AdminHeader";
 import { useSidebar } from "../../../../_components/AdminLayoutClient";
 import {
@@ -40,6 +40,17 @@ const BUSINESS_TYPE_LABEL: Record<string, string> = {
 
 const FALLBACK_SAVE_ERROR_MESSAGE = "사업자 정보 수정에 실패했습니다.";
 const FALLBACK_ROLE_ERROR_MESSAGE = "사업자 권한 변경에 실패했습니다.";
+
+const getRemainingSeconds = (expiresAt?: string): number => {
+  if (!expiresAt) return 0;
+  return Math.max(0, Math.ceil((new Date(expiresAt).getTime() - Date.now()) / 1000));
+};
+
+const formatRemainingTime = (seconds: number): string => {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+};
 
 const BUSINESS_ROLE_CONFIGS = [
   {
@@ -105,9 +116,15 @@ const createInitialForm = (member: AdminBusinessUserDetailResponse): BusinessEdi
 
 interface BusinessMemberDetailContentProps {
   member: AdminBusinessUserDetailResponse;
+  documentDownloadExpiresAt?: string;
+  documentDownloadInitialRemainingSeconds?: number;
 }
 
-export default function BusinessMemberDetailContent({ member }: BusinessMemberDetailContentProps) {
+export default function BusinessMemberDetailContent({
+  member,
+  documentDownloadExpiresAt,
+  documentDownloadInitialRemainingSeconds,
+}: BusinessMemberDetailContentProps) {
   const router = useRouter();
   const { toggle } = useSidebar();
   const [isEditing, setIsEditing] = useState(false);
@@ -118,6 +135,22 @@ export default function BusinessMemberDetailContent({ member }: BusinessMemberDe
   } | null>(null);
   const [pendingRoleAction, setPendingRoleAction] = useState<string | null>(null);
   const [form, setForm] = useState<BusinessEditForm>(() => createInitialForm(member));
+  const [documentDownloadRemainingSeconds, setDocumentDownloadRemainingSeconds] = useState(
+    documentDownloadInitialRemainingSeconds ?? getRemainingSeconds(documentDownloadExpiresAt),
+  );
+
+  useEffect(() => {
+    if (!documentDownloadExpiresAt) return;
+
+    // 서버에서 계산한 만료 시각을 기준으로 브라우저 표시용 남은 시간을 갱신한다.
+    const updateRemainingSeconds = () => {
+      setDocumentDownloadRemainingSeconds(getRemainingSeconds(documentDownloadExpiresAt));
+    };
+
+    updateRemainingSeconds();
+    const timer = setInterval(updateRemainingSeconds, 1000);
+    return () => clearInterval(timer);
+  }, [documentDownloadExpiresAt]);
 
   const handleEditStart = () => {
     setForm(createInitialForm(member));
@@ -397,6 +430,11 @@ export default function BusinessMemberDetailContent({ member }: BusinessMemberDe
                   >
                     {member.documentOriginalFilename ?? "다운로드"}
                   </a>
+                  <p className="mt-1 text-xs text-gray-500">
+                    {documentDownloadRemainingSeconds > 0
+                      ? `남은 시간 ${formatRemainingTime(documentDownloadRemainingSeconds)}`
+                      : "다운로드 주소가 만료되었습니다."}
+                  </p>
                 </div>
               )}
             </div>
