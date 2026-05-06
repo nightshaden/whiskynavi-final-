@@ -43,6 +43,23 @@ describe("BusinessMemberDetailContent", () => {
     expect(screen.getByText("홍길동")).toBeInTheDocument();
   });
 
+  it("renders submitted business registration document link", () => {
+    render(
+      <BusinessMemberDetailContent
+        member={{
+          ...mockMember,
+          documentDownloadUrl: "https://example.com/business-document.pdf",
+          documentOriginalFilename: "사업자등록증.pdf",
+        }}
+      />,
+    );
+
+    const link = screen.getByRole("link", { name: "사업자등록증.pdf" });
+    expect(screen.getByText("사업자등록증")).toBeInTheDocument();
+    expect(link).toHaveAttribute("href", "https://example.com/business-document.pdf");
+    expect(link).toHaveAttribute("target", "_blank");
+  });
+
   it("does not show pickup role text in the member info section", () => {
     render(<BusinessMemberDetailContent member={mockMember} />);
     expect(screen.queryByText("픽업 권한 없음")).not.toBeInTheDocument();
