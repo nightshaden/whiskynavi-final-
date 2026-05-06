@@ -154,6 +154,7 @@ export interface AdminBusinessUserDetailResponse {
   businessUpdatedAt?: string;
   contact?: string;
   hasBusinessRole?: boolean;
+  hasCommunityBusinessRole?: boolean;
   hasPickupRole?: boolean;
   hasTrailntaleBusinessRole?: boolean;
   name?: string;
@@ -198,6 +199,7 @@ export interface AdminBusinessUserResponse {
   businessUpdatedAt?: string;
   contact?: string;
   hasBusinessRole?: boolean;
+  hasCommunityBusinessRole?: boolean;
   hasPickupRole?: boolean;
   hasTrailntaleBusinessRole?: boolean;
   name?: string;
@@ -4144,6 +4146,24 @@ export type PostApiAdminBusinessesApplicationsApplicationidRejectBody = {
 };
 
 export type GetApiAdminBusinessesMembersParams = {
+/** 사용자 이름 부분 일치 검색 */
+userName?: string;
+/** 사용자 전화번호 부분 일치 검색 */
+userPhone?: string;
+/** 사업장 이름 부분 일치 검색 */
+businessName?: string;
+/** 사업장 연락처 부분 일치 검색 */
+businessContact?: string;
+/** 현재 비즈니스 권한 보유 여부 */
+hasBusinessRole?: boolean;
+/** 현재 트레일앤테일 사업자 권한 보유 여부 */
+hasTrailntaleBusinessRole?: boolean;
+/** 현재 커뮤니티 사업자 권한 보유 여부 */
+hasCommunityBusinessRole?: boolean;
+/** 현재 픽업 권한 보유 여부 */
+hasPickupRole?: boolean;
+/** 사업장 유형 */
+businessType?: GetApiAdminBusinessesMembersBusinessType;
 /**
  * Zero-based page index (0..N)
  * @minimum 0
@@ -4159,6 +4179,14 @@ size?: number;
  */
 sort?: string[];
 };
+
+export type GetApiAdminBusinessesMembersBusinessType = typeof GetApiAdminBusinessesMembersBusinessType[keyof typeof GetApiAdminBusinessesMembersBusinessType];
+
+
+export const GetApiAdminBusinessesMembersBusinessType = {
+  HOUSEHOLD: 'HOUSEHOLD',
+  ENTERTAINMENT: 'ENTERTAINMENT',
+} as const;
 
 /**
  * 사업 사용 목적 유형입니다.
@@ -7728,6 +7756,74 @@ export const postApiAdminBusinessesMembersUseridPickupRevoke = async (userId: nu
 /**
  * @summary 일반 상품 목록 조회(관리자)
  */
+export type postApiAdminBusinessesMembersUseridRolesRoleGrantResponse200 = {
+  data: AdminBusinessUserResponse
+  status: 200
+}
+    
+export type postApiAdminBusinessesMembersUseridRolesRoleGrantResponseSuccess = (postApiAdminBusinessesMembersUseridRolesRoleGrantResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiAdminBusinessesMembersUseridRolesRoleGrantResponse = (postApiAdminBusinessesMembersUseridRolesRoleGrantResponseSuccess)
+
+export const getPostApiAdminBusinessesMembersUseridRolesRoleGrantUrl = (userId: number,
+    role: 'ROLE_GUEST' | 'ROLE_USER' | 'ROLE_ADMIN' | 'ROLE_SUPER_ADMIN' | 'ROLE_CONSUMER' | 'ROLE_WHISKYNAVI_MEMBER' | 'ROLE_WHISKYTALES_MEMBER' | 'ROLE_BLIND_MEMBER' | 'ROLE_BUSINESS' | 'ROLE_TRAILNTALE_BUSINESS' | 'ROLE_COMMUNITY_BUSINESS' | 'ROLE_PICK_UP_BUSINESS',) => {
+
+
+  
+
+  return `/api/admin/businesses/members/${userId}/roles/${role}/grant`
+}
+
+export const postApiAdminBusinessesMembersUseridRolesRoleGrant = async (userId: number,
+    role: 'ROLE_GUEST' | 'ROLE_USER' | 'ROLE_ADMIN' | 'ROLE_SUPER_ADMIN' | 'ROLE_CONSUMER' | 'ROLE_WHISKYNAVI_MEMBER' | 'ROLE_WHISKYTALES_MEMBER' | 'ROLE_BLIND_MEMBER' | 'ROLE_BUSINESS' | 'ROLE_TRAILNTALE_BUSINESS' | 'ROLE_COMMUNITY_BUSINESS' | 'ROLE_PICK_UP_BUSINESS', options?: RequestInit): Promise<postApiAdminBusinessesMembersUseridRolesRoleGrantResponse> => {
+  
+  return customFetch<postApiAdminBusinessesMembersUseridRolesRoleGrantResponse>(getPostApiAdminBusinessesMembersUseridRolesRoleGrantUrl(userId,role),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+);}
+
+
+export type postApiAdminBusinessesMembersUseridRolesRoleRevokeResponse200 = {
+  data: AdminBusinessUserResponse
+  status: 200
+}
+    
+export type postApiAdminBusinessesMembersUseridRolesRoleRevokeResponseSuccess = (postApiAdminBusinessesMembersUseridRolesRoleRevokeResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiAdminBusinessesMembersUseridRolesRoleRevokeResponse = (postApiAdminBusinessesMembersUseridRolesRoleRevokeResponseSuccess)
+
+export const getPostApiAdminBusinessesMembersUseridRolesRoleRevokeUrl = (userId: number,
+    role: 'ROLE_GUEST' | 'ROLE_USER' | 'ROLE_ADMIN' | 'ROLE_SUPER_ADMIN' | 'ROLE_CONSUMER' | 'ROLE_WHISKYNAVI_MEMBER' | 'ROLE_WHISKYTALES_MEMBER' | 'ROLE_BLIND_MEMBER' | 'ROLE_BUSINESS' | 'ROLE_TRAILNTALE_BUSINESS' | 'ROLE_COMMUNITY_BUSINESS' | 'ROLE_PICK_UP_BUSINESS',) => {
+
+
+  
+
+  return `/api/admin/businesses/members/${userId}/roles/${role}/revoke`
+}
+
+export const postApiAdminBusinessesMembersUseridRolesRoleRevoke = async (userId: number,
+    role: 'ROLE_GUEST' | 'ROLE_USER' | 'ROLE_ADMIN' | 'ROLE_SUPER_ADMIN' | 'ROLE_CONSUMER' | 'ROLE_WHISKYNAVI_MEMBER' | 'ROLE_WHISKYTALES_MEMBER' | 'ROLE_BLIND_MEMBER' | 'ROLE_BUSINESS' | 'ROLE_TRAILNTALE_BUSINESS' | 'ROLE_COMMUNITY_BUSINESS' | 'ROLE_PICK_UP_BUSINESS', options?: RequestInit): Promise<postApiAdminBusinessesMembersUseridRolesRoleRevokeResponse> => {
+  
+  return customFetch<postApiAdminBusinessesMembersUseridRolesRoleRevokeResponse>(getPostApiAdminBusinessesMembersUseridRolesRoleRevokeUrl(userId,role),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+);}
+
+
 export type getApiAdminItemsResponse200 = {
   data: PageItemAdminResponse
   status: 200

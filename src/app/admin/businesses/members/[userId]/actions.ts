@@ -3,8 +3,8 @@
 import { getUserErrorMessage } from "@/apis/errors";
 import {
   patchApiAdminBusinessesMembersUseridBusiness,
-  postApiAdminBusinessesMembersUseridPickupGrant,
-  postApiAdminBusinessesMembersUseridPickupRevoke,
+  postApiAdminBusinessesMembersUseridRolesRoleGrant,
+  postApiAdminBusinessesMembersUseridRolesRoleRevoke,
   type PatchApiAdminBusinessesMembersUseridBusinessBody,
 } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
@@ -16,8 +16,11 @@ export type BusinessMemberActionResult = {
   error?: string;
 };
 
-export type UpdateBusinessInput =
-  PatchApiAdminBusinessesMembersUseridBusinessBody;
+export type UpdateBusinessInput = PatchApiAdminBusinessesMembersUseridBusinessBody;
+export type BusinessMemberRole = Extract<
+  Parameters<typeof postApiAdminBusinessesMembersUseridRolesRoleGrant>[1],
+  "ROLE_BUSINESS" | "ROLE_TRAILNTALE_BUSINESS" | "ROLE_COMMUNITY_BUSINESS" | "ROLE_PICK_UP_BUSINESS"
+>;
 
 async function getAuthorizedOptions() {
   const token = await getAuthToken();
@@ -56,8 +59,17 @@ export async function updateBusinessAction(
   }
 }
 
-export async function grantPickupRoleAction(
+export async function grantPickupRoleAction(userId: number): Promise<BusinessMemberActionResult> {
+  return grantBusinessRoleAction(userId, "ROLE_PICK_UP_BUSINESS");
+}
+
+export async function revokePickupRoleAction(userId: number): Promise<BusinessMemberActionResult> {
+  return revokeBusinessRoleAction(userId, "ROLE_PICK_UP_BUSINESS");
+}
+
+export async function grantBusinessRoleAction(
   userId: number,
+  role: BusinessMemberRole,
 ): Promise<BusinessMemberActionResult> {
   const options = await getAuthorizedOptions();
 
@@ -66,19 +78,20 @@ export async function grantPickupRoleAction(
   }
 
   try {
-    await postApiAdminBusinessesMembersUseridPickupGrant(userId, options);
+    await postApiAdminBusinessesMembersUseridRolesRoleGrant(userId, role, options);
     revalidateBusinessMemberPaths(userId);
     return { success: true };
   } catch (error) {
     return {
       success: false,
-      error: getUserErrorMessage(error, "픽업 권한 부여에 실패했습니다."),
+      error: getUserErrorMessage(error, "사업자 권한 부여에 실패했습니다."),
     };
   }
 }
 
-export async function revokePickupRoleAction(
+export async function revokeBusinessRoleAction(
   userId: number,
+  role: BusinessMemberRole,
 ): Promise<BusinessMemberActionResult> {
   const options = await getAuthorizedOptions();
 
@@ -87,13 +100,13 @@ export async function revokePickupRoleAction(
   }
 
   try {
-    await postApiAdminBusinessesMembersUseridPickupRevoke(userId, options);
+    await postApiAdminBusinessesMembersUseridRolesRoleRevoke(userId, role, options);
     revalidateBusinessMemberPaths(userId);
     return { success: true };
   } catch (error) {
     return {
       success: false,
-      error: getUserErrorMessage(error, "픽업 권한 회수에 실패했습니다."),
+      error: getUserErrorMessage(error, "사업자 권한 회수에 실패했습니다."),
     };
   }
 }

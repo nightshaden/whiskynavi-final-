@@ -32,13 +32,13 @@ const menuItems = [
     href: "/admin/banners",
   },
   {
-    id: "businesses",
+    id: "business-applications",
     label: "사업자 신청 관리",
     icon: Briefcase,
     href: "/admin/businesses/applications",
   },
   {
-    id: "businesses",
+    id: "business-members",
     label: "사업자 관리",
     icon: Briefcase,
     href: "/admin/businesses/members",

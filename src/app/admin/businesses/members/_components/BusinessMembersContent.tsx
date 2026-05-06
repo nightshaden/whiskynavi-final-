@@ -33,6 +33,11 @@ const ROLE_FILTER_OPTIONS = [
   { value: "N", label: "없음" },
 ] as const;
 
+const BUSINESS_MEMBER_SEARCH_FIELD_OPTIONS = [
+  { value: "businessName", label: "사업장 명" },
+  { value: "userName", label: "사용자명" },
+] as const;
+
 const formatBusinessType = (businessType?: string): string => {
   if (!businessType) return "-";
   return BUSINESS_TYPE_LABEL[businessType] ?? businessType;
@@ -40,18 +45,24 @@ const formatBusinessType = (businessType?: string): string => {
 
 const hasRole = (
   member: AdminBusinessUserResponse,
-  roleKey: "hasBusinessRole" | "hasTrailntaleBusinessRole" | "hasPickupRole",
+  roleKey: "hasBusinessRole" | "hasTrailntaleBusinessRole" | "hasCommunityBusinessRole" | "hasPickupRole",
   roleName: NonNullable<AdminBusinessUserResponse["roles"]>[number],
-) => member[roleKey] ?? member.roles?.includes(roleName) ?? false;
+) => {
+  const value = (member as Record<string, unknown>)[roleKey];
+  return typeof value === "boolean" ? value : (member.roles?.includes(roleName) ?? false);
+};
 
 interface BusinessMembersContentProps {
   searchParams: {
     page?: string;
     limit?: string;
     sort?: BusinessMembersSort;
+    q?: string;
+    searchField?: string;
     businessType?: string;
     hasBusinessRole?: string;
     hasTrailntaleBusinessRole?: string;
+    hasCommunityBusinessRole?: string;
     hasPickupRole?: string;
   };
   members: AdminBusinessUserResponse[];
@@ -65,6 +76,8 @@ export default function BusinessMembersContent({ searchParams, members, totalEle
   const currentPage = Number(searchParams.page) || 1;
   const itemsPerPage = Number(searchParams.limit) || 20;
   const currentSort = searchParams.sort ?? DEFAULT_BUSINESS_MEMBERS_SORT;
+  const searchQuery = searchParams.q || "";
+  const searchField = searchParams.searchField ?? "businessName";
 
   const { getFilterValue, updateFilter } = useTableFilter({
     searchParams,
@@ -91,9 +104,36 @@ export default function BusinessMembersContent({ searchParams, members, totalEle
     router.push(`/admin/businesses/members?${params.toString()}`);
   };
 
+  const handleSearch = (value: string) => {
+    const params = buildParams();
+    if (value) {
+      params.set("q", value);
+    } else {
+      params.delete("q");
+    }
+    params.set("searchField", searchField);
+    params.set("page", "1");
+    router.push(`/admin/businesses/members?${params.toString()}`);
+  };
+
+  const handleSearchFieldChange = (value: string) => {
+    const params = buildParams();
+    params.set("searchField", value);
+    params.set("page", "1");
+    router.push(`/admin/businesses/members?${params.toString()}`);
+  };
+
   return (
     <>
-      <AdminHeader title="사업자 멤버 관리" onToggleSidebar={toggle} showSearch={false} />
+      <AdminHeader
+        title="사업자 멤버 관리"
+        onToggleSidebar={toggle}
+        searchQuery={searchQuery}
+        searchField={searchField}
+        searchFieldOptions={[...BUSINESS_MEMBER_SEARCH_FIELD_OPTIONS]}
+        onSearch={handleSearch}
+        onSearchFieldChange={handleSearchFieldChange}
+      />
 
       <div className="p-8">
         <div className="mb-4 flex items-center justify-between gap-4">
@@ -123,8 +163,7 @@ export default function BusinessMembersContent({ searchParams, members, totalEle
             <table className="w-full">
               <thead className="border-b border-gray-200 bg-gray-50">
                 <tr>
-                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">ID</th>
-                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">사업장 명</th>
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">사용자ID</th>
                   <FilterHeader
                     label="사업자 유형"
                     filterKey="businessType"
@@ -133,6 +172,7 @@ export default function BusinessMembersContent({ searchParams, members, totalEle
                     onSelect={updateFilter}
                     dropdownWidth="w-32"
                   />
+                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">사업장 명</th>
                   <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">사용자명</th>
                   <FilterHeader
                     label="사업자 권한"
@@ -151,6 +191,14 @@ export default function BusinessMembersContent({ searchParams, members, totalEle
                     dropdownWidth="w-28"
                   />
                   <FilterHeader
+                    label="커뮤니티"
+                    filterKey="hasCommunityBusinessRole"
+                    options={[...ROLE_FILTER_OPTIONS]}
+                    currentValue={getFilterValue("hasCommunityBusinessRole")}
+                    onSelect={updateFilter}
+                    dropdownWidth="w-28"
+                  />
+                  <FilterHeader
                     label="픽업"
                     filterKey="hasPickupRole"
                     options={[...ROLE_FILTER_OPTIONS]}
@@ -164,7 +212,7 @@ export default function BusinessMembersContent({ searchParams, members, totalEle
               <tbody className="divide-y divide-gray-100">
                 {members.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="px-4 py-8 text-center text-gray-500">
+                    <td colSpan={9} className="px-4 py-8 text-center text-gray-500">
                       사업자 멤버가 없습니다.
                     </td>
                   </tr>
@@ -176,10 +224,10 @@ export default function BusinessMembersContent({ searchParams, members, totalEle
                       onClick={() => router.push(`/admin/businesses/members/${member.userId}`)}
                     >
                       <td className="px-4 py-3 text-sm text-gray-900">{member.userId}</td>
+                      <td className="px-4 py-3 text-sm text-gray-600">{formatBusinessType(member.businessType)}</td>
                       <td className="typo-medium-14 max-w-[220px] truncate px-4 py-3 text-gray-900">
                         {member.businessName ?? "-"}
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-600">{formatBusinessType(member.businessType)}</td>
                       <td className="px-4 py-3 text-sm text-gray-600">{member.username ?? "-"}</td>
                       <td className="px-4 py-3 text-sm">
                         {hasRole(member, "hasBusinessRole", "ROLE_BUSINESS") ? (
@@ -191,6 +239,13 @@ export default function BusinessMembersContent({ searchParams, members, totalEle
                       <td className="px-4 py-3 text-sm">
                         {hasRole(member, "hasTrailntaleBusinessRole", "ROLE_TRAILNTALE_BUSINESS") ? (
                           <Badge className="bg-blue-100 text-blue-700">있음</Badge>
+                        ) : (
+                          <Badge className="bg-gray-100 text-gray-500">없음</Badge>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-sm">
+                        {hasRole(member, "hasCommunityBusinessRole", "ROLE_COMMUNITY_BUSINESS") ? (
+                          <Badge className="bg-emerald-100 text-emerald-700">있음</Badge>
                         ) : (
                           <Badge className="bg-gray-100 text-gray-500">없음</Badge>
                         )}

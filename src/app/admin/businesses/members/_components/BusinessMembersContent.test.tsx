@@ -55,7 +55,7 @@ describe("BusinessMembersContent", () => {
     expect(screen.getByText("총 7건")).toBeInTheDocument();
   });
 
-  it("renders business name, business type, username and role badges", () => {
+  it("renders business type before business name and shows all role badges", () => {
     renderContent({
       members: [
         {
@@ -66,16 +66,17 @@ describe("BusinessMembersContent", () => {
           hasBusinessRole: true,
           hasTrailntaleBusinessRole: false,
           hasPickupRole: true,
-          roles: [],
+          roles: ["ROLE_COMMUNITY_BUSINESS"],
         },
       ],
       totalElements: 1,
     });
 
+    expect(screen.getByText("사용자ID")).toBeInTheDocument();
     expect(screen.getByText("테스트 주류")).toBeInTheDocument();
     expect(screen.getByText("가정용")).toBeInTheDocument();
     expect(screen.getByText("hong@example.com")).toBeInTheDocument();
-    expect(screen.getAllByText("있음")).toHaveLength(2);
+    expect(screen.getAllByText("있음")).toHaveLength(3);
     expect(screen.getAllByText("없음")).toHaveLength(1);
   });
 
@@ -125,5 +126,27 @@ describe("BusinessMembersContent", () => {
     expect(url.searchParams.get("page")).toBe("1");
     expect(url.searchParams.get("limit")).toBe("20");
     expect(url.searchParams.get("sort")).toBe("userId,asc");
+  });
+
+  it("pushes business name search query", async () => {
+    const user = userEvent.setup();
+
+    renderContent({
+      searchParams: {
+        page: "3",
+        limit: "20",
+        searchField: "businessName",
+      },
+    });
+
+    await user.type(screen.getByPlaceholderText("사업장 명으로 검색..."), "테스트");
+
+    const [pushedUrl] = push.mock.calls.at(-1) ?? [];
+    const url = new URL(pushedUrl, "https://example.com");
+
+    expect(url.pathname).toBe("/admin/businesses/members");
+    expect(url.searchParams.get("page")).toBe("1");
+    expect(url.searchParams.get("searchField")).toBe("businessName");
+    expect(url.searchParams.get("q")).toBe("테스트");
   });
 });
