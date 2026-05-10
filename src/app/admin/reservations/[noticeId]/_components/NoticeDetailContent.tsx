@@ -47,7 +47,7 @@ export default function NoticeDetailContent({
         <div className="mb-6 flex items-center justify-between">
           <button
             type="button"
-            onClick={() => router.push("/admin/reservations")}
+            onClick={() => router.back()}
             className="flex cursor-pointer items-center gap-2 text-gray-600 transition-colors hover:text-gray-900"
           >
             <ArrowLeft size={20} />

@@ -258,7 +258,7 @@ export default function BusinessMemberDetailContent({
         <div className="mb-4 flex items-center justify-between">
           <button
             type="button"
-            onClick={() => router.push("/admin/businesses/members")}
+            onClick={() => router.back()}
             className="flex cursor-pointer items-center gap-2 text-gray-600 hover:text-gray-900"
           >
             <ArrowLeft size={20} />

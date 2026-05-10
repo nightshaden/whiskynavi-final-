@@ -50,7 +50,7 @@ export default function BannerEditContent({ banner }: BannerEditContentProps) {
         <div className="mb-6 flex items-center justify-between">
           <button
             type="button"
-            onClick={() => router.push(`/admin/banners/${banner.id}`)}
+            onClick={() => router.back()}
             className="flex cursor-pointer items-center gap-2 text-gray-600 hover:text-gray-900"
           >
             <ArrowLeft size={20} />

@@ -75,7 +75,7 @@ export default function UserEditContent({ user }: UserEditContentProps) {
       <div className="p-8">
         <button
           type="button"
-          onClick={() => router.push(`/admin/users/${user.id}`)}
+          onClick={() => router.back()}
           className="mb-6 flex cursor-pointer items-center gap-2 text-gray-600 hover:text-gray-900"
         >
           <ArrowLeft size={20} />

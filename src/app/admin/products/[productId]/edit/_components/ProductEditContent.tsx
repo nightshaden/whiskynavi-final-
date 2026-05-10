@@ -40,7 +40,7 @@ export default function ProductEditContent({ product }: ProductEditContentProps)
         <div className="mb-6 flex items-center justify-between">
           <button
             type="button"
-            onClick={() => router.push(`/admin/products/${product.id}`)}
+            onClick={() => router.back()}
             className="flex cursor-pointer items-center gap-2 text-gray-600 hover:text-gray-900"
           >
             <ArrowLeft size={20} />
