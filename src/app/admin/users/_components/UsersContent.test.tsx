@@ -61,6 +61,30 @@ describe("UsersContent", () => {
     expect(push).toHaveBeenCalledWith("/admin/users?q=hello&searchField=username&page=1&status=ACTIVE");
   });
 
+  it("preserves excludedRoles as repeated query params when changing searchField", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <UsersContent
+        searchParams={{
+          q: "hello",
+          searchField: "name",
+          page: "3",
+          excludedRoles: ["ROLE_WHISKYNAVI_MEMBER", "ROLE_WHISKYTALES_MEMBER"],
+        }}
+        users={[baseUser]}
+        totalElements={1}
+      />,
+    );
+
+    await user.click(screen.getByRole("combobox", { name: "검색 필드" }));
+    await user.click(screen.getByRole("option", { name: "사용자명" }));
+
+    expect(push).toHaveBeenCalledWith(
+      "/admin/users?q=hello&searchField=username&page=1&excludedRoles=ROLE_WHISKYNAVI_MEMBER&excludedRoles=ROLE_WHISKYTALES_MEMBER",
+    );
+  });
+
   it("updates the URL to sort by name ascending when name header is clicked", async () => {
     const user = userEvent.setup();
 
@@ -135,5 +159,26 @@ describe("UsersContent", () => {
     await user.click(screen.getByRole("button", { name: "사용자명 내림차순 정렬" }));
 
     expect(push).toHaveBeenCalledWith("/admin/users?page=1&sortBy=username&sortDirection=desc");
+  });
+
+  it("preserves excludedRoles as repeated query params when sorting", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <UsersContent
+        searchParams={{
+          page: "3",
+          excludedRoles: ["ROLE_WHISKYNAVI_MEMBER", "ROLE_WHISKYTALES_MEMBER"],
+        }}
+        users={[baseUser]}
+        totalElements={1}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "이름 오름차순 정렬" }));
+
+    expect(push).toHaveBeenCalledWith(
+      "/admin/users?page=1&excludedRoles=ROLE_WHISKYNAVI_MEMBER&excludedRoles=ROLE_WHISKYTALES_MEMBER&sortBy=name&sortDirection=asc",
+    );
   });
 });

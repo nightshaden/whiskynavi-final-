@@ -1,37 +1,25 @@
-import { getApiAdminUsers, ItemReservationGradeConditionResponseRequiredRole } from "@/apis/generated/api";
+import { getApiAdminUsers } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
 import UsersContent from "./_components/UsersContent";
-
-const USER_SEARCH_FIELDS = ["name", "username", "email"] as const;
-
-type UserSearchField = (typeof USER_SEARCH_FIELDS)[number];
-
-function resolveSearchField(searchField?: string): UserSearchField {
-  return USER_SEARCH_FIELDS.find((field) => field === searchField) ?? "name";
-}
+import {
+  normalizeAdminUsersSearchParams,
+  resolveAdminUsersRoleFilters,
+  resolveSearchField,
+  type AdminUsersRawSearchParams,
+} from "./filters";
 
 interface UsersPageProps {
-  searchParams: Promise<{
-    page?: string;
-    limit?: string;
-    q?: string;
-    searchField?: string;
-    role?: ItemReservationGradeConditionResponseRequiredRole;
-    navi?: string;
-    tales?: string;
-    business?: string;
-    status?: string;
-    sortBy?: string;
-    sortDirection?: string;
-  }>;
+  searchParams: Promise<AdminUsersRawSearchParams>;
 }
 
 export default async function UsersPage({ searchParams }: UsersPageProps) {
-  const params = await searchParams;
+  const rawParams = await searchParams;
+  const params = normalizeAdminUsersSearchParams(rawParams);
   const token = await getAuthToken();
   const searchField = resolveSearchField(params.searchField);
   const keyword = params.q || undefined;
+  const roleFilters = resolveAdminUsersRoleFilters(params);
 
   const filters = {
     pageNumber: params.page ? Number(params.page) - 1 : 0,
@@ -39,7 +27,8 @@ export default async function UsersPage({ searchParams }: UsersPageProps) {
     name: searchField === "name" ? keyword : undefined,
     username: searchField === "username" ? keyword : undefined,
     email: searchField === "email" ? keyword : undefined,
-    role: params.role || undefined,
+    role: roleFilters.role,
+    excludedRoles: roleFilters.excludedRoles,
     status: params.status || undefined,
     sortBy: params.sortBy || "createdAt",
     sortDirection: params.sortDirection || "desc",

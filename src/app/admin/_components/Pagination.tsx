@@ -1,5 +1,6 @@
 "use client";
 
+import { createSearchParams, type AdminSearchParams } from "@/app/admin/_lib/searchParams";
 import { Label } from "@/components/ui/label";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -9,22 +10,26 @@ interface PaginationProps {
   totalItems: number;
   itemsPerPage: number;
   currentPage: number;
-  searchParams: Record<string, string | undefined>;
+  searchParams: AdminSearchParams;
   basePath: string;
   alwaysVisible?: boolean;
 }
 
-export default function Pagination({ totalItems, itemsPerPage, currentPage, searchParams, basePath, alwaysVisible = false }: PaginationProps) {
+export default function Pagination({
+  totalItems,
+  itemsPerPage,
+  currentPage,
+  searchParams,
+  basePath,
+  alwaysVisible = false,
+}: PaginationProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
 
   const createQueryString = (updates: Record<string, string>) => {
-    const params = new URLSearchParams();
-    Object.entries(searchParams).forEach(([k, v]) => {
-      if (v) params.set(k, v);
-    });
+    const params = createSearchParams(searchParams);
     Object.entries(updates).forEach(([k, v]) => {
       params.set(k, v);
     });

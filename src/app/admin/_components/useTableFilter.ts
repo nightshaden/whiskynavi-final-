@@ -1,24 +1,28 @@
 "use client";
 
+import { createSearchParams, type AdminSearchParams } from "@/app/admin/_lib/searchParams";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 
 interface UseTableFilterOptions {
-  searchParams: Record<string, string | undefined>;
+  searchParams: AdminSearchParams;
   basePath: string;
 }
 
 export function useTableFilter({ searchParams, basePath }: UseTableFilterOptions) {
   const router = useRouter();
 
-  const getFilterValue = useCallback((key: string) => searchParams[key] || "all", [searchParams]);
+  const getFilterValue = useCallback(
+    (key: string) => {
+      const value = searchParams[key];
+      return typeof value === "string" ? value : "all";
+    },
+    [searchParams],
+  );
 
   const updateFilter = useCallback(
     (key: string, value: string) => {
-      const params = new URLSearchParams();
-      Object.entries(searchParams).forEach(([k, v]) => {
-        if (v) params.set(k, v);
-      });
+      const params = createSearchParams(searchParams);
       const currentValue = params.get(key);
       if (value === "all" || value === currentValue) {
         params.delete(key);

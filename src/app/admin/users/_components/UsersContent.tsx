@@ -1,6 +1,7 @@
 "use client";
 
 import type { AdminUserResponse } from "@/apis/generated/api";
+import { createSearchParams } from "@/app/admin/_lib/searchParams";
 import { Badge } from "@/components/ui/badge";
 import { ArrowDown, ArrowUp, ChevronsUpDown, Eye, Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -12,14 +13,19 @@ import Pagination from "../../_components/Pagination";
 import { useTableFilter } from "../../_components/useTableFilter";
 import { ROLE_COLOR_MAP, ROLE_LABEL_MAP } from "../../constants";
 import UserDeleteModal from "../[userId]/_components/UserDeleteModal";
-
-const USER_SEARCH_FIELD_OPTIONS = [
-  { value: "name", label: "이름" },
-  { value: "username", label: "사용자명" },
-  { value: "email", label: "이메일" },
-] as const;
-
-type UserSearchField = (typeof USER_SEARCH_FIELD_OPTIONS)[number]["value"];
+import {
+  BUSINESS_OPTIONS,
+  NAVI_OPTIONS,
+  ROLE_OPTIONS,
+  STATUS_OPTIONS,
+  TALES_OPTIONS,
+  USER_SEARCH_FIELD_OPTIONS,
+  buildAdminUserRoleFilterParams,
+  getAdminUserRoleFilterValue,
+  isAdminUserRoleFilterKey,
+  resolveSearchField,
+  type AdminUsersSearchParams,
+} from "../filters";
 
 const SORTABLE_USER_FIELD_LABELS = {
   name: "이름",
@@ -27,14 +33,6 @@ const SORTABLE_USER_FIELD_LABELS = {
 } as const;
 
 type SortableUserField = keyof typeof SORTABLE_USER_FIELD_LABELS;
-
-const resolveSearchField = (value?: string): UserSearchField => {
-  if (value === "username" || value === "email") {
-    return value;
-  }
-
-  return "name";
-};
 
 // 헬퍼 함수: 회원 유형 (SUPER_ADMIN > ADMIN > 나머지 일반 roles)
 const MEMBER_TYPE_ROLES: string[] = ["ROLE_SUPER_ADMIN", "ROLE_ADMIN"];
@@ -82,53 +80,8 @@ const formatJoinDate = (createdAt: string): string => {
     .replace(/\.$/, "");
 };
 
-// 필터 옵션 정의
-const ROLE_OPTIONS = [
-  { value: "all", label: "전체" },
-  { value: "ROLE_SUPER_ADMIN", label: "총괄 관리자" },
-  { value: "ROLE_ADMIN", label: "관리자" },
-  { value: "ROLE_USER", label: "일반 회원" },
-];
-
-const NAVI_OPTIONS = [
-  { value: "all", label: "전체" },
-  { value: "Y", label: "가입" },
-  { value: "N", label: "미가입" },
-];
-
-const TALES_OPTIONS = [
-  { value: "all", label: "전체" },
-  { value: "Y", label: "가입" },
-  { value: "N", label: "미가입" },
-];
-
-const BUSINESS_OPTIONS = [
-  { value: "all", label: "전체" },
-  { value: "ROLE_TRAILNTALE_BUSINESS", label: "트레일테일" },
-  { value: "ROLE_COMMUNITY_BUSINESS", label: "커뮤니티" },
-  { value: "ROLE_PICK_UP_BUSINESS", label: "픽업" },
-];
-
-const STATUS_OPTIONS = [
-  { value: "all", label: "전체" },
-  { value: "ACTIVE", label: "활성" },
-  { value: "INACTIVE", label: "비활성" },
-];
-
 interface UsersContentProps {
-  searchParams: {
-    page?: string;
-    limit?: string;
-    q?: string;
-    searchField?: string;
-    role?: string;
-    navi?: string;
-    tales?: string;
-    business?: string;
-    status?: string;
-    sortBy?: string;
-    sortDirection?: string;
-  };
+  searchParams: AdminUsersSearchParams;
   users: AdminUserResponse[];
   totalElements: number;
 }
@@ -150,11 +103,7 @@ export default function UsersContent({ searchParams, users, totalElements }: Use
   });
 
   const buildParams = () => {
-    const params = new URLSearchParams();
-    Object.entries(searchParams).forEach(([key, value]) => {
-      if (value) params.set(key, value);
-    });
-    return params;
+    return createSearchParams(searchParams);
   };
 
   const handleSearch = (value: string) => {
@@ -173,6 +122,15 @@ export default function UsersContent({ searchParams, users, totalElements }: Use
     const params = buildParams();
     params.set("searchField", resolveSearchField(value));
     params.set("page", "1");
+    router.push(`/admin/users?${params.toString()}`);
+  };
+
+  const handleRoleFilterSelect = (key: string, value: string) => {
+    if (!isAdminUserRoleFilterKey(key)) {
+      return;
+    }
+
+    const params = buildAdminUserRoleFilterParams(searchParams, key, value);
     router.push(`/admin/users?${params.toString()}`);
   };
 
@@ -260,17 +218,17 @@ export default function UsersContent({ searchParams, users, totalElements }: Use
                   <FilterHeader
                     label="회원 유형"
                     filterKey="role"
-                    options={ROLE_OPTIONS}
-                    currentValue={getFilterValue("role")}
-                    onSelect={updateFilter}
+                    options={[...ROLE_OPTIONS]}
+                    currentValue={getAdminUserRoleFilterValue(searchParams, "role")}
+                    onSelect={handleRoleFilterSelect}
                     dropdownWidth="w-40"
                   />
                   <FilterHeader
                     label="내비"
                     filterKey="navi"
-                    options={NAVI_OPTIONS}
-                    currentValue={getFilterValue("navi")}
-                    onSelect={updateFilter}
+                    options={[...NAVI_OPTIONS]}
+                    currentValue={getAdminUserRoleFilterValue(searchParams, "navi")}
+                    onSelect={handleRoleFilterSelect}
                     iconSize={10}
                     dropdownWidth="w-28"
                     className="typo-bold-10 w-20 px-2 py-2 text-left text-gray-700 uppercase"
@@ -278,9 +236,9 @@ export default function UsersContent({ searchParams, users, totalElements }: Use
                   <FilterHeader
                     label="테일즈"
                     filterKey="tales"
-                    options={TALES_OPTIONS}
-                    currentValue={getFilterValue("tales")}
-                    onSelect={updateFilter}
+                    options={[...TALES_OPTIONS]}
+                    currentValue={getAdminUserRoleFilterValue(searchParams, "tales")}
+                    onSelect={handleRoleFilterSelect}
                     iconSize={10}
                     dropdownWidth="w-28"
                     className="typo-bold-10 w-20 px-2 py-2 text-left text-gray-700 uppercase"
@@ -288,14 +246,14 @@ export default function UsersContent({ searchParams, users, totalElements }: Use
                   <FilterHeader
                     label="업장"
                     filterKey="business"
-                    options={BUSINESS_OPTIONS}
-                    currentValue={getFilterValue("business")}
-                    onSelect={updateFilter}
+                    options={[...BUSINESS_OPTIONS]}
+                    currentValue={getAdminUserRoleFilterValue(searchParams, "business")}
+                    onSelect={handleRoleFilterSelect}
                   />
                   <FilterHeader
                     label="상태"
                     filterKey="status"
-                    options={STATUS_OPTIONS}
+                    options={[...STATUS_OPTIONS]}
                     currentValue={getFilterValue("status")}
                     onSelect={updateFilter}
                     dropdownWidth="w-32"
