@@ -2,7 +2,7 @@
 
 import type { AdminUserResponse } from "@/apis/generated/api";
 import { Badge } from "@/components/ui/badge";
-import { Eye, Pencil, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronsUpDown, Eye, Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { overlay } from "overlay-kit";
 import AdminHeader from "../../_components/AdminHeader";
@@ -20,6 +20,13 @@ const USER_SEARCH_FIELD_OPTIONS = [
 ] as const;
 
 type UserSearchField = (typeof USER_SEARCH_FIELD_OPTIONS)[number]["value"];
+
+const SORTABLE_USER_FIELD_LABELS = {
+  name: "이름",
+  username: "사용자명",
+} as const;
+
+type SortableUserField = keyof typeof SORTABLE_USER_FIELD_LABELS;
 
 const resolveSearchField = (value?: string): UserSearchField => {
   if (value === "username" || value === "email") {
@@ -134,6 +141,8 @@ export default function UsersContent({ searchParams, users, totalElements }: Use
   const itemsPerPage = Number(searchParams.limit) || 20;
   const searchQuery = searchParams.q || "";
   const searchField = resolveSearchField(searchParams.searchField);
+  const sortBy = searchParams.sortBy || "createdAt";
+  const sortDirection = searchParams.sortDirection === "asc" ? "asc" : "desc";
 
   const { getFilterValue, updateFilter } = useTableFilter({
     searchParams,
@@ -167,6 +176,35 @@ export default function UsersContent({ searchParams, users, totalElements }: Use
     router.push(`/admin/users?${params.toString()}`);
   };
 
+  const handleSort = (field: SortableUserField) => {
+    const params = buildParams();
+    params.set("sortBy", field);
+    params.set("sortDirection", sortBy === field && sortDirection === "asc" ? "desc" : "asc");
+    params.set("page", "1");
+    router.push(`/admin/users?${params.toString()}`);
+  };
+
+  const getSortAriaSort = (field: SortableUserField) => {
+    if (sortBy !== field) {
+      return "none";
+    }
+
+    return sortDirection === "asc" ? "ascending" : "descending";
+  };
+
+  const getSortAriaLabel = (field: SortableUserField) => {
+    const nextDirectionLabel = sortBy === field && sortDirection === "asc" ? "내림차순" : "오름차순";
+    return `${SORTABLE_USER_FIELD_LABELS[field]} ${nextDirectionLabel} 정렬`;
+  };
+
+  const renderSortIcon = (field: SortableUserField) => {
+    if (sortBy !== field) {
+      return <ChevronsUpDown size={12} />;
+    }
+
+    return sortDirection === "asc" ? <ArrowUp size={12} /> : <ArrowDown size={12} />;
+  };
+
   return (
     <>
       <AdminHeader
@@ -186,8 +224,38 @@ export default function UsersContent({ searchParams, users, totalElements }: Use
               <thead className="border-b border-gray-200 bg-gray-50">
                 <tr>
                   <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">ID</th>
-                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">이름</th>
-                  <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">사용자명</th>
+                  <th
+                    className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase"
+                    aria-sort={getSortAriaSort("name")}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => handleSort("name")}
+                      className={`flex cursor-pointer items-center gap-1 hover:text-amber-600 ${
+                        sortBy === "name" ? "text-amber-600" : ""
+                      }`}
+                      aria-label={getSortAriaLabel("name")}
+                    >
+                      이름
+                      {renderSortIcon("name")}
+                    </button>
+                  </th>
+                  <th
+                    className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase"
+                    aria-sort={getSortAriaSort("username")}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => handleSort("username")}
+                      className={`flex cursor-pointer items-center gap-1 hover:text-amber-600 ${
+                        sortBy === "username" ? "text-amber-600" : ""
+                      }`}
+                      aria-label={getSortAriaLabel("username")}
+                    >
+                      사용자명
+                      {renderSortIcon("username")}
+                    </button>
+                  </th>
                   <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">이메일</th>
                   <FilterHeader
                     label="회원 유형"

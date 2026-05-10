@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import UsersContent from "./UsersContent";
 
 const push = vi.fn();
@@ -33,14 +33,12 @@ const baseUser = {
 };
 
 describe("UsersContent", () => {
+  beforeEach(() => {
+    push.mockClear();
+  });
+
   it("reflects the current searchField in the AdminHeader dropdown and placeholder", () => {
-    render(
-      <UsersContent
-        searchParams={{ q: "hello", searchField: "email" }}
-        users={[baseUser]}
-        totalElements={1}
-      />,
-    );
+    render(<UsersContent searchParams={{ q: "hello", searchField: "email" }} users={[baseUser]} totalElements={1} />);
 
     expect(screen.getByRole("combobox", { name: "검색 필드" })).toHaveTextContent("이메일");
     expect(screen.getByPlaceholderText("이메일로 검색...")).toBeInTheDocument();
@@ -61,5 +59,81 @@ describe("UsersContent", () => {
     await user.click(screen.getByRole("option", { name: "사용자명" }));
 
     expect(push).toHaveBeenCalledWith("/admin/users?q=hello&searchField=username&page=1&status=ACTIVE");
+  });
+
+  it("updates the URL to sort by name ascending when name header is clicked", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <UsersContent
+        searchParams={{
+          page: "3",
+          q: "hong",
+          status: "ACTIVE",
+          sortBy: "createdAt",
+          sortDirection: "desc",
+        }}
+        users={[baseUser]}
+        totalElements={1}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "이름 오름차순 정렬" }));
+
+    expect(push).toHaveBeenCalledWith("/admin/users?page=1&q=hong&status=ACTIVE&sortBy=name&sortDirection=asc");
+  });
+
+  it("toggles name sort direction when name is already sorted", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <UsersContent
+        searchParams={{ page: "2", sortBy: "name", sortDirection: "asc" }}
+        users={[baseUser]}
+        totalElements={1}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "이름 내림차순 정렬" }));
+
+    expect(push).toHaveBeenCalledWith("/admin/users?page=1&sortBy=name&sortDirection=desc");
+  });
+
+  it("updates the URL to sort by username ascending when username header is clicked", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <UsersContent
+        searchParams={{
+          page: "3",
+          q: "hong",
+          status: "ACTIVE",
+          sortBy: "createdAt",
+          sortDirection: "desc",
+        }}
+        users={[baseUser]}
+        totalElements={1}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "사용자명 오름차순 정렬" }));
+
+    expect(push).toHaveBeenCalledWith("/admin/users?page=1&q=hong&status=ACTIVE&sortBy=username&sortDirection=asc");
+  });
+
+  it("toggles username sort direction when username is already sorted", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <UsersContent
+        searchParams={{ page: "2", sortBy: "username", sortDirection: "asc" }}
+        users={[baseUser]}
+        totalElements={1}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "사용자명 내림차순 정렬" }));
+
+    expect(push).toHaveBeenCalledWith("/admin/users?page=1&sortBy=username&sortDirection=desc");
   });
 });
