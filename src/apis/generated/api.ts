@@ -1126,6 +1126,7 @@ export interface BottleReservationNoticeResponse {
   gradeConditions?: BottleReservationGradeConditionResponse[];
   id?: number;
   maxOrderQuantity?: number;
+  pendingApplicationCount?: number;
   price?: number;
   reservationEndAt?: string;
   reservationStartAt?: string;
@@ -1866,6 +1867,7 @@ export interface ItemReservationNoticeResponse {
   itemImgUrl?: string;
   itemName?: string;
   maxOrderQuantity?: number;
+  pendingApplicationCount?: number;
   price?: number;
   reservationEndAt?: string;
   reservationStartAt?: string;
@@ -4145,6 +4147,8 @@ export type PostApiAdminBottlesBody = {
 export type GetApiAdminBottlesReservationsApplicationsParams = {
 userId?: number;
 noticeId?: number;
+role?: GetApiAdminBottlesReservationsApplicationsRole;
+status?: GetApiAdminBottlesReservationsApplicationsStatus;
 /**
  * Zero-based page index (0..N)
  * @minimum 0
@@ -4160,6 +4164,37 @@ size?: number;
  */
 sort?: string[];
 };
+
+export type GetApiAdminBottlesReservationsApplicationsRole = typeof GetApiAdminBottlesReservationsApplicationsRole[keyof typeof GetApiAdminBottlesReservationsApplicationsRole];
+
+
+export const GetApiAdminBottlesReservationsApplicationsRole = {
+  ROLE_GUEST: 'ROLE_GUEST',
+  ROLE_USER: 'ROLE_USER',
+  ROLE_ADMIN: 'ROLE_ADMIN',
+  ROLE_SUPER_ADMIN: 'ROLE_SUPER_ADMIN',
+  ROLE_CONSUMER: 'ROLE_CONSUMER',
+  ROLE_WHISKYNAVI_MEMBER: 'ROLE_WHISKYNAVI_MEMBER',
+  ROLE_WHISKYTALES_MEMBER: 'ROLE_WHISKYTALES_MEMBER',
+  ROLE_BLIND_MEMBER: 'ROLE_BLIND_MEMBER',
+  ROLE_BUSINESS: 'ROLE_BUSINESS',
+  ROLE_TRAILNTALE_BUSINESS: 'ROLE_TRAILNTALE_BUSINESS',
+  ROLE_COMMUNITY_BUSINESS: 'ROLE_COMMUNITY_BUSINESS',
+  ROLE_PICK_UP_BUSINESS: 'ROLE_PICK_UP_BUSINESS',
+} as const;
+
+export type GetApiAdminBottlesReservationsApplicationsStatus = typeof GetApiAdminBottlesReservationsApplicationsStatus[keyof typeof GetApiAdminBottlesReservationsApplicationsStatus];
+
+
+export const GetApiAdminBottlesReservationsApplicationsStatus = {
+  APPLIED: 'APPLIED',
+  CANCELLED: 'CANCELLED',
+  CONFIRMED: 'CONFIRMED',
+  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
+  WAITING_PICKUP: 'WAITING_PICKUP',
+  RECEIVED: 'RECEIVED',
+  REJECTED: 'REJECTED',
+} as const;
 
 export type PostApiAdminBottlesReservationsApplicationsApplicationidConfirmBody = {
   /** @minimum 1 */
@@ -4523,6 +4558,8 @@ export type PostApiAdminItemsBody = {
 export type GetApiAdminItemsReservationsApplicationsParams = {
 userId?: number;
 noticeId?: number;
+role?: GetApiAdminItemsReservationsApplicationsRole;
+status?: GetApiAdminItemsReservationsApplicationsStatus;
 /**
  * Zero-based page index (0..N)
  * @minimum 0
@@ -4538,6 +4575,39 @@ size?: number;
  */
 sort?: string[];
 };
+
+export type GetApiAdminItemsReservationsApplicationsRole = typeof GetApiAdminItemsReservationsApplicationsRole[keyof typeof GetApiAdminItemsReservationsApplicationsRole];
+
+
+export const GetApiAdminItemsReservationsApplicationsRole = {
+  ROLE_GUEST: 'ROLE_GUEST',
+  ROLE_USER: 'ROLE_USER',
+  ROLE_ADMIN: 'ROLE_ADMIN',
+  ROLE_SUPER_ADMIN: 'ROLE_SUPER_ADMIN',
+  ROLE_CONSUMER: 'ROLE_CONSUMER',
+  ROLE_WHISKYNAVI_MEMBER: 'ROLE_WHISKYNAVI_MEMBER',
+  ROLE_WHISKYTALES_MEMBER: 'ROLE_WHISKYTALES_MEMBER',
+  ROLE_BLIND_MEMBER: 'ROLE_BLIND_MEMBER',
+  ROLE_BUSINESS: 'ROLE_BUSINESS',
+  ROLE_TRAILNTALE_BUSINESS: 'ROLE_TRAILNTALE_BUSINESS',
+  ROLE_COMMUNITY_BUSINESS: 'ROLE_COMMUNITY_BUSINESS',
+  ROLE_PICK_UP_BUSINESS: 'ROLE_PICK_UP_BUSINESS',
+} as const;
+
+export type GetApiAdminItemsReservationsApplicationsStatus = typeof GetApiAdminItemsReservationsApplicationsStatus[keyof typeof GetApiAdminItemsReservationsApplicationsStatus];
+
+
+export const GetApiAdminItemsReservationsApplicationsStatus = {
+  APPLIED: 'APPLIED',
+  CANCELLED: 'CANCELLED',
+  CONFIRMED: 'CONFIRMED',
+  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
+  SHIPPING: 'SHIPPING',
+  DELIVERED: 'DELIVERED',
+  WAITING_PICKUP: 'WAITING_PICKUP',
+  RECEIVED: 'RECEIVED',
+  REJECTED: 'REJECTED',
+} as const;
 
 export type PostApiAdminItemsReservationsApplicationsApplicationidConfirmBody = {
   /** @minimum 1 */
@@ -7795,6 +7865,43 @@ export const postApiAdminBottlesReservationsNoticesNoticeidAutoConfirm = async (
 
 
 /**
+ * 예약 공고에 확정된 신청 내역을 매장별 집계와 주문자별 상세 시트로 내려받습니다.
+ * @summary 예약 신청 엑셀 다운로드
+ */
+export type getApiAdminBottlesReservationsNoticesNoticeidExcelResponse200 = {
+  data: Blob
+  status: 200
+}
+
+export type getApiAdminBottlesReservationsNoticesNoticeidExcelResponseSuccess = (getApiAdminBottlesReservationsNoticesNoticeidExcelResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiAdminBottlesReservationsNoticesNoticeidExcelResponse = (getApiAdminBottlesReservationsNoticesNoticeidExcelResponseSuccess)
+
+export const getGetApiAdminBottlesReservationsNoticesNoticeidExcelUrl = (noticeId: number,) => {
+
+
+
+
+  return `/api/admin/bottles/reservations/notices/${noticeId}/excel`
+}
+
+export const getApiAdminBottlesReservationsNoticesNoticeidExcel = async (noticeId: number, options?: RequestInit): Promise<getApiAdminBottlesReservationsNoticesNoticeidExcelResponse> => {
+
+  return customFetch<getApiAdminBottlesReservationsNoticesNoticeidExcelResponse>(getGetApiAdminBottlesReservationsNoticesNoticeidExcelUrl(noticeId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+/**
  * 선택한 병 정보와 관련 메타데이터를 삭제합니다.
  * @summary 병 정보 삭제(관리자)
  */
@@ -8801,6 +8908,43 @@ export const postApiAdminItemsReservationsNoticesNoticeidAutoConfirm = async (no
   {
     ...options,
     method: 'POST'
+
+
+  }
+);}
+
+
+
+/**
+ * 예약 공고에 확정된 신청 내역을 매장별 집계와 주문자별 상세 시트로 내려받습니다.
+ * @summary 예약 신청 엑셀 다운로드
+ */
+export type getApiAdminItemsReservationsNoticesNoticeidExcelResponse200 = {
+  data: Blob
+  status: 200
+}
+
+export type getApiAdminItemsReservationsNoticesNoticeidExcelResponseSuccess = (getApiAdminItemsReservationsNoticesNoticeidExcelResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiAdminItemsReservationsNoticesNoticeidExcelResponse = (getApiAdminItemsReservationsNoticesNoticeidExcelResponseSuccess)
+
+export const getGetApiAdminItemsReservationsNoticesNoticeidExcelUrl = (noticeId: number,) => {
+
+
+
+
+  return `/api/admin/items/reservations/notices/${noticeId}/excel`
+}
+
+export const getApiAdminItemsReservationsNoticesNoticeidExcel = async (noticeId: number, options?: RequestInit): Promise<getApiAdminItemsReservationsNoticesNoticeidExcelResponse> => {
+
+  return customFetch<getApiAdminItemsReservationsNoticesNoticeidExcelResponse>(getGetApiAdminItemsReservationsNoticesNoticeidExcelUrl(noticeId),
+  {
+    ...options,
+    method: 'GET'
 
 
   }

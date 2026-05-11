@@ -3,6 +3,8 @@ import {
   type BottleReservationNoticeResponse,
   type DeliveryCompanyResponse,
   type ReservationBusinessDeliveryResponse,
+  GetApiAdminBottlesReservationsApplicationsRole as AdminBottleReservationApplicationRoleOptions,
+  GetApiAdminBottlesReservationsApplicationsStatus as AdminBottleReservationApplicationStatusOptions,
   getApiAdminBottlesReservationsApplications,
   getApiAdminBottlesReservationsNoticesNoticeid,
   getApiAdminReservationDeliveriesCompanies,
@@ -15,7 +17,7 @@ import NoticeDetailContent from "./_components/NoticeDetailContent";
 
 interface NoticeDetailPageProps {
   params: Promise<{ noticeId: string }>;
-  searchParams: Promise<{ page?: string; limit?: string }>;
+  searchParams: Promise<{ page?: string; limit?: string; role?: string; status?: string }>;
 }
 
 async function getOptionalData<T>(request: Promise<{ data: T }>): Promise<T | undefined> {
@@ -27,10 +29,18 @@ async function getOptionalData<T>(request: Promise<{ data: T }>): Promise<T | un
   }
 }
 
+function getEnumValue<T extends Record<string, string>>(options: T, value?: string): T[keyof T] | undefined {
+  if (!value) return undefined;
+  const values = Object.values(options) as T[keyof T][];
+  return values.includes(value as T[keyof T]) ? (value as T[keyof T]) : undefined;
+}
+
 export default async function NoticeDetailPage({ params, searchParams }: NoticeDetailPageProps) {
   const { noticeId } = await params;
   const sp = await searchParams;
   const token = await getAuthToken();
+  const role = getEnumValue(AdminBottleReservationApplicationRoleOptions, sp.role);
+  const status = getEnumValue(AdminBottleReservationApplicationStatusOptions, sp.status);
 
   let notice: BottleReservationNoticeResponse | undefined;
   let applications: BottleReservationApplicationResponse[] = [];
@@ -44,6 +54,8 @@ export default async function NoticeDetailPage({ params, searchParams }: NoticeD
       getApiAdminBottlesReservationsApplications(
         {
           noticeId: Number(noticeId),
+          role,
+          status,
           page: sp.page ? Number(sp.page) - 1 : 0,
           size: sp.limit ? Number(sp.limit) : 20,
         },
@@ -72,6 +84,8 @@ export default async function NoticeDetailPage({ params, searchParams }: NoticeD
       applicationsTotalElements={applicationsTotalElements}
       applicationsPage={Number(sp.page) || 1}
       applicationsLimit={Number(sp.limit) || 20}
+      applicationsRole={role}
+      applicationsStatus={status}
       deliveries={deliveries}
       deliveryCompanies={deliveryCompanies}
     />
