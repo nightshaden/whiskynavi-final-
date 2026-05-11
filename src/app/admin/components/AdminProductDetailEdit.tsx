@@ -516,9 +516,9 @@ export default function AdminProductDetailEdit({
             <Image
               src={currentImage}
               width={320}
-              height={320}
+              height={576}
               alt={defaultValues?.name ?? ""}
-              className="h-80 w-full rounded border border-gray-200 object-cover"
+              className="h-[36rem] w-full rounded border border-gray-200 object-contain"
               unoptimized={currentImage.startsWith("blob:")}
             />
             {isDragging ? (
