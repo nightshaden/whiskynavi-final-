@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import AdminHeader from "../../_components/AdminHeader";
 import { useSidebar } from "../../_components/AdminLayoutClient";
 import Pagination from "../../_components/Pagination";
+import ReservationExcelDownloadLink from "./ReservationExcelDownloadLink";
 
 const formatDate = (dateStr?: string): string => {
   if (!dateStr) return "-";
@@ -137,6 +138,7 @@ export default function ReservationsContent({ searchParams, notices, totalElemen
                           >
                             <Pencil size={16} />
                           </button>
+                          {notice.id != null && <ReservationExcelDownloadLink noticeId={notice.id} compact />}
                         </div>
                       </td>
                     </tr>

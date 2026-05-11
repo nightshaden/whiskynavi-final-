@@ -4,12 +4,15 @@ import type {
   BottleReservationApplicationResponse,
   BottleReservationNoticeResponse,
   DeliveryCompanyResponse,
+  GetApiAdminBottlesReservationsApplicationsRole,
+  GetApiAdminBottlesReservationsApplicationsStatus,
   ReservationBusinessDeliveryResponse,
 } from "@/apis/generated/api";
 import { ArrowLeft, Edit2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import AdminHeader from "../../../_components/AdminHeader";
 import { useSidebar } from "../../../_components/AdminLayoutClient";
+import ReservationExcelDownloadLink from "../../_components/ReservationExcelDownloadLink";
 import ApplicationsTableSection from "./ApplicationsTableSection";
 import ApprovalSummarySection from "./ApprovalSummarySection";
 import NoticeInfoSection from "./NoticeInfoSection";
@@ -21,6 +24,8 @@ interface NoticeDetailContentProps {
   applicationsTotalElements: number;
   applicationsPage: number;
   applicationsLimit: number;
+  applicationsRole?: GetApiAdminBottlesReservationsApplicationsRole;
+  applicationsStatus?: GetApiAdminBottlesReservationsApplicationsStatus;
   deliveries: ReservationBusinessDeliveryResponse[];
   deliveryCompanies: DeliveryCompanyResponse[];
 }
@@ -31,6 +36,8 @@ export default function NoticeDetailContent({
   applicationsTotalElements,
   applicationsPage,
   applicationsLimit,
+  applicationsRole,
+  applicationsStatus,
   deliveries,
   deliveryCompanies,
 }: NoticeDetailContentProps) {
@@ -38,6 +45,7 @@ export default function NoticeDetailContent({
   const router = useRouter();
 
   if (!notice) return null;
+  if (notice.id == null) return null;
 
   return (
     <>
@@ -54,28 +62,34 @@ export default function NoticeDetailContent({
             공고 목록으로 돌아가기
           </button>
 
-          <button
-            type="button"
-            onClick={() => router.push(`/admin/reservations/${notice.id}/edit`)}
-            className="typo-medium-14 flex cursor-pointer items-center gap-1.5 rounded-lg bg-amber-600 px-4 py-2 text-white transition-colors hover:bg-amber-700"
-          >
-            <Edit2 size={16} />
-            편집
-          </button>
+          <div className="flex items-center gap-2">
+            <ReservationExcelDownloadLink noticeId={notice.id} />
+            <button
+              type="button"
+              onClick={() => router.push(`/admin/reservations/${notice.id}/edit`)}
+              className="typo-medium-14 flex cursor-pointer items-center gap-1.5 rounded-lg bg-amber-600 px-4 py-2 text-white transition-colors hover:bg-amber-700"
+            >
+              <Edit2 size={16} />
+              편집
+            </button>
+          </div>
         </div>
 
         <NoticeInfoSection notice={notice} />
 
         <ApprovalSummarySection notice={notice} />
 
-        <ReservationDeliverySection noticeId={notice.id!} deliveries={deliveries} companies={deliveryCompanies} />
+        <ReservationDeliverySection noticeId={notice.id} deliveries={deliveries} companies={deliveryCompanies} />
 
         <ApplicationsTableSection
-          noticeId={notice.id!}
+          noticeId={notice.id}
           applications={applications}
           totalElements={applicationsTotalElements}
           currentPage={applicationsPage}
           itemsPerPage={applicationsLimit}
+          pendingApplicationCount={notice.pendingApplicationCount ?? 0}
+          currentRole={applicationsRole}
+          currentStatus={applicationsStatus}
         />
       </div>
     </>

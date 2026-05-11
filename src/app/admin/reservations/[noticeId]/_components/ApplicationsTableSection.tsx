@@ -1,12 +1,17 @@
 "use client";
 
-import type { BottleReservationApplicationResponse } from "@/apis/generated/api";
+import type {
+  BottleReservationApplicationResponse,
+  GetApiAdminBottlesReservationsApplicationsRole,
+  GetApiAdminBottlesReservationsApplicationsStatus,
+} from "@/apis/generated/api";
 import { Badge } from "@/components/ui/badge";
-import { Ban, Check, X } from "lucide-react";
+import { Ban, Check, Sparkles, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { overlay } from "overlay-kit";
 import Pagination from "../../../_components/Pagination";
-import { RESERVATION_STATUS_COLOR, RESERVATION_STATUS_LABEL } from "../../../constants";
+import { RESERVATION_STATUS_COLOR, RESERVATION_STATUS_LABEL, ROLE_LABEL_MAP } from "../../../constants";
+import ApplicationAutoConfirmModal from "./ApplicationAutoConfirmModal";
 import ApplicationCancelModal from "./ApplicationCancelModal";
 import ApplicationConfirmModal from "./ApplicationConfirmModal";
 import ApplicationRejectModal from "./ApplicationRejectModal";
@@ -24,12 +29,50 @@ const formatDate = (dateStr?: string): string => {
     .replace(/\.$/, "");
 };
 
+const APPLICATION_STATUS_OPTIONS: GetApiAdminBottlesReservationsApplicationsStatus[] = [
+  "APPLIED",
+  "CANCELLED",
+  "CONFIRMED",
+  "PAYMENT_COMPLETED",
+  "WAITING_PICKUP",
+  "RECEIVED",
+  "REJECTED",
+];
+
+const APPLICATION_ROLE_OPTIONS: GetApiAdminBottlesReservationsApplicationsRole[] = [
+  "ROLE_GUEST",
+  "ROLE_USER",
+  "ROLE_ADMIN",
+  "ROLE_SUPER_ADMIN",
+  "ROLE_CONSUMER",
+  "ROLE_WHISKYNAVI_MEMBER",
+  "ROLE_WHISKYTALES_MEMBER",
+  "ROLE_BLIND_MEMBER",
+  "ROLE_BUSINESS",
+  "ROLE_TRAILNTALE_BUSINESS",
+  "ROLE_COMMUNITY_BUSINESS",
+  "ROLE_PICK_UP_BUSINESS",
+];
+
+const hasRole = (roles: string[] | undefined, role: string): boolean => roles?.includes(role) ?? false;
+
+function CommunityRoleBadge({ active, className, label }: { active: boolean; className: string; label: string }) {
+  if (!active) {
+    return <span className="text-gray-400">-</span>;
+  }
+
+  return <Badge className={className}>{label}</Badge>;
+}
+
 interface ApplicationsTableSectionProps {
   noticeId: number;
   applications: BottleReservationApplicationResponse[];
   totalElements: number;
   currentPage: number;
   itemsPerPage: number;
+  pendingApplicationCount: number;
+  currentRole?: GetApiAdminBottlesReservationsApplicationsRole;
+  currentStatus?: GetApiAdminBottlesReservationsApplicationsStatus;
 }
 
 export default function ApplicationsTableSection({
@@ -38,6 +81,9 @@ export default function ApplicationsTableSection({
   totalElements,
   currentPage,
   itemsPerPage,
+  pendingApplicationCount,
+  currentRole,
+  currentStatus,
 }: ApplicationsTableSectionProps) {
   const router = useRouter();
 
@@ -72,16 +118,91 @@ export default function ApplicationsTableSection({
     ));
   };
 
+  const handleAutoConfirm = () => {
+    overlay.open((props) => <ApplicationAutoConfirmModal {...props} noticeId={noticeId} />);
+  };
+
+  const handleFilterChange = (key: "role" | "status", value: string) => {
+    const params = new URLSearchParams();
+
+    params.set("page", "1");
+    params.set("limit", String(itemsPerPage));
+
+    if (currentRole) {
+      params.set("role", currentRole);
+    }
+
+    if (currentStatus) {
+      params.set("status", currentStatus);
+    }
+
+    if (value === "all") {
+      params.delete(key);
+    } else {
+      params.set(key, value);
+    }
+
+    router.push(`/admin/reservations/${noticeId}?${params.toString()}`);
+  };
+
   const canConfirm = (status?: string) => status === "APPLIED";
   const canReject = (status?: string) => status === "APPLIED";
   const canCancel = (status?: string) => status === "CONFIRMED" || status === "WAITING_PICKUP";
+  const hasPendingApplications = pendingApplicationCount > 0;
+  const paginationSearchParams = {
+    role: currentRole,
+    status: currentStatus,
+  };
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
       <div className="border-b border-gray-200 bg-gray-50 px-6 py-4">
-        <h3 className="font-bold text-gray-900">
-          신청 목록 <span className="typo-regular-14 text-gray-500">({totalElements}건)</span>
-        </h3>
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <h3 className="font-bold text-gray-900">
+              신청 목록 <span className="typo-regular-14 text-gray-500">({totalElements}건)</span>
+            </h3>
+            <p className="mt-1 text-xs text-gray-500">미처리 신청 {pendingApplicationCount}건</p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <select
+              value={currentStatus ?? "all"}
+              onChange={(event) => handleFilterChange("status", event.target.value)}
+              className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none"
+              aria-label="신청 상태 필터"
+            >
+              <option value="all">상태 전체</option>
+              {APPLICATION_STATUS_OPTIONS.map((status) => (
+                <option key={status} value={status}>
+                  {RESERVATION_STATUS_LABEL[status] ?? status}
+                </option>
+              ))}
+            </select>
+            <select
+              value={currentRole ?? "all"}
+              onChange={(event) => handleFilterChange("role", event.target.value)}
+              className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none"
+              aria-label="신청자 권한 필터"
+            >
+              <option value="all">권한 전체</option>
+              {APPLICATION_ROLE_OPTIONS.map((role) => (
+                <option key={role} value={role}>
+                  {ROLE_LABEL_MAP[role] ?? role}
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              onClick={handleAutoConfirm}
+              disabled={!hasPendingApplications}
+              className="typo-medium-14 flex cursor-pointer items-center gap-1.5 rounded-lg bg-amber-600 px-3 py-1.5 text-white transition-colors hover:bg-amber-700 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500"
+              title={!hasPendingApplications ? "자동 승인배정할 미처리 신청이 없습니다." : undefined}
+            >
+              <Sparkles size={14} />
+              우선순위최대다수최대행복배정
+            </button>
+          </div>
+        </div>
       </div>
 
       <div className="overflow-x-auto">
@@ -90,6 +211,8 @@ export default function ApplicationsTableSection({
             <tr>
               <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">ID</th>
               <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">신청자</th>
+              <th className="typo-bold-12 px-4 py-3 text-center text-gray-700 uppercase">내비 커뮤</th>
+              <th className="typo-bold-12 px-4 py-3 text-center text-gray-700 uppercase">테일즈 커뮤</th>
               <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">연락처</th>
               <th className="typo-bold-12 px-4 py-3 text-left text-gray-700 uppercase">픽업 업장</th>
               <th className="typo-bold-12 px-4 py-3 text-center text-gray-700 uppercase">신청수량</th>
@@ -102,7 +225,7 @@ export default function ApplicationsTableSection({
           <tbody className="divide-y divide-gray-100">
             {applications.length === 0 ? (
               <tr>
-                <td colSpan={9} className="px-4 py-8 text-center text-gray-500">
+                <td colSpan={11} className="px-4 py-8 text-center text-gray-500">
                   신청 내역이 없습니다.
                 </td>
               </tr>
@@ -111,6 +234,20 @@ export default function ApplicationsTableSection({
                 <tr key={app.id} className="transition-colors hover:bg-gray-50">
                   <td className="px-4 py-3 text-sm text-gray-900">{app.id}</td>
                   <td className="typo-medium-14 px-4 py-3 text-gray-900">{app.applicantUser?.name ?? "-"}</td>
+                  <td className="px-4 py-3 text-center text-sm">
+                    <CommunityRoleBadge
+                      active={hasRole(app.applicantUser?.roles, "ROLE_WHISKYNAVI_MEMBER")}
+                      className="bg-amber-100 text-amber-700"
+                      label="내비"
+                    />
+                  </td>
+                  <td className="px-4 py-3 text-center text-sm">
+                    <CommunityRoleBadge
+                      active={hasRole(app.applicantUser?.roles, "ROLE_WHISKYTALES_MEMBER")}
+                      className="bg-blue-100 text-blue-700"
+                      label="테일즈"
+                    />
+                  </td>
                   <td className="px-4 py-3 text-sm text-gray-600">{app.applicantUser?.phone ?? "-"}</td>
                   <td className="max-w-[160px] truncate px-4 py-3 text-sm text-gray-600">
                     {app.pickupBusiness?.businessName ?? "-"}
@@ -170,7 +307,7 @@ export default function ApplicationsTableSection({
         totalItems={totalElements}
         itemsPerPage={itemsPerPage}
         currentPage={currentPage}
-        searchParams={{}}
+        searchParams={paginationSearchParams}
         basePath={`/admin/reservations/${noticeId}`}
       />
     </div>

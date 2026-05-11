@@ -10,6 +10,7 @@ import {
   postApiAdminBottlesReservationsApplicationsApplicationidConfirm,
   postApiAdminBottlesReservationsApplicationsApplicationidReject,
   postApiAdminBottlesReservationsNotices,
+  postApiAdminBottlesReservationsNoticesNoticeidAutoConfirm,
   putApiAdminBottlesReservationsNoticesNoticeid,
   putApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessid,
 } from "@/apis/generated/api";
@@ -245,6 +246,21 @@ export async function cancelApplicationAction(applicationId: number) {
     return { success: true };
   } catch (error) {
     const message = error instanceof Error ? error.message : "취소에 실패했습니다.";
+    return { success: false, error: message };
+  }
+}
+
+export async function autoConfirmApplicationsAction(noticeId: number) {
+  const token = await getAuthToken();
+  if (!token) return { success: false, error: "인증이 필요합니다." };
+
+  try {
+    const res = await postApiAdminBottlesReservationsNoticesNoticeidAutoConfirm(noticeId, withToken(token));
+    revalidatePath("/admin/reservations");
+    revalidatePath(`/admin/reservations/${noticeId}`);
+    return { success: true, data: res.data };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "자동 승인배정에 실패했습니다.";
     return { success: false, error: message };
   }
 }

@@ -1,4 +1,4 @@
-import { type BottleAdminResponse, getApiAdminBottlesId } from "@/apis/generated/api";
+import { type BottleAdminResponse, getApiAdminBottlesId, getApiAdminBottlesParameters } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
 import { notFound } from "next/navigation";
@@ -20,5 +20,7 @@ export default async function ProductEditPage({ params }: ProductEditPageProps) 
     notFound();
   }
 
-  return <ProductEditContent product={product} />;
+  const parameterValuesRes = await getApiAdminBottlesParameters(withToken(token));
+
+  return <ProductEditContent product={product} parameterValues={parameterValuesRes.data} />;
 }
