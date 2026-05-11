@@ -1,6 +1,6 @@
 "use client";
 
-import type { BottleAdminResponse } from "@/apis/generated/api";
+import type { BottleAdminParameterValues, BottleAdminResponse } from "@/apis/generated/api";
 import { ArrowLeft, Save, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useActionState, useState } from "react";
@@ -11,9 +11,10 @@ import { updateBottleFormAction } from "../../../actions";
 
 interface ProductEditContentProps {
   product: BottleAdminResponse;
+  parameterValues?: BottleAdminParameterValues;
 }
 
-export default function ProductEditContent({ product }: ProductEditContentProps) {
+export default function ProductEditContent({ product, parameterValues }: ProductEditContentProps) {
   const { toggle } = useSidebar();
   const router = useRouter();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -77,6 +78,7 @@ export default function ProductEditContent({ product }: ProductEditContentProps)
         <AdminProductDetailEdit
           defaultValues={product}
           submittedValues={formState.values}
+          parameterValues={parameterValues}
           selectedFile={selectedFile}
           onSelectFile={setSelectedFile}
         />

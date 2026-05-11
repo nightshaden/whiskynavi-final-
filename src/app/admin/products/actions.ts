@@ -53,6 +53,17 @@ const FORM_FIELD_NAMES = [
   "consumerPrice",
 ] as const;
 
+const REQUIRED_BOTTLE_FIELDS = [
+  ["name", "제품명"],
+  ["brand", "브랜드"],
+  ["series", "시리즈"],
+  ["company", "회사"],
+  ["distillery", "증류소"],
+  ["maltType", "몰트 타입"],
+  ["abv", "알코올 도수"],
+  ["capacity", "용량"],
+] as const;
+
 function extractFormValues(formData: FormData): Record<string, string> {
   const values: Record<string, string> = {};
   for (const key of FORM_FIELD_NAMES) {
@@ -119,6 +130,14 @@ function parseBottleFormData(formData: FormData) {
   return { success: true as const, data: result.data };
 }
 
+function validateRequiredBottleFields(data: z.infer<typeof bottleFormSchema>): string | undefined {
+  for (const [field, label] of REQUIRED_BOTTLE_FIELDS) {
+    if (data[field] === undefined) {
+      return `${label}은(는) 필수입니다.`;
+    }
+  }
+}
+
 function parseExtraInfos(
   raw: string | undefined,
 ): PostApiAdminBottlesBodyExtraInfos | undefined {
@@ -164,8 +183,9 @@ export async function createBottleFormAction(_prev: FormState, formData: FormDat
     return { success: false, error: parsed.error, values };
   }
 
-  if (!parsed.data.name) {
-    return { success: false, error: "제품명은 필수입니다.", values };
+  const requiredError = validateRequiredBottleFields(parsed.data);
+  if (requiredError) {
+    return { success: false, error: requiredError, values };
   }
 
   const labelImg = formData.get("labelImg") as File | null;
@@ -230,6 +250,11 @@ export async function updateBottleFormAction(id: number, _prev: FormState, formD
   const parsed = parseBottleFormData(formData);
   if (!parsed.success) {
     return { success: false, error: parsed.error, values };
+  }
+
+  const requiredError = validateRequiredBottleFields(parsed.data);
+  if (requiredError) {
+    return { success: false, error: requiredError, values };
   }
 
   const labelImg = formData.get("labelImg") as File | null;

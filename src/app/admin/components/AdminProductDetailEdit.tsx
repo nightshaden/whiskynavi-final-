@@ -1,8 +1,8 @@
 "use client";
 
-import type { BottleAdminResponse } from "@/apis/generated/api";
+import type { BottleAdminParameterValues, BottleAdminResponse } from "@/apis/generated/api";
 import { Label } from "@/components/ui/label";
-import { CalendarDays, Plus, Upload, X } from "lucide-react";
+import { CalendarDays, ChevronDown, Plus, Upload, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import CurrencyInput from "../_components/CurrencyInput";
@@ -10,6 +10,7 @@ import CurrencyInput from "../_components/CurrencyInput";
 interface AdminProductDetailEditProps {
   defaultValues?: BottleAdminResponse;
   submittedValues?: Record<string, string>;
+  parameterValues?: BottleAdminParameterValues;
   selectedFile: File | null;
   onSelectFile: (file: File | null) => void;
 }
@@ -25,9 +26,121 @@ function pickDefault(
   return fallback;
 }
 
+function RequiredMark() {
+  return (
+    <span className="text-red-500" aria-label="필수">
+      *
+    </span>
+  );
+}
+
+interface ParameterTextInputProps {
+  name: string;
+  maxLength?: number;
+  required?: boolean;
+  defaultValue?: string | number;
+  options?: string[];
+}
+
+// API 선택지를 보여주되 관리자가 직접 입력하는 흐름은 그대로 유지한다.
+function ParameterTextInput({ name, maxLength, required, defaultValue, options }: ParameterTextInputProps) {
+  const initialValue = defaultValue === undefined ? "" : String(defaultValue);
+  const [value, setValue] = useState(initialValue);
+  const [isOpen, setIsOpen] = useState(false);
+  const values = useMemo(() => Array.from(new Set((options ?? []).filter(Boolean))), [options]);
+  const filteredValues = useMemo(() => {
+    const keyword = value.trim().toLowerCase();
+
+    if (!keyword) return values;
+
+    return values.filter((option) => option.toLowerCase().includes(keyword));
+  }, [value, values]);
+
+  useEffect(() => {
+    setValue(initialValue);
+  }, [initialValue]);
+
+  if (values.length === 0) {
+    return (
+      <input
+        type="text"
+        name={name}
+        maxLength={maxLength}
+        required={required}
+        defaultValue={defaultValue}
+        className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
+      />
+    );
+  }
+
+  return (
+    <div
+      className="relative flex-1"
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget)) setIsOpen(false);
+      }}
+    >
+      <input
+        type="text"
+        name={name}
+        maxLength={maxLength}
+        required={required}
+        value={value}
+        onChange={(e) => {
+          setValue(e.target.value);
+          setIsOpen(true);
+        }}
+        onFocus={() => setIsOpen(true)}
+        onKeyDown={(e) => {
+          if (e.key === "ArrowDown") setIsOpen(true);
+          if (e.key === "Escape") setIsOpen(false);
+        }}
+        className="w-full rounded border border-gray-300 py-1 pr-8 pl-2 text-sm"
+      />
+      <button
+        type="button"
+        aria-label="선택지 열기"
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={() => setIsOpen((prev) => !prev)}
+        className="absolute top-1/2 right-1 flex h-6 w-6 -translate-y-1/2 cursor-pointer items-center justify-center rounded text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+      >
+        <ChevronDown size={16} />
+      </button>
+      {isOpen && (
+        <div
+          role="listbox"
+          className="absolute top-full z-20 mt-1 max-h-56 w-full overflow-y-auto rounded border border-gray-200 bg-white py-1 text-sm shadow-lg"
+        >
+          {filteredValues.length > 0 ? (
+            filteredValues.map((option) => (
+              <button
+                key={option}
+                type="button"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  setValue(option);
+                  setIsOpen(false);
+                }}
+                className="block w-full cursor-pointer px-2 py-1.5 text-left text-gray-700 hover:bg-amber-50 hover:text-amber-700"
+              >
+                {option}
+              </button>
+            ))
+          ) : (
+            <div className="px-2 py-1.5 text-gray-400">일치하는 선택지가 없습니다.</div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function AdminProductDetailEdit({
   defaultValues,
   submittedValues,
+  parameterValues,
   selectedFile,
   onSelectFile,
 }: AdminProductDetailEditProps) {
@@ -113,79 +226,97 @@ export default function AdminProductDetailEdit({
         {/* 왼쪽: 모든 필드 (설명 제외) */}
         <div className="flex-1 space-y-2 pr-6">
           <div className="flex gap-3">
-            <Label className="w-32 text-sm text-gray-700">제품명</Label>
+            <Label className="flex w-32 items-center gap-1 text-sm text-gray-700">
+              제품명
+              <RequiredMark />
+            </Label>
             <input
               type="text"
               name="name"
               maxLength={200}
+              required
               defaultValue={pickDefault(submittedValues, "name", defaultValues?.name)}
               className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
           </div>
 
           <div className="flex gap-3">
-            <Label className="w-32 text-sm text-gray-700">브랜드</Label>
-            <input
-              type="text"
+            <Label className="flex w-32 items-center gap-1 text-sm text-gray-700">
+              브랜드
+              <RequiredMark />
+            </Label>
+            <ParameterTextInput
               name="brand"
               maxLength={50}
+              required
               defaultValue={pickDefault(submittedValues, "brand", defaultValues?.brand)}
-              className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
+              options={parameterValues?.brands}
             />
           </div>
 
           <div className="flex gap-3">
-            <Label className="w-32 text-sm text-gray-700">시리즈</Label>
-            <input
-              type="text"
+            <Label className="flex w-32 items-center gap-1 text-sm text-gray-700">
+              시리즈
+              <RequiredMark />
+            </Label>
+            <ParameterTextInput
               name="series"
               maxLength={50}
+              required
               defaultValue={pickDefault(submittedValues, "series", defaultValues?.series)}
-              className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
+              options={parameterValues?.series}
             />
           </div>
 
           <div className="flex gap-3">
-            <Label className="w-32 text-sm text-gray-700">회사</Label>
-            <input
-              type="text"
+            <Label className="flex w-32 items-center gap-1 text-sm text-gray-700">
+              회사
+              <RequiredMark />
+            </Label>
+            <ParameterTextInput
               name="company"
               maxLength={50}
+              required
               defaultValue={pickDefault(submittedValues, "company", defaultValues?.company)}
-              className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
+              options={parameterValues?.companies}
             />
           </div>
 
           <div className="flex gap-3">
-            <Label className="w-32 text-sm text-gray-700">증류소</Label>
-            <input
-              type="text"
+            <Label className="flex w-32 items-center gap-1 text-sm text-gray-700">
+              증류소
+              <RequiredMark />
+            </Label>
+            <ParameterTextInput
               name="distillery"
               maxLength={50}
+              required
               defaultValue={pickDefault(submittedValues, "distillery", defaultValues?.distillery)}
-              className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
+              options={parameterValues?.distilleries}
             />
           </div>
 
           <div className="flex gap-3">
-            <Label className="w-32 text-sm text-gray-700">몰트 타입</Label>
-            <input
-              type="text"
+            <Label className="flex w-32 items-center gap-1 text-sm text-gray-700">
+              몰트 타입
+              <RequiredMark />
+            </Label>
+            <ParameterTextInput
               name="maltType"
               maxLength={50}
+              required
               defaultValue={pickDefault(submittedValues, "maltType", defaultValues?.maltType)}
-              className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
+              options={parameterValues?.maltTypes}
             />
           </div>
 
           <div className="flex gap-3">
             <Label className="w-32 text-sm text-gray-700">캐스크 타입</Label>
-            <input
-              type="text"
+            <ParameterTextInput
               name="caskType"
               maxLength={50}
               defaultValue={pickDefault(submittedValues, "caskType", defaultValues?.caskType)}
-              className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
+              options={parameterValues?.caskTypes}
             />
           </div>
 
@@ -201,21 +332,29 @@ export default function AdminProductDetailEdit({
           </div>
 
           <div className="flex gap-3">
-            <Label className="w-32 text-sm text-gray-700">알코올 도수 (%)</Label>
+            <Label className="flex w-32 items-center gap-1 text-sm text-gray-700">
+              알코올 도수 (%)
+              <RequiredMark />
+            </Label>
             <input
               type="number"
               name="abv"
               step="0.1"
+              required
               defaultValue={pickDefault(submittedValues, "abv", defaultValues?.abv)}
               className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
           </div>
 
           <div className="flex gap-3">
-            <Label className="w-32 text-sm text-gray-700">용량 (ml)</Label>
+            <Label className="flex w-32 items-center gap-1 text-sm text-gray-700">
+              용량 (ml)
+              <RequiredMark />
+            </Label>
             <input
               type="number"
               name="capacity"
+              required
               defaultValue={pickDefault(submittedValues, "capacity", defaultValues?.capacity)}
               className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
             />
