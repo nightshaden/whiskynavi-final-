@@ -46,11 +46,16 @@ describe("admin business member actions", () => {
 
     await expect(
       updateBusinessAction(10, {
+        accountHolderName: "홍길동",
+        accountNumber: "110-123-456789",
+        bankName: "신한은행",
         businessName: "테스트 주류",
         businessRegistrationNumber: "123-45-67890",
         businessType: "HOUSEHOLD",
         contact: "010-1234-5678",
         pickupAddress: "서울시 강남구",
+        storeManagerName: "김담당",
+        storeManagerPhone: "010-9876-5432",
       }),
     ).resolves.toEqual({
       success: false,
@@ -69,11 +74,16 @@ describe("admin business member actions", () => {
 
     await expect(
       updateBusinessAction(10, {
+        accountHolderName: "홍길동",
+        accountNumber: "110-123-456789",
+        bankName: "신한은행",
         businessName: "수정된 상호",
         businessRegistrationNumber: "123-45-67890",
         businessType: "ENTERTAINMENT",
         contact: "",
         pickupAddress: "서울시 송파구",
+        storeManagerName: "김담당",
+        storeManagerPhone: "010-9876-5432",
       }),
     ).resolves.toEqual({ success: true });
 
@@ -81,11 +91,16 @@ describe("admin business member actions", () => {
     expect(mockedPatchBusiness).toHaveBeenCalledWith(
       10,
       {
+        accountHolderName: "홍길동",
+        accountNumber: "110-123-456789",
+        bankName: "신한은행",
         businessName: "수정된 상호",
         businessRegistrationNumber: "123-45-67890",
         businessType: "ENTERTAINMENT",
         contact: "",
         pickupAddress: "서울시 송파구",
+        storeManagerName: "김담당",
+        storeManagerPhone: "010-9876-5432",
       },
       { headers: { Authorization: "Bearer mocked" } },
     );
@@ -99,11 +114,16 @@ describe("admin business member actions", () => {
 
     await expect(
       updateBusinessAction(10, {
+        accountHolderName: "홍길동",
+        accountNumber: "110-123-456789",
+        bankName: "신한은행",
         businessName: "수정된 상호",
         businessRegistrationNumber: "123-45-67890",
         businessType: "HOUSEHOLD",
         contact: "010-1234-5678",
         pickupAddress: "서울시 강남구",
+        storeManagerName: "김담당",
+        storeManagerPhone: "010-9876-5432",
       }),
     ).resolves.toEqual({
       success: false,
@@ -116,11 +136,16 @@ describe("admin business member actions", () => {
 
     await expect(
       updateBusinessAction(10, {
+        accountHolderName: "홍길동",
+        accountNumber: "110-123-456789",
+        bankName: "신한은행",
         businessName: "수정된 상호",
         businessRegistrationNumber: "invalid",
         businessType: "HOUSEHOLD",
         contact: "010-1234-5678",
         pickupAddress: "서울시 강남구",
+        storeManagerName: "김담당",
+        storeManagerPhone: "010-9876-5432",
       }),
     ).resolves.toEqual({
       success: false,

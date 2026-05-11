@@ -88,11 +88,16 @@ const isBusinessType = (value: string): value is PatchApiAdminBusinessesMembersU
   value === "HOUSEHOLD" || value === "ENTERTAINMENT";
 
 type BusinessEditForm = {
+  accountHolderName: string;
+  accountNumber: string;
+  bankName: string;
   businessName: string;
   businessRegistrationNumber: string;
   businessType: PatchApiAdminBusinessesMembersUseridBusinessBodyBusinessType;
   contact: string;
   pickupAddress: string;
+  storeManagerName: string;
+  storeManagerPhone: string;
 };
 
 const formatBusinessType = (member: AdminBusinessUserDetailResponse & { businessType?: string }): string => {
@@ -107,11 +112,16 @@ const hasRole = (member: AdminBusinessUserDetailResponse, roleKey: string, role:
 };
 
 const createInitialForm = (member: AdminBusinessUserDetailResponse): BusinessEditForm => ({
+  accountHolderName: member.accountHolderName ?? "",
+  accountNumber: member.accountNumber ?? "",
+  bankName: member.bankName ?? "",
   businessName: member.businessName ?? "",
   businessRegistrationNumber: member.businessRegistrationNumber ?? "",
   businessType: member.businessType ?? "HOUSEHOLD",
   contact: member.contact ?? "",
   pickupAddress: member.pickupAddress ?? "",
+  storeManagerName: member.storeManagerName ?? "",
+  storeManagerPhone: member.storeManagerPhone ?? "",
 });
 
 interface BusinessMemberDetailContentProps {
@@ -140,7 +150,15 @@ export default function BusinessMemberDetailContent({
   );
 
   useEffect(() => {
-    if (!documentDownloadExpiresAt) return;
+    if (!documentDownloadExpiresAt) {
+      if (documentDownloadInitialRemainingSeconds === undefined) return;
+
+      // 서버에서 만료 시각을 만들 수 없는 경우 초기 남은 시간을 기준으로 단순 카운트다운한다.
+      const timer = setInterval(() => {
+        setDocumentDownloadRemainingSeconds((current) => Math.max(0, current - 1));
+      }, 1000);
+      return () => clearInterval(timer);
+    }
 
     // 서버에서 계산한 만료 시각을 기준으로 브라우저 표시용 남은 시간을 갱신한다.
     const updateRemainingSeconds = () => {
@@ -150,7 +168,7 @@ export default function BusinessMemberDetailContent({
     updateRemainingSeconds();
     const timer = setInterval(updateRemainingSeconds, 1000);
     return () => clearInterval(timer);
-  }, [documentDownloadExpiresAt]);
+  }, [documentDownloadExpiresAt, documentDownloadInitialRemainingSeconds]);
 
   const handleEditStart = () => {
     setForm(createInitialForm(member));
@@ -186,11 +204,16 @@ export default function BusinessMemberDetailContent({
 
     try {
       const result = await updateBusinessAction(member.userId!, {
+        accountHolderName: form.accountHolderName,
+        accountNumber: form.accountNumber,
+        bankName: form.bankName,
         businessName: form.businessName,
         businessRegistrationNumber: form.businessRegistrationNumber,
         businessType: form.businessType,
         contact: form.contact,
         pickupAddress: form.pickupAddress,
+        storeManagerName: form.storeManagerName,
+        storeManagerPhone: form.storeManagerPhone,
       });
 
       if (result.success) {
@@ -327,116 +350,216 @@ export default function BusinessMemberDetailContent({
                 </div>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-6 p-6 md:grid-cols-3">
-              <div>
-                <Label htmlFor="businessName" className="mb-1 text-xs text-gray-500">
-                  업체명
-                </Label>
-                {isEditing ? (
-                  <Input
-                    id="businessName"
-                    value={form.businessName}
-                    onChange={(event) => handleChange("businessName", event.target.value)}
-                    disabled={isPending}
-                  />
-                ) : (
-                  <p className="text-sm font-medium text-gray-900">{member.businessName ?? "-"}</p>
-                )}
-              </div>
-              <div>
-                <Label htmlFor="businessRegistrationNumber" className="mb-1 text-xs text-gray-500">
-                  사업자등록번호
-                </Label>
-                {isEditing ? (
-                  <Input
-                    id="businessRegistrationNumber"
-                    value={form.businessRegistrationNumber}
-                    onChange={(event) => handleChange("businessRegistrationNumber", event.target.value)}
-                    disabled={isPending}
-                  />
-                ) : (
-                  <p className="text-sm font-medium text-gray-900">{member.businessRegistrationNumber ?? "-"}</p>
-                )}
-              </div>
-              <div>
-                <Label htmlFor="businessType" className="mb-1 text-xs text-gray-500">
-                  사업자 구분
-                </Label>
-                {isEditing ? (
-                  <select
-                    id="businessType"
-                    value={form.businessType}
-                    onChange={(event) => {
-                      if (isBusinessType(event.target.value)) {
-                        handleBusinessTypeChange(event.target.value);
-                      }
-                    }}
-                    disabled={isPending}
-                    className="border-input focus-visible:border-ring focus-visible:ring-ring/50 h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    <option value="HOUSEHOLD">가정용</option>
-                    <option value="ENTERTAINMENT">유흥용</option>
-                  </select>
-                ) : (
-                  <p className="text-sm font-medium text-gray-900">{formatBusinessType(member)}</p>
-                )}
-              </div>
-              <div>
-                <Label htmlFor="contact" className="mb-1 text-xs text-gray-500">
-                  연락처
-                </Label>
-                {isEditing ? (
-                  <Input
-                    id="contact"
-                    value={form.contact}
-                    onChange={(event) => handleChange("contact", event.target.value)}
-                    disabled={isPending}
-                  />
-                ) : (
-                  <p className="text-sm font-medium text-gray-900">{member.contact ?? "-"}</p>
-                )}
-              </div>
-              <div className="col-span-2">
-                <Label htmlFor="pickupAddress" className="mb-1 text-xs text-gray-500">
-                  픽업 주소
-                </Label>
-                {isEditing ? (
-                  <Input
-                    id="pickupAddress"
-                    value={form.pickupAddress}
-                    onChange={(event) => handleChange("pickupAddress", event.target.value)}
-                    disabled={isPending}
-                  />
-                ) : (
-                  <p className="text-sm font-medium text-gray-900">{member.pickupAddress ?? "-"}</p>
-                )}
-              </div>
-              <div>
-                <p className="text-xs text-gray-500">사업자 등록일</p>
-                <p className="text-sm font-medium text-gray-900">{formatDate(member.businessCreatedAt)}</p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-500">사업자 수정일</p>
-                <p className="text-sm font-medium text-gray-900">{formatDate(member.businessUpdatedAt)}</p>
-              </div>
-              {member.documentDownloadUrl && (
-                <div>
-                  <p className="text-xs text-gray-500">사업자등록증</p>
-                  <a
-                    href={member.documentDownloadUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm font-medium text-amber-600 hover:underline"
-                  >
-                    {member.documentOriginalFilename ?? "다운로드"}
-                  </a>
-                  <p className="mt-1 text-xs text-gray-500">
-                    {documentDownloadRemainingSeconds > 0
-                      ? `남은 시간 ${formatRemainingTime(documentDownloadRemainingSeconds)}`
-                      : "다운로드 주소가 만료되었습니다."}
-                  </p>
+            <div className="space-y-6 p-6">
+              {/* 기본 사업자 식별 정보는 가장 먼저 확인할 수 있게 상단에 모은다. */}
+              <section>
+                <h4 className="mb-3 text-sm font-semibold text-gray-900">기본 정보</h4>
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                  <div>
+                    <Label htmlFor="businessName" className="mb-1 text-xs text-gray-500">
+                      업체명
+                    </Label>
+                    {isEditing ? (
+                      <Input
+                        id="businessName"
+                        value={form.businessName}
+                        onChange={(event) => handleChange("businessName", event.target.value)}
+                        disabled={isPending}
+                      />
+                    ) : (
+                      <p className="text-sm font-medium text-gray-900">{member.businessName ?? "-"}</p>
+                    )}
+                  </div>
+                  <div>
+                    <Label htmlFor="businessRegistrationNumber" className="mb-1 text-xs text-gray-500">
+                      사업자등록번호
+                    </Label>
+                    {isEditing ? (
+                      <Input
+                        id="businessRegistrationNumber"
+                        value={form.businessRegistrationNumber}
+                        onChange={(event) => handleChange("businessRegistrationNumber", event.target.value)}
+                        disabled={isPending}
+                      />
+                    ) : (
+                      <p className="text-sm font-medium text-gray-900">{member.businessRegistrationNumber ?? "-"}</p>
+                    )}
+                  </div>
+                  <div>
+                    <Label htmlFor="businessType" className="mb-1 text-xs text-gray-500">
+                      사업자 구분
+                    </Label>
+                    {isEditing ? (
+                      <select
+                        id="businessType"
+                        value={form.businessType}
+                        onChange={(event) => {
+                          if (isBusinessType(event.target.value)) {
+                            handleBusinessTypeChange(event.target.value);
+                          }
+                        }}
+                        disabled={isPending}
+                        className="border-input focus-visible:border-ring focus-visible:ring-ring/50 h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        <option value="HOUSEHOLD">가정용</option>
+                        <option value="ENTERTAINMENT">유흥용</option>
+                      </select>
+                    ) : (
+                      <p className="text-sm font-medium text-gray-900">{formatBusinessType(member)}</p>
+                    )}
+                  </div>
+                  <div>
+                    <Label htmlFor="contact" className="mb-1 text-xs text-gray-500">
+                      대표 연락처
+                    </Label>
+                    {isEditing ? (
+                      <Input
+                        id="contact"
+                        value={form.contact}
+                        onChange={(event) => handleChange("contact", event.target.value)}
+                        disabled={isPending}
+                      />
+                    ) : (
+                      <p className="text-sm font-medium text-gray-900">{member.contact ?? "-"}</p>
+                    )}
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label htmlFor="pickupAddress" className="mb-1 text-xs text-gray-500">
+                      픽업 주소
+                    </Label>
+                    {isEditing ? (
+                      <Input
+                        id="pickupAddress"
+                        value={form.pickupAddress}
+                        onChange={(event) => handleChange("pickupAddress", event.target.value)}
+                        disabled={isPending}
+                      />
+                    ) : (
+                      <p className="text-sm font-medium text-gray-900">{member.pickupAddress ?? "-"}</p>
+                    )}
+                  </div>
                 </div>
-              )}
+              </section>
+
+              {/* 담당자와 정산 계좌는 운영 확인 순서에 맞춰 기본 정보 아래에 분리한다. */}
+              <section className="border-t border-gray-100 pt-6">
+                <h4 className="mb-3 text-sm font-semibold text-gray-900">운영 담당자</h4>
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                  <div>
+                    <Label htmlFor="storeManagerName" className="mb-1 text-xs text-gray-500">
+                      담당자명
+                    </Label>
+                    {isEditing ? (
+                      <Input
+                        id="storeManagerName"
+                        value={form.storeManagerName}
+                        onChange={(event) => handleChange("storeManagerName", event.target.value)}
+                        disabled={isPending}
+                      />
+                    ) : (
+                      <p className="text-sm font-medium text-gray-900">{member.storeManagerName ?? "-"}</p>
+                    )}
+                  </div>
+                  <div>
+                    <Label htmlFor="storeManagerPhone" className="mb-1 text-xs text-gray-500">
+                      담당자 전화번호
+                    </Label>
+                    {isEditing ? (
+                      <Input
+                        id="storeManagerPhone"
+                        value={form.storeManagerPhone}
+                        onChange={(event) => handleChange("storeManagerPhone", event.target.value)}
+                        disabled={isPending}
+                      />
+                    ) : (
+                      <p className="text-sm font-medium text-gray-900">{member.storeManagerPhone ?? "-"}</p>
+                    )}
+                  </div>
+                </div>
+              </section>
+
+              <section className="border-t border-gray-100 pt-6">
+                <h4 className="mb-3 text-sm font-semibold text-gray-900">정산 계좌</h4>
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                  <div>
+                    <Label htmlFor="bankName" className="mb-1 text-xs text-gray-500">
+                      은행명
+                    </Label>
+                    {isEditing ? (
+                      <Input
+                        id="bankName"
+                        value={form.bankName}
+                        onChange={(event) => handleChange("bankName", event.target.value)}
+                        disabled={isPending}
+                      />
+                    ) : (
+                      <p className="text-sm font-medium text-gray-900">{member.bankName ?? "-"}</p>
+                    )}
+                  </div>
+                  <div>
+                    <Label htmlFor="accountHolderName" className="mb-1 text-xs text-gray-500">
+                      예금주명
+                    </Label>
+                    {isEditing ? (
+                      <Input
+                        id="accountHolderName"
+                        value={form.accountHolderName}
+                        onChange={(event) => handleChange("accountHolderName", event.target.value)}
+                        disabled={isPending}
+                      />
+                    ) : (
+                      <p className="text-sm font-medium text-gray-900">{member.accountHolderName ?? "-"}</p>
+                    )}
+                  </div>
+                  <div>
+                    <Label htmlFor="accountNumber" className="mb-1 text-xs text-gray-500">
+                      계좌번호
+                    </Label>
+                    {isEditing ? (
+                      <Input
+                        id="accountNumber"
+                        value={form.accountNumber}
+                        onChange={(event) => handleChange("accountNumber", event.target.value)}
+                        disabled={isPending}
+                      />
+                    ) : (
+                      <p className="text-sm font-medium break-all text-gray-900">{member.accountNumber ?? "-"}</p>
+                    )}
+                  </div>
+                </div>
+              </section>
+
+              <section className="border-t border-gray-100 pt-6">
+                <h4 className="mb-3 text-sm font-semibold text-gray-900">문서 및 변경 이력</h4>
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                  {member.documentDownloadUrl && (
+                    <div>
+                      <p className="text-xs text-gray-500">사업자등록증</p>
+                      <a
+                        href={member.documentDownloadUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm font-medium text-amber-600 hover:underline"
+                      >
+                        {member.documentOriginalFilename ?? "다운로드"}
+                      </a>
+                      <p className="mt-1 text-xs text-gray-500">
+                        {documentDownloadRemainingSeconds > 0
+                          ? `남은 시간 ${formatRemainingTime(documentDownloadRemainingSeconds)}`
+                          : "다운로드 주소가 만료되었습니다."}
+                      </p>
+                    </div>
+                  )}
+                  <div>
+                    <p className="text-xs text-gray-500">사업자 등록일</p>
+                    <p className="text-sm font-medium text-gray-900">{formatDate(member.businessCreatedAt)}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">사업자 수정일</p>
+                    <p className="text-sm font-medium text-gray-900">{formatDate(member.businessUpdatedAt)}</p>
+                  </div>
+                </div>
+              </section>
             </div>
           </div>
 

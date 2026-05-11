@@ -108,6 +108,24 @@ export const AdminBusinessUpdateRequestBusinessType = {
  * 관리자 비즈니스 정보 수정 요청입니다. null 필드는 기존 값을 유지합니다.
  */
 export interface AdminBusinessUpdateRequest {
+  /**
+   * 계좌 예금주명입니다. null이면 기존 값을 유지하고, 빈 값이면 값을 비웁니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  accountHolderName?: string;
+  /**
+   * 계좌번호입니다. null이면 기존 값을 유지하고, 빈 값이면 값을 비웁니다.
+   * @minLength 0
+   * @maxLength 100
+   */
+  accountNumber?: string;
+  /**
+   * 은행명입니다. null이면 기존 값을 유지하고, 빈 값이면 값을 비웁니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  bankName?: string;
   /** 사업장 이름입니다. */
   businessName?: string;
   /** 사업자등록번호입니다. */
@@ -118,6 +136,18 @@ export interface AdminBusinessUpdateRequest {
   contact?: string;
   /** 픽업 주소 또는 위치 설명입니다. */
   pickupAddress?: string;
+  /**
+   * 매장 담당자명입니다. null이면 기존 값을 유지하고, 빈 값이면 값을 비웁니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  storeManagerName?: string;
+  /**
+   * 매장 담당자 전화번호입니다. null이면 기존 값을 유지하고, 빈 값이면 값을 비웁니다.
+   * @minLength 0
+   * @maxLength 20
+   */
+  storeManagerPhone?: string;
 }
 
 export type AdminBusinessUserDetailResponseBusinessType = typeof AdminBusinessUserDetailResponseBusinessType[keyof typeof AdminBusinessUserDetailResponseBusinessType];
@@ -147,6 +177,9 @@ export const AdminBusinessUserDetailResponseRolesItem = {
 } as const;
 
 export interface AdminBusinessUserDetailResponse {
+  accountHolderName?: string;
+  accountNumber?: string;
+  bankName?: string;
   businessCreatedAt?: string;
   businessName?: string;
   businessRegistrationNumber?: string;
@@ -162,6 +195,8 @@ export interface AdminBusinessUserDetailResponse {
   name?: string;
   pickupAddress?: string;
   roles?: AdminBusinessUserDetailResponseRolesItem[];
+  storeManagerName?: string;
+  storeManagerPhone?: string;
   userId?: number;
   userStatus?: string;
   username?: string;
@@ -1997,10 +2032,6 @@ export interface KvStoreUpdateRequest {
    * @maxLength 32
    */
   key?: string;
-  /**
-   * @minLength 0
-   * @maxLength 255
-   */
   value?: string;
 }
 
@@ -4490,6 +4521,24 @@ export const PatchApiAdminBusinessesMembersUseridBusinessBodyBusinessType = {
  * 관리자 비즈니스 정보 수정 요청입니다. null 필드는 기존 값을 유지합니다.
  */
 export type PatchApiAdminBusinessesMembersUseridBusinessBody = {
+  /**
+   * 계좌 예금주명입니다. null이면 기존 값을 유지하고, 빈 값이면 값을 비웁니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  accountHolderName?: string;
+  /**
+   * 계좌번호입니다. null이면 기존 값을 유지하고, 빈 값이면 값을 비웁니다.
+   * @minLength 0
+   * @maxLength 100
+   */
+  accountNumber?: string;
+  /**
+   * 은행명입니다. null이면 기존 값을 유지하고, 빈 값이면 값을 비웁니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  bankName?: string;
   /** 사업장 이름입니다. */
   businessName?: string;
   /** 사업자등록번호입니다. */
@@ -4500,6 +4549,18 @@ export type PatchApiAdminBusinessesMembersUseridBusinessBody = {
   contact?: string;
   /** 픽업 주소 또는 위치 설명입니다. */
   pickupAddress?: string;
+  /**
+   * 매장 담당자명입니다. null이면 기존 값을 유지하고, 빈 값이면 값을 비웁니다.
+   * @minLength 0
+   * @maxLength 50
+   */
+  storeManagerName?: string;
+  /**
+   * 매장 담당자 전화번호입니다. null이면 기존 값을 유지하고, 빈 값이면 값을 비웁니다.
+   * @minLength 0
+   * @maxLength 20
+   */
+  storeManagerPhone?: string;
 };
 
 export type GetApiAdminItemsParams = {
@@ -4751,10 +4812,6 @@ export type UpdateBody = {
    * @maxLength 32
    */
   key?: string;
-  /**
-   * @minLength 0
-   * @maxLength 255
-   */
   value?: string;
 };
 

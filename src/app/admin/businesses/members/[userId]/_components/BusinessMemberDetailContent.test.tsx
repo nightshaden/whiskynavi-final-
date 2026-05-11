@@ -15,11 +15,16 @@ const mockMember = {
   userId: 10,
   name: "홍길동",
   username: "hong@example.com",
+  accountHolderName: "홍계좌",
+  accountNumber: "110-123-456789",
+  bankName: "신한은행",
   businessName: "테스트 주류",
   businessRegistrationNumber: "123-45-67890",
   businessType: "HOUSEHOLD" as const,
   contact: "010-1234-5678",
   pickupAddress: "서울시 강남구",
+  storeManagerName: "김담당",
+  storeManagerPhone: "010-9876-5432",
   hasPickupRole: false,
   roles: [],
   businessCreatedAt: "2024-01-01T00:00:00Z",
@@ -45,6 +50,15 @@ describe("BusinessMemberDetailContent", () => {
   it("renders member name in read-only mode", () => {
     render(<BusinessMemberDetailContent member={mockMember} />);
     expect(screen.getByText("홍길동")).toBeInTheDocument();
+  });
+
+  it("renders manager and account fields in read-only mode", () => {
+    render(<BusinessMemberDetailContent member={mockMember} />);
+
+    expect(screen.getByText("김담당")).toBeInTheDocument();
+    expect(screen.getByText("010-9876-5432")).toBeInTheDocument();
+    expect(screen.getByText("신한은행")).toBeInTheDocument();
+    expect(screen.getByText("110-123-456789")).toBeInTheDocument();
   });
 
   it("renders submitted business registration document link", () => {
@@ -93,6 +107,29 @@ describe("BusinessMemberDetailContent", () => {
     });
 
     expect(screen.getByText("남은 시간 9:29")).toBeInTheDocument();
+  });
+
+  it("updates business registration document countdown from initial remaining seconds", () => {
+    vi.useFakeTimers();
+
+    render(
+      <BusinessMemberDetailContent
+        member={{
+          ...mockMember,
+          documentDownloadUrl: "https://example.com/business-document.pdf",
+          documentOriginalFilename: "사업자등록증.pdf",
+        }}
+        documentDownloadInitialRemainingSeconds={2}
+      />,
+    );
+
+    expect(screen.getByText("남은 시간 0:02")).toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+
+    expect(screen.getByText("남은 시간 0:01")).toBeInTheDocument();
   });
 
   it("does not show pickup role text in the member info section", () => {
@@ -154,6 +191,10 @@ describe("BusinessMemberDetailContent", () => {
     expect(screen.getByDisplayValue("123-45-67890")).toBeInTheDocument();
     expect(screen.getByDisplayValue("010-1234-5678")).toBeInTheDocument();
     expect(screen.getByDisplayValue("서울시 강남구")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("김담당")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("010-9876-5432")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("신한은행")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("110-123-456789")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "저장" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "취소" })).toBeInTheDocument();
   });
