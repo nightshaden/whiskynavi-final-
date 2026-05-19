@@ -1,20 +1,13 @@
 import { postApiAuthLogin } from "@/apis/generated/api";
-import { callRefreshApi } from "@/apis/refresh-token";
+import { callRefreshApiSingleFlight } from "@/apis/refresh-token";
 import { AUTH_SESSION_MAX_AGE_SEC } from "@/lib/auth-constants";
+import { shouldRefreshAuthToken } from "@/lib/auth-token";
 import type { NextAuthOptions } from "next-auth";
 import { getServerSession } from "next-auth";
 import type { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import KakaoProvider from "next-auth/providers/kakao";
-
-/**
- * access token 선제 리프레시 간격.
- * 백엔드 access token TTL(30분)보다 10분 앞서 갱신하여 만료 전에 교체.
- * SessionProvider refetchInterval(5분)과의 worst-case 정렬에서도
- * 최대 24분 시점에 갱신되어 6분 여유를 확보.
- */
-const TOKEN_REFRESH_INTERVAL = 20 * 60 * 1000;
 
 /**
  * raw fetch 기반 토큰 리프레시.
@@ -27,7 +20,7 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
     return { ...token, accessToken: undefined, error: "RefreshTokenError" };
   }
 
-  const result = await callRefreshApi(token.refreshToken);
+  const result = await callRefreshApiSingleFlight(token.refreshToken);
 
   switch (result.status) {
     case "success":
@@ -173,9 +166,13 @@ export const authOptions: NextAuthOptions = {
         return token;
       }
 
-      // 이후 호출: 토큰 리프레시 필요 여부 확인
-      const elapsed = Date.now() - (token.tokenIssuedAt ?? 0);
-      if (token.refreshToken && elapsed > TOKEN_REFRESH_INTERVAL) {
+      // 이후 호출: accessToken이 이미 만료된 경우에만 리프레시
+      if (
+        shouldRefreshAuthToken({
+          accessToken: token.accessToken,
+          refreshToken: token.refreshToken,
+        })
+      ) {
         return refreshAccessToken(token);
       }
 
