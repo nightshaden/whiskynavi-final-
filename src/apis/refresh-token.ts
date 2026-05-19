@@ -1,7 +1,12 @@
-import { decode } from "next-auth/jwt";
+import { AUTH_SESSION_COOKIE_NAMES, AUTH_SESSION_MAX_AGE_SEC } from "@/lib/auth-constants";
+import { decode, encode } from "next-auth/jwt";
 import { authLogger } from "./auth-logger";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://api.whiskynavi.com";
+
+function stripBearerPrefix(token: string): string {
+  return token.replace(/^Bearer\s+/i, "");
+}
 
 /**
  * refresh API 호출 결과.
@@ -33,8 +38,8 @@ export async function callRefreshApi(refreshToken: string): Promise<RefreshResul
       if (typeof newAccessToken === "string" && newAccessToken) {
         return {
           status: "success",
-          accessToken: newAccessToken,
-          refreshToken: newRefreshToken,
+          accessToken: stripBearerPrefix(newAccessToken),
+          refreshToken: typeof newRefreshToken === "string" ? stripBearerPrefix(newRefreshToken) : refreshToken,
         };
       }
       authLogger.error("callRefreshApi: 200 OK but no accessToken");
@@ -51,6 +56,24 @@ export async function callRefreshApi(refreshToken: string): Promise<RefreshResul
     authLogger.error("callRefreshApi: unexpected error", e);
     return { status: "server_error" };
   }
+}
+
+/**
+ * 같은 refreshToken에 대한 동시 refresh 요청을 하나로 합친다.
+ * 백엔드가 refreshToken rotation을 수행할 때 중복 호출이 발생하면
+ * 첫 번째 요청은 성공하고 두 번째 요청은 기존 refreshToken 무효로 실패할 수 있다.
+ */
+const refreshApiPromises = new Map<string, Promise<RefreshResult>>();
+
+export function callRefreshApiSingleFlight(refreshToken: string): Promise<RefreshResult> {
+  const pending = refreshApiPromises.get(refreshToken);
+  if (pending) return pending;
+
+  const promise = callRefreshApi(refreshToken).finally(() => {
+    refreshApiPromises.delete(refreshToken);
+  });
+  refreshApiPromises.set(refreshToken, promise);
+  return promise;
 }
 
 /**
@@ -89,22 +112,53 @@ async function refreshOnServer(): Promise<string | null> {
     const cookieStore = await cookies();
 
     // next-auth v4 쿠키명 — v5 마이그레이션 시 변경 필요
-    const sessionToken =
-      cookieStore.get("next-auth.session-token")?.value ?? cookieStore.get("__Secure-next-auth.session-token")?.value;
+    const sessionCookie = AUTH_SESSION_COOKIE_NAMES.map((name) => ({
+      name,
+      value: cookieStore.get(name)?.value,
+    })).find((cookie) => cookie.value);
 
-    if (!sessionToken) {
+    if (!sessionCookie?.value) {
       authLogger.error("refreshOnServer: no session cookie found");
       return null;
     }
 
-    const decoded = await decode({ token: sessionToken, secret });
+    const decoded = await decode({ token: sessionCookie.value, secret });
     if (!decoded?.refreshToken || typeof decoded.refreshToken !== "string") {
       authLogger.error("refreshOnServer: no refreshToken in JWT");
       return null;
     }
 
-    const result = await callRefreshApi(decoded.refreshToken);
+    const result = await callRefreshApiSingleFlight(decoded.refreshToken);
     if (result.status === "success") {
+      try {
+        const encodedSessionToken = await encode({
+          token: {
+            ...decoded,
+            accessToken: result.accessToken,
+            refreshToken: result.refreshToken,
+            tokenIssuedAt: Date.now(),
+            error: undefined,
+          },
+          secret,
+          maxAge: AUTH_SESSION_MAX_AGE_SEC,
+        });
+
+        // 401 재시도용 토큰뿐 아니라 이후 요청에서 사용할 NextAuth JWT 쿠키도 함께 갱신한다.
+        cookieStore.set(sessionCookie.name, encodedSessionToken, {
+          httpOnly: true,
+          sameSite: "lax",
+          path: "/",
+          secure: sessionCookie.name.startsWith("__Secure-"),
+          maxAge: AUTH_SESSION_MAX_AGE_SEC,
+        });
+      } catch (e) {
+        // Server Component 렌더 중에는 Next.js가 쿠키 수정을 막을 수 있다.
+        // 저장 실패를 refresh 실패로 바꾸면 customFetch가 로그인 화면으로 redirect하므로,
+        // 현재 요청은 새 accessToken으로 계속 진행시키고 다음 세션 동기화에서 재시도한다.
+        authLogger.warn(
+          `refreshOnServer: session cookie save skipped (${e instanceof Error ? e.message : "unknown error"})`,
+        );
+      }
       authLogger.warn("refreshOnServer: refresh succeeded");
       return result.accessToken;
     }

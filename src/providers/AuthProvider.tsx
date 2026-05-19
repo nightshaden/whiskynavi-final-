@@ -24,19 +24,9 @@ function SessionErrorHandler() {
   return null;
 }
 
-/**
- * 세션 refetch 간격 (초).
- * jwt callback의 TOKEN_REFRESH_INTERVAL(20분)보다 짧게 설정하여
- * worst-case에서도 백엔드 TTL(30분) 내에 토큰이 갱신되도록 보장.
- */
-const REFETCH_INTERVAL_SEC = 5 * 60;
-
 export function AuthProvider({ children }: Props) {
   return (
-    <SessionProvider
-      refetchInterval={REFETCH_INTERVAL_SEC}
-      refetchOnWindowFocus={process.env.NODE_ENV !== "development"}
-    >
+    <SessionProvider refetchOnWindowFocus={false}>
       <SessionErrorHandler />
       {children}
     </SessionProvider>

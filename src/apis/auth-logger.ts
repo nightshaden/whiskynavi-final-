@@ -18,7 +18,8 @@ export const authLogger = {
   error(message: string, cause?: unknown) {
     if (isEnabled) {
       if (cause) {
-        console.error(`${PREFIX} ${message}`, cause);
+        const detail = cause instanceof Error ? cause.message : String(cause);
+        console.error(`${PREFIX} ${message}: ${detail}`);
       } else {
         console.error(`${PREFIX} ${message}`);
       }
