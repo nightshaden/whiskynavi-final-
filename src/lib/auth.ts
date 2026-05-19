@@ -1,5 +1,6 @@
 import { postApiAuthLogin } from "@/apis/generated/api";
 import { callRefreshApi } from "@/apis/refresh-token";
+import { AUTH_SESSION_MAX_AGE_SEC } from "@/lib/auth-constants";
 import type { NextAuthOptions } from "next-auth";
 import { getServerSession } from "next-auth";
 import type { JWT } from "next-auth/jwt";
@@ -140,7 +141,7 @@ export const authOptions: NextAuthOptions = {
 
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30일
+    maxAge: AUTH_SESSION_MAX_AGE_SEC,
   },
 
   callbacks: {

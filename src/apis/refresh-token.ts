@@ -1,7 +1,9 @@
-import { decode } from "next-auth/jwt";
+import { AUTH_SESSION_MAX_AGE_SEC } from "@/lib/auth-constants";
+import { decode, encode } from "next-auth/jwt";
 import { authLogger } from "./auth-logger";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://api.whiskynavi.com";
+const SESSION_COOKIE_NAMES = ["next-auth.session-token", "__Secure-next-auth.session-token"] as const;
 
 /**
  * refresh API 호출 결과.
@@ -89,15 +91,17 @@ async function refreshOnServer(): Promise<string | null> {
     const cookieStore = await cookies();
 
     // next-auth v4 쿠키명 — v5 마이그레이션 시 변경 필요
-    const sessionToken =
-      cookieStore.get("next-auth.session-token")?.value ?? cookieStore.get("__Secure-next-auth.session-token")?.value;
+    const sessionCookie = SESSION_COOKIE_NAMES.map((name) => ({
+      name,
+      value: cookieStore.get(name)?.value,
+    })).find((cookie) => cookie.value);
 
-    if (!sessionToken) {
+    if (!sessionCookie?.value) {
       authLogger.error("refreshOnServer: no session cookie found");
       return null;
     }
 
-    const decoded = await decode({ token: sessionToken, secret });
+    const decoded = await decode({ token: sessionCookie.value, secret });
     if (!decoded?.refreshToken || typeof decoded.refreshToken !== "string") {
       authLogger.error("refreshOnServer: no refreshToken in JWT");
       return null;
@@ -105,6 +109,26 @@ async function refreshOnServer(): Promise<string | null> {
 
     const result = await callRefreshApi(decoded.refreshToken);
     if (result.status === "success") {
+      const encodedSessionToken = await encode({
+        token: {
+          ...decoded,
+          accessToken: result.accessToken,
+          refreshToken: result.refreshToken,
+          tokenIssuedAt: Date.now(),
+          error: undefined,
+        },
+        secret,
+        maxAge: AUTH_SESSION_MAX_AGE_SEC,
+      });
+
+      // 401 재시도용 토큰뿐 아니라 이후 요청에서 사용할 NextAuth JWT 쿠키도 함께 갱신한다.
+      cookieStore.set(sessionCookie.name, encodedSessionToken, {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: sessionCookie.name.startsWith("__Secure-"),
+        maxAge: AUTH_SESSION_MAX_AGE_SEC,
+      });
       authLogger.warn("refreshOnServer: refresh succeeded");
       return result.accessToken;
     }
