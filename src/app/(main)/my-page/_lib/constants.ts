@@ -37,6 +37,10 @@ export const ORDER_STATUS_MAP: Record<string, { label: string; colorClass: strin
     label: "환불 요청",
     colorClass: "border-red-600/30 bg-red-600/20 text-red-400",
   },
+  [OrderResponseOrderStatus.REFUND_REJECTED]: {
+    label: "환불 거절",
+    colorClass: "border-amber-600/30 bg-amber-600/20 text-amber-400",
+  },
   [OrderResponseOrderStatus.REFUND_COMPLETED]: {
     label: "환불 완료",
     colorClass: "border-gray-600/30 bg-gray-600/20 text-gray-400",
@@ -46,6 +50,7 @@ export const ORDER_STATUS_MAP: Record<string, { label: string; colorClass: strin
 export const CANCELABLE_STATUSES = [
   OrderResponseOrderStatus.ORDER_REQUESTED,
   OrderResponseOrderStatus.PAYMENT_PENDING,
+  OrderResponseOrderStatus.ORDER_PREPARING,
 ] as const;
 
 export const MEMBERSHIP_ROLE = {
