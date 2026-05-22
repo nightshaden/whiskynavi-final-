@@ -185,13 +185,10 @@ export default function GuestOrderLookupClient({
   }, []);
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10 md:py-16">
+    <div className="mx-auto max-w-4xl px-4 pt-24 pb-10 md:pt-32 md:pb-16">
       <section className="border border-white/10 bg-white/5 p-5 md:p-8">
-        <p className="text-sm text-amber-300">비회원 주문 조회</p>
+        <p className="text-sm text-amber-300">비회원 주문내역 조회</p>
         <h1 className="typo-bold-24 mt-2 text-white md:text-3xl">주문번호와 조회 코드를 입력해 주세요.</h1>
-        <p className="mt-3 text-sm leading-6 text-gray-400">
-          조회 코드 재발급 API는 제공되지 않습니다. 코드를 잃어버린 경우 고객센터로 문의해 주세요.
-        </p>
 
         <form
           className="mt-8 grid gap-4 md:grid-cols-[1fr_1fr_auto] md:items-end"

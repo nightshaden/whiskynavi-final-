@@ -18,13 +18,22 @@ export default function MobileAuthSection({
 }: MobileAuthSectionProps) {
   if (!hasSession) {
     return (
-      <Link
-        href="/sign-in"
-        onClick={close}
-        className="typo-bold-16 block rounded-lg px-3 py-3 text-white transition-colors hover:bg-white/5"
-      >
-        로그인
-      </Link>
+      <div className="flex flex-col gap-1">
+        <Link
+          href="/sign-in"
+          onClick={close}
+          className="typo-bold-16 block rounded-lg px-3 py-3 text-white transition-colors hover:bg-white/5"
+        >
+          로그인
+        </Link>
+        <Link
+          href="/orders/guest"
+          onClick={close}
+          className="typo-medium-13 rounded-lg px-3 py-2 text-white/60 transition-colors hover:bg-white/5 hover:text-white"
+        >
+          비회원 주문조회
+        </Link>
+      </div>
     );
   }
 
