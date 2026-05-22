@@ -1,6 +1,8 @@
 "use server";
 
 import {
+  type PostApiAdminBottlesReservationsApplicationsApplicationidCancelBody,
+  type PostApiAdminBottlesReservationsApplicationsApplicationidRejectBody,
   type PostApiAdminBottlesReservationsNoticesBodyGradeConditionsItem,
   type PutApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidBodyCarrierCode,
   type PutApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidBodyDeliveryMethod,
@@ -222,12 +224,15 @@ export async function confirmApplicationAction(applicationId: number, confirmedQ
   }
 }
 
-export async function rejectApplicationAction(applicationId: number) {
+export async function rejectApplicationAction(
+  applicationId: number,
+  data: PostApiAdminBottlesReservationsApplicationsApplicationidRejectBody,
+) {
   const token = await getAuthToken();
   if (!token) return { success: false, error: "인증이 필요합니다." };
 
   try {
-    await postApiAdminBottlesReservationsApplicationsApplicationidReject(applicationId, withToken(token));
+    await postApiAdminBottlesReservationsApplicationsApplicationidReject(applicationId, data, withToken(token));
     revalidatePath("/admin/reservations");
     return { success: true };
   } catch (error) {
@@ -236,12 +241,15 @@ export async function rejectApplicationAction(applicationId: number) {
   }
 }
 
-export async function cancelApplicationAction(applicationId: number) {
+export async function cancelApplicationAction(
+  applicationId: number,
+  data: PostApiAdminBottlesReservationsApplicationsApplicationidCancelBody,
+) {
   const token = await getAuthToken();
   if (!token) return { success: false, error: "인증이 필요합니다." };
 
   try {
-    await postApiAdminBottlesReservationsApplicationsApplicationidCancel(applicationId, withToken(token));
+    await postApiAdminBottlesReservationsApplicationsApplicationidCancel(applicationId, data, withToken(token));
     revalidatePath("/admin/reservations");
     return { success: true };
   } catch (error) {
