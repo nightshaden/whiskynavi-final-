@@ -18,7 +18,7 @@ export default async function GeneralItemDeliveryOrderPage({ searchParams }: Gen
   const params = await searchParams;
 
   return (
-    <main className="min-h-screen bg-[#1d2429] text-white">
+    <main className="min-h-screen bg-[#1d2429] pt-16 text-white lg:pt-20">
       <GeneralItemDeliveryOrderClient
         initialSaleAnnouncementId={toPositiveNumber(params.saleAnnouncementId)}
         initialQuantity={toPositiveNumber(params.quantity)}
