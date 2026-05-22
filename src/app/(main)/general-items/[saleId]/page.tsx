@@ -111,7 +111,7 @@ export default async function GeneralItemSaleDetailPage({ params }: GeneralItemS
               ) : (
                 <GeneralItemOrderForm
                   saleAnnouncementId={sale.id ?? id}
-                  itemName={itemName}
+                  itemName={title}
                   unitPrice={sale.salePrice}
                   quantityLimit={quantityLimit}
                 />

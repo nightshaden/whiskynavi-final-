@@ -7,9 +7,12 @@ import {
   postApiOrdersGeneralItemsDeliveryBankTransfer,
   postApiOrdersGeneralItemsDeliveryTossConfirm,
   postApiOrdersGeneralItemsDeliveryTossTickets,
+  postApiUsersMeDeliveryAddresses,
+  type DeliveryAddressResponse,
   type GeneralItemDeliveryOrderResponse,
   type GeneralItemDeliveryTicketResponse,
   type OrderResponse,
+  type PostApiUsersMeDeliveryAddressesBody,
 } from "@/apis/generated/api";
 import { getAuthToken } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
@@ -64,6 +67,17 @@ const guestCancelSchema = guestLookupSchema.extend({
   reason: z.string().trim().max(500).optional(),
 });
 
+const deliveryAddressSchema = z.object({
+  addressName: z.string().trim().min(1, "배송지 이름을 입력해주세요.").max(100),
+  receiverName: z.string().trim().min(1, "수령인 이름을 입력해주세요.").max(100),
+  receiverPhone: z.string().trim().min(1, "수령인 연락처를 입력해주세요.").max(20),
+  postalCode: z.string().trim().max(20).optional(),
+  address: z.string().trim().min(1, "기본 주소를 입력해주세요.").max(500),
+  addressDetail: z.string().trim().max(500).optional(),
+  deliveryMemo: z.string().trim().max(500).optional(),
+  defaultAddress: z.boolean().optional(),
+});
+
 function normalizeOptionalText(value?: string): string | undefined {
   const trimmed = value?.trim();
   return trimmed ? trimmed : undefined;
@@ -79,6 +93,21 @@ function normalizeOrderInput(input: GeneralItemDeliveryOrderInput): GeneralItemD
     deliveryMemo: normalizeOptionalText(input.deliveryMemo),
     orderNote: normalizeOptionalText(input.orderNote),
     guestEmail: input.guestEmail.trim(),
+  };
+}
+
+function normalizeDeliveryAddressInput(
+  input: z.infer<typeof deliveryAddressSchema>,
+): PostApiUsersMeDeliveryAddressesBody {
+  return {
+    addressName: input.addressName.trim(),
+    receiverName: input.receiverName.trim(),
+    receiverPhone: input.receiverPhone.trim(),
+    postalCode: normalizeOptionalText(input.postalCode),
+    address: input.address.trim(),
+    addressDetail: normalizeOptionalText(input.addressDetail),
+    deliveryMemo: normalizeOptionalText(input.deliveryMemo),
+    defaultAddress: input.defaultAddress ?? false,
   };
 }
 
@@ -140,6 +169,37 @@ export async function createGeneralItemBankTransferOrder(
     return {
       success: false,
       error: guideErrorMessage(error, "계좌이체 주문 생성에 실패했습니다."),
+    };
+  }
+}
+
+export async function createDeliveryAddress(
+  input: PostApiUsersMeDeliveryAddressesBody,
+): Promise<ActionResult<DeliveryAddressResponse>> {
+  try {
+    const token = await getAuthToken();
+    if (!token) {
+      return { success: false, error: "배송지를 저장하려면 로그인이 필요합니다." };
+    }
+
+    const parsed = deliveryAddressSchema.safeParse(input);
+    if (!parsed.success) {
+      return { success: false, error: parsed.error.issues[0].message };
+    }
+
+    const response = await postApiUsersMeDeliveryAddresses(normalizeDeliveryAddressInput(parsed.data), {
+      headers: {
+        Authorization: token.startsWith("Bearer ") ? token : `Bearer ${token}`,
+      },
+    });
+
+    revalidatePath("/general-items/delivery-order");
+    return { success: true, data: response.data };
+  } catch (error) {
+    if (isRedirectError(error)) throw error;
+    return {
+      success: false,
+      error: guideErrorMessage(error, "배송지 저장에 실패했습니다."),
     };
   }
 }
