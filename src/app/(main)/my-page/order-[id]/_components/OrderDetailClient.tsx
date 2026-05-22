@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { overlay } from "overlay-kit";
+import { getDeliveryProgressLabel } from "../../../general-items/delivery-order/_lib/order-utils";
 import OrderCancelModal from "../../_components/OrderCancelModal";
 import { CANCELABLE_STATUSES } from "../../_lib/constants";
 import { formatCurrency, formatDate, getOrderStatusConfig } from "../../_lib/utils";
@@ -89,6 +90,58 @@ export default function OrderDetailClient({ order }: OrderDetailClientProps) {
                 {order.refundReason && <InfoRow label="환불 사유" value={order.refundReason} />}
               </div>
             </div>
+          </div>
+
+          <div className="mt-8 grid grid-cols-1 gap-8 border-t border-white/10 pt-8 lg:grid-cols-2 lg:gap-12">
+            {order.payment && (
+              <div>
+                <h3 className="typo-bold-18 mb-4 border-b border-white/20 pb-3 text-white sm:mb-6 sm:pb-4 sm:text-xl lg:text-2xl">
+                  결제 정보
+                </h3>
+                <div className="space-y-3 sm:space-y-4">
+                  <InfoRow label="결제수단" value={order.payment.paymentMethod ?? "-"} />
+                  <InfoRow label="결제상태" value={order.payment.paymentStatus ?? "-"} />
+                  <InfoRow label="결제금액" value={formatCurrency(order.payment.paidAmount)} />
+                  {order.payment.paidAt && <InfoRow label="결제일" value={formatDate(order.payment.paidAt)} />}
+                  {order.payment.bankName && <InfoRow label="입금 은행" value={order.payment.bankName} />}
+                  {order.payment.bankAccountNumber && (
+                    <InfoRow label="입금 계좌" value={order.payment.bankAccountNumber} />
+                  )}
+                  {order.payment.bankAccountHolderName && (
+                    <InfoRow label="예금주" value={order.payment.bankAccountHolderName} />
+                  )}
+                  {order.payment.depositDeadlineAt && (
+                    <InfoRow label="입금 기한" value={formatDate(order.payment.depositDeadlineAt)} />
+                  )}
+                </div>
+                {order.payment.bankTransferGuideMessage && (
+                  <p className="mt-4 border border-amber-400/30 bg-amber-400/10 p-3 text-sm leading-6 text-amber-100">
+                    {order.payment.bankTransferGuideMessage}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {order.delivery && (
+              <div>
+                <h3 className="typo-bold-18 mb-4 border-b border-white/20 pb-3 text-white sm:mb-6 sm:pb-4 sm:text-xl lg:text-2xl">
+                  배송 정보
+                </h3>
+                <div className="space-y-3 sm:space-y-4">
+                  <InfoRow label="배송 진행" value={getDeliveryProgressLabel(order.orderStatus, order.delivery)} />
+                  <InfoRow label="수령인" value={order.delivery.receiverName ?? "-"} />
+                  <InfoRow label="연락처" value={order.delivery.receiverPhone ?? "-"} />
+                  <InfoRow label="주소" value={order.delivery.address ?? "-"} />
+                  <InfoRow label="배송 메모" value={order.delivery.deliveryMemo ?? "-"} />
+                  <InfoRow label="배송사" value={order.delivery.carrierName || "CJ대한통운"} />
+                  <InfoRow label="운송장번호" value={order.delivery.trackingNumber || "배송 준비 중"} />
+                  {order.delivery.shippedAt && <InfoRow label="발송일" value={formatDate(order.delivery.shippedAt)} />}
+                  {order.delivery.deliveredAt && (
+                    <InfoRow label="배송완료일" value={formatDate(order.delivery.deliveredAt)} />
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -28,7 +28,7 @@ export default function ProductDetailContent({ product }: ProductDetailContentPr
             className="flex cursor-pointer items-center gap-2 text-gray-600 hover:text-gray-900"
           >
             <ArrowLeft size={20} />
-            제품 목록으로 돌아가기
+            보틀 목록으로 돌아가기
           </button>
 
           <div className="flex gap-2">

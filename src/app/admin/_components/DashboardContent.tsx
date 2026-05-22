@@ -1,6 +1,6 @@
 "use client";
 
-import { Award, Ban, Calendar, Package, Users } from "lucide-react";
+import { Award, Ban, Calendar, Package, ShoppingCart, Users } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import AdminHeader from "./AdminHeader";
@@ -15,18 +15,60 @@ const quickLinks = [
     color: "bg-blue-500",
   },
   {
-    title: "제품 관리",
-    description: "제품 등록 및 수정",
+    title: "보틀관리",
+    description: "보틀 등록 및 수정",
     icon: Package,
     href: "/admin/products",
     color: "bg-green-500",
   },
   {
-    title: "예약 관리",
-    description: "예약 현황 및 승인",
+    title: "보틀예약관리",
+    description: "보틀 예약 공고 및 신청 관리",
     icon: Calendar,
     href: "/admin/reservations",
     color: "bg-amber-500",
+  },
+  {
+    title: "보틀주문관리",
+    description: "보틀 주문 조회",
+    icon: ShoppingCart,
+    href: "/admin/bottle-orders",
+    color: "bg-lime-600",
+  },
+  {
+    title: "일반상품관리",
+    description: "배송 주문용 일반상품 조회",
+    icon: Package,
+    href: "/admin/general-items",
+    color: "bg-sky-500",
+  },
+  {
+    title: "일반상품 등록",
+    description: "배송 주문용 일반상품 생성",
+    icon: Package,
+    href: "/admin/general-items/new",
+    color: "bg-emerald-500",
+  },
+  {
+    title: "일반상품판매공고관리",
+    description: "일반상품 판매 공고 조회",
+    icon: Calendar,
+    href: "/admin/general-item-sales",
+    color: "bg-orange-500",
+  },
+  {
+    title: "일반상품주문관리",
+    description: "일반상품 배송 주문 처리",
+    icon: ShoppingCart,
+    href: "/admin/general-item-orders",
+    color: "bg-cyan-600",
+  },
+  {
+    title: "일반상품판매공고 등록",
+    description: "일반 아이템 판매 공고 생성",
+    icon: Calendar,
+    href: "/admin/general-item-sales/new",
+    color: "bg-rose-500",
   },
   {
     title: "멤버십 관리",

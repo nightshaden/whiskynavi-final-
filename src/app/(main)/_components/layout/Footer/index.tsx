@@ -19,6 +19,9 @@ export default function Footer() {
             <Link href="/archive" className="transition-colors hover:text-white">
               아카이브
             </Link>
+            <Link href="/general-items" className="transition-colors hover:text-white">
+              일반상품
+            </Link>
             <Link href="/reservation" className="transition-colors hover:text-white">
               예약하기
             </Link>

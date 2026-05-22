@@ -31,7 +31,7 @@ export default function ProductCreateContent({ parameterValues }: ProductCreateC
 
   return (
     <>
-      <AdminHeader title="제품 등록" onToggleSidebar={toggle} showSearch={false} />
+      <AdminHeader title="보틀 등록" onToggleSidebar={toggle} showSearch={false} />
 
       <form action={handleFormAction} className="p-8">
         <div className="mb-6 flex items-center justify-between">
@@ -41,7 +41,7 @@ export default function ProductCreateContent({ parameterValues }: ProductCreateC
             className="flex cursor-pointer items-center gap-2 text-gray-600 hover:text-gray-900"
           >
             <ArrowLeft size={20} />
-            제품 목록으로 돌아가기
+            보틀 목록으로 돌아가기
           </button>
 
           <button

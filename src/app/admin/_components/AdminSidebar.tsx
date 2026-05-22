@@ -1,54 +1,121 @@
 "use client";
 
-import { Award, Ban, Briefcase, Calendar, Home, ImageIcon, Package, Users, Youtube } from "lucide-react";
+import {
+  Award,
+  Ban,
+  Briefcase,
+  Calendar,
+  Home,
+  ImageIcon,
+  Package,
+  ShoppingCart,
+  Users,
+  Youtube,
+  type LucideIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
-const menuItems = [
-  { id: "users", label: "회원 관리", icon: Users, href: "/admin/users" },
+interface MenuItem {
+  id: string;
+  label: string;
+  icon: LucideIcon;
+  href: string;
+}
+
+const menuGroups: { id: string; label: string; items: MenuItem[] }[] = [
   {
-    id: "products",
-    label: "제품 관리",
-    icon: Package,
-    href: "/admin/products",
+    id: "members",
+    label: "회원",
+    items: [
+      { id: "users", label: "회원 관리", icon: Users, href: "/admin/users" },
+      {
+        id: "membership",
+        label: "멤버십 관리",
+        icon: Award,
+        href: "/admin/membership",
+      },
+      {
+        id: "business-applications",
+        label: "사업자 신청 관리",
+        icon: Briefcase,
+        href: "/admin/businesses/applications",
+      },
+      {
+        id: "business-members",
+        label: "사업자 관리",
+        icon: Briefcase,
+        href: "/admin/businesses/members",
+      },
+      { id: "blacklist", label: "블랙리스트", icon: Ban, href: "/admin/blacklist" },
+    ],
   },
   {
-    id: "reservations",
-    label: "예약 관리",
-    icon: Calendar,
-    href: "/admin/reservations",
+    id: "bottles",
+    label: "보틀",
+    items: [
+      {
+        id: "products",
+        label: "보틀관리",
+        icon: Package,
+        href: "/admin/products",
+      },
+      {
+        id: "reservations",
+        label: "보틀예약관리",
+        icon: Calendar,
+        href: "/admin/reservations",
+      },
+      {
+        id: "bottle-orders",
+        label: "보틀주문관리",
+        icon: ShoppingCart,
+        href: "/admin/bottle-orders",
+      },
+    ],
   },
   {
-    id: "membership",
-    label: "멤버십 관리",
-    icon: Award,
-    href: "/admin/membership",
+    id: "general-items",
+    label: "일반상품",
+    items: [
+      {
+        id: "general-items",
+        label: "일반상품관리",
+        icon: Package,
+        href: "/admin/general-items",
+      },
+      {
+        id: "general-item-sales",
+        label: "일반상품판매공고관리",
+        icon: Calendar,
+        href: "/admin/general-item-sales",
+      },
+      {
+        id: "general-item-orders",
+        label: "일반상품주문관리",
+        icon: ShoppingCart,
+        href: "/admin/general-item-orders",
+      },
+    ],
   },
   {
-    id: "banners",
-    label: "배너 관리",
-    icon: ImageIcon,
-    href: "/admin/banners",
-  },
-  {
-    id: "business-applications",
-    label: "사업자 신청 관리",
-    icon: Briefcase,
-    href: "/admin/businesses/applications",
-  },
-  {
-    id: "business-members",
-    label: "사업자 관리",
-    icon: Briefcase,
-    href: "/admin/businesses/members",
-  },
-  { id: "blacklist", label: "블랙리스트", icon: Ban, href: "/admin/blacklist" },
-  {
-    id: "youtube",
-    label: "YouTube 관리",
-    icon: Youtube,
-    href: "/admin/youtube",
+    id: "operations",
+    label: "주문/운영",
+    items: [
+      {
+        id: "banners",
+        label: "배너 관리",
+        icon: ImageIcon,
+        href: "/admin/banners",
+      },
+      {
+        id: "youtube",
+        label: "YouTube 관리",
+        icon: Youtube,
+        href: "/admin/youtube",
+      },
+    ],
   },
 ];
 
@@ -79,22 +146,28 @@ export default function AdminSidebar({ isOpen, statsSlot }: AdminSidebarProps) {
       </div>
 
       <nav className="px-3">
-        {menuItems.map((item) => {
-          const Icon = item.icon;
-          const active = isActive(item.href);
-          return (
-            <Link
-              key={item.id}
-              href={item.href}
-              className={`mb-1 flex w-full items-center gap-3 rounded-lg px-4 py-3 transition-colors ${
-                active ? "bg-amber-50 font-semibold text-amber-700" : "text-gray-700 hover:bg-gray-50"
-              }`}
-            >
-              <Icon size={20} />
-              <span>{item.label}</span>
-            </Link>
-          );
-        })}
+        {menuGroups.map((group, groupIndex) => (
+          <div key={group.id} className={groupIndex === 0 ? "pb-3" : "border-t border-gray-200 py-3"}>
+            <p className="px-4 pb-2 text-[11px] font-semibold tracking-wide text-gray-400 uppercase">{group.label}</p>
+            {group.items.map((item) => {
+              const Icon = item.icon;
+              const active = isActive(item.href);
+              return (
+                <div key={item.id} className="mb-1">
+                  <Link
+                    href={item.href}
+                    className={`flex w-full items-center gap-3 rounded-lg px-4 py-3 transition-colors ${
+                      active ? "bg-amber-50 font-semibold text-amber-700" : "text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    <Icon size={20} />
+                    <span>{item.label}</span>
+                  </Link>
+                </div>
+              );
+            })}
+          </div>
+        ))}
 
         {/* 일반 페이지로 돌아가기 */}
         <div className="mt-4 border-t border-gray-200 pt-4">

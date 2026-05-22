@@ -71,7 +71,7 @@ export default function ProductsContent({
 
   return (
     <>
-      <AdminHeader title="제품 관리" onToggleSidebar={toggle} searchQuery={searchQuery} onSearch={handleSearch} />
+      <AdminHeader title="보틀관리" onToggleSidebar={toggle} searchQuery={searchQuery} onSearch={handleSearch} />
 
       <div className="p-8">
         <div className="mb-4 flex justify-end">
@@ -81,7 +81,7 @@ export default function ProductsContent({
             className="flex cursor-pointer items-center gap-2 rounded-lg bg-amber-600 px-4 py-2 text-white transition-colors hover:bg-amber-700"
           >
             <Plus size={16} />
-            제품 등록
+            보틀 등록
           </button>
         </div>
         <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
@@ -90,7 +90,6 @@ export default function ProductsContent({
               <thead className="border-b border-gray-200 bg-gray-50">
                 <tr>
                   <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">ID</th>
-                  <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">이미지</th>
                   <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">제품명</th>
                   <FilterHeader
                     label="브랜드"
@@ -114,13 +113,8 @@ export default function ProductsContent({
                   <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">
                     캐스크타입
                   </th>
-                  <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">
-                    캐스크번호
-                  </th>
                   <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">도수</th>
                   <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">용량</th>
-                  <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">증류일</th>
-                  <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">병입일</th>
                   <th className="typo-bold-10 px-2 py-2 text-left whitespace-nowrap text-gray-700 uppercase">관리</th>
                 </tr>
               </thead>
