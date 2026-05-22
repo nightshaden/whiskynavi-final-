@@ -5,12 +5,14 @@ import {
   postApiOrdersGeneralItemsDeliveryBankTransfer,
   postApiOrdersGeneralItemsDeliveryTossConfirm,
   postApiOrdersGeneralItemsDeliveryTossTickets,
+  postApiUsersMeDeliveryAddresses,
 } from "@/apis/generated/api";
 import { getAuthToken } from "@/lib/auth";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   cancelGuestGeneralItemOrder,
   confirmGeneralItemTossPayment,
+  createDeliveryAddress,
   createGeneralItemBankTransferOrder,
   createGeneralItemTossTicket,
   lookupGuestGeneralItemOrder,
@@ -22,6 +24,7 @@ vi.mock("@/apis/generated/api", () => ({
   postApiOrdersGeneralItemsDeliveryBankTransfer: vi.fn(),
   postApiOrdersGeneralItemsDeliveryTossConfirm: vi.fn(),
   postApiOrdersGeneralItemsDeliveryTossTickets: vi.fn(),
+  postApiUsersMeDeliveryAddresses: vi.fn(),
 }));
 
 vi.mock("@/lib/auth", () => ({
@@ -38,6 +41,7 @@ const mockedTossTickets = vi.mocked(postApiOrdersGeneralItemsDeliveryTossTickets
 const mockedTossConfirm = vi.mocked(postApiOrdersGeneralItemsDeliveryTossConfirm);
 const mockedGuestLookup = vi.mocked(getApiOrdersGuest);
 const mockedGuestCancel = vi.mocked(patchApiOrdersGuestOrdernumberCancel);
+const mockedCreateDeliveryAddress = vi.mocked(postApiUsersMeDeliveryAddresses);
 
 const validOrderInput = {
   saleAnnouncementId: 1001,
@@ -183,5 +187,63 @@ describe("general item delivery order actions", () => {
       success: false,
       error: "결제 가능 시간이 만료되었습니다. 주문을 다시 시도해 주세요.",
     });
+  });
+
+  it("requires login before creating a delivery address", async () => {
+    const result = await createDeliveryAddress({
+      addressName: "집",
+      receiverName: "홍길동",
+      receiverPhone: "010-1234-5678",
+      address: "서울특별시 중구",
+    });
+
+    expect(result).toEqual({
+      success: false,
+      error: "배송지를 저장하려면 로그인이 필요합니다.",
+    });
+    expect(mockedCreateDeliveryAddress).not.toHaveBeenCalled();
+  });
+
+  it("creates a delivery address with the current user token", async () => {
+    mockedGetAuthToken.mockResolvedValue("access-token");
+    mockedCreateDeliveryAddress.mockResolvedValue({
+      data: { id: 1, addressName: "집", receiverName: "홍길동", receiverPhone: "010-1234-5678" },
+      status: 200,
+      headers: new Headers(),
+    });
+
+    const input = {
+      addressName: " 집 ",
+      receiverName: " 홍길동 ",
+      receiverPhone: " 010-1234-5678 ",
+      postalCode: " 04524 ",
+      address: " 서울특별시 중구 ",
+      addressDetail: " 101호 ",
+      deliveryMemo: " 문 앞 ",
+      defaultAddress: true,
+    };
+    const result = await createDeliveryAddress(input);
+
+    expect(result).toEqual({
+      success: true,
+      data: { id: 1, addressName: "집", receiverName: "홍길동", receiverPhone: "010-1234-5678" },
+    });
+    expect(mockedCreateDeliveryAddress).toHaveBeenCalledWith(
+      {
+        addressName: "집",
+        receiverName: "홍길동",
+        receiverPhone: "010-1234-5678",
+        postalCode: "04524",
+        address: "서울특별시 중구",
+        addressDetail: "101호",
+        deliveryMemo: "문 앞",
+        defaultAddress: true,
+      },
+      {
+        headers: {
+          Authorization: "Bearer access-token",
+        },
+      },
+    );
   });
 });
