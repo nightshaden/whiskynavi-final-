@@ -11,6 +11,7 @@ const quote = {
   items: [
     { cartItemId: 1, itemName: "A", quantity: 1, valid: true },
     { cartItemId: 2, itemName: "B", quantity: 1, valid: false, invalidReason: "판매 종료" },
+    { cartItemId: 3, itemName: "C", quantity: 1 },
   ],
   itemsTotalPrice: 10000,
   shippingFee: 3000,
@@ -33,8 +34,7 @@ describe("cart utilities", () => {
   });
 
   it("returns only valid cart items", () => {
-    expect(getValidCartItems(quote)).toHaveLength(1);
-    expect(getValidCartItems(quote)[0].cartItemId).toBe(1);
+    expect(getValidCartItems(quote).map((item) => item.cartItemId)).toEqual([1, 3]);
   });
 
   it("blocks checkout when the cart has no valid items", () => {
