@@ -364,6 +364,53 @@ export interface OrderDeliveryResponse {
 }
 
 /**
+ * 판매 상품 유형
+ */
+export type OrderItemResponseProductType = typeof OrderItemResponseProductType[keyof typeof OrderItemResponseProductType];
+
+
+export const OrderItemResponseProductType = {
+  BOTTLE: 'BOTTLE',
+  ITEM: 'ITEM',
+} as const;
+
+/**
+ * 판매 공고 유형
+ */
+export type OrderItemResponseSaleType = typeof OrderItemResponseSaleType[keyof typeof OrderItemResponseSaleType];
+
+
+export const OrderItemResponseSaleType = {
+  RESERVATION: 'RESERVATION',
+  PICKUP: 'PICKUP',
+  GENERAL: 'GENERAL',
+} as const;
+
+/**
+ * 주문 상품 라인 응답 정보
+ */
+export interface OrderItemResponse {
+  /** 상품명 */
+  itemName?: string;
+  /** 상품 라인 합계 */
+  lineTotalPrice?: number;
+  /** 판매 상품 ID */
+  productId?: number;
+  /** 판매 상품 유형 */
+  productType?: OrderItemResponseProductType;
+  /** 수량 */
+  quantity?: number;
+  /** 판매 공고 ID */
+  saleAnnouncementId?: number;
+  /** 판매 공고 제목 */
+  saleTitle?: string;
+  /** 판매 공고 유형 */
+  saleType?: OrderItemResponseSaleType;
+  /** 단가 */
+  unitPrice?: number;
+}
+
+/**
  * 주문 상태.
 일반 아이템 배송 주문 주요 흐름:
 PAYMENT_PENDING -> ORDER_PREPARING -> SHIPPING -> DELIVERY_COMPLETED,
@@ -470,6 +517,8 @@ export interface OrderResponse {
   createdAt?: string;
   customer?: OrderCustomerResponse;
   delivery?: OrderDeliveryResponse;
+  /** 무료배송 기준 금액 */
+  freeShippingThreshold?: number;
   /** 비회원 주문 안내 이메일 */
   guestEmail?: string;
   /** 비회원 주문 안내 휴대폰 번호 */
@@ -480,6 +529,10 @@ export interface OrderResponse {
   importerId?: number;
   /** 상품명 */
   itemName?: string;
+  /** 주문 상품 라인 목록 */
+  items?: OrderItemResponse[];
+  /** 상품 합계 금액 */
+  itemsTotalPrice?: number;
   /** Order note */
   orderNote?: string;
   /** 주문 번호 */
@@ -508,6 +561,8 @@ REFUND_REJECTED 주문은 발송 처리로 SHIPPING 전환이 가능하다.
   saleTitle?: string;
   /** 판매 공고 유형 */
   saleType?: OrderResponseSaleType;
+  /** 배송비 */
+  shippingFee?: number;
   /** 총액 */
   totalPrice?: number;
   /** 단가 */
@@ -1507,6 +1562,85 @@ export interface BottleSearchRequest {
   sortDirection?: string;
   vintageFrom?: number;
   vintageTo?: number;
+}
+
+export interface CartGeneralItemDeliveryOrderRequest {
+  /**
+   * 배송 주소
+   * @minLength 0
+   * @maxLength 500
+   */
+  deliveryAddress?: string;
+  /**
+   * 배송 메모
+   * @minLength 0
+   * @maxLength 500
+   */
+  deliveryMemo?: string;
+  /**
+   * 비회원 주문 안내 이메일
+   * @minLength 0
+   * @maxLength 100
+   */
+  guestEmail?: string;
+  /**
+   * 주문 메모
+   * @minLength 0
+   * @maxLength 500
+   */
+  orderNote?: string;
+  /**
+   * 수령인 이름
+   * @minLength 0
+   * @maxLength 100
+   */
+  receiverName?: string;
+  /**
+   * 수령인 휴대폰 번호
+   * @minLength 0
+   * @maxLength 20
+   */
+  receiverPhone?: string;
+}
+
+export interface CartItemQuantityRequest {
+  quantity: number;
+}
+
+export interface CartItemRequest {
+  quantity: number;
+  saleAnnouncementId: number;
+}
+
+export interface CartItemResponse {
+  availableQuantity?: number;
+  cartItemId?: number;
+  invalidReason?: string;
+  itemName?: string;
+  lineTotalPrice?: number;
+  maxOrderQuantity?: number;
+  quantity?: number;
+  saleAnnouncementId?: number;
+  unitPrice?: number;
+  valid?: boolean;
+}
+
+export interface CartQuoteResponse {
+  cartId?: number;
+  freeShipping?: boolean;
+  freeShippingRemainingAmount?: number;
+  freeShippingThreshold?: number;
+  items?: CartItemResponse[];
+  itemsTotalPrice?: number;
+  shippingFee?: number;
+  totalPrice?: number;
+}
+
+export interface CartResponse {
+  cartId?: number;
+  cartToken?: string;
+  items?: CartItemResponse[];
+  userId?: number;
 }
 
 export interface ChangePasswordRequest {
@@ -4000,6 +4134,20 @@ export interface SaleAnnouncementUpdateRequest {
   totalQuantity?: number;
 }
 
+export interface ShippingPolicyResponse {
+  baseShippingFee?: number;
+  enabled?: boolean;
+  freeShippingThreshold?: number;
+}
+
+export interface ShippingPolicyUpdateRequest {
+  /** @minimum 0 */
+  baseShippingFee: number;
+  enabled: boolean;
+  /** @minimum 0 */
+  freeShippingThreshold: number;
+}
+
 /**
  * 회원가입 요청 본문
  */
@@ -5138,7 +5286,7 @@ export type PostApiAdminKvStoreBody = {
   value?: string;
 };
 
-export type UpdateBody = {
+export type Update1Body = {
   /**
    * @minLength 0
    * @maxLength 32
@@ -5932,6 +6080,14 @@ export type PatchApiAdminSalesSaleidBody = {
   totalQuantity?: number;
 };
 
+export type UpdateBody = {
+  /** @minimum 0 */
+  baseShippingFee: number;
+  enabled: boolean;
+  /** @minimum 0 */
+  freeShippingThreshold: number;
+};
+
 export type GetApiAdminTaxInvoicesBusinessesBusinessidTaxInvoiceMonthlyPdfParams = {
 yearMonth: string;
 };
@@ -6619,6 +6775,15 @@ export type PostApiBottlesReservationsNoticesNoticeidApplicationsBody = {
   userBusinessId: number;
 };
 
+export type AddItemBody = {
+  quantity: number;
+  saleAnnouncementId: number;
+};
+
+export type UpdateQuantityBody = {
+  quantity: number;
+};
+
 export type GetApiFundraisingCampaignsParams = {
 /**
  * Zero-based page index (0..N)
@@ -6927,6 +7092,99 @@ export type PostApiOrdersGeneralItemsDeliveryBankTransferBody = {
   requestedQuantity: number;
   /** 판매 공고 ID */
   saleAnnouncementId: number;
+};
+
+export type PostApiOrdersGeneralItemsDeliveryCartBankTransferBody = {
+  /**
+   * 배송 주소
+   * @minLength 0
+   * @maxLength 500
+   */
+  deliveryAddress?: string;
+  /**
+   * 배송 메모
+   * @minLength 0
+   * @maxLength 500
+   */
+  deliveryMemo?: string;
+  /**
+   * 비회원 주문 안내 이메일
+   * @minLength 0
+   * @maxLength 100
+   */
+  guestEmail?: string;
+  /**
+   * 주문 메모
+   * @minLength 0
+   * @maxLength 500
+   */
+  orderNote?: string;
+  /**
+   * 수령인 이름
+   * @minLength 0
+   * @maxLength 100
+   */
+  receiverName?: string;
+  /**
+   * 수령인 휴대폰 번호
+   * @minLength 0
+   * @maxLength 20
+   */
+  receiverPhone?: string;
+};
+
+export type PostApiOrdersGeneralItemsDeliveryCartTossConfirmBody = {
+  /** 토스페이먼츠 승인 금액 */
+  amount: number;
+  /**
+   * 토스페이먼츠 paymentKey
+   * @minLength 1
+   */
+  paymentKey?: string;
+  /**
+   * 토스페이먼츠 주문 ID
+   * @minLength 1
+   */
+  pgOrderId?: string;
+};
+
+export type PostApiOrdersGeneralItemsDeliveryCartTossTicketsBody = {
+  /**
+   * 배송 주소
+   * @minLength 0
+   * @maxLength 500
+   */
+  deliveryAddress?: string;
+  /**
+   * 배송 메모
+   * @minLength 0
+   * @maxLength 500
+   */
+  deliveryMemo?: string;
+  /**
+   * 비회원 주문 안내 이메일
+   * @minLength 0
+   * @maxLength 100
+   */
+  guestEmail?: string;
+  /**
+   * 주문 메모
+   * @minLength 0
+   * @maxLength 500
+   */
+  orderNote?: string;
+  /**
+   * 수령인 이름
+   * @minLength 0
+   * @maxLength 100
+   */
+  receiverName?: string;
+  /**
+   * 수령인 휴대폰 번호
+   * @minLength 0
+   * @maxLength 20
+   */
+  receiverPhone?: string;
 };
 
 export type PostApiOrdersGeneralItemsDeliveryTossConfirmBody = {
@@ -9901,19 +10159,19 @@ export const postApiAdminKvStore = async (postApiAdminKvStoreBody: PostApiAdminK
 
 
 
-export type updateResponse200 = {
+export type update1Response200 = {
   data: KvStoreResponse
   status: 200
 }
     
-export type updateResponseSuccess = (updateResponse200) & {
+export type update1ResponseSuccess = (update1Response200) & {
   headers: Headers;
 };
 ;
 
-export type updateResponse = (updateResponseSuccess)
+export type update1Response = (update1ResponseSuccess)
 
-export const getUpdateUrl = () => {
+export const getUpdate1Url = () => {
 
 
   
@@ -9921,15 +10179,15 @@ export const getUpdateUrl = () => {
   return `/api/admin/kv-stores`
 }
 
-export const update = async (updateBody: UpdateBody, options?: RequestInit): Promise<updateResponse> => {
+export const update1 = async (update1Body: Update1Body, options?: RequestInit): Promise<update1Response> => {
   
-  return customFetch<updateResponse>(getUpdateUrl(),
+  return customFetch<update1Response>(getUpdate1Url(),
   {      
     ...options,
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
-      updateBody,)
+      update1Body,)
   }
 );}
 
@@ -10929,6 +11187,73 @@ export const patchApiAdminSalesSaleid = async (saleId: number,
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
       patchApiAdminSalesSaleidBody,)
+  }
+);}
+
+
+
+export type getResponse200 = {
+  data: ShippingPolicyResponse
+  status: 200
+}
+    
+export type getResponseSuccess = (getResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getResponse = (getResponseSuccess)
+
+export const getGetUrl = () => {
+
+
+  
+
+  return `/api/admin/shipping-policy`
+}
+
+export const get = async ( options?: RequestInit): Promise<getResponse> => {
+  
+  return customFetch<getResponse>(getGetUrl(),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+export type updateResponse200 = {
+  data: ShippingPolicyResponse
+  status: 200
+}
+    
+export type updateResponseSuccess = (updateResponse200) & {
+  headers: Headers;
+};
+;
+
+export type updateResponse = (updateResponseSuccess)
+
+export const getUpdateUrl = () => {
+
+
+  
+
+  return `/api/admin/shipping-policy`
+}
+
+export const update = async (updateBody: UpdateBody, options?: RequestInit): Promise<updateResponse> => {
+  
+  return customFetch<updateResponse>(getUpdateUrl(),
+  {      
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      updateBody,)
   }
 );}
 
@@ -13139,6 +13464,207 @@ export const getApiBottlesId = async (id: number, options?: RequestInit): Promis
 
 
 
+export type getOrCreateResponse200 = {
+  data: CartResponse
+  status: 200
+}
+    
+export type getOrCreateResponseSuccess = (getOrCreateResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getOrCreateResponse = (getOrCreateResponseSuccess)
+
+export const getGetOrCreateUrl = () => {
+
+
+  
+
+  return `/api/carts`
+}
+
+export const getOrCreate = async ( options?: RequestInit): Promise<getOrCreateResponse> => {
+  
+  return customFetch<getOrCreateResponse>(getGetOrCreateUrl(),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+);}
+
+
+
+export type getCurrentResponse200 = {
+  data: CartResponse
+  status: 200
+}
+    
+export type getCurrentResponseSuccess = (getCurrentResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getCurrentResponse = (getCurrentResponseSuccess)
+
+export const getGetCurrentUrl = () => {
+
+
+  
+
+  return `/api/carts/current`
+}
+
+export const getCurrent = async ( options?: RequestInit): Promise<getCurrentResponse> => {
+  
+  return customFetch<getCurrentResponse>(getGetCurrentUrl(),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+export type addItemResponse200 = {
+  data: CartResponse
+  status: 200
+}
+    
+export type addItemResponseSuccess = (addItemResponse200) & {
+  headers: Headers;
+};
+;
+
+export type addItemResponse = (addItemResponseSuccess)
+
+export const getAddItemUrl = () => {
+
+
+  
+
+  return `/api/carts/items`
+}
+
+export const addItem = async (addItemBody: AddItemBody, options?: RequestInit): Promise<addItemResponse> => {
+  
+  return customFetch<addItemResponse>(getAddItemUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      addItemBody,)
+  }
+);}
+
+
+
+export type deleteItemResponse200 = {
+  data: CartResponse
+  status: 200
+}
+    
+export type deleteItemResponseSuccess = (deleteItemResponse200) & {
+  headers: Headers;
+};
+;
+
+export type deleteItemResponse = (deleteItemResponseSuccess)
+
+export const getDeleteItemUrl = (cartItemId: number,) => {
+
+
+  
+
+  return `/api/carts/items/${cartItemId}`
+}
+
+export const deleteItem = async (cartItemId: number, options?: RequestInit): Promise<deleteItemResponse> => {
+  
+  return customFetch<deleteItemResponse>(getDeleteItemUrl(cartItemId),
+  {      
+    ...options,
+    method: 'DELETE'
+    
+    
+  }
+);}
+
+
+
+export type updateQuantityResponse200 = {
+  data: CartResponse
+  status: 200
+}
+    
+export type updateQuantityResponseSuccess = (updateQuantityResponse200) & {
+  headers: Headers;
+};
+;
+
+export type updateQuantityResponse = (updateQuantityResponseSuccess)
+
+export const getUpdateQuantityUrl = (cartItemId: number,) => {
+
+
+  
+
+  return `/api/carts/items/${cartItemId}`
+}
+
+export const updateQuantity = async (cartItemId: number,
+    updateQuantityBody: UpdateQuantityBody, options?: RequestInit): Promise<updateQuantityResponse> => {
+  
+  return customFetch<updateQuantityResponse>(getUpdateQuantityUrl(cartItemId),
+  {      
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      updateQuantityBody,)
+  }
+);}
+
+
+
+export type quoteResponse200 = {
+  data: CartQuoteResponse
+  status: 200
+}
+    
+export type quoteResponseSuccess = (quoteResponse200) & {
+  headers: Headers;
+};
+;
+
+export type quoteResponse = (quoteResponseSuccess)
+
+export const getQuoteUrl = () => {
+
+
+  
+
+  return `/api/carts/quote`
+}
+
+export const quote = async ( options?: RequestInit): Promise<quoteResponse> => {
+  
+  return customFetch<quoteResponse>(getQuoteUrl(),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
 /**
  * @summary 모금 캠페인 목록 조회
  */
@@ -14087,6 +14613,117 @@ export const postApiOrdersGeneralItemsDeliveryBankTransfer = async (postApiOrder
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
       postApiOrdersGeneralItemsDeliveryBankTransferBody,)
+  }
+);}
+
+
+
+/**
+ * @summary 장바구니 일반 아이템 배송 주문 계좌이체 생성
+ */
+export type postApiOrdersGeneralItemsDeliveryCartBankTransferResponse200 = {
+  data: GeneralItemDeliveryOrderResponse
+  status: 200
+}
+    
+export type postApiOrdersGeneralItemsDeliveryCartBankTransferResponseSuccess = (postApiOrdersGeneralItemsDeliveryCartBankTransferResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiOrdersGeneralItemsDeliveryCartBankTransferResponse = (postApiOrdersGeneralItemsDeliveryCartBankTransferResponseSuccess)
+
+export const getPostApiOrdersGeneralItemsDeliveryCartBankTransferUrl = () => {
+
+
+  
+
+  return `/api/orders/general-items/delivery/cart/bank-transfer`
+}
+
+export const postApiOrdersGeneralItemsDeliveryCartBankTransfer = async (postApiOrdersGeneralItemsDeliveryCartBankTransferBody: PostApiOrdersGeneralItemsDeliveryCartBankTransferBody, options?: RequestInit): Promise<postApiOrdersGeneralItemsDeliveryCartBankTransferResponse> => {
+  
+  return customFetch<postApiOrdersGeneralItemsDeliveryCartBankTransferResponse>(getPostApiOrdersGeneralItemsDeliveryCartBankTransferUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiOrdersGeneralItemsDeliveryCartBankTransferBody,)
+  }
+);}
+
+
+
+/**
+ * @summary 장바구니 일반 아이템 배송 주문 토스 결제 승인 확정
+ */
+export type postApiOrdersGeneralItemsDeliveryCartTossConfirmResponse200 = {
+  data: GeneralItemDeliveryOrderResponse
+  status: 200
+}
+    
+export type postApiOrdersGeneralItemsDeliveryCartTossConfirmResponseSuccess = (postApiOrdersGeneralItemsDeliveryCartTossConfirmResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiOrdersGeneralItemsDeliveryCartTossConfirmResponse = (postApiOrdersGeneralItemsDeliveryCartTossConfirmResponseSuccess)
+
+export const getPostApiOrdersGeneralItemsDeliveryCartTossConfirmUrl = () => {
+
+
+  
+
+  return `/api/orders/general-items/delivery/cart/toss/confirm`
+}
+
+export const postApiOrdersGeneralItemsDeliveryCartTossConfirm = async (postApiOrdersGeneralItemsDeliveryCartTossConfirmBody: PostApiOrdersGeneralItemsDeliveryCartTossConfirmBody, options?: RequestInit): Promise<postApiOrdersGeneralItemsDeliveryCartTossConfirmResponse> => {
+  
+  return customFetch<postApiOrdersGeneralItemsDeliveryCartTossConfirmResponse>(getPostApiOrdersGeneralItemsDeliveryCartTossConfirmUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiOrdersGeneralItemsDeliveryCartTossConfirmBody,)
+  }
+);}
+
+
+
+/**
+ * @summary 장바구니 일반 아이템 배송 주문 토스 티켓 발급
+ */
+export type postApiOrdersGeneralItemsDeliveryCartTossTicketsResponse200 = {
+  data: GeneralItemDeliveryTicketResponse
+  status: 200
+}
+    
+export type postApiOrdersGeneralItemsDeliveryCartTossTicketsResponseSuccess = (postApiOrdersGeneralItemsDeliveryCartTossTicketsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiOrdersGeneralItemsDeliveryCartTossTicketsResponse = (postApiOrdersGeneralItemsDeliveryCartTossTicketsResponseSuccess)
+
+export const getPostApiOrdersGeneralItemsDeliveryCartTossTicketsUrl = () => {
+
+
+  
+
+  return `/api/orders/general-items/delivery/cart/toss/tickets`
+}
+
+export const postApiOrdersGeneralItemsDeliveryCartTossTickets = async (postApiOrdersGeneralItemsDeliveryCartTossTicketsBody: PostApiOrdersGeneralItemsDeliveryCartTossTicketsBody, options?: RequestInit): Promise<postApiOrdersGeneralItemsDeliveryCartTossTicketsResponse> => {
+  
+  return customFetch<postApiOrdersGeneralItemsDeliveryCartTossTicketsResponse>(getPostApiOrdersGeneralItemsDeliveryCartTossTicketsUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiOrdersGeneralItemsDeliveryCartTossTicketsBody,)
   }
 );}
 
