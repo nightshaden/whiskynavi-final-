@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
+import { useState, useTransition } from "react";
 import { normalizeGeneralItemOrderQuantity } from "../../_lib/general-item-sales";
+import { addGeneralItemToCart } from "../../cart/actions";
 
 interface GeneralItemOrderFormProps {
   saleAnnouncementId: number;
@@ -17,9 +19,28 @@ export default function GeneralItemOrderForm({
   quantityLimit,
 }: GeneralItemOrderFormProps) {
   const [quantity, setQuantity] = useState(1);
+  const [cartMessage, setCartMessage] = useState<string | null>(null);
+  const [cartError, setCartError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   const updateQuantity = (nextQuantity: number) => {
     setQuantity(normalizeGeneralItemOrderQuantity(nextQuantity, quantityLimit));
+  };
+
+  const handleAddToCart = () => {
+    setCartMessage(null);
+    setCartError(null);
+
+    startTransition(async () => {
+      const result = await addGeneralItemToCart({ saleAnnouncementId, quantity });
+
+      if (result.success) {
+        setCartMessage("장바구니에 상품을 담았습니다.");
+        return;
+      }
+
+      setCartError(result.error ?? "장바구니 담기에 실패했습니다.");
+    });
   };
 
   return (
@@ -71,12 +92,49 @@ export default function GeneralItemOrderForm({
         </p>
       </div>
 
-      <button
-        type="submit"
-        className="w-full bg-amber-600 px-4 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-amber-700"
-      >
-        주문하기
-      </button>
+      {cartMessage ? (
+        <div
+          className="grid gap-3 border border-emerald-400/30 bg-emerald-500/10 p-3 text-sm text-emerald-100"
+          role="status"
+        >
+          <p>{cartMessage}</p>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link className="font-semibold text-emerald-50 underline underline-offset-4" href="/general-items/cart">
+              장바구니 보기
+            </Link>
+            <button
+              type="button"
+              className="text-gray-200 underline underline-offset-4 transition-colors hover:text-white"
+              onClick={() => setCartMessage(null)}
+            >
+              계속 쇼핑
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+      {cartError ? (
+        <p className="border border-red-400/30 bg-red-500/10 p-3 text-sm text-red-100" role="alert">
+          {cartError}
+        </p>
+      ) : null}
+
+      <div className="grid gap-2 sm:grid-cols-2">
+        <button
+          type="button"
+          className="min-h-11 w-full border border-white/20 px-4 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-white/10 disabled:cursor-not-allowed disabled:text-gray-500"
+          onClick={handleAddToCart}
+          disabled={isPending}
+        >
+          장바구니 담기
+        </button>
+        <button
+          type="submit"
+          className="min-h-11 w-full bg-amber-600 px-4 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-amber-700"
+        >
+          바로 주문
+        </button>
+      </div>
     </form>
   );
 }
