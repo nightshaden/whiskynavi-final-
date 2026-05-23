@@ -52,6 +52,16 @@ async function buildCartOptions(): Promise<RequestInit | undefined> {
   return Object.keys(headers).length > 0 ? { headers } : undefined;
 }
 
+function hasCartIdentity(options?: RequestInit): boolean {
+  const headers = (options?.headers ?? {}) as Record<string, string>;
+  return Boolean(headers.Authorization || headers["X-Cart-Token"]);
+}
+
+async function buildIdentifiedCartOptions(): Promise<RequestInit | undefined> {
+  const options = await buildCartOptions();
+  return hasCartIdentity(options) ? options : undefined;
+}
+
 async function persistCartTokenFromResponse(data: unknown): Promise<void> {
   const cartToken = getResponseCartToken(data);
   if (!cartToken) return;
@@ -67,7 +77,12 @@ function revalidateCartPaths() {
 
 export async function fetchCurrentCart(): Promise<ActionResult<CartResponse>> {
   try {
-    const response = await getCurrent(await buildCartOptions());
+    const options = await buildIdentifiedCartOptions();
+    if (!options) {
+      return { success: true, data: { items: [] } };
+    }
+
+    const response = await getCurrent(options);
     await persistCartTokenFromResponse(response.data);
 
     return { success: true, data: response.data };
@@ -82,7 +97,15 @@ export async function fetchCurrentCart(): Promise<ActionResult<CartResponse>> {
 
 export async function fetchCartQuote(): Promise<ActionResult<CartQuoteResponse>> {
   try {
-    const response = await quote(await buildCartOptions());
+    const options = await buildIdentifiedCartOptions();
+    if (!options) {
+      return {
+        success: true,
+        data: { items: [], itemsTotalPrice: 0, shippingFee: 0, totalPrice: 0 },
+      };
+    }
+
+    const response = await quote(options);
 
     return { success: true, data: response.data };
   } catch (error) {

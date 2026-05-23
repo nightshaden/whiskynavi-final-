@@ -218,6 +218,30 @@ describe("general item cart actions", () => {
     expect(mockedGetCurrent).not.toHaveBeenCalled();
   });
 
+  it("returns an empty quote without API call when no auth or cart token exists", async () => {
+    mockedCookies.mockResolvedValue(mockCookieStore());
+
+    const result = await fetchCartQuote();
+
+    expect(result).toEqual({
+      success: true,
+      data: { items: [], itemsTotalPrice: 0, shippingFee: 0, totalPrice: 0 },
+    });
+    expect(mockedQuote).not.toHaveBeenCalled();
+  });
+
+  it("returns an empty current cart without API call when no auth or cart token exists", async () => {
+    mockedCookies.mockResolvedValue(mockCookieStore());
+
+    const result = await fetchCurrentCart();
+
+    expect(result).toEqual({
+      success: true,
+      data: { items: [] },
+    });
+    expect(mockedGetCurrent).not.toHaveBeenCalled();
+  });
+
   it("returns read action user message when API rejects", async () => {
     mockedQuote.mockRejectedValue(new ApiError(400, '{"message":"장바구니가 비어 있습니다."}'));
 
