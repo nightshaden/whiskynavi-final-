@@ -2,7 +2,7 @@ import type { CartItemResponse, CartQuoteResponse } from "@/apis/generated/api";
 
 export function normalizeCartQuantity(value: number, maxQuantity?: number): number {
   const parsed = Number.isFinite(value) ? Math.trunc(value) : 1;
-  const upperLimit = maxQuantity && maxQuantity > 0 ? maxQuantity : Number.MAX_SAFE_INTEGER;
+  const upperLimit = maxQuantity && maxQuantity > 0 ? Math.trunc(maxQuantity) : Number.MAX_SAFE_INTEGER;
   return Math.min(Math.max(parsed, 1), upperLimit);
 }
 
@@ -21,7 +21,7 @@ export function getCartBlockingReason(quote?: Pick<CartQuoteResponse, "items"> |
   return undefined;
 }
 
-export function formatCartCurrency(value?: number): string {
+export function formatCartCurrency(value?: number | null): string {
   if (value == null) return "-";
   return `${value.toLocaleString("ko-KR")}원`;
 }

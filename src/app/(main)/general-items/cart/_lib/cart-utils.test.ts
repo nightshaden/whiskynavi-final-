@@ -21,7 +21,14 @@ describe("cart utilities", () => {
   it("keeps cart quantity inside the allowed range", () => {
     expect(normalizeCartQuantity(0, 5)).toBe(1);
     expect(normalizeCartQuantity(7, 5)).toBe(5);
+    expect(normalizeCartQuantity(7, 5.5)).toBe(5);
     expect(normalizeCartQuantity(Number.NaN, 5)).toBe(1);
+  });
+
+  it("uses a safe upper bound when max quantity is absent or non-positive", () => {
+    expect(normalizeCartQuantity(7)).toBe(7);
+    expect(normalizeCartQuantity(7, 0)).toBe(7);
+    expect(normalizeCartQuantity(7, -1)).toBe(7);
   });
 
   it("returns only valid cart items", () => {
@@ -40,5 +47,6 @@ describe("cart utilities", () => {
   it("formats currency safely", () => {
     expect(formatCartCurrency(13000)).toBe("13,000원");
     expect(formatCartCurrency(undefined)).toBe("-");
+    expect(formatCartCurrency(null)).toBe("-");
   });
 });
