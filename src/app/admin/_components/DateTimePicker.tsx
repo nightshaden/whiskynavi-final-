@@ -6,7 +6,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { CalendarDays } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 interface DateTimePickerProps {
   /** form submission용 name */
@@ -47,14 +47,7 @@ export default function DateTimePicker({
   );
   const [open, setOpen] = useState(false);
 
-  // controlled mode: 외부 value 변경 시 동기화
-  useEffect(() => {
-    if (isControlled) {
-      setInternalDate(parseToDate(controlledValue));
-    }
-  }, [isControlled, controlledValue]);
-
-  const currentDate = internalDate;
+  const currentDate = isControlled ? parseToDate(controlledValue) : internalDate;
 
   const hour = currentDate ? padTwo(currentDate.getHours()) : "00";
   const minute = currentDate ? padTwo(currentDate.getMinutes()) : "00";

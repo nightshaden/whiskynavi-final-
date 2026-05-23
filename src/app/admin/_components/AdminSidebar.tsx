@@ -9,6 +9,7 @@ import {
   ImageIcon,
   Package,
   ShoppingCart,
+  Truck,
   Users,
   Youtube,
   type LucideIcon,
@@ -97,6 +98,12 @@ const menuGroups: { id: string; label: string; items: MenuItem[] }[] = [
         icon: ShoppingCart,
         href: "/admin/general-item-orders",
       },
+      {
+        id: "shipping-policy",
+        label: "배송비 정책",
+        icon: Truck,
+        href: "/admin/shipping-policy",
+      },
     ],
   },
   {
@@ -156,6 +163,7 @@ export default function AdminSidebar({ isOpen, statsSlot }: AdminSidebarProps) {
                 <div key={item.id} className="mb-1">
                   <Link
                     href={item.href}
+                    aria-current={active ? "page" : undefined}
                     className={`flex w-full items-center gap-3 rounded-lg px-4 py-3 transition-colors ${
                       active ? "bg-amber-50 font-semibold text-amber-700" : "text-gray-700 hover:bg-gray-50"
                     }`}

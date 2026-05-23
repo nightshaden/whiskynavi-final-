@@ -11,15 +11,19 @@ interface UserDetailPageProps {
 export default async function UserDetailPage({ params }: UserDetailPageProps) {
   const { userId } = await params;
   const token = await getAuthToken();
+  let user;
+  let orderSummary;
 
   try {
     const [userRes, orderRes] = await Promise.all([
       getApiAdminUsersId(Number(userId), withToken(token)),
       getApiAdminOrdersUsersUserid(Number(userId), { page: 0, size: 20 }, withToken(token)),
     ]);
-
-    return <UserDetailContent user={userRes.data} orderSummary={orderRes.data} />;
+    user = userRes.data;
+    orderSummary = orderRes.data;
   } catch {
     notFound();
   }
+
+  return <UserDetailContent user={user} orderSummary={orderSummary} />;
 }
