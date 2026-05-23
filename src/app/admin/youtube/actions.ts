@@ -1,7 +1,7 @@
 "use server";
 
 import { ApiError, getUserErrorMessage } from "@/apis/errors";
-import { postApiAdminKvStore, update as updateKvStore } from "@/apis/generated/api";
+import { postApiAdminKvStore, updateKvStore } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
 import { revalidatePath } from "next/cache";

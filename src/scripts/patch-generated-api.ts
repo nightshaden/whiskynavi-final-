@@ -15,7 +15,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 
 const API_FILE = "src/apis/generated/api.ts";
 
-const apiSource = readFileSync(API_FILE, "utf-8");
+let apiSource = readFileSync(API_FILE, "utf-8");
 
 const urlParamsPattern =
   /  const normalizedParams = new URLSearchParams\(\);\n\n  Object\.entries\(params \|\| \{\}\)\.forEach\(\(\[key, value\]\) => \{\n\s*\n    if \(value !== undefined\) \{\n      normalizedParams\.append\(key, value === null \? 'null' : value\.toString\(\)\)\n    \}\n  \}\);\n\n  const stringifiedParams = normalizedParams\.toString\(\);/g;
@@ -44,10 +44,20 @@ const apiMatches = apiSource.match(urlParamsPattern);
 if (!apiMatches || apiMatches.length === 0) {
   console.log("patch api.ts: 패치 대상 없음 (이미 적용됨 또는 패턴 변경)");
 } else {
-  const apiPatched = apiSource.replace(urlParamsPattern, URL_PARAMS_REPLACEMENT);
-  writeFileSync(API_FILE, apiPatched, "utf-8");
+  apiSource = apiSource.replace(urlParamsPattern, URL_PARAMS_REPLACEMENT);
   console.log(`patch api.ts: ${apiMatches.length}개 URL 빌더 패치 완료`);
 }
+
+// ─── 1-b. 충돌하기 쉬운 operationId 별칭 패치 ───
+
+const KV_STORE_UPDATE_ALIAS = "\nexport const updateKvStore = update1;\n";
+
+if (apiSource.includes("export const update1 = async") && !apiSource.includes("export const updateKvStore = update1")) {
+  apiSource = `${apiSource}${KV_STORE_UPDATE_ALIAS}`;
+  console.log("patch api.ts: KV store update 별칭 패치 완료");
+}
+
+writeFileSync(API_FILE, apiSource, "utf-8");
 
 // ─── 2. mutator.ts 403 인증 에러 핸들링 패치 ───
 

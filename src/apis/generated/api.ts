@@ -17321,3 +17321,5 @@ export const deleteApiUsersMeSocialLinksProvider = async (provider: string, opti
     
   }
 );}
+
+export const updateKvStore = update1;
