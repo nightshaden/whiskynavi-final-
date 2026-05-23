@@ -1,10 +1,17 @@
+import { ApiError } from "@/apis/errors";
 import { addItem, deleteItem, getCurrent, quote, updateQuantity } from "@/apis/generated/api";
 import { getAuthToken } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { CART_TOKEN_COOKIE } from "./_lib/cart-token";
-import { addGeneralItemToCart, fetchCartQuote, removeCartItem, updateCartItemQuantity } from "./actions";
+import {
+  addGeneralItemToCart,
+  fetchCartQuote,
+  fetchCurrentCart,
+  removeCartItem,
+  updateCartItemQuantity,
+} from "./actions";
 
 vi.mock("@/apis/generated/api", () => ({
   addItem: vi.fn(),
@@ -36,6 +43,12 @@ function createCookieStore(cartToken?: string) {
 
 function mockCookieStore(cartToken?: string): Awaited<ReturnType<typeof cookies>> {
   return createCookieStore(cartToken) as unknown as Awaited<ReturnType<typeof cookies>>;
+}
+
+function createRedirectError(): Error & { digest: string } {
+  const error = new Error("NEXT_REDIRECT") as Error & { digest: string };
+  error.digest = "NEXT_REDIRECT;replace;/sign-in;307;";
+  return error;
 }
 
 describe("general item cart actions", () => {
@@ -96,9 +109,11 @@ describe("general item cart actions", () => {
       }),
     );
     expect(mockedRevalidatePath).toHaveBeenCalledWith("/general-items/cart");
+    expect(mockedRevalidatePath).toHaveBeenCalledWith("/general-items/cart/order");
   });
 
   it("updates item quantity with cart item id and quantity body", async () => {
+    mockedGetAuthToken.mockResolvedValue("access-token");
     mockedUpdateQuantity.mockResolvedValue({
       data: { cartToken: "updated-token" },
       status: 200,
@@ -111,10 +126,22 @@ describe("general item cart actions", () => {
       success: true,
       data: { cartToken: "updated-token" },
     });
-    expect(mockedUpdateQuantity).toHaveBeenCalledWith(10, { quantity: 3 }, expect.any(Object));
+    expect(mockedUpdateQuantity).toHaveBeenCalledWith(
+      10,
+      { quantity: 3 },
+      {
+        headers: {
+          Authorization: "Bearer access-token",
+          "X-Cart-Token": "cart-token",
+        },
+      },
+    );
+    expect(mockedRevalidatePath).toHaveBeenCalledWith("/general-items/cart");
+    expect(mockedRevalidatePath).toHaveBeenCalledWith("/general-items/cart/order");
   });
 
   it("removes item and revalidates cart paths", async () => {
+    mockedGetAuthToken.mockResolvedValue("access-token");
     mockedDeleteItem.mockResolvedValue({
       data: { cartToken: "remaining-token" },
       status: 200,
@@ -127,9 +154,47 @@ describe("general item cart actions", () => {
       success: true,
       data: { cartToken: "remaining-token" },
     });
-    expect(mockedDeleteItem).toHaveBeenCalledWith(10, expect.any(Object));
+    expect(mockedDeleteItem).toHaveBeenCalledWith(10, {
+      headers: {
+        Authorization: "Bearer access-token",
+        "X-Cart-Token": "cart-token",
+      },
+    });
     expect(mockedRevalidatePath).toHaveBeenCalledWith("/general-items/cart");
     expect(mockedRevalidatePath).toHaveBeenCalledWith("/general-items/cart/order");
+  });
+
+  it("fetches current cart with optional auth and cart token headers, and stores returned cart token", async () => {
+    const cookieStore = createCookieStore("cart-token");
+    mockedCookies.mockResolvedValue(cookieStore as unknown as Awaited<ReturnType<typeof cookies>>);
+    mockedGetAuthToken.mockResolvedValue("access-token");
+    mockedGetCurrent.mockResolvedValue({
+      data: { cartToken: "current-cart-token" },
+      status: 200,
+      headers: new Headers(),
+    });
+
+    const result = await fetchCurrentCart();
+
+    expect(result).toEqual({
+      success: true,
+      data: { cartToken: "current-cart-token" },
+    });
+    expect(mockedGetCurrent).toHaveBeenCalledWith({
+      headers: {
+        Authorization: "Bearer access-token",
+        "X-Cart-Token": "cart-token",
+      },
+    });
+    expect(cookieStore.set).toHaveBeenCalledWith(
+      CART_TOKEN_COOKIE,
+      "current-cart-token",
+      expect.objectContaining({
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+      }),
+    );
   });
 
   it("fetches cart quote with cart token header", async () => {
@@ -151,5 +216,26 @@ describe("general item cart actions", () => {
       },
     });
     expect(mockedGetCurrent).not.toHaveBeenCalled();
+  });
+
+  it("returns read action user message when API rejects", async () => {
+    mockedQuote.mockRejectedValue(new ApiError(400, '{"message":"장바구니가 비어 있습니다."}'));
+
+    await expect(fetchCartQuote()).resolves.toEqual({
+      success: false,
+      error: "장바구니가 비어 있습니다.",
+    });
+  });
+
+  it("rethrows redirect errors from mutations", async () => {
+    const redirectError = createRedirectError();
+    mockedAddItem.mockRejectedValue(redirectError);
+
+    await expect(
+      addGeneralItemToCart({
+        saleAnnouncementId: 100,
+        quantity: 1,
+      }),
+    ).rejects.toBe(redirectError);
   });
 });
