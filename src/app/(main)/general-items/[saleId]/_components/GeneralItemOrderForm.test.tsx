@@ -15,9 +15,16 @@ describe("GeneralItemOrderForm", () => {
     const user = userEvent.setup();
     mockedAddGeneralItemToCart.mockResolvedValue({ success: true });
 
-    render(
+    const { container } = render(
       <GeneralItemOrderForm saleAnnouncementId={1001} itemName="테스트 상품" unitPrice={12000} quantityLimit={5} />,
     );
+
+    const form = container.querySelector("form");
+    expect(form).toHaveAttribute("action", "/general-items/delivery-order");
+    expect(form).toHaveAttribute("method", "get");
+    expect(container.querySelector('input[name="saleAnnouncementId"]')).toHaveValue("1001");
+    expect(container.querySelector('input[name="itemName"]')).toHaveValue("테스트 상품");
+    expect(container.querySelector('input[name="unitPrice"]')).toHaveValue("12000");
 
     await user.click(screen.getByRole("button", { name: "수량 증가" }));
     await user.click(screen.getByRole("button", { name: "장바구니 담기" }));
