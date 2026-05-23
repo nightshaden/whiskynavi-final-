@@ -2,9 +2,7 @@ import type { CartItemResponse, CartQuoteResponse } from "@/apis/generated/api";
 
 export function normalizeCartQuantity(value: number, maxQuantity?: number): number {
   const parsed = Number.isFinite(value) ? Math.trunc(value) : 1;
-  const normalizedMaxQuantity = maxQuantity && maxQuantity > 0 ? Math.trunc(maxQuantity) : undefined;
-  const upperLimit =
-    normalizedMaxQuantity && normalizedMaxQuantity >= 1 ? normalizedMaxQuantity : Number.MAX_SAFE_INTEGER;
+  const upperLimit = maxQuantity && maxQuantity > 0 ? Math.max(Math.trunc(maxQuantity), 1) : Number.MAX_SAFE_INTEGER;
   return Math.min(Math.max(parsed, 1), upperLimit);
 }
 
