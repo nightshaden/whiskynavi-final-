@@ -11,6 +11,7 @@ describe("cart token utilities", () => {
   it("normalizes blank cart tokens to undefined", () => {
     expect(normalizeCartToken(" cart-1 ")).toBe("cart-1");
     expect(normalizeCartToken("   ")).toBeUndefined();
+    expect(normalizeCartToken(null)).toBeUndefined();
     expect(normalizeCartToken(undefined)).toBeUndefined();
   });
 
@@ -47,12 +48,14 @@ describe("cart token utilities", () => {
       sameSite: "lax",
       secure: true,
       path: "/",
+      maxAge: 60 * 60 * 24 * 30,
     });
     expect(getCartTokenCookieOptions("development")).toMatchObject({
       httpOnly: true,
       sameSite: "lax",
       secure: false,
       path: "/",
+      maxAge: 60 * 60 * 24 * 30,
     });
   });
 });
