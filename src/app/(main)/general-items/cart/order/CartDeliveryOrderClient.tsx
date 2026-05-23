@@ -374,6 +374,21 @@ export default function CartDeliveryOrderClient({
     );
   }
 
+  if (items.length === 0) {
+    return (
+      <div className="mx-auto max-w-3xl px-4 py-10 md:py-16">
+        <div className="border border-white/10 bg-white/5 p-6 text-center">
+          <p className="text-sm text-amber-300">GENERAL / ITEM 장바구니 배송 주문</p>
+          <h1 className="typo-bold-24 mt-2 text-white md:text-3xl">장바구니에 담긴 상품이 없습니다.</h1>
+          <p className="mt-4 text-sm text-gray-400">주문할 상품을 장바구니에 담은 뒤 다시 진행해 주세요.</p>
+          <Button asChild className="mt-6 bg-amber-600 hover:bg-amber-700">
+            <Link href="/general-items/cart">장바구니로 이동</Link>
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="mx-auto grid max-w-5xl gap-8 px-4 py-10 md:grid-cols-[1fr_360px] md:py-16">

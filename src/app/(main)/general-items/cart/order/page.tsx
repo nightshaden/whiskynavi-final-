@@ -6,19 +6,15 @@ import {
 } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
-import { redirect } from "next/navigation";
-import { canCheckoutCart } from "../_lib/cart-utils";
 import { fetchCartQuote } from "../actions";
 import CartDeliveryOrderClient from "./CartDeliveryOrderClient";
+
+const EMPTY_QUOTE = { items: [], itemsTotalPrice: 0, shippingFee: 0, totalPrice: 0 };
 
 export default async function GeneralItemCartDeliveryOrderPage() {
   const quoteResult = await fetchCartQuote();
 
-  const quote = quoteResult.data;
-
-  if (!quoteResult.success || !quote || !canCheckoutCart(quote)) {
-    redirect("/general-items/cart");
-  }
+  const quote = quoteResult.success && quoteResult.data ? quoteResult.data : EMPTY_QUOTE;
 
   const token = await getAuthToken();
   let currentUser: UserSelfResponse | null = null;

@@ -1,5 +1,5 @@
 import { ApiError } from "@/apis/errors";
-import { addItem, deleteItem, getCurrent, quote, updateQuantity } from "@/apis/generated/api";
+import { addItem, deleteItem, getCurrent, getOrCreate, quote, updateQuantity } from "@/apis/generated/api";
 import { getAuthToken } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
@@ -17,6 +17,7 @@ vi.mock("@/apis/generated/api", () => ({
   addItem: vi.fn(),
   deleteItem: vi.fn(),
   getCurrent: vi.fn(),
+  getOrCreate: vi.fn(),
   quote: vi.fn(),
   updateQuantity: vi.fn(),
 }));
@@ -28,6 +29,7 @@ vi.mock("next/headers", () => ({ cookies: vi.fn() }));
 const mockedAddItem = vi.mocked(addItem);
 const mockedDeleteItem = vi.mocked(deleteItem);
 const mockedGetCurrent = vi.mocked(getCurrent);
+const mockedGetOrCreate = vi.mocked(getOrCreate);
 const mockedQuote = vi.mocked(quote);
 const mockedUpdateQuantity = vi.mocked(updateQuantity);
 const mockedGetAuthToken = vi.mocked(getAuthToken);
@@ -240,6 +242,85 @@ describe("general item cart actions", () => {
       data: { items: [] },
     });
     expect(mockedGetCurrent).not.toHaveBeenCalled();
+  });
+
+  it("returns an empty quote when an authenticated user has no created cart yet", async () => {
+    mockedGetAuthToken.mockResolvedValue("access-token");
+    mockedCookies.mockResolvedValue(mockCookieStore());
+    mockedGetOrCreate.mockResolvedValue({
+      data: { items: [] },
+      status: 200,
+      headers: new Headers(),
+    });
+    mockedQuote.mockRejectedValue(new ApiError(400, '{"error":"장바구니를 찾을 수 없습니다."}'));
+
+    const result = await fetchCartQuote();
+
+    expect(result).toEqual({
+      success: true,
+      data: { items: [], itemsTotalPrice: 0, shippingFee: 0, totalPrice: 0 },
+    });
+  });
+
+  it("returns an empty current cart when an authenticated user has no created cart yet", async () => {
+    mockedGetAuthToken.mockResolvedValue("access-token");
+    mockedCookies.mockResolvedValue(mockCookieStore());
+    mockedGetOrCreate.mockResolvedValue({
+      data: { items: [] },
+      status: 200,
+      headers: new Headers(),
+    });
+    mockedGetCurrent.mockRejectedValue(new ApiError(400, '{"error":"장바구니를 찾을 수 없습니다."}'));
+
+    const result = await fetchCurrentCart();
+
+    expect(result).toEqual({
+      success: true,
+      data: { items: [] },
+    });
+  });
+
+  it("creates or restores an authenticated cart before reading quote when no cart token exists", async () => {
+    mockedGetAuthToken.mockResolvedValue("access-token");
+    mockedCookies.mockResolvedValue(mockCookieStore());
+    mockedGetOrCreate.mockResolvedValue({
+      data: { cartToken: "created-token", items: [] },
+      status: 200,
+      headers: new Headers(),
+    });
+    mockedQuote.mockResolvedValue({
+      data: { items: [], itemsTotalPrice: 0, shippingFee: 0, totalPrice: 0 },
+      status: 200,
+      headers: new Headers(),
+    });
+
+    await fetchCartQuote();
+
+    expect(mockedGetOrCreate).toHaveBeenCalledWith({
+      headers: {
+        Authorization: "Bearer access-token",
+      },
+    });
+    expect(mockedQuote).toHaveBeenCalledWith({
+      headers: {
+        Authorization: "Bearer access-token",
+      },
+    });
+  });
+
+  it("normalizes an empty quote to zero totals even if backend returns a shipping fee", async () => {
+    mockedQuote.mockResolvedValue({
+      data: { items: [], itemsTotalPrice: 0, shippingFee: 3000, totalPrice: 3000 },
+      status: 200,
+      headers: new Headers(),
+    });
+
+    const result = await fetchCartQuote();
+
+    expect(result).toEqual({
+      success: true,
+      data: { items: [], itemsTotalPrice: 0, shippingFee: 0, totalPrice: 0 },
+    });
   });
 
   it("returns read action user message when API rejects", async () => {

@@ -100,6 +100,14 @@ function revalidateCartPathsSafely() {
   }
 }
 
+function revalidateCartPathSafely() {
+  try {
+    revalidatePath(CART_PATH);
+  } catch {
+    // 주문 성공 응답을 캐시 정리 실패로 덮지 않는다.
+  }
+}
+
 async function finalizeSuccessfulCartOrder() {
   try {
     await deleteCartTokenCookie();
@@ -107,7 +115,7 @@ async function finalizeSuccessfulCartOrder() {
     // 주문 성공 이후의 쿠키 정리 실패가 중복 주문 유도로 이어지지 않게 성공 응답을 보존한다.
   }
 
-  revalidateCartPathsSafely();
+  revalidateCartPathSafely();
 }
 
 function guideErrorMessage(error: unknown, fallback: string): string {

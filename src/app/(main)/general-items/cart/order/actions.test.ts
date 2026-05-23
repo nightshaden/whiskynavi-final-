@@ -107,7 +107,7 @@ describe("general item cart delivery order actions", () => {
     });
     expect(cookieStore.delete).toHaveBeenCalledWith({ name: CART_TOKEN_COOKIE, path: "/" });
     expect(mockedRevalidatePath).toHaveBeenCalledWith("/general-items/cart");
-    expect(mockedRevalidatePath).toHaveBeenCalledWith("/general-items/cart/order");
+    expect(mockedRevalidatePath).not.toHaveBeenCalledWith("/general-items/cart/order");
   });
 
   it("creates a Toss ticket without sale announcement or requested quantity and keeps cart token", async () => {
@@ -169,7 +169,7 @@ describe("general item cart delivery order actions", () => {
     );
     expect(cookieStore.delete).toHaveBeenCalledWith({ name: CART_TOKEN_COOKIE, path: "/" });
     expect(mockedRevalidatePath).toHaveBeenCalledWith("/general-items/cart");
-    expect(mockedRevalidatePath).toHaveBeenCalledWith("/general-items/cart/order");
+    expect(mockedRevalidatePath).not.toHaveBeenCalledWith("/general-items/cart/order");
   });
 
   it("preserves successful bank transfer response when cart cleanup fails after API success", async () => {
