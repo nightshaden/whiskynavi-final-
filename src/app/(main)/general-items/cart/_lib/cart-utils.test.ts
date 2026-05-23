@@ -29,6 +29,7 @@ describe("cart utilities", () => {
     expect(normalizeCartQuantity(7)).toBe(7);
     expect(normalizeCartQuantity(7, 0)).toBe(7);
     expect(normalizeCartQuantity(7, -1)).toBe(7);
+    expect(normalizeCartQuantity(1, 0.5)).toBe(1);
   });
 
   it("returns only valid cart items", () => {
