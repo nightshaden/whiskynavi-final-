@@ -51,10 +51,19 @@ if (!apiMatches || apiMatches.length === 0) {
 // ─── 1-b. 충돌하기 쉬운 operationId 별칭 패치 ───
 
 const KV_STORE_UPDATE_ALIAS = "\nexport const updateKvStore = update1;\n";
+const kvStoreUpdatePattern =
+  /export const getUpdate1Url = \(\) => \{[\s\S]*?return `\/api\/admin\/kv-stores`[\s\S]*?\}\s*export const update1 = async \(update1Body: Update1Body, options\?: RequestInit\): Promise<update1Response> => \{[\s\S]*?customFetch<update1Response>\(getUpdate1Url\(\),[\s\S]*?method: 'PUT',/;
+const hasKvStoreUpdate = kvStoreUpdatePattern.test(apiSource);
 
-if (apiSource.includes("export const update1 = async") && !apiSource.includes("export const updateKvStore = update1")) {
+if (!hasKvStoreUpdate) {
+  throw new Error("patch api.ts: KV store update 함수 블록을 찾지 못했습니다.");
+}
+
+if (!apiSource.includes("export const updateKvStore = update1")) {
   apiSource = `${apiSource}${KV_STORE_UPDATE_ALIAS}`;
   console.log("patch api.ts: KV store update 별칭 패치 완료");
+} else {
+  console.log("patch api.ts: KV store update 별칭 이미 적용됨");
 }
 
 writeFileSync(API_FILE, apiSource, "utf-8");
