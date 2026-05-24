@@ -73,4 +73,26 @@ describe("proxy", () => {
     expect(requestCookieStore.get("next-auth.session-token")).toBe("new-session-token");
     expect(response.cookies.get("next-auth.session-token")?.value).toBe("new-session-token");
   });
+
+  it("복호화할 수 없는 세션 쿠키는 refresh하지 않고 요청을 계속 진행한다", async () => {
+    decodeMock.mockRejectedValueOnce(new Error("decryption operation failed"));
+
+    const { proxy } = await import("./proxy");
+    const request = {
+      headers: new Headers({
+        Cookie: "next-auth.session-token=stale-session-token",
+      }),
+      cookies: {
+        get: (name: string) =>
+          name === "next-auth.session-token" ? { name, value: "stale-session-token" } : undefined,
+        set: vi.fn(),
+      },
+    } as never;
+
+    const response = await proxy(request);
+
+    expect(callRefreshApiSingleFlightMock).not.toHaveBeenCalled();
+    expect(encodeMock).not.toHaveBeenCalled();
+    expect(response.cookies.get("next-auth.session-token")?.value).toBe("");
+  });
 });

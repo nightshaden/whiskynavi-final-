@@ -20,7 +20,15 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const decoded = await decode({ token: sessionCookie.value, secret });
+  let decoded: Awaited<ReturnType<typeof decode>>;
+  try {
+    decoded = await decode({ token: sessionCookie.value, secret });
+  } catch {
+    const response = NextResponse.next();
+    response.cookies.delete(sessionCookie.name);
+    return response;
+  }
+
   if (
     !decoded ||
     !shouldRefreshAuthToken({
