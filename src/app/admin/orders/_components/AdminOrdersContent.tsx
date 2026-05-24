@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Download, FileCheck2, FileUp, Search, Truck } from "lucide-react";
+import { Download, Eye, FileCheck2, FileUp, Search, Truck } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -585,9 +585,33 @@ export default function AdminOrdersContent({
                         <td className="px-4 py-4">
                           <div className="flex flex-wrap gap-2">
                             {!enableGeneralItemActions ? (
-                              <span className="text-sm text-gray-400">조회 전용</span>
+                              <>
+                                {order.id && (
+                                  <Button
+                                    type="button"
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => router.push(`${basePath}/${order.id}`)}
+                                  >
+                                    <Eye className="size-4" />
+                                    상세
+                                  </Button>
+                                )}
+                                <span className="text-sm text-gray-400">조회 전용</span>
+                              </>
                             ) : (
                               <>
+                                {order.id && (
+                                  <Button
+                                    type="button"
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => router.push(`${basePath}/${order.id}`)}
+                                  >
+                                    <Eye className="size-4" />
+                                    상세
+                                  </Button>
+                                )}
                                 {hasAction(order, "CONFIRM_BANK_TRANSFER") && (
                                   <Button
                                     type="button"

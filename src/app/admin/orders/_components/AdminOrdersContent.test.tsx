@@ -1,5 +1,6 @@
 import type { OrderResponse } from "@/apis/generated/api";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import AdminOrdersContent from "./AdminOrdersContent";
 
@@ -79,5 +80,32 @@ describe("AdminOrdersContent", () => {
     expect(screen.getByText("상품 7,000원")).toBeInTheDocument();
     expect(screen.getByText("배송비 3,000원")).toBeInTheDocument();
     expect(screen.getByText("총 10,000원")).toBeInTheDocument();
+  });
+
+  it("상세 버튼을 누르면 주문 상세 페이지로 이동한다", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <AdminOrdersContent
+        searchParams={{}}
+        totalElements={1}
+        basePath="/admin/general-item-orders"
+        orders={[
+          {
+            id: 123,
+            orderNumber: "ODR-DETAIL-1",
+            itemName: "단건 상품",
+            requestedQuantity: 1,
+            totalPrice: 5000,
+            customer: { name: "김관리", guest: false },
+            availableAdminActions: [],
+          } satisfies OrderResponse,
+        ]}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "상세" }));
+
+    expect(push).toHaveBeenCalledWith("/admin/general-item-orders/123");
   });
 });
