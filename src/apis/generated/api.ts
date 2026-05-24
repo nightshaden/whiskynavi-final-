@@ -394,6 +394,8 @@ export interface OrderItemResponse {
   itemName?: string;
   /** 상품 라인 합계 */
   lineTotalPrice?: number;
+  /** 주문 상품 라인 ID */
+  orderItemId?: number;
   /** 판매 상품 ID */
   productId?: number;
   /** 판매 상품 유형 */
@@ -479,6 +481,26 @@ export interface OrderPaymentResponse {
 }
 
 /**
+ * 주문 금액 요약
+ */
+export interface OrderPriceSummaryResponse {
+  /** 할인 금액. 현재 할인 정책이 없어 0으로 내려간다. */
+  discountAmount?: number;
+  /** 무료배송 적용 여부 */
+  freeShippingApplied?: boolean;
+  /** 무료배송까지 남은 금액 */
+  freeShippingRemainingAmount?: number;
+  /** 무료배송 기준 금액 */
+  freeShippingThreshold?: number;
+  /** 상품 합계 금액 */
+  itemsTotalPrice?: number;
+  /** 배송비 */
+  shippingFee?: number;
+  /** 최종 결제 금액 */
+  totalPrice?: number;
+}
+
+/**
  * 판매 상품 유형
  */
 export type OrderResponseProductType = typeof OrderResponseProductType[keyof typeof OrderResponseProductType];
@@ -517,6 +539,8 @@ export interface OrderResponse {
   createdAt?: string;
   customer?: OrderCustomerResponse;
   delivery?: OrderDeliveryResponse;
+  /** 무료배송 적용 여부 */
+  freeShippingApplied?: boolean;
   /** 무료배송 기준 금액 */
   freeShippingThreshold?: number;
   /** 비회원 주문 안내 이메일 */
@@ -531,12 +555,18 @@ export interface OrderResponse {
   itemName?: string;
   /** 주문 상품 라인 목록 */
   items?: OrderItemResponse[];
+  /** 주문 상품 라인 수 */
+  itemsCount?: number;
+  /** 목록 표시용 상품 요약. 예: 대표 상품 외 2건 */
+  itemsSummary?: string;
   /** 상품 합계 금액 */
   itemsTotalPrice?: number;
   /** Order note */
   orderNote?: string;
   /** 주문 번호 */
   orderNumber?: string;
+  /** 주문 생성 방식. SINGLE_ITEM 또는 CART */
+  orderSource?: string;
   /** 주문 상태.
 일반 아이템 배송 주문 주요 흐름:
 PAYMENT_PENDING -> ORDER_PREPARING -> SHIPPING -> DELIVERY_COMPLETED,
@@ -547,6 +577,7 @@ REFUND_REJECTED 주문은 발송 처리로 SHIPPING 전환이 가능하다.
   /** 판매 유형 */
   orderType?: OrderResponseOrderType;
   payment?: OrderPaymentResponse;
+  priceSummary?: OrderPriceSummaryResponse;
   /** 판매 상품 ID */
   productId?: number;
   /** 판매 상품 유형 */
@@ -563,8 +594,12 @@ REFUND_REJECTED 주문은 발송 처리로 SHIPPING 전환이 가능하다.
   saleType?: OrderResponseSaleType;
   /** 배송비 */
   shippingFee?: number;
+  /** 배송비 정책 적용 여부 */
+  shippingPolicyEnabled?: boolean;
   /** 총액 */
   totalPrice?: number;
+  /** 전체 주문 수량 합계 */
+  totalQuantity?: number;
   /** 단가 */
   unitPrice?: number;
   /** 수정 시각 */

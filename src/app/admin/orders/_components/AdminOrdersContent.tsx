@@ -89,6 +89,35 @@ function formatCurrency(amount?: number) {
   return `${amount.toLocaleString("ko-KR")}원`;
 }
 
+function getOrderSourceLabel(order: OrderResponse) {
+  if (order.orderSource === "CART") return "장바구니";
+  if (order.orderSource === "SINGLE_ITEM") return "단건";
+  if ((order.itemsCount ?? order.items?.length ?? 0) > 1) return "장바구니";
+  return null;
+}
+
+function getOrderItemsSummary(order: OrderResponse) {
+  return order.itemsSummary || order.itemName || order.saleTitle || "-";
+}
+
+function getOrderTotalQuantity(order: OrderResponse) {
+  return (
+    order.totalQuantity ??
+    order.items?.reduce((sum, item) => sum + (item.quantity ?? 0), 0) ??
+    order.requestedQuantity ??
+    0
+  );
+}
+
+function getOrderPriceSummary(order: OrderResponse) {
+  return {
+    freeShippingApplied: order.priceSummary?.freeShippingApplied ?? order.freeShippingApplied,
+    itemsTotalPrice: order.priceSummary?.itemsTotalPrice ?? order.itemsTotalPrice,
+    shippingFee: order.priceSummary?.shippingFee ?? order.shippingFee,
+    totalPrice: order.priceSummary?.totalPrice ?? order.totalPrice,
+  };
+}
+
 function formatDate(value?: string) {
   if (!value) return "-";
   return new Date(value).toLocaleString("ko-KR", {
@@ -459,6 +488,16 @@ export default function AdminOrdersContent({
                     const statusColor = order.orderStatus
                       ? (ORDER_STATUS_COLOR[order.orderStatus] ?? "bg-gray-100 text-gray-700")
                       : "bg-gray-100 text-gray-700";
+                    const lineItems = order.items ?? [];
+                    const shownLineItems = lineItems.slice(0, 2);
+                    const remainingItemCount = Math.max(
+                      (order.itemsCount ?? lineItems.length) - shownLineItems.length,
+                      0,
+                    );
+                    const priceSummary = getOrderPriceSummary(order);
+                    const totalQuantity = getOrderTotalQuantity(order);
+                    const sourceLabel = getOrderSourceLabel(order);
+                    const hasPriceBreakdown = priceSummary.itemsTotalPrice != null || priceSummary.shippingFee != null;
 
                     return (
                       <tr key={order.id} className="align-top transition-colors hover:bg-gray-50">
@@ -477,9 +516,43 @@ export default function AdminOrdersContent({
                           <div className="text-xs text-gray-500">{order.customer?.guest ? "비회원" : "회원"}</div>
                         </td>
                         <td className="px-4 py-4 text-sm text-gray-700">
-                          <div className="font-medium text-gray-900">{order.itemName || order.saleTitle || "-"}</div>
-                          <div>수량 {order.requestedQuantity ?? 0}개</div>
-                          <div>{formatCurrency(order.totalPrice)}</div>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="font-medium text-gray-900">{getOrderItemsSummary(order)}</span>
+                            {sourceLabel && (
+                              <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
+                                {sourceLabel}
+                              </span>
+                            )}
+                            {order.itemsCount != null && (
+                              <span className="rounded-full bg-amber-50 px-2 py-0.5 text-xs text-amber-700">
+                                {order.itemsCount}건
+                              </span>
+                            )}
+                          </div>
+                          <div className="mt-1">총 수량 {totalQuantity}개</div>
+                          {shownLineItems.length > 0 && (
+                            <ul className="mt-2 space-y-1 text-xs text-gray-500">
+                              {shownLineItems.map((item, index) => (
+                                <li key={item.orderItemId ?? `${item.productId ?? "item"}-${index}`}>
+                                  {item.itemName || item.saleTitle || "-"} · {item.quantity ?? 0}개 ·{" "}
+                                  {formatCurrency(item.lineTotalPrice)}
+                                </li>
+                              ))}
+                              {remainingItemCount > 0 && <li>외 {remainingItemCount}개 상품</li>}
+                            </ul>
+                          )}
+                          {hasPriceBreakdown ? (
+                            <div className="mt-2 space-y-0.5 text-xs text-gray-500">
+                              <div>상품 {formatCurrency(priceSummary.itemsTotalPrice)}</div>
+                              <div>배송비 {formatCurrency(priceSummary.shippingFee)}</div>
+                              <div className="font-medium text-gray-900">
+                                총 {formatCurrency(priceSummary.totalPrice)}
+                              </div>
+                              {priceSummary.freeShippingApplied && <div className="text-green-700">무료배송 적용</div>}
+                            </div>
+                          ) : (
+                            <div className="mt-1">{formatCurrency(priceSummary.totalPrice)}</div>
+                          )}
                         </td>
                         <td className="px-4 py-4 text-sm text-gray-700">
                           <div>{order.payment?.paymentMethod ?? "-"}</div>
