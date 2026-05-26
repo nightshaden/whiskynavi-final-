@@ -4,7 +4,7 @@ import Image from "next/image";
 import type React from "react";
 
 interface AdminProductTableProps {
-  paginatedData: any[];
+  paginatedData: AdminProductTableProduct[];
   brandFilter: string;
   showBrandFilter: boolean;
   setShowBrandFilter: (show: boolean) => void;
@@ -16,8 +16,23 @@ interface AdminProductTableProps {
   availableDistilleries: string[];
   setCurrentPage: (page: number) => void;
   setSelectedProduct: (id: number) => void;
-  setProductDetails: (product: any) => void;
+  setProductDetails: (product: AdminProductTableProduct) => void;
   setIsEditMode: (mode: boolean) => void;
+}
+
+interface AdminProductTableProduct {
+  id: number;
+  imgUrl?: string;
+  name: string;
+  brand?: string;
+  distillery?: string;
+  series?: string;
+  caskType?: string;
+  caskNumber?: string;
+  abv?: number;
+  capacity?: number;
+  distillationDate?: string;
+  bottledDate?: string;
 }
 
 export const AdminProductTable: React.FC<AdminProductTableProps> = ({
@@ -163,7 +178,7 @@ export const AdminProductTable: React.FC<AdminProductTableProps> = ({
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100">
-          {paginatedData.map((product: any) => (
+          {paginatedData.map((product) => (
             <tr key={product.id} className="transition-colors hover:bg-gray-50">
               <td className="px-2 py-1.5 text-xs whitespace-nowrap text-gray-900">{product.id}</td>
               <td className="px-2 py-1.5 whitespace-nowrap">

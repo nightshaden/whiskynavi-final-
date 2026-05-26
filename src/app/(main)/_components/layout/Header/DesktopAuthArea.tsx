@@ -17,12 +17,20 @@ const DesktopAuthArea: FC<DesktopAuthAreaProps> = ({ onOpenUserMenu }) => {
 
   if (!session) {
     return (
-      <Link
-        href="/sign-in"
-        className="typo-bold-14 border border-white/30 px-5 py-1.5 text-white transition-colors hover:border-white/50"
-      >
-        로그인
-      </Link>
+      <div className="flex items-center gap-3">
+        <Link
+          href="/orders/guest"
+          className="typo-medium-12 text-white/60 underline-offset-4 transition-colors hover:text-white hover:underline"
+        >
+          비회원 주문조회
+        </Link>
+        <Link
+          href="/sign-in"
+          className="typo-bold-14 border border-white/30 px-5 py-1.5 text-white transition-colors hover:border-white/50"
+        >
+          로그인
+        </Link>
+      </div>
     );
   }
 

@@ -67,9 +67,18 @@ interface UserDetailEditProps {
 
 type UserDetailProps = UserDetailViewProps | UserDetailEditProps;
 
+type UserExtWithSocialConnections = NonNullable<AdminUserResponse["userExt"]> & {
+  socialConnections?: {
+    google?: boolean;
+    kakao?: boolean;
+    naver?: boolean;
+  };
+};
+
 // ─── 컴포넌트 ────────────────────────────────────────────────────
 export default function AdminUserDetailSection(props: UserDetailProps) {
   const { isEditMode, userDetails, orderSummary, onStatusToggle } = props;
+  const userExt = userDetails.userExt as UserExtWithSocialConnections | undefined;
 
   const onAddRole = isEditMode ? props.onAddRole : undefined;
   const onRemoveRole = isEditMode ? props.onRemoveRole : undefined;
@@ -271,25 +280,25 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                 </div>
 
                 {/* 소셜 로그인 연동 정보 */}
-                {(userDetails.userExt as any)?.socialConnections && (
+                {userExt?.socialConnections && (
                   <div className="mt-6">
                     <Label htmlFor="socialConnections" className="typo-bold-14 mb-3 block text-gray-700">
                       소셜 로그인 연동
                     </Label>
                     <div className="flex gap-2">
-                      {(userDetails.userExt as any)?.socialConnections?.google && (
+                      {userExt.socialConnections.google && (
                         <div className="flex items-center gap-2 rounded-lg border-2 border-red-200 bg-white px-3 py-2">
                           <IconGoogle size={20} />
                           <span className="typo-medium-14 text-gray-700">Google</span>
                         </div>
                       )}
-                      {(userDetails.userExt as any)?.socialConnections?.kakao && (
+                      {userExt.socialConnections.kakao && (
                         <div className="flex items-center gap-2 rounded-lg bg-[#FEE500] px-3 py-2">
                           <IconKakao size={20} />
                           <span className="typo-medium-14 text-gray-900">Kakao</span>
                         </div>
                       )}
-                      {(userDetails.userExt as any)?.socialConnections?.naver && (
+                      {userExt.socialConnections.naver && (
                         <div className="flex items-center gap-2 rounded-lg bg-[#03C75A] px-3 py-2">
                           <IconNaver size={20} />
                           <span className="typo-medium-14 text-white">Naver</span>

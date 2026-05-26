@@ -40,8 +40,8 @@ export const ORDER_STATUS_LABEL: Record<string, string> = {
   RECEIPT_PENDING: "수령 대기",
   RECEIPT_COMPLETED: "수령 완료",
   ORDER_CANCELED: "주문 취소",
-  REFUND_REQUESTED: "환불 요청",
-  REFUND_COMPLETED: "환불 완료",
+  CANCEL_REQUESTED: "취소 요청",
+  CANCEL_REJECTED: "취소 거절",
 };
 
 export const ORDER_STATUS_COLOR: Record<string, string> = {
@@ -53,8 +53,8 @@ export const ORDER_STATUS_COLOR: Record<string, string> = {
   RECEIPT_PENDING: "bg-amber-100 text-amber-700",
   RECEIPT_COMPLETED: "bg-green-100 text-green-700",
   ORDER_CANCELED: "bg-gray-200 text-gray-700",
-  REFUND_REQUESTED: "bg-red-100 text-red-700",
-  REFUND_COMPLETED: "bg-red-100 text-red-700",
+  CANCEL_REQUESTED: "bg-red-100 text-red-700",
+  CANCEL_REJECTED: "bg-amber-100 text-amber-700",
 };
 
 // ─── 예약 신청 상태 매핑 ──────────────────────────────────────

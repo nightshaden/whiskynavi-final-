@@ -263,9 +263,8 @@ export const AdminDeliveryCsvRowResultOrderStatus = {
   RECEIPT_PENDING: 'RECEIPT_PENDING',
   RECEIPT_COMPLETED: 'RECEIPT_COMPLETED',
   ORDER_CANCELED: 'ORDER_CANCELED',
-  REFUND_REQUESTED: 'REFUND_REQUESTED',
-  REFUND_REJECTED: 'REFUND_REJECTED',
-  REFUND_COMPLETED: 'REFUND_COMPLETED',
+  CANCEL_REQUESTED: 'CANCEL_REQUESTED',
+  CANCEL_REJECTED: 'CANCEL_REJECTED',
 } as const;
 
 /**
@@ -364,11 +363,60 @@ export interface OrderDeliveryResponse {
 }
 
 /**
+ * 판매 상품 유형
+ */
+export type OrderItemResponseProductType = typeof OrderItemResponseProductType[keyof typeof OrderItemResponseProductType];
+
+
+export const OrderItemResponseProductType = {
+  BOTTLE: 'BOTTLE',
+  ITEM: 'ITEM',
+} as const;
+
+/**
+ * 판매 공고 유형
+ */
+export type OrderItemResponseSaleType = typeof OrderItemResponseSaleType[keyof typeof OrderItemResponseSaleType];
+
+
+export const OrderItemResponseSaleType = {
+  RESERVATION: 'RESERVATION',
+  PICKUP: 'PICKUP',
+  GENERAL: 'GENERAL',
+} as const;
+
+/**
+ * 주문 상품 라인 응답 정보
+ */
+export interface OrderItemResponse {
+  /** 상품명 */
+  itemName?: string;
+  /** 상품 라인 합계 */
+  lineTotalPrice?: number;
+  /** 주문 상품 라인 ID */
+  orderItemId?: number;
+  /** 판매 상품 ID */
+  productId?: number;
+  /** 판매 상품 유형 */
+  productType?: OrderItemResponseProductType;
+  /** 수량 */
+  quantity?: number;
+  /** 판매 공고 ID */
+  saleAnnouncementId?: number;
+  /** 판매 공고 제목 */
+  saleTitle?: string;
+  /** 판매 공고 유형 */
+  saleType?: OrderItemResponseSaleType;
+  /** 단가 */
+  unitPrice?: number;
+}
+
+/**
  * 주문 상태.
 일반 아이템 배송 주문 주요 흐름:
 PAYMENT_PENDING -> ORDER_PREPARING -> SHIPPING -> DELIVERY_COMPLETED,
-ORDER_PREPARING -> REFUND_REQUESTED -> REFUND_COMPLETED 또는 REFUND_REJECTED.
-REFUND_REJECTED 주문은 발송 처리로 SHIPPING 전환이 가능하다.
+ORDER_PREPARING 또는 CANCEL_REQUESTED -> ORDER_CANCELED,
+CANCEL_REJECTED 주문은 발송 처리로 SHIPPING 전환이 가능하다.
 
  */
 export type OrderResponseOrderStatus = typeof OrderResponseOrderStatus[keyof typeof OrderResponseOrderStatus];
@@ -384,9 +432,8 @@ export const OrderResponseOrderStatus = {
   RECEIPT_PENDING: 'RECEIPT_PENDING',
   RECEIPT_COMPLETED: 'RECEIPT_COMPLETED',
   ORDER_CANCELED: 'ORDER_CANCELED',
-  REFUND_REQUESTED: 'REFUND_REQUESTED',
-  REFUND_REJECTED: 'REFUND_REJECTED',
-  REFUND_COMPLETED: 'REFUND_COMPLETED',
+  CANCEL_REQUESTED: 'CANCEL_REQUESTED',
+  CANCEL_REJECTED: 'CANCEL_REJECTED',
 } as const;
 
 /**
@@ -432,6 +479,26 @@ export interface OrderPaymentResponse {
 }
 
 /**
+ * 주문 금액 요약
+ */
+export interface OrderPriceSummaryResponse {
+  /** 할인 금액. 현재 할인 정책이 없어 0으로 내려간다. */
+  discountAmount?: number;
+  /** 무료배송 적용 여부 */
+  freeShippingApplied?: boolean;
+  /** 무료배송까지 남은 금액 */
+  freeShippingRemainingAmount?: number;
+  /** 무료배송 기준 금액 */
+  freeShippingThreshold?: number;
+  /** 상품 합계 금액 */
+  itemsTotalPrice?: number;
+  /** 배송비 */
+  shippingFee?: number;
+  /** 최종 결제 금액 */
+  totalPrice?: number;
+}
+
+/**
  * 판매 상품 유형
  */
 export type OrderResponseProductType = typeof OrderResponseProductType[keyof typeof OrderResponseProductType];
@@ -470,6 +537,10 @@ export interface OrderResponse {
   createdAt?: string;
   customer?: OrderCustomerResponse;
   delivery?: OrderDeliveryResponse;
+  /** 무료배송 적용 여부 */
+  freeShippingApplied?: boolean;
+  /** 무료배송 기준 금액 */
+  freeShippingThreshold?: number;
   /** 비회원 주문 안내 이메일 */
   guestEmail?: string;
   /** 비회원 주문 안내 휴대폰 번호 */
@@ -480,20 +551,31 @@ export interface OrderResponse {
   importerId?: number;
   /** 상품명 */
   itemName?: string;
+  /** 주문 상품 라인 목록 */
+  items?: OrderItemResponse[];
+  /** 주문 상품 라인 수 */
+  itemsCount?: number;
+  /** 목록 표시용 상품 요약. 예: 대표 상품 외 2건 */
+  itemsSummary?: string;
+  /** 상품 합계 금액 */
+  itemsTotalPrice?: number;
   /** Order note */
   orderNote?: string;
   /** 주문 번호 */
   orderNumber?: string;
+  /** 주문 생성 방식. SINGLE_ITEM 또는 CART */
+  orderSource?: string;
   /** 주문 상태.
 일반 아이템 배송 주문 주요 흐름:
 PAYMENT_PENDING -> ORDER_PREPARING -> SHIPPING -> DELIVERY_COMPLETED,
-ORDER_PREPARING -> REFUND_REQUESTED -> REFUND_COMPLETED 또는 REFUND_REJECTED.
-REFUND_REJECTED 주문은 발송 처리로 SHIPPING 전환이 가능하다.
+ORDER_PREPARING 또는 CANCEL_REQUESTED -> ORDER_CANCELED,
+CANCEL_REJECTED 주문은 발송 처리로 SHIPPING 전환이 가능하다.
  */
   orderStatus?: OrderResponseOrderStatus;
   /** 판매 유형 */
   orderType?: OrderResponseOrderType;
   payment?: OrderPaymentResponse;
+  priceSummary?: OrderPriceSummaryResponse;
   /** 판매 상품 ID */
   productId?: number;
   /** 판매 상품 유형 */
@@ -508,8 +590,14 @@ REFUND_REJECTED 주문은 발송 처리로 SHIPPING 전환이 가능하다.
   saleTitle?: string;
   /** 판매 공고 유형 */
   saleType?: OrderResponseSaleType;
+  /** 배송비 */
+  shippingFee?: number;
+  /** 배송비 정책 적용 여부 */
+  shippingPolicyEnabled?: boolean;
   /** 총액 */
   totalPrice?: number;
+  /** 전체 주문 수량 합계 */
+  totalQuantity?: number;
   /** 단가 */
   unitPrice?: number;
   /** 수정 시각 */
@@ -524,7 +612,7 @@ REFUND_REJECTED 주문은 발송 처리로 SHIPPING 전환이 가능하다.
 export interface AdminUserOrderSummaryResponse {
   /** 취소 주문 총액 */
   canceledTotalAmount?: number;
-  /** 취소와 환불 완료 주문을 제외한 유효 주문 총액 */
+  /** 취소 주문을 제외한 유효 주문 총액 */
   effectiveTotalAmount?: number;
   /** 다음 페이지 존재 여부 */
   hasNext?: boolean;
@@ -536,9 +624,9 @@ export interface AdminUserOrderSummaryResponse {
   pageNumber?: number;
   /** 페이지 크기 */
   pageSize?: number;
-  /** 환불 요청 중 주문 총액 */
+  /** 취소 요청 중 주문 총액 */
   refundRequestedTotalAmount?: number;
-  /** 환불 완료 주문 총액 */
+  /** 취소 완료 주문 총액 */
   refundedTotalAmount?: number;
   /** 상태와 무관한 전체 주문 총액. 기존 관리자 화면 호환용 값이다. */
   totalAmount?: number;
@@ -1507,6 +1595,85 @@ export interface BottleSearchRequest {
   sortDirection?: string;
   vintageFrom?: number;
   vintageTo?: number;
+}
+
+export interface CartGeneralItemDeliveryOrderRequest {
+  /**
+   * 배송 주소
+   * @minLength 0
+   * @maxLength 500
+   */
+  deliveryAddress?: string;
+  /**
+   * 배송 메모
+   * @minLength 0
+   * @maxLength 500
+   */
+  deliveryMemo?: string;
+  /**
+   * 비회원 주문 안내 이메일
+   * @minLength 0
+   * @maxLength 100
+   */
+  guestEmail?: string;
+  /**
+   * 주문 메모
+   * @minLength 0
+   * @maxLength 500
+   */
+  orderNote?: string;
+  /**
+   * 수령인 이름
+   * @minLength 0
+   * @maxLength 100
+   */
+  receiverName?: string;
+  /**
+   * 수령인 휴대폰 번호
+   * @minLength 0
+   * @maxLength 20
+   */
+  receiverPhone?: string;
+}
+
+export interface CartItemQuantityRequest {
+  quantity: number;
+}
+
+export interface CartItemRequest {
+  quantity: number;
+  saleAnnouncementId: number;
+}
+
+export interface CartItemResponse {
+  availableQuantity?: number;
+  cartItemId?: number;
+  invalidReason?: string;
+  itemName?: string;
+  lineTotalPrice?: number;
+  maxOrderQuantity?: number;
+  quantity?: number;
+  saleAnnouncementId?: number;
+  unitPrice?: number;
+  valid?: boolean;
+}
+
+export interface CartQuoteResponse {
+  cartId?: number;
+  freeShipping?: boolean;
+  freeShippingRemainingAmount?: number;
+  freeShippingThreshold?: number;
+  items?: CartItemResponse[];
+  itemsTotalPrice?: number;
+  shippingFee?: number;
+  totalPrice?: number;
+}
+
+export interface CartResponse {
+  cartId?: number;
+  cartToken?: string;
+  items?: CartItemResponse[];
+  userId?: number;
 }
 
 export interface ChangePasswordRequest {
@@ -2598,17 +2765,16 @@ export interface OrderQueueStatusResponse {
 
 일반 아이템 배송 주문에서 허용되는 관리자 상태 전이:
 - PAYMENT_PENDING -> ORDER_CANCELED: 입금 전 주문 취소
-- ORDER_PREPARING -> ORDER_CANCELED: 결제 완료 전 주문 취소
-- ORDER_PREPARING -> REFUND_REQUESTED: 결제 완료 주문 환불 요청
-- REFUND_REQUESTED -> REFUND_COMPLETED: 환불 완료 및 재고 복구
-- REFUND_REQUESTED -> REFUND_REJECTED: 환불 거절 후 배송 진행 가능
+- ORDER_PREPARING -> ORDER_CANCELED: 관리자 일방 취소 및 재고 복구
+- CANCEL_REQUESTED -> ORDER_CANCELED: 고객 취소 요청 승인 및 재고 복구
+- CANCEL_REQUESTED -> CANCEL_REJECTED: 고객 취소 요청 거절 후 배송 진행 가능
 
 배송 상태 전이(일반 아이템 배송 주문 전용):
-- ORDER_PREPARING 또는 REFUND_REJECTED -> SHIPPING: PATCH /api/admin/orders/{orderId}/delivery/ship
+- ORDER_PREPARING 또는 CANCEL_REJECTED -> SHIPPING: PATCH /api/admin/orders/{orderId}/delivery/ship
 - SHIPPING -> DELIVERY_COMPLETED: PATCH /api/admin/orders/{orderId}/delivery/complete
 
 ORDER_REQUESTED, PAYMENT_PENDING 같은 초기 상태로 되돌릴 수 없고,
-SHIPPING/DELIVERY_COMPLETED 단계에서는 취소 또는 환불 요청으로 전환할 수 없다.
+SHIPPING/DELIVERY_COMPLETED 단계에서는 취소 요청으로 전환할 수 없다.
 
  */
 export type OrderStatusUpdateRequestOrderStatus = typeof OrderStatusUpdateRequestOrderStatus[keyof typeof OrderStatusUpdateRequestOrderStatus];
@@ -2624,15 +2790,14 @@ export const OrderStatusUpdateRequestOrderStatus = {
   RECEIPT_PENDING: 'RECEIPT_PENDING',
   RECEIPT_COMPLETED: 'RECEIPT_COMPLETED',
   ORDER_CANCELED: 'ORDER_CANCELED',
-  REFUND_REQUESTED: 'REFUND_REQUESTED',
-  REFUND_REJECTED: 'REFUND_REJECTED',
-  REFUND_COMPLETED: 'REFUND_COMPLETED',
+  CANCEL_REQUESTED: 'CANCEL_REQUESTED',
+  CANCEL_REJECTED: 'CANCEL_REJECTED',
 } as const;
 
 /**
  * 주문 상태 변경 요청.
 
-일반 아이템 배송 주문의 관리자 상태 변경 API는 취소/환불 판단만 처리한다.
+일반 아이템 배송 주문의 관리자 상태 변경 API는 주문 취소 판단만 처리한다.
 배송 시작과 배송 완료는 배송 전용 API를 사용해야 하며, 이 요청으로 SHIPPING 또는 DELIVERY_COMPLETED를 직접 지정할 수 없다.
 
  */
@@ -2641,21 +2806,20 @@ export interface OrderStatusUpdateRequest {
 
 일반 아이템 배송 주문에서 허용되는 관리자 상태 전이:
 - PAYMENT_PENDING -> ORDER_CANCELED: 입금 전 주문 취소
-- ORDER_PREPARING -> ORDER_CANCELED: 결제 완료 전 주문 취소
-- ORDER_PREPARING -> REFUND_REQUESTED: 결제 완료 주문 환불 요청
-- REFUND_REQUESTED -> REFUND_COMPLETED: 환불 완료 및 재고 복구
-- REFUND_REQUESTED -> REFUND_REJECTED: 환불 거절 후 배송 진행 가능
+- ORDER_PREPARING -> ORDER_CANCELED: 관리자 일방 취소 및 재고 복구
+- CANCEL_REQUESTED -> ORDER_CANCELED: 고객 취소 요청 승인 및 재고 복구
+- CANCEL_REQUESTED -> CANCEL_REJECTED: 고객 취소 요청 거절 후 배송 진행 가능
 
 배송 상태 전이(일반 아이템 배송 주문 전용):
-- ORDER_PREPARING 또는 REFUND_REJECTED -> SHIPPING: PATCH /api/admin/orders/{orderId}/delivery/ship
+- ORDER_PREPARING 또는 CANCEL_REJECTED -> SHIPPING: PATCH /api/admin/orders/{orderId}/delivery/ship
 - SHIPPING -> DELIVERY_COMPLETED: PATCH /api/admin/orders/{orderId}/delivery/complete
 
 ORDER_REQUESTED, PAYMENT_PENDING 같은 초기 상태로 되돌릴 수 없고,
-SHIPPING/DELIVERY_COMPLETED 단계에서는 취소 또는 환불 요청으로 전환할 수 없다.
+SHIPPING/DELIVERY_COMPLETED 단계에서는 취소 요청으로 전환할 수 없다.
  */
   orderStatus: OrderStatusUpdateRequestOrderStatus;
   /**
-   * 취소, 환불 요청, 환불 거절, 환불 완료 처리 사유. 해당 상태로 변경할 때는 필수다.
+   * 취소 요청, 취소 거절, 취소 완료 처리 사유. 해당 상태로 변경할 때는 필수다.
    * @minLength 0
    * @maxLength 500
    */
@@ -4000,6 +4164,20 @@ export interface SaleAnnouncementUpdateRequest {
   totalQuantity?: number;
 }
 
+export interface ShippingPolicyResponse {
+  baseShippingFee?: number;
+  enabled?: boolean;
+  freeShippingThreshold?: number;
+}
+
+export interface ShippingPolicyUpdateRequest {
+  /** @minimum 0 */
+  baseShippingFee: number;
+  enabled: boolean;
+  /** @minimum 0 */
+  freeShippingThreshold: number;
+}
+
 /**
  * 회원가입 요청 본문
  */
@@ -5138,7 +5316,7 @@ export type PostApiAdminKvStoreBody = {
   value?: string;
 };
 
-export type UpdateBody = {
+export type Update1Body = {
   /**
    * @minLength 0
    * @maxLength 32
@@ -5250,9 +5428,8 @@ export const GetApiAdminOrdersOrderStatus = {
   RECEIPT_PENDING: 'RECEIPT_PENDING',
   RECEIPT_COMPLETED: 'RECEIPT_COMPLETED',
   ORDER_CANCELED: 'ORDER_CANCELED',
-  REFUND_REQUESTED: 'REFUND_REQUESTED',
-  REFUND_REJECTED: 'REFUND_REJECTED',
-  REFUND_COMPLETED: 'REFUND_COMPLETED',
+  CANCEL_REQUESTED: 'CANCEL_REQUESTED',
+  CANCEL_REJECTED: 'CANCEL_REJECTED',
 } as const;
 
 export type GetApiAdminOrdersProductType = typeof GetApiAdminOrdersProductType[keyof typeof GetApiAdminOrdersProductType];
@@ -5352,9 +5529,8 @@ export const GetApiAdminOrdersDeliveryExportOrderStatus = {
   RECEIPT_PENDING: 'RECEIPT_PENDING',
   RECEIPT_COMPLETED: 'RECEIPT_COMPLETED',
   ORDER_CANCELED: 'ORDER_CANCELED',
-  REFUND_REQUESTED: 'REFUND_REQUESTED',
-  REFUND_REJECTED: 'REFUND_REJECTED',
-  REFUND_COMPLETED: 'REFUND_COMPLETED',
+  CANCEL_REQUESTED: 'CANCEL_REQUESTED',
+  CANCEL_REJECTED: 'CANCEL_REJECTED',
 } as const;
 
 export type GetApiAdminOrdersDeliveryExportProductType = typeof GetApiAdminOrdersDeliveryExportProductType[keyof typeof GetApiAdminOrdersDeliveryExportProductType];
@@ -5576,17 +5752,16 @@ export type PatchApiAdminOrdersOrderidDeliveryShipBody = {
 
 일반 아이템 배송 주문에서 허용되는 관리자 상태 전이:
 - PAYMENT_PENDING -> ORDER_CANCELED: 입금 전 주문 취소
-- ORDER_PREPARING -> ORDER_CANCELED: 결제 완료 전 주문 취소
-- ORDER_PREPARING -> REFUND_REQUESTED: 결제 완료 주문 환불 요청
-- REFUND_REQUESTED -> REFUND_COMPLETED: 환불 완료 및 재고 복구
-- REFUND_REQUESTED -> REFUND_REJECTED: 환불 거절 후 배송 진행 가능
+- ORDER_PREPARING -> ORDER_CANCELED: 관리자 일방 취소 및 재고 복구
+- CANCEL_REQUESTED -> ORDER_CANCELED: 고객 취소 요청 승인 및 재고 복구
+- CANCEL_REQUESTED -> CANCEL_REJECTED: 고객 취소 요청 거절 후 배송 진행 가능
 
 배송 상태 전이(일반 아이템 배송 주문 전용):
-- ORDER_PREPARING 또는 REFUND_REJECTED -> SHIPPING: PATCH /api/admin/orders/{orderId}/delivery/ship
+- ORDER_PREPARING 또는 CANCEL_REJECTED -> SHIPPING: PATCH /api/admin/orders/{orderId}/delivery/ship
 - SHIPPING -> DELIVERY_COMPLETED: PATCH /api/admin/orders/{orderId}/delivery/complete
 
 ORDER_REQUESTED, PAYMENT_PENDING 같은 초기 상태로 되돌릴 수 없고,
-SHIPPING/DELIVERY_COMPLETED 단계에서는 취소 또는 환불 요청으로 전환할 수 없다.
+SHIPPING/DELIVERY_COMPLETED 단계에서는 취소 요청으로 전환할 수 없다.
 
  */
 export type PatchApiAdminOrdersOrderidStatusBodyOrderStatus = typeof PatchApiAdminOrdersOrderidStatusBodyOrderStatus[keyof typeof PatchApiAdminOrdersOrderidStatusBodyOrderStatus];
@@ -5602,15 +5777,14 @@ export const PatchApiAdminOrdersOrderidStatusBodyOrderStatus = {
   RECEIPT_PENDING: 'RECEIPT_PENDING',
   RECEIPT_COMPLETED: 'RECEIPT_COMPLETED',
   ORDER_CANCELED: 'ORDER_CANCELED',
-  REFUND_REQUESTED: 'REFUND_REQUESTED',
-  REFUND_REJECTED: 'REFUND_REJECTED',
-  REFUND_COMPLETED: 'REFUND_COMPLETED',
+  CANCEL_REQUESTED: 'CANCEL_REQUESTED',
+  CANCEL_REJECTED: 'CANCEL_REJECTED',
 } as const;
 
 /**
  * 주문 상태 변경 요청.
 
-일반 아이템 배송 주문의 관리자 상태 변경 API는 취소/환불 판단만 처리한다.
+일반 아이템 배송 주문의 관리자 상태 변경 API는 주문 취소 판단만 처리한다.
 배송 시작과 배송 완료는 배송 전용 API를 사용해야 하며, 이 요청으로 SHIPPING 또는 DELIVERY_COMPLETED를 직접 지정할 수 없다.
 
  */
@@ -5619,21 +5793,20 @@ export type PatchApiAdminOrdersOrderidStatusBody = {
 
 일반 아이템 배송 주문에서 허용되는 관리자 상태 전이:
 - PAYMENT_PENDING -> ORDER_CANCELED: 입금 전 주문 취소
-- ORDER_PREPARING -> ORDER_CANCELED: 결제 완료 전 주문 취소
-- ORDER_PREPARING -> REFUND_REQUESTED: 결제 완료 주문 환불 요청
-- REFUND_REQUESTED -> REFUND_COMPLETED: 환불 완료 및 재고 복구
-- REFUND_REQUESTED -> REFUND_REJECTED: 환불 거절 후 배송 진행 가능
+- ORDER_PREPARING -> ORDER_CANCELED: 관리자 일방 취소 및 재고 복구
+- CANCEL_REQUESTED -> ORDER_CANCELED: 고객 취소 요청 승인 및 재고 복구
+- CANCEL_REQUESTED -> CANCEL_REJECTED: 고객 취소 요청 거절 후 배송 진행 가능
 
 배송 상태 전이(일반 아이템 배송 주문 전용):
-- ORDER_PREPARING 또는 REFUND_REJECTED -> SHIPPING: PATCH /api/admin/orders/{orderId}/delivery/ship
+- ORDER_PREPARING 또는 CANCEL_REJECTED -> SHIPPING: PATCH /api/admin/orders/{orderId}/delivery/ship
 - SHIPPING -> DELIVERY_COMPLETED: PATCH /api/admin/orders/{orderId}/delivery/complete
 
 ORDER_REQUESTED, PAYMENT_PENDING 같은 초기 상태로 되돌릴 수 없고,
-SHIPPING/DELIVERY_COMPLETED 단계에서는 취소 또는 환불 요청으로 전환할 수 없다.
+SHIPPING/DELIVERY_COMPLETED 단계에서는 취소 요청으로 전환할 수 없다.
  */
   orderStatus: PatchApiAdminOrdersOrderidStatusBodyOrderStatus;
   /**
-   * 취소, 환불 요청, 환불 거절, 환불 완료 처리 사유. 해당 상태로 변경할 때는 필수다.
+   * 취소 요청, 취소 거절, 취소 완료 처리 사유. 해당 상태로 변경할 때는 필수다.
    * @minLength 0
    * @maxLength 500
    */
@@ -5930,6 +6103,14 @@ export type PatchApiAdminSalesSaleidBody = {
   title?: string;
   /** 총 판매 가능 수량 */
   totalQuantity?: number;
+};
+
+export type UpdateBody = {
+  /** @minimum 0 */
+  baseShippingFee: number;
+  enabled: boolean;
+  /** @minimum 0 */
+  freeShippingThreshold: number;
 };
 
 export type GetApiAdminTaxInvoicesBusinessesBusinessidTaxInvoiceMonthlyPdfParams = {
@@ -6619,6 +6800,15 @@ export type PostApiBottlesReservationsNoticesNoticeidApplicationsBody = {
   userBusinessId: number;
 };
 
+export type AddItemBody = {
+  quantity: number;
+  saleAnnouncementId: number;
+};
+
+export type UpdateQuantityBody = {
+  quantity: number;
+};
+
 export type GetApiFundraisingCampaignsParams = {
 /**
  * Zero-based page index (0..N)
@@ -6886,7 +7076,22 @@ export type PostApiOrdersBody = {
   userId?: number;
 };
 
-export type PostApiOrdersGeneralItemsDeliveryBankTransferBody = {
+export type PostApiOrdersGeneralItemsDeliveryCartTossConfirmBody = {
+  /** 토스페이먼츠 승인 금액 */
+  amount: number;
+  /**
+   * 토스페이먼츠 paymentKey
+   * @minLength 1
+   */
+  paymentKey?: string;
+  /**
+   * 토스페이먼츠 주문 ID
+   * @minLength 1
+   */
+  pgOrderId?: string;
+};
+
+export type PostApiOrdersGeneralItemsDeliveryCartTossTicketsBody = {
   /**
    * 배송 주소
    * @minLength 0
@@ -6923,10 +7128,6 @@ export type PostApiOrdersGeneralItemsDeliveryBankTransferBody = {
    * @maxLength 20
    */
   receiverPhone?: string;
-  /** 요청 수량 */
-  requestedQuantity: number;
-  /** 판매 공고 ID */
-  saleAnnouncementId: number;
 };
 
 export type PostApiOrdersGeneralItemsDeliveryTossConfirmBody = {
@@ -8313,7 +8514,7 @@ export const getApiAdminBottlesReservationsApplicationsApplicationid = async (ap
 
 
 /**
- * 관리자가 신청을 취소 처리합니다. 요청 본문에 reason을 넣으면 취소 또는 환불 요청 사유로 저장합니다.
+ * 관리자가 신청을 취소 처리합니다. 요청 본문에 reason을 넣으면 취소 사유로 저장합니다.
  * @summary 예약 신청 취소
  */
 export type postApiAdminBottlesReservationsApplicationsApplicationidCancelResponse200 = {
@@ -9368,7 +9569,7 @@ export const getApiAdminItemsReservationsApplicationsApplicationid = async (appl
 
 
 /**
- * 관리자가 신청을 취소 처리합니다. 요청 본문에 reason을 넣으면 취소 또는 환불 요청 사유로 저장합니다.
+ * 관리자가 신청을 취소 처리합니다. 요청 본문에 reason을 넣으면 취소 사유로 저장합니다.
  * @summary 예약 신청 취소
  */
 export type postApiAdminItemsReservationsApplicationsApplicationidCancelResponse200 = {
@@ -9901,19 +10102,19 @@ export const postApiAdminKvStore = async (postApiAdminKvStoreBody: PostApiAdminK
 
 
 
-export type updateResponse200 = {
+export type update1Response200 = {
   data: KvStoreResponse
   status: 200
 }
     
-export type updateResponseSuccess = (updateResponse200) & {
+export type update1ResponseSuccess = (update1Response200) & {
   headers: Headers;
 };
 ;
 
-export type updateResponse = (updateResponseSuccess)
+export type update1Response = (update1ResponseSuccess)
 
-export const getUpdateUrl = () => {
+export const getUpdate1Url = () => {
 
 
   
@@ -9921,15 +10122,15 @@ export const getUpdateUrl = () => {
   return `/api/admin/kv-stores`
 }
 
-export const update = async (updateBody: UpdateBody, options?: RequestInit): Promise<updateResponse> => {
+export const update1 = async (update1Body: Update1Body, options?: RequestInit): Promise<update1Response> => {
   
-  return customFetch<updateResponse>(getUpdateUrl(),
+  return customFetch<update1Response>(getUpdate1Url(),
   {      
     ...options,
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
-      updateBody,)
+      update1Body,)
   }
 );}
 
@@ -10071,7 +10272,7 @@ export const getApiAdminOrders = async (params?: GetApiAdminOrdersParams, option
 
 /**
  * 일반 아이템 배송 주문 중 발송 가능한 주문을 한글 헤더 CSV로 내려받는다.
-대상 상태는 ORDER_PREPARING, REFUND_REJECTED다.
+대상 상태는 ORDER_PREPARING, CANCEL_REJECTED다.
 CSV 컬럼 순서는 주문번호, 수령인, 수령인연락처, 주소, 상품명, 수량, 배송메모, 배송사, 배송방법, 운송장번호, 발송시각이다.
 배송사가 비어 있는 주문은 CJ대한통운으로 기본 출력한다.
 관리자는 배송방법, 운송장번호, 발송시각을 채운 뒤 업로드할 수 있다.
@@ -10454,7 +10655,7 @@ export const getApiAdminOrdersOrderidDelivery = async (orderId: number, options?
 /**
  * 일반 아이템 배송 주문의 배송 정보만 수정한다.
 송장번호나 배송 완료 시각을 입력해도 주문 상태는 바뀌지 않는다.
-수정 가능 상태는 ORDER_PREPARING, REFUND_REJECTED, SHIPPING이다.
+수정 가능 상태는 ORDER_PREPARING, CANCEL_REJECTED, SHIPPING이다.
 DELIVERY_COMPLETED 이후에는 배송 이력 정합성을 위해 수정할 수 없다.
 
  * @summary 관리자 주문 배송 정보 수정
@@ -10535,7 +10736,7 @@ export const patchApiAdminOrdersOrderidDeliveryComplete = async (orderId: number
 
 /**
  * 일반 아이템 배송 주문을 SHIPPING으로 전환한다.
-허용 현재 상태는 ORDER_PREPARING 또는 REFUND_REJECTED이며, 운송장 번호가 필요하다.
+허용 현재 상태는 ORDER_PREPARING 또는 CANCEL_REJECTED이며, 운송장 번호가 필요하다.
 발송 성공 후 고객에게 배송사와 운송장 번호를 메일 및 문자로 안내한다.
 
  * @summary 관리자 주문 발송 처리
@@ -10576,51 +10777,13 @@ export const patchApiAdminOrdersOrderidDeliveryShip = async (orderId: number,
 
 
 /**
- * BANK_TRANSFER / DEPOSIT_WAITING / PAYMENT_PENDING 주문만 ORDER_PREPARING 및 DONE 상태로 전환한다.
- * @summary 관리자 계좌이체 입금 확인
- */
-export type patchApiAdminOrdersOrderidPaymentsBankTransferConfirmResponse200 = {
-  data: GeneralItemDeliveryOrderResponse
-  status: 200
-}
-    
-export type patchApiAdminOrdersOrderidPaymentsBankTransferConfirmResponseSuccess = (patchApiAdminOrdersOrderidPaymentsBankTransferConfirmResponse200) & {
-  headers: Headers;
-};
-;
-
-export type patchApiAdminOrdersOrderidPaymentsBankTransferConfirmResponse = (patchApiAdminOrdersOrderidPaymentsBankTransferConfirmResponseSuccess)
-
-export const getPatchApiAdminOrdersOrderidPaymentsBankTransferConfirmUrl = (orderId: number,) => {
-
-
-  
-
-  return `/api/admin/orders/${orderId}/payments/bank-transfer/confirm`
-}
-
-export const patchApiAdminOrdersOrderidPaymentsBankTransferConfirm = async (orderId: number, options?: RequestInit): Promise<patchApiAdminOrdersOrderidPaymentsBankTransferConfirmResponse> => {
-  
-  return customFetch<patchApiAdminOrdersOrderidPaymentsBankTransferConfirmResponse>(getPatchApiAdminOrdersOrderidPaymentsBankTransferConfirmUrl(orderId),
-  {      
-    ...options,
-    method: 'PATCH'
-    
-    
-  }
-);}
-
-
-
-/**
- * 취소와 환불 판단을 처리하는 관리자 상태 변경 API다.
+ * 주문 취소 판단을 처리하는 관리자 상태 변경 API다.
 
 일반 아이템 배송 주문 허용 전이:
 - PAYMENT_PENDING -> ORDER_CANCELED: 입금 전 주문 취소
-- ORDER_PREPARING -> ORDER_CANCELED: 결제 완료 전 주문 취소
-- ORDER_PREPARING -> REFUND_REQUESTED: 결제 완료 주문 환불 요청
-- REFUND_REQUESTED -> REFUND_COMPLETED: 환불 완료 및 재고 복구
-- REFUND_REQUESTED -> REFUND_REJECTED: 환불 거절 후 배송 진행 가능
+- ORDER_PREPARING -> ORDER_CANCELED: 관리자 일방 취소 및 재고 복구
+- CANCEL_REQUESTED -> ORDER_CANCELED: 고객 취소 요청 승인 및 재고 복구
+- CANCEL_REQUESTED -> CANCEL_REJECTED: 고객 취소 요청 거절 후 배송 진행 가능
 
 배송 상태 전이는 이 API에서 직접 처리하지 않는다.
 일반 아이템 배송 주문은 아래 배송 전용 API를 사용한다.
@@ -10929,6 +11092,73 @@ export const patchApiAdminSalesSaleid = async (saleId: number,
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
       patchApiAdminSalesSaleidBody,)
+  }
+);}
+
+
+
+export type getResponse200 = {
+  data: ShippingPolicyResponse
+  status: 200
+}
+    
+export type getResponseSuccess = (getResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getResponse = (getResponseSuccess)
+
+export const getGetUrl = () => {
+
+
+  
+
+  return `/api/admin/shipping-policy`
+}
+
+export const get = async ( options?: RequestInit): Promise<getResponse> => {
+  
+  return customFetch<getResponse>(getGetUrl(),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+export type updateResponse200 = {
+  data: ShippingPolicyResponse
+  status: 200
+}
+    
+export type updateResponseSuccess = (updateResponse200) & {
+  headers: Headers;
+};
+;
+
+export type updateResponse = (updateResponseSuccess)
+
+export const getUpdateUrl = () => {
+
+
+  
+
+  return `/api/admin/shipping-policy`
+}
+
+export const update = async (updateBody: UpdateBody, options?: RequestInit): Promise<updateResponse> => {
+  
+  return customFetch<updateResponse>(getUpdateUrl(),
+  {      
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      updateBody,)
   }
 );}
 
@@ -13139,6 +13369,207 @@ export const getApiBottlesId = async (id: number, options?: RequestInit): Promis
 
 
 
+export type getOrCreateResponse200 = {
+  data: CartResponse
+  status: 200
+}
+    
+export type getOrCreateResponseSuccess = (getOrCreateResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getOrCreateResponse = (getOrCreateResponseSuccess)
+
+export const getGetOrCreateUrl = () => {
+
+
+  
+
+  return `/api/carts`
+}
+
+export const getOrCreate = async ( options?: RequestInit): Promise<getOrCreateResponse> => {
+  
+  return customFetch<getOrCreateResponse>(getGetOrCreateUrl(),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+);}
+
+
+
+export type getCurrentResponse200 = {
+  data: CartResponse
+  status: 200
+}
+    
+export type getCurrentResponseSuccess = (getCurrentResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getCurrentResponse = (getCurrentResponseSuccess)
+
+export const getGetCurrentUrl = () => {
+
+
+  
+
+  return `/api/carts/current`
+}
+
+export const getCurrent = async ( options?: RequestInit): Promise<getCurrentResponse> => {
+  
+  return customFetch<getCurrentResponse>(getGetCurrentUrl(),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+export type addItemResponse200 = {
+  data: CartResponse
+  status: 200
+}
+    
+export type addItemResponseSuccess = (addItemResponse200) & {
+  headers: Headers;
+};
+;
+
+export type addItemResponse = (addItemResponseSuccess)
+
+export const getAddItemUrl = () => {
+
+
+  
+
+  return `/api/carts/items`
+}
+
+export const addItem = async (addItemBody: AddItemBody, options?: RequestInit): Promise<addItemResponse> => {
+  
+  return customFetch<addItemResponse>(getAddItemUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      addItemBody,)
+  }
+);}
+
+
+
+export type deleteItemResponse200 = {
+  data: CartResponse
+  status: 200
+}
+    
+export type deleteItemResponseSuccess = (deleteItemResponse200) & {
+  headers: Headers;
+};
+;
+
+export type deleteItemResponse = (deleteItemResponseSuccess)
+
+export const getDeleteItemUrl = (cartItemId: number,) => {
+
+
+  
+
+  return `/api/carts/items/${cartItemId}`
+}
+
+export const deleteItem = async (cartItemId: number, options?: RequestInit): Promise<deleteItemResponse> => {
+  
+  return customFetch<deleteItemResponse>(getDeleteItemUrl(cartItemId),
+  {      
+    ...options,
+    method: 'DELETE'
+    
+    
+  }
+);}
+
+
+
+export type updateQuantityResponse200 = {
+  data: CartResponse
+  status: 200
+}
+    
+export type updateQuantityResponseSuccess = (updateQuantityResponse200) & {
+  headers: Headers;
+};
+;
+
+export type updateQuantityResponse = (updateQuantityResponseSuccess)
+
+export const getUpdateQuantityUrl = (cartItemId: number,) => {
+
+
+  
+
+  return `/api/carts/items/${cartItemId}`
+}
+
+export const updateQuantity = async (cartItemId: number,
+    updateQuantityBody: UpdateQuantityBody, options?: RequestInit): Promise<updateQuantityResponse> => {
+  
+  return customFetch<updateQuantityResponse>(getUpdateQuantityUrl(cartItemId),
+  {      
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      updateQuantityBody,)
+  }
+);}
+
+
+
+export type quoteResponse200 = {
+  data: CartQuoteResponse
+  status: 200
+}
+    
+export type quoteResponseSuccess = (quoteResponse200) & {
+  headers: Headers;
+};
+;
+
+export type quoteResponse = (quoteResponseSuccess)
+
+export const getQuoteUrl = () => {
+
+
+  
+
+  return `/api/carts/quote`
+}
+
+export const quote = async ( options?: RequestInit): Promise<quoteResponse> => {
+  
+  return customFetch<quoteResponse>(getQuoteUrl(),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
 /**
  * @summary 모금 캠페인 목록 조회
  */
@@ -14056,37 +14487,74 @@ export const postApiOrders = async (postApiOrdersBody: PostApiOrdersBody, option
 
 
 /**
- * @summary 일반 아이템 배송 주문 계좌이체 생성
+ * @summary 장바구니 일반 아이템 배송 주문 토스 결제 승인 확정
  */
-export type postApiOrdersGeneralItemsDeliveryBankTransferResponse200 = {
+export type postApiOrdersGeneralItemsDeliveryCartTossConfirmResponse200 = {
   data: GeneralItemDeliveryOrderResponse
   status: 200
 }
     
-export type postApiOrdersGeneralItemsDeliveryBankTransferResponseSuccess = (postApiOrdersGeneralItemsDeliveryBankTransferResponse200) & {
+export type postApiOrdersGeneralItemsDeliveryCartTossConfirmResponseSuccess = (postApiOrdersGeneralItemsDeliveryCartTossConfirmResponse200) & {
   headers: Headers;
 };
 ;
 
-export type postApiOrdersGeneralItemsDeliveryBankTransferResponse = (postApiOrdersGeneralItemsDeliveryBankTransferResponseSuccess)
+export type postApiOrdersGeneralItemsDeliveryCartTossConfirmResponse = (postApiOrdersGeneralItemsDeliveryCartTossConfirmResponseSuccess)
 
-export const getPostApiOrdersGeneralItemsDeliveryBankTransferUrl = () => {
+export const getPostApiOrdersGeneralItemsDeliveryCartTossConfirmUrl = () => {
 
 
   
 
-  return `/api/orders/general-items/delivery/bank-transfer`
+  return `/api/orders/general-items/delivery/cart/toss/confirm`
 }
 
-export const postApiOrdersGeneralItemsDeliveryBankTransfer = async (postApiOrdersGeneralItemsDeliveryBankTransferBody: PostApiOrdersGeneralItemsDeliveryBankTransferBody, options?: RequestInit): Promise<postApiOrdersGeneralItemsDeliveryBankTransferResponse> => {
+export const postApiOrdersGeneralItemsDeliveryCartTossConfirm = async (postApiOrdersGeneralItemsDeliveryCartTossConfirmBody: PostApiOrdersGeneralItemsDeliveryCartTossConfirmBody, options?: RequestInit): Promise<postApiOrdersGeneralItemsDeliveryCartTossConfirmResponse> => {
   
-  return customFetch<postApiOrdersGeneralItemsDeliveryBankTransferResponse>(getPostApiOrdersGeneralItemsDeliveryBankTransferUrl(),
+  return customFetch<postApiOrdersGeneralItemsDeliveryCartTossConfirmResponse>(getPostApiOrdersGeneralItemsDeliveryCartTossConfirmUrl(),
   {      
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
-      postApiOrdersGeneralItemsDeliveryBankTransferBody,)
+      postApiOrdersGeneralItemsDeliveryCartTossConfirmBody,)
+  }
+);}
+
+
+
+/**
+ * @summary 장바구니 일반 아이템 배송 주문 토스 티켓 발급
+ */
+export type postApiOrdersGeneralItemsDeliveryCartTossTicketsResponse200 = {
+  data: GeneralItemDeliveryTicketResponse
+  status: 200
+}
+    
+export type postApiOrdersGeneralItemsDeliveryCartTossTicketsResponseSuccess = (postApiOrdersGeneralItemsDeliveryCartTossTicketsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiOrdersGeneralItemsDeliveryCartTossTicketsResponse = (postApiOrdersGeneralItemsDeliveryCartTossTicketsResponseSuccess)
+
+export const getPostApiOrdersGeneralItemsDeliveryCartTossTicketsUrl = () => {
+
+
+  
+
+  return `/api/orders/general-items/delivery/cart/toss/tickets`
+}
+
+export const postApiOrdersGeneralItemsDeliveryCartTossTickets = async (postApiOrdersGeneralItemsDeliveryCartTossTicketsBody: PostApiOrdersGeneralItemsDeliveryCartTossTicketsBody, options?: RequestInit): Promise<postApiOrdersGeneralItemsDeliveryCartTossTicketsResponse> => {
+  
+  return customFetch<postApiOrdersGeneralItemsDeliveryCartTossTicketsResponse>(getPostApiOrdersGeneralItemsDeliveryCartTossTicketsUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postApiOrdersGeneralItemsDeliveryCartTossTicketsBody,)
   }
 );}
 
@@ -16684,3 +17152,5 @@ export const deleteApiUsersMeSocialLinksProvider = async (provider: string, opti
     
   }
 );}
+
+export const updateKvStore = update1;

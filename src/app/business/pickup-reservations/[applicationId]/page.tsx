@@ -8,24 +8,23 @@ interface PickupApplicationDetailPageProps {
   params: Promise<{ applicationId: string }>;
 }
 
-export default async function PickupApplicationDetailPage({
-  params,
-}: PickupApplicationDetailPageProps) {
+export default async function PickupApplicationDetailPage({ params }: PickupApplicationDetailPageProps) {
   const { applicationId } = await params;
   const token = await getAuthToken();
+  let application;
 
   try {
-    const res =
-      await getApiUsersBusinessesPickupReservationsApplicationsApplicationid(
-        Number(applicationId),
-        withToken(token),
-      );
-
-    return <PickupApplicationDetailContent application={res.data} />;
+    const res = await getApiUsersBusinessesPickupReservationsApplicationsApplicationid(
+      Number(applicationId),
+      withToken(token),
+    );
+    application = res.data;
   } catch (error) {
     if (error instanceof Error && error.message.startsWith("[404]")) {
       notFound();
     }
     throw error;
   }
+
+  return <PickupApplicationDetailContent application={application} />;
 }
