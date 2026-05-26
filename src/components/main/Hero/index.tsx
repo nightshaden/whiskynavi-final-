@@ -104,7 +104,7 @@ const HeroItem = ({ item }: { item: HeroItem }) => {
           <div className="flex w-full max-w-[600px] flex-col justify-center">
             <h2 className="typo-bold-36 whitespace-pre-line text-white">{item.title.replace(" : ", " \n: ")}</h2>
             <p className="typo-medium-18 mt-10 leading-loose whitespace-pre-line text-white">{item.description}</p>
-            <Button color="white" className="mt-10 w-fit rounded-none bg-white">
+            <Button className="mt-10 w-fit rounded-none bg-white text-gray-950 hover:bg-gray-100">
               <p className="typo-bold-16 text-black">예약 매장 확인</p>
             </Button>
           </div>
