@@ -263,9 +263,8 @@ export const AdminDeliveryCsvRowResultOrderStatus = {
   RECEIPT_PENDING: 'RECEIPT_PENDING',
   RECEIPT_COMPLETED: 'RECEIPT_COMPLETED',
   ORDER_CANCELED: 'ORDER_CANCELED',
-  REFUND_REQUESTED: 'REFUND_REQUESTED',
-  REFUND_REJECTED: 'REFUND_REJECTED',
-  REFUND_COMPLETED: 'REFUND_COMPLETED',
+  CANCEL_REQUESTED: 'CANCEL_REQUESTED',
+  CANCEL_REJECTED: 'CANCEL_REJECTED',
 } as const;
 
 /**
@@ -416,8 +415,8 @@ export interface OrderItemResponse {
  * 주문 상태.
 일반 아이템 배송 주문 주요 흐름:
 PAYMENT_PENDING -> ORDER_PREPARING -> SHIPPING -> DELIVERY_COMPLETED,
-ORDER_PREPARING -> REFUND_REQUESTED -> REFUND_COMPLETED 또는 REFUND_REJECTED.
-REFUND_REJECTED 주문은 발송 처리로 SHIPPING 전환이 가능하다.
+ORDER_PREPARING 또는 CANCEL_REQUESTED -> ORDER_CANCELED,
+CANCEL_REJECTED 주문은 발송 처리로 SHIPPING 전환이 가능하다.
 
  */
 export type OrderResponseOrderStatus = typeof OrderResponseOrderStatus[keyof typeof OrderResponseOrderStatus];
@@ -433,9 +432,8 @@ export const OrderResponseOrderStatus = {
   RECEIPT_PENDING: 'RECEIPT_PENDING',
   RECEIPT_COMPLETED: 'RECEIPT_COMPLETED',
   ORDER_CANCELED: 'ORDER_CANCELED',
-  REFUND_REQUESTED: 'REFUND_REQUESTED',
-  REFUND_REJECTED: 'REFUND_REJECTED',
-  REFUND_COMPLETED: 'REFUND_COMPLETED',
+  CANCEL_REQUESTED: 'CANCEL_REQUESTED',
+  CANCEL_REJECTED: 'CANCEL_REJECTED',
 } as const;
 
 /**
@@ -570,8 +568,8 @@ export interface OrderResponse {
   /** 주문 상태.
 일반 아이템 배송 주문 주요 흐름:
 PAYMENT_PENDING -> ORDER_PREPARING -> SHIPPING -> DELIVERY_COMPLETED,
-ORDER_PREPARING -> REFUND_REQUESTED -> REFUND_COMPLETED 또는 REFUND_REJECTED.
-REFUND_REJECTED 주문은 발송 처리로 SHIPPING 전환이 가능하다.
+ORDER_PREPARING 또는 CANCEL_REQUESTED -> ORDER_CANCELED,
+CANCEL_REJECTED 주문은 발송 처리로 SHIPPING 전환이 가능하다.
  */
   orderStatus?: OrderResponseOrderStatus;
   /** 판매 유형 */
@@ -614,7 +612,7 @@ REFUND_REJECTED 주문은 발송 처리로 SHIPPING 전환이 가능하다.
 export interface AdminUserOrderSummaryResponse {
   /** 취소 주문 총액 */
   canceledTotalAmount?: number;
-  /** 취소와 환불 완료 주문을 제외한 유효 주문 총액 */
+  /** 취소 주문을 제외한 유효 주문 총액 */
   effectiveTotalAmount?: number;
   /** 다음 페이지 존재 여부 */
   hasNext?: boolean;
@@ -626,9 +624,9 @@ export interface AdminUserOrderSummaryResponse {
   pageNumber?: number;
   /** 페이지 크기 */
   pageSize?: number;
-  /** 환불 요청 중 주문 총액 */
+  /** 취소 요청 중 주문 총액 */
   refundRequestedTotalAmount?: number;
-  /** 환불 완료 주문 총액 */
+  /** 취소 완료 주문 총액 */
   refundedTotalAmount?: number;
   /** 상태와 무관한 전체 주문 총액. 기존 관리자 화면 호환용 값이다. */
   totalAmount?: number;
@@ -2767,17 +2765,16 @@ export interface OrderQueueStatusResponse {
 
 일반 아이템 배송 주문에서 허용되는 관리자 상태 전이:
 - PAYMENT_PENDING -> ORDER_CANCELED: 입금 전 주문 취소
-- ORDER_PREPARING -> ORDER_CANCELED: 결제 완료 전 주문 취소
-- ORDER_PREPARING -> REFUND_REQUESTED: 결제 완료 주문 환불 요청
-- REFUND_REQUESTED -> REFUND_COMPLETED: 환불 완료 및 재고 복구
-- REFUND_REQUESTED -> REFUND_REJECTED: 환불 거절 후 배송 진행 가능
+- ORDER_PREPARING -> ORDER_CANCELED: 관리자 일방 취소 및 재고 복구
+- CANCEL_REQUESTED -> ORDER_CANCELED: 고객 취소 요청 승인 및 재고 복구
+- CANCEL_REQUESTED -> CANCEL_REJECTED: 고객 취소 요청 거절 후 배송 진행 가능
 
 배송 상태 전이(일반 아이템 배송 주문 전용):
-- ORDER_PREPARING 또는 REFUND_REJECTED -> SHIPPING: PATCH /api/admin/orders/{orderId}/delivery/ship
+- ORDER_PREPARING 또는 CANCEL_REJECTED -> SHIPPING: PATCH /api/admin/orders/{orderId}/delivery/ship
 - SHIPPING -> DELIVERY_COMPLETED: PATCH /api/admin/orders/{orderId}/delivery/complete
 
 ORDER_REQUESTED, PAYMENT_PENDING 같은 초기 상태로 되돌릴 수 없고,
-SHIPPING/DELIVERY_COMPLETED 단계에서는 취소 또는 환불 요청으로 전환할 수 없다.
+SHIPPING/DELIVERY_COMPLETED 단계에서는 취소 요청으로 전환할 수 없다.
 
  */
 export type OrderStatusUpdateRequestOrderStatus = typeof OrderStatusUpdateRequestOrderStatus[keyof typeof OrderStatusUpdateRequestOrderStatus];
@@ -2793,15 +2790,14 @@ export const OrderStatusUpdateRequestOrderStatus = {
   RECEIPT_PENDING: 'RECEIPT_PENDING',
   RECEIPT_COMPLETED: 'RECEIPT_COMPLETED',
   ORDER_CANCELED: 'ORDER_CANCELED',
-  REFUND_REQUESTED: 'REFUND_REQUESTED',
-  REFUND_REJECTED: 'REFUND_REJECTED',
-  REFUND_COMPLETED: 'REFUND_COMPLETED',
+  CANCEL_REQUESTED: 'CANCEL_REQUESTED',
+  CANCEL_REJECTED: 'CANCEL_REJECTED',
 } as const;
 
 /**
  * 주문 상태 변경 요청.
 
-일반 아이템 배송 주문의 관리자 상태 변경 API는 취소/환불 판단만 처리한다.
+일반 아이템 배송 주문의 관리자 상태 변경 API는 주문 취소 판단만 처리한다.
 배송 시작과 배송 완료는 배송 전용 API를 사용해야 하며, 이 요청으로 SHIPPING 또는 DELIVERY_COMPLETED를 직접 지정할 수 없다.
 
  */
@@ -2810,21 +2806,20 @@ export interface OrderStatusUpdateRequest {
 
 일반 아이템 배송 주문에서 허용되는 관리자 상태 전이:
 - PAYMENT_PENDING -> ORDER_CANCELED: 입금 전 주문 취소
-- ORDER_PREPARING -> ORDER_CANCELED: 결제 완료 전 주문 취소
-- ORDER_PREPARING -> REFUND_REQUESTED: 결제 완료 주문 환불 요청
-- REFUND_REQUESTED -> REFUND_COMPLETED: 환불 완료 및 재고 복구
-- REFUND_REQUESTED -> REFUND_REJECTED: 환불 거절 후 배송 진행 가능
+- ORDER_PREPARING -> ORDER_CANCELED: 관리자 일방 취소 및 재고 복구
+- CANCEL_REQUESTED -> ORDER_CANCELED: 고객 취소 요청 승인 및 재고 복구
+- CANCEL_REQUESTED -> CANCEL_REJECTED: 고객 취소 요청 거절 후 배송 진행 가능
 
 배송 상태 전이(일반 아이템 배송 주문 전용):
-- ORDER_PREPARING 또는 REFUND_REJECTED -> SHIPPING: PATCH /api/admin/orders/{orderId}/delivery/ship
+- ORDER_PREPARING 또는 CANCEL_REJECTED -> SHIPPING: PATCH /api/admin/orders/{orderId}/delivery/ship
 - SHIPPING -> DELIVERY_COMPLETED: PATCH /api/admin/orders/{orderId}/delivery/complete
 
 ORDER_REQUESTED, PAYMENT_PENDING 같은 초기 상태로 되돌릴 수 없고,
-SHIPPING/DELIVERY_COMPLETED 단계에서는 취소 또는 환불 요청으로 전환할 수 없다.
+SHIPPING/DELIVERY_COMPLETED 단계에서는 취소 요청으로 전환할 수 없다.
  */
   orderStatus: OrderStatusUpdateRequestOrderStatus;
   /**
-   * 취소, 환불 요청, 환불 거절, 환불 완료 처리 사유. 해당 상태로 변경할 때는 필수다.
+   * 취소 요청, 취소 거절, 취소 완료 처리 사유. 해당 상태로 변경할 때는 필수다.
    * @minLength 0
    * @maxLength 500
    */
@@ -5433,9 +5428,8 @@ export const GetApiAdminOrdersOrderStatus = {
   RECEIPT_PENDING: 'RECEIPT_PENDING',
   RECEIPT_COMPLETED: 'RECEIPT_COMPLETED',
   ORDER_CANCELED: 'ORDER_CANCELED',
-  REFUND_REQUESTED: 'REFUND_REQUESTED',
-  REFUND_REJECTED: 'REFUND_REJECTED',
-  REFUND_COMPLETED: 'REFUND_COMPLETED',
+  CANCEL_REQUESTED: 'CANCEL_REQUESTED',
+  CANCEL_REJECTED: 'CANCEL_REJECTED',
 } as const;
 
 export type GetApiAdminOrdersProductType = typeof GetApiAdminOrdersProductType[keyof typeof GetApiAdminOrdersProductType];
@@ -5535,9 +5529,8 @@ export const GetApiAdminOrdersDeliveryExportOrderStatus = {
   RECEIPT_PENDING: 'RECEIPT_PENDING',
   RECEIPT_COMPLETED: 'RECEIPT_COMPLETED',
   ORDER_CANCELED: 'ORDER_CANCELED',
-  REFUND_REQUESTED: 'REFUND_REQUESTED',
-  REFUND_REJECTED: 'REFUND_REJECTED',
-  REFUND_COMPLETED: 'REFUND_COMPLETED',
+  CANCEL_REQUESTED: 'CANCEL_REQUESTED',
+  CANCEL_REJECTED: 'CANCEL_REJECTED',
 } as const;
 
 export type GetApiAdminOrdersDeliveryExportProductType = typeof GetApiAdminOrdersDeliveryExportProductType[keyof typeof GetApiAdminOrdersDeliveryExportProductType];
@@ -5759,17 +5752,16 @@ export type PatchApiAdminOrdersOrderidDeliveryShipBody = {
 
 일반 아이템 배송 주문에서 허용되는 관리자 상태 전이:
 - PAYMENT_PENDING -> ORDER_CANCELED: 입금 전 주문 취소
-- ORDER_PREPARING -> ORDER_CANCELED: 결제 완료 전 주문 취소
-- ORDER_PREPARING -> REFUND_REQUESTED: 결제 완료 주문 환불 요청
-- REFUND_REQUESTED -> REFUND_COMPLETED: 환불 완료 및 재고 복구
-- REFUND_REQUESTED -> REFUND_REJECTED: 환불 거절 후 배송 진행 가능
+- ORDER_PREPARING -> ORDER_CANCELED: 관리자 일방 취소 및 재고 복구
+- CANCEL_REQUESTED -> ORDER_CANCELED: 고객 취소 요청 승인 및 재고 복구
+- CANCEL_REQUESTED -> CANCEL_REJECTED: 고객 취소 요청 거절 후 배송 진행 가능
 
 배송 상태 전이(일반 아이템 배송 주문 전용):
-- ORDER_PREPARING 또는 REFUND_REJECTED -> SHIPPING: PATCH /api/admin/orders/{orderId}/delivery/ship
+- ORDER_PREPARING 또는 CANCEL_REJECTED -> SHIPPING: PATCH /api/admin/orders/{orderId}/delivery/ship
 - SHIPPING -> DELIVERY_COMPLETED: PATCH /api/admin/orders/{orderId}/delivery/complete
 
 ORDER_REQUESTED, PAYMENT_PENDING 같은 초기 상태로 되돌릴 수 없고,
-SHIPPING/DELIVERY_COMPLETED 단계에서는 취소 또는 환불 요청으로 전환할 수 없다.
+SHIPPING/DELIVERY_COMPLETED 단계에서는 취소 요청으로 전환할 수 없다.
 
  */
 export type PatchApiAdminOrdersOrderidStatusBodyOrderStatus = typeof PatchApiAdminOrdersOrderidStatusBodyOrderStatus[keyof typeof PatchApiAdminOrdersOrderidStatusBodyOrderStatus];
@@ -5785,15 +5777,14 @@ export const PatchApiAdminOrdersOrderidStatusBodyOrderStatus = {
   RECEIPT_PENDING: 'RECEIPT_PENDING',
   RECEIPT_COMPLETED: 'RECEIPT_COMPLETED',
   ORDER_CANCELED: 'ORDER_CANCELED',
-  REFUND_REQUESTED: 'REFUND_REQUESTED',
-  REFUND_REJECTED: 'REFUND_REJECTED',
-  REFUND_COMPLETED: 'REFUND_COMPLETED',
+  CANCEL_REQUESTED: 'CANCEL_REQUESTED',
+  CANCEL_REJECTED: 'CANCEL_REJECTED',
 } as const;
 
 /**
  * 주문 상태 변경 요청.
 
-일반 아이템 배송 주문의 관리자 상태 변경 API는 취소/환불 판단만 처리한다.
+일반 아이템 배송 주문의 관리자 상태 변경 API는 주문 취소 판단만 처리한다.
 배송 시작과 배송 완료는 배송 전용 API를 사용해야 하며, 이 요청으로 SHIPPING 또는 DELIVERY_COMPLETED를 직접 지정할 수 없다.
 
  */
@@ -5802,21 +5793,20 @@ export type PatchApiAdminOrdersOrderidStatusBody = {
 
 일반 아이템 배송 주문에서 허용되는 관리자 상태 전이:
 - PAYMENT_PENDING -> ORDER_CANCELED: 입금 전 주문 취소
-- ORDER_PREPARING -> ORDER_CANCELED: 결제 완료 전 주문 취소
-- ORDER_PREPARING -> REFUND_REQUESTED: 결제 완료 주문 환불 요청
-- REFUND_REQUESTED -> REFUND_COMPLETED: 환불 완료 및 재고 복구
-- REFUND_REQUESTED -> REFUND_REJECTED: 환불 거절 후 배송 진행 가능
+- ORDER_PREPARING -> ORDER_CANCELED: 관리자 일방 취소 및 재고 복구
+- CANCEL_REQUESTED -> ORDER_CANCELED: 고객 취소 요청 승인 및 재고 복구
+- CANCEL_REQUESTED -> CANCEL_REJECTED: 고객 취소 요청 거절 후 배송 진행 가능
 
 배송 상태 전이(일반 아이템 배송 주문 전용):
-- ORDER_PREPARING 또는 REFUND_REJECTED -> SHIPPING: PATCH /api/admin/orders/{orderId}/delivery/ship
+- ORDER_PREPARING 또는 CANCEL_REJECTED -> SHIPPING: PATCH /api/admin/orders/{orderId}/delivery/ship
 - SHIPPING -> DELIVERY_COMPLETED: PATCH /api/admin/orders/{orderId}/delivery/complete
 
 ORDER_REQUESTED, PAYMENT_PENDING 같은 초기 상태로 되돌릴 수 없고,
-SHIPPING/DELIVERY_COMPLETED 단계에서는 취소 또는 환불 요청으로 전환할 수 없다.
+SHIPPING/DELIVERY_COMPLETED 단계에서는 취소 요청으로 전환할 수 없다.
  */
   orderStatus: PatchApiAdminOrdersOrderidStatusBodyOrderStatus;
   /**
-   * 취소, 환불 요청, 환불 거절, 환불 완료 처리 사유. 해당 상태로 변경할 때는 필수다.
+   * 취소 요청, 취소 거절, 취소 완료 처리 사유. 해당 상태로 변경할 때는 필수다.
    * @minLength 0
    * @maxLength 500
    */
@@ -7084,88 +7074,6 @@ export type PostApiOrdersBody = {
   unitPrice?: number;
   /** 주문자 사용자 ID */
   userId?: number;
-};
-
-export type PostApiOrdersGeneralItemsDeliveryBankTransferBody = {
-  /**
-   * 배송 주소
-   * @minLength 0
-   * @maxLength 500
-   */
-  deliveryAddress?: string;
-  /**
-   * 배송 메모
-   * @minLength 0
-   * @maxLength 500
-   */
-  deliveryMemo?: string;
-  /**
-   * 비회원 주문 안내 이메일
-   * @minLength 0
-   * @maxLength 100
-   */
-  guestEmail?: string;
-  /**
-   * 주문 메모
-   * @minLength 0
-   * @maxLength 500
-   */
-  orderNote?: string;
-  /**
-   * 수령인 이름
-   * @minLength 0
-   * @maxLength 100
-   */
-  receiverName?: string;
-  /**
-   * 수령인 휴대폰 번호
-   * @minLength 0
-   * @maxLength 20
-   */
-  receiverPhone?: string;
-  /** 요청 수량 */
-  requestedQuantity: number;
-  /** 판매 공고 ID */
-  saleAnnouncementId: number;
-};
-
-export type PostApiOrdersGeneralItemsDeliveryCartBankTransferBody = {
-  /**
-   * 배송 주소
-   * @minLength 0
-   * @maxLength 500
-   */
-  deliveryAddress?: string;
-  /**
-   * 배송 메모
-   * @minLength 0
-   * @maxLength 500
-   */
-  deliveryMemo?: string;
-  /**
-   * 비회원 주문 안내 이메일
-   * @minLength 0
-   * @maxLength 100
-   */
-  guestEmail?: string;
-  /**
-   * 주문 메모
-   * @minLength 0
-   * @maxLength 500
-   */
-  orderNote?: string;
-  /**
-   * 수령인 이름
-   * @minLength 0
-   * @maxLength 100
-   */
-  receiverName?: string;
-  /**
-   * 수령인 휴대폰 번호
-   * @minLength 0
-   * @maxLength 20
-   */
-  receiverPhone?: string;
 };
 
 export type PostApiOrdersGeneralItemsDeliveryCartTossConfirmBody = {
@@ -8606,7 +8514,7 @@ export const getApiAdminBottlesReservationsApplicationsApplicationid = async (ap
 
 
 /**
- * 관리자가 신청을 취소 처리합니다. 요청 본문에 reason을 넣으면 취소 또는 환불 요청 사유로 저장합니다.
+ * 관리자가 신청을 취소 처리합니다. 요청 본문에 reason을 넣으면 취소 사유로 저장합니다.
  * @summary 예약 신청 취소
  */
 export type postApiAdminBottlesReservationsApplicationsApplicationidCancelResponse200 = {
@@ -9661,7 +9569,7 @@ export const getApiAdminItemsReservationsApplicationsApplicationid = async (appl
 
 
 /**
- * 관리자가 신청을 취소 처리합니다. 요청 본문에 reason을 넣으면 취소 또는 환불 요청 사유로 저장합니다.
+ * 관리자가 신청을 취소 처리합니다. 요청 본문에 reason을 넣으면 취소 사유로 저장합니다.
  * @summary 예약 신청 취소
  */
 export type postApiAdminItemsReservationsApplicationsApplicationidCancelResponse200 = {
@@ -10364,7 +10272,7 @@ export const getApiAdminOrders = async (params?: GetApiAdminOrdersParams, option
 
 /**
  * 일반 아이템 배송 주문 중 발송 가능한 주문을 한글 헤더 CSV로 내려받는다.
-대상 상태는 ORDER_PREPARING, REFUND_REJECTED다.
+대상 상태는 ORDER_PREPARING, CANCEL_REJECTED다.
 CSV 컬럼 순서는 주문번호, 수령인, 수령인연락처, 주소, 상품명, 수량, 배송메모, 배송사, 배송방법, 운송장번호, 발송시각이다.
 배송사가 비어 있는 주문은 CJ대한통운으로 기본 출력한다.
 관리자는 배송방법, 운송장번호, 발송시각을 채운 뒤 업로드할 수 있다.
@@ -10747,7 +10655,7 @@ export const getApiAdminOrdersOrderidDelivery = async (orderId: number, options?
 /**
  * 일반 아이템 배송 주문의 배송 정보만 수정한다.
 송장번호나 배송 완료 시각을 입력해도 주문 상태는 바뀌지 않는다.
-수정 가능 상태는 ORDER_PREPARING, REFUND_REJECTED, SHIPPING이다.
+수정 가능 상태는 ORDER_PREPARING, CANCEL_REJECTED, SHIPPING이다.
 DELIVERY_COMPLETED 이후에는 배송 이력 정합성을 위해 수정할 수 없다.
 
  * @summary 관리자 주문 배송 정보 수정
@@ -10828,7 +10736,7 @@ export const patchApiAdminOrdersOrderidDeliveryComplete = async (orderId: number
 
 /**
  * 일반 아이템 배송 주문을 SHIPPING으로 전환한다.
-허용 현재 상태는 ORDER_PREPARING 또는 REFUND_REJECTED이며, 운송장 번호가 필요하다.
+허용 현재 상태는 ORDER_PREPARING 또는 CANCEL_REJECTED이며, 운송장 번호가 필요하다.
 발송 성공 후 고객에게 배송사와 운송장 번호를 메일 및 문자로 안내한다.
 
  * @summary 관리자 주문 발송 처리
@@ -10869,51 +10777,13 @@ export const patchApiAdminOrdersOrderidDeliveryShip = async (orderId: number,
 
 
 /**
- * BANK_TRANSFER / DEPOSIT_WAITING / PAYMENT_PENDING 주문만 ORDER_PREPARING 및 DONE 상태로 전환한다.
- * @summary 관리자 계좌이체 입금 확인
- */
-export type patchApiAdminOrdersOrderidPaymentsBankTransferConfirmResponse200 = {
-  data: GeneralItemDeliveryOrderResponse
-  status: 200
-}
-    
-export type patchApiAdminOrdersOrderidPaymentsBankTransferConfirmResponseSuccess = (patchApiAdminOrdersOrderidPaymentsBankTransferConfirmResponse200) & {
-  headers: Headers;
-};
-;
-
-export type patchApiAdminOrdersOrderidPaymentsBankTransferConfirmResponse = (patchApiAdminOrdersOrderidPaymentsBankTransferConfirmResponseSuccess)
-
-export const getPatchApiAdminOrdersOrderidPaymentsBankTransferConfirmUrl = (orderId: number,) => {
-
-
-  
-
-  return `/api/admin/orders/${orderId}/payments/bank-transfer/confirm`
-}
-
-export const patchApiAdminOrdersOrderidPaymentsBankTransferConfirm = async (orderId: number, options?: RequestInit): Promise<patchApiAdminOrdersOrderidPaymentsBankTransferConfirmResponse> => {
-  
-  return customFetch<patchApiAdminOrdersOrderidPaymentsBankTransferConfirmResponse>(getPatchApiAdminOrdersOrderidPaymentsBankTransferConfirmUrl(orderId),
-  {      
-    ...options,
-    method: 'PATCH'
-    
-    
-  }
-);}
-
-
-
-/**
- * 취소와 환불 판단을 처리하는 관리자 상태 변경 API다.
+ * 주문 취소 판단을 처리하는 관리자 상태 변경 API다.
 
 일반 아이템 배송 주문 허용 전이:
 - PAYMENT_PENDING -> ORDER_CANCELED: 입금 전 주문 취소
-- ORDER_PREPARING -> ORDER_CANCELED: 결제 완료 전 주문 취소
-- ORDER_PREPARING -> REFUND_REQUESTED: 결제 완료 주문 환불 요청
-- REFUND_REQUESTED -> REFUND_COMPLETED: 환불 완료 및 재고 복구
-- REFUND_REQUESTED -> REFUND_REJECTED: 환불 거절 후 배송 진행 가능
+- ORDER_PREPARING -> ORDER_CANCELED: 관리자 일방 취소 및 재고 복구
+- CANCEL_REQUESTED -> ORDER_CANCELED: 고객 취소 요청 승인 및 재고 복구
+- CANCEL_REQUESTED -> CANCEL_REJECTED: 고객 취소 요청 거절 후 배송 진행 가능
 
 배송 상태 전이는 이 API에서 직접 처리하지 않는다.
 일반 아이템 배송 주문은 아래 배송 전용 API를 사용한다.
@@ -14611,80 +14481,6 @@ export const postApiOrders = async (postApiOrdersBody: PostApiOrdersBody, option
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
       postApiOrdersBody,)
-  }
-);}
-
-
-
-/**
- * @summary 일반 아이템 배송 주문 계좌이체 생성
- */
-export type postApiOrdersGeneralItemsDeliveryBankTransferResponse200 = {
-  data: GeneralItemDeliveryOrderResponse
-  status: 200
-}
-    
-export type postApiOrdersGeneralItemsDeliveryBankTransferResponseSuccess = (postApiOrdersGeneralItemsDeliveryBankTransferResponse200) & {
-  headers: Headers;
-};
-;
-
-export type postApiOrdersGeneralItemsDeliveryBankTransferResponse = (postApiOrdersGeneralItemsDeliveryBankTransferResponseSuccess)
-
-export const getPostApiOrdersGeneralItemsDeliveryBankTransferUrl = () => {
-
-
-  
-
-  return `/api/orders/general-items/delivery/bank-transfer`
-}
-
-export const postApiOrdersGeneralItemsDeliveryBankTransfer = async (postApiOrdersGeneralItemsDeliveryBankTransferBody: PostApiOrdersGeneralItemsDeliveryBankTransferBody, options?: RequestInit): Promise<postApiOrdersGeneralItemsDeliveryBankTransferResponse> => {
-  
-  return customFetch<postApiOrdersGeneralItemsDeliveryBankTransferResponse>(getPostApiOrdersGeneralItemsDeliveryBankTransferUrl(),
-  {      
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      postApiOrdersGeneralItemsDeliveryBankTransferBody,)
-  }
-);}
-
-
-
-/**
- * @summary 장바구니 일반 아이템 배송 주문 계좌이체 생성
- */
-export type postApiOrdersGeneralItemsDeliveryCartBankTransferResponse200 = {
-  data: GeneralItemDeliveryOrderResponse
-  status: 200
-}
-    
-export type postApiOrdersGeneralItemsDeliveryCartBankTransferResponseSuccess = (postApiOrdersGeneralItemsDeliveryCartBankTransferResponse200) & {
-  headers: Headers;
-};
-;
-
-export type postApiOrdersGeneralItemsDeliveryCartBankTransferResponse = (postApiOrdersGeneralItemsDeliveryCartBankTransferResponseSuccess)
-
-export const getPostApiOrdersGeneralItemsDeliveryCartBankTransferUrl = () => {
-
-
-  
-
-  return `/api/orders/general-items/delivery/cart/bank-transfer`
-}
-
-export const postApiOrdersGeneralItemsDeliveryCartBankTransfer = async (postApiOrdersGeneralItemsDeliveryCartBankTransferBody: PostApiOrdersGeneralItemsDeliveryCartBankTransferBody, options?: RequestInit): Promise<postApiOrdersGeneralItemsDeliveryCartBankTransferResponse> => {
-  
-  return customFetch<postApiOrdersGeneralItemsDeliveryCartBankTransferResponse>(getPostApiOrdersGeneralItemsDeliveryCartBankTransferUrl(),
-  {      
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      postApiOrdersGeneralItemsDeliveryCartBankTransferBody,)
   }
 );}
 

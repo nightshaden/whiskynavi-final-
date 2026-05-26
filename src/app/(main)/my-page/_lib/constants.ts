@@ -33,11 +33,11 @@ export const ORDER_STATUS_MAP: Record<string, { label: string; colorClass: strin
     label: "주문 취소",
     colorClass: "border-red-600/30 bg-red-600/20 text-red-400",
   },
-  CANCEL_REQUESTED: {
+  [OrderResponseOrderStatus.CANCEL_REQUESTED]: {
     label: "취소 요청",
     colorClass: "border-red-600/30 bg-red-600/20 text-red-400",
   },
-  CANCEL_REJECTED: {
+  [OrderResponseOrderStatus.CANCEL_REJECTED]: {
     label: "취소 거절",
     colorClass: "border-amber-600/30 bg-amber-600/20 text-amber-400",
   },
