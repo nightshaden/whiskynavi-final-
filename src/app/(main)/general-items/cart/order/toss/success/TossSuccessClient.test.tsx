@@ -40,4 +40,19 @@ describe("TossSuccessClient", () => {
       amount: "23000",
     });
   });
+
+  it("renders the failure panel below the fixed header with visible action buttons", async () => {
+    vi.mocked(confirmGeneralItemCartTossPayment).mockResolvedValue({
+      success: false,
+      error: "확정 실패",
+    });
+
+    render(<TossSuccessClient orderId="PG-1" paymentKey="payment-key" amount="23000" />);
+
+    const alert = await screen.findByRole("alert");
+    expect(alert.parentElement).toHaveClass("pt-24", "md:pt-28");
+
+    const orderLink = screen.getByRole("link", { name: "주문서로 돌아가기" });
+    expect(orderLink.closest("a")).toHaveClass("border-white/30", "bg-white/5", "text-white");
+  });
 });

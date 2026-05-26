@@ -1,6 +1,5 @@
 import { ApiError } from "@/apis/errors";
 import {
-  postApiOrdersGeneralItemsDeliveryCartBankTransfer,
   postApiOrdersGeneralItemsDeliveryCartTossConfirm,
   postApiOrdersGeneralItemsDeliveryCartTossTickets,
 } from "@/apis/generated/api";
@@ -8,15 +7,10 @@ import { getAuthToken } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { CART_TOKEN_COOKIE } from "../_lib/cart-token";
-import {
-  confirmGeneralItemCartTossPayment,
-  createGeneralItemCartBankTransferOrder,
-  createGeneralItemCartTossTicket,
-} from "./actions";
+import { CART_COMPLETED_COOKIE, CART_TOKEN_COOKIE } from "../_lib/cart-token";
+import { confirmGeneralItemCartTossPayment, createGeneralItemCartTossTicket } from "./actions";
 
 vi.mock("@/apis/generated/api", () => ({
-  postApiOrdersGeneralItemsDeliveryCartBankTransfer: vi.fn(),
   postApiOrdersGeneralItemsDeliveryCartTossConfirm: vi.fn(),
   postApiOrdersGeneralItemsDeliveryCartTossTickets: vi.fn(),
 }));
@@ -25,7 +19,6 @@ vi.mock("@/lib/auth", () => ({ getAuthToken: vi.fn() }));
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 vi.mock("next/headers", () => ({ cookies: vi.fn() }));
 
-const mockedBankTransfer = vi.mocked(postApiOrdersGeneralItemsDeliveryCartBankTransfer);
 const mockedTossTickets = vi.mocked(postApiOrdersGeneralItemsDeliveryCartTossTickets);
 const mockedTossConfirm = vi.mocked(postApiOrdersGeneralItemsDeliveryCartTossConfirm);
 const mockedGetAuthToken = vi.mocked(getAuthToken);
@@ -66,8 +59,8 @@ describe("general item cart delivery order actions", () => {
     mockedCookies.mockResolvedValue(mockCookieStore("cart-token"));
   });
 
-  it("validates receiver fields before bank transfer order creation", async () => {
-    const result = await createGeneralItemCartBankTransferOrder(
+  it("validates receiver fields before Toss ticket creation", async () => {
+    const result = await createGeneralItemCartTossTicket(
       {
         ...validCartOrderInput,
         receiverName: "",
@@ -79,35 +72,7 @@ describe("general item cart delivery order actions", () => {
       success: false,
       error: "수령인 이름을 입력해주세요.",
     });
-    expect(mockedBankTransfer).not.toHaveBeenCalled();
-  });
-
-  it("creates a bank transfer cart order with auth, idempotency, and cart token headers, then clears cart token", async () => {
-    const cookieStore = createCookieStore("cart-token");
-    mockedCookies.mockResolvedValue(cookieStore as unknown as Awaited<ReturnType<typeof cookies>>);
-    mockedGetAuthToken.mockResolvedValue("access-token");
-    mockedBankTransfer.mockResolvedValue({
-      data: { order: { id: 10, orderNumber: "ODR-1" } },
-      status: 200,
-      headers: new Headers(),
-    });
-
-    const result = await createGeneralItemCartBankTransferOrder(validCartOrderInput, "idem-1");
-
-    expect(result).toEqual({
-      success: true,
-      data: { order: { id: 10, orderNumber: "ODR-1" } },
-    });
-    expect(mockedBankTransfer).toHaveBeenCalledWith(validCartOrderInput, {
-      headers: {
-        Authorization: "Bearer access-token",
-        "Idempotency-Key": "idem-1",
-        "X-Cart-Token": "cart-token",
-      },
-    });
-    expect(cookieStore.delete).toHaveBeenCalledWith({ name: CART_TOKEN_COOKIE, path: "/" });
-    expect(mockedRevalidatePath).toHaveBeenCalledWith("/general-items/cart");
-    expect(mockedRevalidatePath).not.toHaveBeenCalledWith("/general-items/cart/order");
+    expect(mockedTossTickets).not.toHaveBeenCalled();
   });
 
   it("creates a Toss ticket without sale announcement or requested quantity and keeps cart token", async () => {
@@ -168,40 +133,17 @@ describe("general item cart delivery order actions", () => {
       },
     );
     expect(cookieStore.delete).toHaveBeenCalledWith({ name: CART_TOKEN_COOKIE, path: "/" });
+    expect(cookieStore.set).toHaveBeenCalledWith(
+      CART_COMPLETED_COOKIE,
+      "1",
+      expect.objectContaining({
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+      }),
+    );
     expect(mockedRevalidatePath).toHaveBeenCalledWith("/general-items/cart");
-    expect(mockedRevalidatePath).not.toHaveBeenCalledWith("/general-items/cart/order");
-  });
-
-  it("preserves successful bank transfer response when cart cleanup fails after API success", async () => {
-    const cookieStore = createCookieStore("cart-token");
-    cookieStore.delete.mockImplementation(() => {
-      throw new Error("delete failed");
-    });
-    mockedCookies.mockResolvedValue(cookieStore as unknown as Awaited<ReturnType<typeof cookies>>);
-    mockedRevalidatePath.mockImplementation(() => {
-      throw new Error("revalidate failed");
-    });
-    mockedBankTransfer.mockResolvedValue({
-      data: { order: { id: 10, orderNumber: "ODR-1" } },
-      status: 200,
-      headers: new Headers(),
-    });
-
-    const result = await createGeneralItemCartBankTransferOrder(validCartOrderInput, "idem-1");
-
-    expect(result).toEqual({
-      success: true,
-      data: { order: { id: 10, orderNumber: "ODR-1" } },
-    });
-  });
-
-  it("returns the user-facing API message when cart order creation rejects", async () => {
-    mockedBankTransfer.mockRejectedValue(new ApiError(400, '{"message":"장바구니가 비어 있습니다."}'));
-
-    await expect(createGeneralItemCartBankTransferOrder(validCartOrderInput, "idem-1")).resolves.toEqual({
-      success: false,
-      error: "장바구니가 비어 있습니다.",
-    });
+    expect(mockedRevalidatePath).toHaveBeenCalledWith("/general-items/cart/order");
   });
 
   it("returns the ticket expired guide message when Toss confirm rejects an expired ticket", async () => {

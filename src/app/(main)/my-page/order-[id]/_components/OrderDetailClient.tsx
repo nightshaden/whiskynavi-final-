@@ -87,7 +87,6 @@ export default function OrderDetailClient({ order }: OrderDetailClientProps) {
                 <InfoRow label="주문 유형" value={order.orderType ?? "-"} />
                 {order.orderNote && <InfoRow label="주문 메모" value={order.orderNote} />}
                 {order.cancelReason && <InfoRow label="취소 사유" value={order.cancelReason} />}
-                {order.refundReason && <InfoRow label="환불 사유" value={order.refundReason} />}
               </div>
             </div>
           </div>

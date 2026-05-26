@@ -6,7 +6,6 @@ import {
   patchApiAdminOrdersOrderidDelivery,
   patchApiAdminOrdersOrderidDeliveryComplete,
   patchApiAdminOrdersOrderidDeliveryShip,
-  patchApiAdminOrdersOrderidPaymentsBankTransferConfirm,
   patchApiAdminOrdersOrderidStatus,
   postApiAdminOrdersDeliveryImport,
   postApiAdminOrdersDeliveryImportResultCsv,
@@ -67,23 +66,6 @@ export async function shipAdminOrderDelivery(
     return {
       success: false,
       error: getUserErrorMessage(error, "발송 처리에 실패했습니다."),
-    };
-  }
-}
-
-export async function confirmAdminBankTransfer(orderId: number) {
-  try {
-    const options = await getAdminOptions();
-    if (!options) return { success: false, error: "인증이 필요합니다." };
-
-    await patchApiAdminOrdersOrderidPaymentsBankTransferConfirm(orderId, options);
-    revalidateAdminOrderPages();
-    return { success: true };
-  } catch (error) {
-    if (isRedirectError(error)) throw error;
-    return {
-      success: false,
-      error: getUserErrorMessage(error, "입금 확인에 실패했습니다."),
     };
   }
 }

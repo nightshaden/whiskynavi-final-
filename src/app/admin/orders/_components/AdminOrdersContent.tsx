@@ -15,7 +15,6 @@ import { useSidebar } from "../../_components/AdminLayoutClient";
 import Pagination from "../../_components/Pagination";
 import {
   completeAdminOrderDelivery,
-  confirmAdminBankTransfer,
   exportAdminDeliveryCsv,
   shipAdminOrderDelivery,
   updateAdminOrderDelivery,
@@ -53,21 +52,18 @@ const ORDER_STATUS_OPTIONS = [
   { value: "ORDER_PREPARING", label: "상품 준비 중" },
   { value: "SHIPPING", label: "배송 중" },
   { value: "DELIVERY_COMPLETED", label: "배송 완료" },
-  { value: "REFUND_REQUESTED", label: "환불 요청" },
-  { value: "REFUND_REJECTED", label: "환불 거절" },
-  { value: "REFUND_COMPLETED", label: "환불 완료" },
+  { value: "CANCEL_REQUESTED", label: "취소 요청" },
+  { value: "CANCEL_REJECTED", label: "취소 거절" },
   { value: "ORDER_CANCELED", label: "주문 취소" },
 ];
 
 const PAYMENT_METHOD_OPTIONS = [
   { value: "", label: "전체 결제" },
-  { value: "BANK_TRANSFER", label: "계좌이체" },
   { value: "TOSS", label: "토스" },
 ];
 
 const PAYMENT_STATUS_OPTIONS = [
   { value: "", label: "전체 결제상태" },
-  { value: "DEPOSIT_WAITING", label: "입금 대기" },
   { value: "DONE", label: "결제 완료" },
   { value: "CANCELED", label: "결제 취소" },
 ];
@@ -612,18 +608,6 @@ export default function AdminOrdersContent({
                                     상세
                                   </Button>
                                 )}
-                                {hasAction(order, "CONFIRM_BANK_TRANSFER") && (
-                                  <Button
-                                    type="button"
-                                    size="sm"
-                                    onClick={() =>
-                                      runAction(() => confirmAdminBankTransfer(order.id!), "입금 확인했습니다.")
-                                    }
-                                    disabled={isPending}
-                                  >
-                                    입금 확인
-                                  </Button>
-                                )}
                                 {hasAction(order, "UPDATE_DELIVERY") && (
                                   <Button
                                     type="button"
@@ -658,34 +642,34 @@ export default function AdminOrdersContent({
                                     배송 완료
                                   </Button>
                                 )}
-                                {hasAction(order, "REQUEST_REFUND") && (
+                                {hasAction(order, "FORCE_CANCEL") && (
                                   <Button
                                     type="button"
                                     size="sm"
                                     variant="outline"
-                                    onClick={() => handleStatusChange(order, "REFUND_REQUESTED", "환불 요청")}
+                                    onClick={() => handleStatusChange(order, "ORDER_CANCELED", "주문 취소")}
                                   >
-                                    환불 요청
+                                    주문 취소
                                   </Button>
                                 )}
-                                {hasAction(order, "COMPLETE_REFUND") && (
+                                {hasAction(order, "APPROVE_CANCEL") && (
                                   <Button
                                     type="button"
                                     size="sm"
                                     variant="outline"
-                                    onClick={() => handleStatusChange(order, "REFUND_COMPLETED", "환불 완료")}
+                                    onClick={() => handleStatusChange(order, "ORDER_CANCELED", "취소 승인")}
                                   >
-                                    환불 완료
+                                    취소 승인
                                   </Button>
                                 )}
-                                {hasAction(order, "REJECT_REFUND") && (
+                                {hasAction(order, "REJECT_CANCEL") && (
                                   <Button
                                     type="button"
                                     size="sm"
                                     variant="outline"
-                                    onClick={() => handleStatusChange(order, "REFUND_REJECTED", "환불 거절")}
+                                    onClick={() => handleStatusChange(order, "CANCEL_REJECTED", "취소 거절")}
                                   >
-                                    환불 거절
+                                    취소 거절
                                   </Button>
                                 )}
                                 {!order.availableAdminActions?.length && (

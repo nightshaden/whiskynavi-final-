@@ -1,14 +1,12 @@
 import {
   patchApiAdminOrdersOrderidDeliveryComplete,
   patchApiAdminOrdersOrderidDeliveryShip,
-  patchApiAdminOrdersOrderidPaymentsBankTransferConfirm,
   patchApiAdminOrdersOrderidStatus,
 } from "@/apis/generated/api";
 import { getAuthToken } from "@/lib/auth";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   completeAdminOrderDelivery,
-  confirmAdminBankTransfer,
   shipAdminOrderDelivery,
   updateAdminOrderStatus,
 } from "./actions";
@@ -16,7 +14,6 @@ import {
 vi.mock("@/apis/generated/api", () => ({
   patchApiAdminOrdersOrderidDeliveryComplete: vi.fn(),
   patchApiAdminOrdersOrderidDeliveryShip: vi.fn(),
-  patchApiAdminOrdersOrderidPaymentsBankTransferConfirm: vi.fn(),
   patchApiAdminOrdersOrderidStatus: vi.fn(),
 }));
 
@@ -29,7 +26,6 @@ vi.mock("next/cache", () => ({
 }));
 
 const mockedGetAuthToken = vi.mocked(getAuthToken);
-const mockedConfirmBankTransfer = vi.mocked(patchApiAdminOrdersOrderidPaymentsBankTransferConfirm);
 const mockedShip = vi.mocked(patchApiAdminOrdersOrderidDeliveryShip);
 const mockedComplete = vi.mocked(patchApiAdminOrdersOrderidDeliveryComplete);
 const mockedStatus = vi.mocked(patchApiAdminOrdersOrderidStatus);
@@ -38,15 +34,6 @@ describe("admin order actions", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockedGetAuthToken.mockResolvedValue("admin-token");
-  });
-
-  it("confirms bank transfer with admin token", async () => {
-    mockedConfirmBankTransfer.mockResolvedValue({ data: {}, status: 200, headers: new Headers() });
-
-    await expect(confirmAdminBankTransfer(10)).resolves.toEqual({ success: true });
-    expect(mockedConfirmBankTransfer).toHaveBeenCalledWith(10, {
-      headers: { Authorization: "Bearer admin-token" },
-    });
   });
 
   it("ships delivery with default CJ carrier when carrier is empty", async () => {
@@ -77,13 +64,13 @@ describe("admin order actions", () => {
     );
   });
 
-  it("updates refund status with reason", async () => {
-    mockedStatus.mockResolvedValue({ data: { orderStatus: "REFUND_COMPLETED" }, status: 200, headers: new Headers() });
+  it("updates cancel status with reason", async () => {
+    mockedStatus.mockResolvedValue({ data: { orderStatus: "ORDER_CANCELED" }, status: 200, headers: new Headers() });
 
-    await expect(updateAdminOrderStatus(10, "REFUND_COMPLETED", "환불 완료")).resolves.toEqual({ success: true });
+    await expect(updateAdminOrderStatus(10, "ORDER_CANCELED", "취소 승인")).resolves.toEqual({ success: true });
     expect(mockedStatus).toHaveBeenCalledWith(
       10,
-      { orderStatus: "REFUND_COMPLETED", reason: "환불 완료" },
+      { orderStatus: "ORDER_CANCELED", reason: "취소 승인" },
       { headers: { Authorization: "Bearer admin-token" } },
     );
   });

@@ -13,14 +13,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
 import { useState, useTransition, type ChangeEvent, type FormEvent } from "react";
-import OrderCompletionPanel from "../../delivery-order/_components/OrderCompletionPanel";
 import { createDeliveryAddress } from "../../delivery-order/actions";
 import { formatCartCurrency, getValidCartItems } from "../_lib/cart-utils";
-import {
-  createGeneralItemCartBankTransferOrder,
-  createGeneralItemCartTossTicket,
-  type GeneralItemCartDeliveryOrderInput,
-} from "./actions";
+import { createGeneralItemCartTossTicket, type GeneralItemCartDeliveryOrderInput } from "./actions";
 
 const TOSS_SCRIPT_SRC = "https://js.tosspayments.com/v2/standard";
 
@@ -178,15 +173,13 @@ export default function CartDeliveryOrderClient({
   const [isPending, startTransition] = useTransition();
   const [isAddressPending, startAddressTransition] = useTransition();
   const [attemptKey, setAttemptKey] = useState("");
-  const [pendingMethod, setPendingMethod] = useState<"BANK_TRANSFER" | "TOSS" | null>(null);
+  const [isPaymentPending, setIsPaymentPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSameAsOrderer, setIsSameAsOrderer] = useState(false);
   const [addresses, setAddresses] = useState(deliveryAddresses);
   const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false);
   const [addressError, setAddressError] = useState<string | null>(null);
   const [addressForm, setAddressForm] = useState<AddressFormState>(() => createAddressFormState(currentUser));
-  const [completedOrder, setCompletedOrder] =
-    useState<Awaited<ReturnType<typeof createGeneralItemCartBankTransferOrder>>["data"]>(undefined);
   const [form, setForm] = useState({
     receiverName: "",
     receiverPhone: "",
@@ -307,41 +300,11 @@ export default function CartDeliveryOrderClient({
     guestEmail: form.guestEmail,
   });
 
-  const resetAttempt = () => {
-    setAttemptKey(createAttemptKey());
-    setCompletedOrder(undefined);
-    setError(null);
-    setPendingMethod(null);
-  };
-
-  const handleBankTransfer = () => {
-    const input = buildInput();
-    const idempotencyKey = ensureAttemptKey();
-    setError(null);
-    setPendingMethod("BANK_TRANSFER");
-
-    startTransition(async () => {
-      try {
-        const result = await createGeneralItemCartBankTransferOrder(input, idempotencyKey);
-
-        if (result.success) {
-          setCompletedOrder(result.data);
-        } else {
-          setError(result.error ?? "계좌이체 주문 생성에 실패했습니다.");
-        }
-      } catch {
-        setError("계좌이체 주문 생성에 실패했습니다.");
-      } finally {
-        setPendingMethod(null);
-      }
-    });
-  };
-
   const handleTossPayment = () => {
     const input = buildInput();
     const idempotencyKey = ensureAttemptKey();
     setError(null);
-    setPendingMethod("TOSS");
+    setIsPaymentPending(true);
 
     startTransition(async () => {
       try {
@@ -356,23 +319,10 @@ export default function CartDeliveryOrderClient({
       } catch (paymentError) {
         setError(paymentError instanceof Error ? paymentError.message : "토스 결제를 시작하지 못했습니다.");
       } finally {
-        setPendingMethod(null);
+        setIsPaymentPending(false);
       }
     });
   };
-
-  if (completedOrder) {
-    return (
-      <div className="mx-auto max-w-3xl px-4 py-10 md:py-16">
-        <OrderCompletionPanel result={completedOrder} />
-        <div className="mt-4">
-          <Button type="button" variant="ghost" onClick={resetAttempt} className="text-gray-300 hover:text-white">
-            새 주문 작성
-          </Button>
-        </div>
-      </div>
-    );
-  }
 
   if (items.length === 0) {
     return (
@@ -553,15 +503,7 @@ export default function CartDeliveryOrderClient({
             </p>
           )}
 
-          <div className="mt-8 grid gap-3 sm:grid-cols-3">
-            <Button
-              type="button"
-              onClick={handleBankTransfer}
-              disabled={isPending}
-              className="bg-amber-600 hover:bg-amber-700"
-            >
-              {pendingMethod === "BANK_TRANSFER" ? "주문 생성 중" : "계좌이체 주문"}
-            </Button>
+          <div className="mt-8 grid gap-3 sm:grid-cols-2">
             <Button
               type="button"
               variant="outline"
@@ -569,7 +511,7 @@ export default function CartDeliveryOrderClient({
               disabled={isPending}
               className="border-white/30 bg-white/5 text-white hover:bg-white/10 hover:text-white"
             >
-              {pendingMethod === "TOSS" ? "결제 준비 중" : "토스 결제"}
+              {isPaymentPending ? "결제 준비 중" : "결제"}
             </Button>
             <Button
               asChild

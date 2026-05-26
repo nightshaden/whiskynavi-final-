@@ -33,17 +33,13 @@ export const ORDER_STATUS_MAP: Record<string, { label: string; colorClass: strin
     label: "주문 취소",
     colorClass: "border-red-600/30 bg-red-600/20 text-red-400",
   },
-  [OrderResponseOrderStatus.REFUND_REQUESTED]: {
-    label: "환불 요청",
+  CANCEL_REQUESTED: {
+    label: "취소 요청",
     colorClass: "border-red-600/30 bg-red-600/20 text-red-400",
   },
-  [OrderResponseOrderStatus.REFUND_REJECTED]: {
-    label: "환불 거절",
+  CANCEL_REJECTED: {
+    label: "취소 거절",
     colorClass: "border-amber-600/30 bg-amber-600/20 text-amber-400",
-  },
-  [OrderResponseOrderStatus.REFUND_COMPLETED]: {
-    label: "환불 완료",
-    colorClass: "border-gray-600/30 bg-gray-600/20 text-gray-400",
   },
 };
 
@@ -98,7 +94,7 @@ export const FAQ_DATA = [
       "위스키내비 멤버십은 연단위로 유지되며, 가입비와 필수 보틀 구매 조건이 있습니다. 그 대신 우선 배정, 우선 예약, 커뮤니티 보틀 등의 혜택을 제공합니다. 테일즈 멤버십의 경우 가입 후 영구 유지되며, 주문 수량에 따라 등급이 상승합니다. 세부적인 등급 변화 기준은 추후 업데이트 예정입니다.",
   },
   {
-    question: "환불은 어떻게 하나요?",
+    question: "교환은 어떻게 하나요?",
     answer:
       "제품 수령 후 7일 이내에 하자가 발견되면 해당 부분의 사진과 자료를 고객센터로 보내주시기 바랍니다. 확인 후 반송 요청을 드리면, 소비자께서 제품을 반송해주시면 새 보틀로 교환해드립니다.",
   },

@@ -2,7 +2,6 @@ import { ApiError } from "@/apis/errors";
 import {
   getApiOrdersGuest,
   patchApiOrdersGuestOrdernumberCancel,
-  postApiOrdersGeneralItemsDeliveryBankTransfer,
   postApiOrdersGeneralItemsDeliveryTossConfirm,
   postApiOrdersGeneralItemsDeliveryTossTickets,
   postApiUsersMeDeliveryAddresses,
@@ -14,7 +13,6 @@ import {
   cancelGuestGeneralItemOrder,
   confirmGeneralItemTossPayment,
   createDeliveryAddress,
-  createGeneralItemBankTransferOrder,
   createGeneralItemTossTicket,
   lookupGuestGeneralItemOrder,
 } from "./actions";
@@ -22,7 +20,6 @@ import {
 vi.mock("@/apis/generated/api", () => ({
   getApiOrdersGuest: vi.fn(),
   patchApiOrdersGuestOrdernumberCancel: vi.fn(),
-  postApiOrdersGeneralItemsDeliveryBankTransfer: vi.fn(),
   postApiOrdersGeneralItemsDeliveryTossConfirm: vi.fn(),
   postApiOrdersGeneralItemsDeliveryTossTickets: vi.fn(),
   postApiUsersMeDeliveryAddresses: vi.fn(),
@@ -37,7 +34,6 @@ vi.mock("next/cache", () => ({
 }));
 
 const mockedGetAuthToken = vi.mocked(getAuthToken);
-const mockedBankTransfer = vi.mocked(postApiOrdersGeneralItemsDeliveryBankTransfer);
 const mockedTossTickets = vi.mocked(postApiOrdersGeneralItemsDeliveryTossTickets);
 const mockedTossConfirm = vi.mocked(postApiOrdersGeneralItemsDeliveryTossConfirm);
 const mockedGuestLookup = vi.mocked(getApiOrdersGuest);
@@ -60,38 +56,6 @@ describe("general item delivery order actions", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockedGetAuthToken.mockResolvedValue(undefined);
-  });
-
-  it("validates required guest email before bank transfer order creation", async () => {
-    const result = await createGeneralItemBankTransferOrder({ ...validOrderInput, guestEmail: "" }, "idem-1");
-
-    expect(result).toEqual({
-      success: false,
-      error: "주문 안내를 받을 이메일을 입력해주세요.",
-    });
-    expect(mockedBankTransfer).not.toHaveBeenCalled();
-  });
-
-  it("creates a bank transfer order with idempotency key and optional auth token", async () => {
-    mockedGetAuthToken.mockResolvedValue("access-token");
-    mockedBankTransfer.mockResolvedValue({
-      data: { order: { id: 10, orderNumber: "ODR-1" } },
-      status: 200,
-      headers: new Headers(),
-    });
-
-    const result = await createGeneralItemBankTransferOrder(validOrderInput, "idem-1");
-
-    expect(result).toEqual({
-      success: true,
-      data: { order: { id: 10, orderNumber: "ODR-1" } },
-    });
-    expect(mockedBankTransfer).toHaveBeenCalledWith(validOrderInput, {
-      headers: {
-        Authorization: "Bearer access-token",
-        "Idempotency-Key": "idem-1",
-      },
-    });
   });
 
   it("issues a Toss ticket with the same order request body and idempotency key", async () => {

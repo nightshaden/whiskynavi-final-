@@ -4,7 +4,6 @@ import { getUserErrorMessage } from "@/apis/errors";
 import {
   getApiOrdersGuest,
   patchApiOrdersGuestOrdernumberCancel,
-  postApiOrdersGeneralItemsDeliveryBankTransfer,
   postApiOrdersGeneralItemsDeliveryTossConfirm,
   postApiOrdersGeneralItemsDeliveryTossTickets,
   postApiUsersMeDeliveryAddresses,
@@ -146,31 +145,6 @@ function guideErrorMessage(error: unknown, fallback: string): string {
   }
 
   return message;
-}
-
-export async function createGeneralItemBankTransferOrder(
-  input: GeneralItemDeliveryOrderInput,
-  idempotencyKey: string,
-): Promise<ActionResult<GeneralItemDeliveryOrderResponse>> {
-  try {
-    const parsed = orderInputSchema.safeParse(input);
-    if (!parsed.success) {
-      return { success: false, error: parsed.error.issues[0].message };
-    }
-
-    const response = await postApiOrdersGeneralItemsDeliveryBankTransfer(
-      normalizeOrderInput(parsed.data),
-      await buildOptions(idempotencyKey),
-    );
-
-    return { success: true, data: response.data };
-  } catch (error) {
-    if (isRedirectError(error)) throw error;
-    return {
-      success: false,
-      error: guideErrorMessage(error, "계좌이체 주문 생성에 실패했습니다."),
-    };
-  }
 }
 
 export async function createDeliveryAddress(

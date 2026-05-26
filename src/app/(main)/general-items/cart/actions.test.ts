@@ -4,7 +4,7 @@ import { getAuthToken } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { CART_TOKEN_COOKIE } from "./_lib/cart-token";
+import { CART_COMPLETED_COOKIE, CART_TOKEN_COOKIE } from "./_lib/cart-token";
 import {
   addGeneralItemToCart,
   fetchCartQuote,
@@ -40,6 +40,15 @@ function createCookieStore(cartToken?: string) {
   return {
     get: vi.fn((name: string) => (name === CART_TOKEN_COOKIE && cartToken ? { name, value: cartToken } : undefined)),
     set: vi.fn(),
+    delete: vi.fn(),
+  };
+}
+
+function createCompletedCookieStore() {
+  return {
+    get: vi.fn((name: string) => (name === CART_COMPLETED_COOKIE ? { name, value: "1" } : undefined)),
+    set: vi.fn(),
+    delete: vi.fn(),
   };
 }
 
@@ -229,6 +238,20 @@ describe("general item cart actions", () => {
       success: true,
       data: { items: [], itemsTotalPrice: 0, shippingFee: 0, totalPrice: 0 },
     });
+    expect(mockedQuote).not.toHaveBeenCalled();
+  });
+
+  it("returns an empty quote after checkout completion instead of restoring an authenticated cart", async () => {
+    mockedGetAuthToken.mockResolvedValue("access-token");
+    mockedCookies.mockResolvedValue(createCompletedCookieStore() as unknown as Awaited<ReturnType<typeof cookies>>);
+
+    const result = await fetchCartQuote();
+
+    expect(result).toEqual({
+      success: true,
+      data: { items: [], itemsTotalPrice: 0, shippingFee: 0, totalPrice: 0 },
+    });
+    expect(mockedGetOrCreate).not.toHaveBeenCalled();
     expect(mockedQuote).not.toHaveBeenCalled();
   });
 

@@ -34,7 +34,7 @@ export default function TossSuccessClient({ orderId, paymentKey, amount }: TossS
   }, []);
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10 md:py-16">
+    <div className="mx-auto max-w-3xl px-4 pt-24 pb-10 md:pt-28 md:pb-16">
       {isPending && (
         <div role="status" className="border border-white/10 bg-white/5 p-8 text-center text-white">
           결제를 확정하는 중입니다.
@@ -51,7 +51,11 @@ export default function TossSuccessClient({ orderId, paymentKey, amount }: TossS
             <Button type="button" onClick={confirm} disabled={isPending} className="bg-amber-600 hover:bg-amber-700">
               같은 결제 정보로 다시 확정
             </Button>
-            <Button asChild variant="outline">
+            <Button
+              asChild
+              variant="outline"
+              className="border-white/30 bg-white/5 text-white hover:bg-white/10 hover:text-white"
+            >
               <Link href="/general-items/cart/order">주문서로 돌아가기</Link>
             </Button>
           </div>

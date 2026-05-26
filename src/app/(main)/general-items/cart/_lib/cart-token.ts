@@ -1,6 +1,7 @@
 import type { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
 
 export const CART_TOKEN_COOKIE = "wn_cart_token";
+export const CART_COMPLETED_COOKIE = "wn_cart_completed";
 
 export type CartHeaderInput = {
   cartToken?: string;
@@ -48,6 +49,16 @@ export function getResponseCartToken(value: unknown): string | undefined {
 }
 
 export function getCartTokenCookieOptions(nodeEnv = process.env.NODE_ENV): Partial<ResponseCookie> {
+  return {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: nodeEnv === "production",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 30,
+  };
+}
+
+export function getCartCompletedCookieOptions(nodeEnv = process.env.NODE_ENV): Partial<ResponseCookie> {
   return {
     httpOnly: true,
     sameSite: "lax",

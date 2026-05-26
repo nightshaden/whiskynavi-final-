@@ -2,12 +2,10 @@
 
 import { getUserErrorMessage } from "@/apis/errors";
 import {
-  postApiOrdersGeneralItemsDeliveryCartBankTransfer,
   postApiOrdersGeneralItemsDeliveryCartTossConfirm,
   postApiOrdersGeneralItemsDeliveryCartTossTickets,
   type GeneralItemDeliveryOrderResponse,
   type GeneralItemDeliveryTicketResponse,
-  type PostApiOrdersGeneralItemsDeliveryCartBankTransferBody,
   type PostApiOrdersGeneralItemsDeliveryCartTossTicketsBody,
 } from "@/apis/generated/api";
 import { getAuthToken } from "@/lib/auth";
@@ -15,7 +13,12 @@ import { revalidatePath } from "next/cache";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { cookies } from "next/headers";
 import { z } from "zod";
-import { buildCartHeaders, CART_TOKEN_COOKIE } from "../_lib/cart-token";
+import {
+  buildCartHeaders,
+  CART_COMPLETED_COOKIE,
+  CART_TOKEN_COOKIE,
+  getCartCompletedCookieOptions,
+} from "../_lib/cart-token";
 
 const CART_PATH = "/general-items/cart";
 const CART_ORDER_PATH = "/general-items/cart/order";
@@ -26,8 +29,7 @@ type ActionResult<T> = {
   error?: string;
 };
 
-type CartOrderBody = PostApiOrdersGeneralItemsDeliveryCartBankTransferBody &
-  PostApiOrdersGeneralItemsDeliveryCartTossTicketsBody;
+type CartOrderBody = PostApiOrdersGeneralItemsDeliveryCartTossTicketsBody;
 
 export type GeneralItemCartDeliveryOrderInput = {
   receiverName: string;
@@ -87,6 +89,11 @@ async function deleteCartTokenCookie(): Promise<void> {
   cookieStore.delete({ name: CART_TOKEN_COOKIE, path: "/" });
 }
 
+async function markCartCompletedCookie(): Promise<void> {
+  const cookieStore = await cookies();
+  cookieStore.set(CART_COMPLETED_COOKIE, "1", getCartCompletedCookieOptions());
+}
+
 function revalidateCartPaths() {
   revalidatePath(CART_PATH);
   revalidatePath(CART_ORDER_PATH);
@@ -100,22 +107,15 @@ function revalidateCartPathsSafely() {
   }
 }
 
-function revalidateCartPathSafely() {
-  try {
-    revalidatePath(CART_PATH);
-  } catch {
-    // 주문 성공 응답을 캐시 정리 실패로 덮지 않는다.
-  }
-}
-
 async function finalizeSuccessfulCartOrder() {
   try {
     await deleteCartTokenCookie();
+    await markCartCompletedCookie();
   } catch {
     // 주문 성공 이후의 쿠키 정리 실패가 중복 주문 유도로 이어지지 않게 성공 응답을 보존한다.
   }
 
-  revalidateCartPathSafely();
+  revalidateCartPathsSafely();
 }
 
 function guideErrorMessage(error: unknown, fallback: string): string {
@@ -134,33 +134,6 @@ function guideErrorMessage(error: unknown, fallback: string): string {
   }
 
   return message;
-}
-
-export async function createGeneralItemCartBankTransferOrder(
-  input: GeneralItemCartDeliveryOrderInput,
-  idempotencyKey: string,
-): Promise<ActionResult<GeneralItemDeliveryOrderResponse>> {
-  try {
-    const parsed = orderInputSchema.safeParse(input);
-    if (!parsed.success) {
-      return { success: false, error: parsed.error.issues[0].message };
-    }
-
-    const response = await postApiOrdersGeneralItemsDeliveryCartBankTransfer(
-      normalizeOrderInput(parsed.data),
-      await buildOptions(idempotencyKey),
-    );
-
-    await finalizeSuccessfulCartOrder();
-
-    return { success: true, data: response.data };
-  } catch (error) {
-    if (isRedirectError(error)) throw error;
-    return {
-      success: false,
-      error: guideErrorMessage(error, "계좌이체 주문 생성에 실패했습니다."),
-    };
-  }
 }
 
 export async function createGeneralItemCartTossTicket(

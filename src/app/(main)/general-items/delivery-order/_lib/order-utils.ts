@@ -43,17 +43,13 @@ const STATUS_CONFIG_MAP: Record<string, { label: string; colorClass: string }> =
     label: "주문 취소",
     colorClass: "border-red-600/30 bg-red-600/20 text-red-400",
   },
-  [OrderResponseOrderStatus.REFUND_REQUESTED]: {
-    label: "환불 요청",
+  CANCEL_REQUESTED: {
+    label: "취소 요청",
     colorClass: "border-red-600/30 bg-red-600/20 text-red-400",
   },
-  [OrderResponseOrderStatus.REFUND_REJECTED]: {
-    label: "환불 거절",
+  CANCEL_REJECTED: {
+    label: "취소 거절",
     colorClass: "border-amber-600/30 bg-amber-600/20 text-amber-400",
-  },
-  [OrderResponseOrderStatus.REFUND_COMPLETED]: {
-    label: "환불 완료",
-    colorClass: "border-gray-600/30 bg-gray-600/20 text-gray-400",
   },
 };
 

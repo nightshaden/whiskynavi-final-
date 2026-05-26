@@ -108,7 +108,7 @@ function GuestOrderDetail({
         <div className="mt-8 border-t border-white/10 pt-6">
           <h3 className="typo-bold-18 text-white">주문 취소</h3>
           <p className="mt-2 text-sm text-gray-400">
-            입금 대기 주문은 취소되고, 결제 완료 주문은 서버 정책에 따라 환불 요청으로 전환될 수 있습니다.
+            결제 완료 주문은 취소 요청으로 접수되며, 관리자가 승인하면 결제와 주문이 취소됩니다.
           </p>
           <Textarea
             value={reason}
