@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-interface LegacyTossSuccessPageProps {
+interface PaymentSuccessPageProps {
   searchParams: Promise<{
     orderId?: string;
     paymentKey?: string;
@@ -8,7 +8,7 @@ interface LegacyTossSuccessPageProps {
   }>;
 }
 
-export default async function LegacyTossSuccessPage({ searchParams }: LegacyTossSuccessPageProps) {
+export default async function PaymentSuccessPage({ searchParams }: PaymentSuccessPageProps) {
   const params = await searchParams;
   const query = new URLSearchParams();
 

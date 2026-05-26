@@ -193,7 +193,7 @@ export async function createDeliveryAddress(
       },
     });
 
-    revalidatePath("/general-items/delivery-order");
+    revalidatePath("/general-items/cart/order");
     return { success: true, data: response.data };
   } catch (error) {
     if (isRedirectError(error)) throw error;

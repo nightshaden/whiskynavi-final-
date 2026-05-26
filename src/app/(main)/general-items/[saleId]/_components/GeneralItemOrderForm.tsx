@@ -1,23 +1,21 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { normalizeGeneralItemOrderQuantity } from "../../_lib/general-item-sales";
 import { addGeneralItemToCart } from "../../cart/actions";
 
 interface GeneralItemOrderFormProps {
   saleAnnouncementId: number;
-  itemName: string;
-  unitPrice?: number;
   quantityLimit: number;
 }
 
 export default function GeneralItemOrderForm({
   saleAnnouncementId,
-  itemName,
-  unitPrice,
   quantityLimit,
 }: GeneralItemOrderFormProps) {
+  const router = useRouter();
   const [quantity, setQuantity] = useState(1);
   const [cartMessage, setCartMessage] = useState<string | null>(null);
   const [cartError, setCartError] = useState<string | null>(null);
@@ -43,12 +41,24 @@ export default function GeneralItemOrderForm({
     });
   };
 
-  return (
-    <form action="/general-items/delivery-order" method="get" className="grid gap-4">
-      <input type="hidden" name="saleAnnouncementId" value={saleAnnouncementId} />
-      <input type="hidden" name="itemName" value={itemName} />
-      <input type="hidden" name="unitPrice" value={unitPrice ?? ""} />
+  const handleOrderNow = () => {
+    setCartMessage(null);
+    setCartError(null);
 
+    startTransition(async () => {
+      const result = await addGeneralItemToCart({ saleAnnouncementId, quantity });
+
+      if (result.success) {
+        router.push("/general-items/cart/order");
+        return;
+      }
+
+      setCartError(result.error ?? "장바구니 담기에 실패했습니다.");
+    });
+  };
+
+  return (
+    <form className="grid gap-4" onSubmit={(event) => event.preventDefault()}>
       <div>
         <div className="flex w-full items-center justify-between gap-4">
           <label className="shrink-0 text-sm font-medium text-gray-200" htmlFor="quantity">
@@ -129,8 +139,10 @@ export default function GeneralItemOrderForm({
           장바구니 담기
         </button>
         <button
-          type="submit"
+          type="button"
           className="min-h-11 w-full bg-amber-600 px-4 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-amber-700"
+          onClick={handleOrderNow}
+          disabled={isPending}
         >
           바로 주문
         </button>

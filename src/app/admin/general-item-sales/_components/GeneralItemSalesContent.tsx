@@ -49,12 +49,7 @@ function formatDateTime(value?: string) {
 }
 
 function buildOrderHref(sale: SaleAnnouncementResponse) {
-  const params = new URLSearchParams();
-  if (sale.id != null) params.set("saleAnnouncementId", String(sale.id));
-  if (sale.itemName) params.set("itemName", sale.itemName);
-  if (sale.salePrice != null) params.set("unitPrice", String(sale.salePrice));
-  const query = params.toString();
-  return query ? `/general-items/delivery-order?${query}` : "/general-items/delivery-order";
+  return sale.id != null ? `/general-items/${sale.id}` : "/general-items";
 }
 
 export default function GeneralItemSalesContent({ searchParams, sales, totalElements }: GeneralItemSalesContentProps) {
@@ -162,7 +157,7 @@ export default function GeneralItemSalesContent({ searchParams, sales, totalElem
                           href={buildOrderHref(sale)}
                           className="rounded-md px-2 py-1.5 text-sm font-medium text-amber-700 transition-colors hover:bg-amber-50"
                         >
-                          주문 화면
+                          상품 화면
                         </Link>
                       </td>
                     </tr>

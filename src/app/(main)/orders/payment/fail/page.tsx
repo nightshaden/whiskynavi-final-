@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-interface LegacyTossFailPageProps {
+interface PaymentFailPageProps {
   searchParams: Promise<{
     code?: string;
     message?: string;
@@ -8,7 +8,7 @@ interface LegacyTossFailPageProps {
   }>;
 }
 
-export default async function LegacyTossFailPage({ searchParams }: LegacyTossFailPageProps) {
+export default async function PaymentFailPage({ searchParams }: PaymentFailPageProps) {
   const params = await searchParams;
   const query = new URLSearchParams();
 

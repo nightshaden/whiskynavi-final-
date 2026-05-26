@@ -8,6 +8,7 @@ import {
   postApiUsersMeDeliveryAddresses,
 } from "@/apis/generated/api";
 import { getAuthToken } from "@/lib/auth";
+import { revalidatePath } from "next/cache";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   cancelGuestGeneralItemOrder,
@@ -42,6 +43,7 @@ const mockedTossConfirm = vi.mocked(postApiOrdersGeneralItemsDeliveryTossConfirm
 const mockedGuestLookup = vi.mocked(getApiOrdersGuest);
 const mockedGuestCancel = vi.mocked(patchApiOrdersGuestOrdernumberCancel);
 const mockedCreateDeliveryAddress = vi.mocked(postApiUsersMeDeliveryAddresses);
+const mockedRevalidatePath = vi.mocked(revalidatePath);
 
 const validOrderInput = {
   saleAnnouncementId: 1001,
@@ -245,5 +247,6 @@ describe("general item delivery order actions", () => {
         },
       },
     );
+    expect(mockedRevalidatePath).toHaveBeenCalledWith("/general-items/cart/order");
   });
 });

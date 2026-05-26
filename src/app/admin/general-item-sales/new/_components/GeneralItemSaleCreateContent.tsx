@@ -35,13 +35,8 @@ interface GeneralItemSaleCreateContentProps {
   };
 }
 
-function buildOrderHref(saleId?: number, itemName?: string, unitPrice?: number) {
-  const params = new URLSearchParams();
-  if (saleId != null) params.set("saleAnnouncementId", String(saleId));
-  if (itemName) params.set("itemName", itemName);
-  if (unitPrice != null) params.set("unitPrice", String(unitPrice));
-  const query = params.toString();
-  return query ? `/general-items/delivery-order?${query}` : "/general-items/delivery-order";
+function buildOrderHref(saleId?: number) {
+  return saleId != null ? `/general-items/${saleId}` : "/general-items";
 }
 
 function getItem(items: ItemAdminResponse[], id: string) {
@@ -117,10 +112,10 @@ export default function GeneralItemSaleCreateContent({ items, initialValues }: G
             <p className="font-semibold">일반상품판매공고가 등록되었습니다. 공고 ID: {createdSale.id}</p>
             <div className="mt-3 flex flex-wrap gap-2">
               <Link
-                href={buildOrderHref(createdSale.id, createdSale.itemName, createdSale.salePrice)}
+                href={buildOrderHref(createdSale.id)}
                 className="rounded-md bg-green-700 px-3 py-2 text-white hover:bg-green-800"
               >
-                주문 화면에서 확인
+                상품 화면에서 확인
               </Link>
               <Link href="/admin/general-items" className="rounded-md border border-green-300 px-3 py-2 hover:bg-white">
                 일반상품 목록
