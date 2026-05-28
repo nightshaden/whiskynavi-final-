@@ -43,10 +43,10 @@ export default function Footer() {
 
         {/* Mobile: Compact with | separator */}
         <div className="text-[10px] text-gray-500 md:hidden">
-          <p className="mb-1">사업자등록번호: 472-81-02973 | 대표자: 천관호</p>
-          <p className="mb-1">주소: 경기도 성남시 중원구 둔촌대로 537, 에이동 208호</p>
-          <p className="mb-1">고객센터: 0000-0000-0000 | 이메일: contact@whiskynavi.com</p>
-          <p>© 2025 WHISKYNAVI. All rights reserved.</p>
+          <p className="mb-1">(주) 캐스크야드 | 사업자등록번호: 689-86-03712 | 대표자: 천관호</p>
+          <p className="mb-1">주소: (13591) 경기도 성남시 분당구 서현로 210번길 1. 4층 405-자65</p>
+          <p className="mb-1">전화번호: 010-6848-6231 | 이메일: contact@whiskynavi.com</p>
+          <p>Copyright CASKYARD. All rights reserved.</p>
         </div>
       </div>
     </footer>
