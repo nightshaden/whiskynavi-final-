@@ -67,9 +67,26 @@ function hasAuthWithoutCartToken(options?: RequestInit): boolean {
   return Boolean(headers.Authorization && !headers["X-Cart-Token"]);
 }
 
+function hasCartTokenHeader(options?: RequestInit): boolean {
+  const headers = (options?.headers ?? {}) as Record<string, string>;
+  return Boolean(headers["X-Cart-Token"]);
+}
+
+function removeCartTokenHeader(options?: RequestInit): RequestInit | undefined {
+  const headers = { ...((options?.headers ?? {}) as Record<string, string>) };
+  delete headers["X-Cart-Token"];
+
+  return Object.keys(headers).length > 0 ? { ...options, headers } : undefined;
+}
+
 async function buildIdentifiedCartOptions(): Promise<RequestInit | undefined> {
   const options = await buildCartOptions();
   return hasCartIdentity(options) ? options : undefined;
+}
+
+async function clearCartTokenCookie(): Promise<void> {
+  const cookieStore = await cookies();
+  cookieStore.delete({ name: CART_TOKEN_COOKIE, path: "/" });
 }
 
 async function persistCartTokenFromResponse(data: unknown): Promise<void> {
@@ -173,7 +190,19 @@ export async function addGeneralItemToCart(input: AddGeneralItemToCartInput): Pr
       return { success: false, error: parsed.error.issues[0].message };
     }
 
-    const response = await addItem(parsed.data, await buildCartOptions());
+    const options = await buildCartOptions();
+    let response: Awaited<ReturnType<typeof addItem>>;
+
+    try {
+      response = await addItem(parsed.data, options);
+    } catch (error) {
+      if (isRedirectError(error)) throw error;
+      if (!isCartNotFoundError(error) || !hasCartTokenHeader(options)) throw error;
+
+      await clearCartTokenCookie();
+      response = await addItem(parsed.data, removeCartTokenHeader(options));
+    }
+
     await persistCartTokenFromResponse(response.data);
     revalidateCartPaths();
 

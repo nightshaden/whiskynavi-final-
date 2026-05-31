@@ -123,6 +123,50 @@ describe("general item cart actions", () => {
     expect(mockedRevalidatePath).toHaveBeenCalledWith("/general-items/cart/order");
   });
 
+  it("clears a stale cart token and retries adding an item when the backend cannot find the cart", async () => {
+    const cookieStore = createCookieStore("stale-cart-token");
+    mockedCookies.mockResolvedValue(cookieStore as unknown as Awaited<ReturnType<typeof cookies>>);
+    mockedAddItem
+      .mockRejectedValueOnce(new ApiError(400, '{"error":"장바구니를 찾을 수 없습니다."}'))
+      .mockResolvedValueOnce({
+        data: { cartToken: "new-cart-token" },
+        status: 200,
+        headers: new Headers(),
+      });
+
+    const result = await addGeneralItemToCart({
+      saleAnnouncementId: 100,
+      quantity: 2,
+    });
+
+    expect(result).toEqual({
+      success: true,
+      data: { cartToken: "new-cart-token" },
+    });
+    expect(mockedAddItem).toHaveBeenNthCalledWith(
+      1,
+      { saleAnnouncementId: 100, quantity: 2 },
+      {
+        headers: {
+          "X-Cart-Token": "stale-cart-token",
+        },
+      },
+    );
+    expect(mockedAddItem).toHaveBeenNthCalledWith(2, { saleAnnouncementId: 100, quantity: 2 }, undefined);
+    expect(cookieStore.delete).toHaveBeenCalledWith({ name: CART_TOKEN_COOKIE, path: "/" });
+    expect(cookieStore.set).toHaveBeenCalledWith(
+      CART_TOKEN_COOKIE,
+      "new-cart-token",
+      expect.objectContaining({
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+      }),
+    );
+    expect(mockedRevalidatePath).toHaveBeenCalledWith("/general-items/cart");
+    expect(mockedRevalidatePath).toHaveBeenCalledWith("/general-items/cart/order");
+  });
+
   it("updates item quantity with cart item id and quantity body", async () => {
     mockedGetAuthToken.mockResolvedValue("access-token");
     mockedUpdateQuantity.mockResolvedValue({

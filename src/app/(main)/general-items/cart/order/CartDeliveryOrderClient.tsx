@@ -11,13 +11,15 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Plus, Search } from "lucide-react";
 import Link from "next/link";
-import { useState, useTransition, type ChangeEvent, type FormEvent } from "react";
+import { useRef, useState, useTransition, type ChangeEvent, type FormEvent } from "react";
 import { createDeliveryAddress } from "../../delivery-order/actions";
 import { formatCartCurrency, getValidCartItems } from "../_lib/cart-utils";
 import { createGeneralItemCartTossTicket, type GeneralItemCartDeliveryOrderInput } from "./actions";
 
 const TOSS_SCRIPT_SRC = "https://js.tosspayments.com/v2/standard";
+const KAKAO_POSTCODE_SCRIPT_SRC = "https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
 
 type TossPaymentInstance = {
   requestPayment: (params: {
@@ -39,13 +41,32 @@ type TossPaymentsFactory = ((clientKey: string) => {
   ANONYMOUS: string;
 };
 
+type KakaoPostcodeData = {
+  zonecode?: string;
+  address?: string;
+  roadAddress?: string;
+  jibunAddress?: string;
+  userSelectedType?: "R" | "J";
+  bname?: string;
+  buildingName?: string;
+  apartment?: string;
+};
+
+type KakaoPostcodeConstructor = new (params: { oncomplete: (data: KakaoPostcodeData) => void }) => {
+  open: () => void;
+};
+
 declare global {
   interface Window {
     TossPayments?: TossPaymentsFactory;
+    daum?: {
+      Postcode?: KakaoPostcodeConstructor;
+    };
   }
 }
 
 let tossScriptPromise: Promise<TossPaymentsFactory> | null = null;
+let kakaoPostcodeScriptPromise: Promise<KakaoPostcodeConstructor> | null = null;
 
 interface CartDeliveryOrderClientProps {
   quote: CartQuoteResponse;
@@ -62,6 +83,17 @@ type AddressFormState = {
   addressDetail: string;
   deliveryMemo: string;
   defaultAddress: boolean;
+};
+
+type OrderFormState = {
+  receiverName: string;
+  receiverPhone: string;
+  deliveryPostalCode: string;
+  deliveryBaseAddress: string;
+  deliveryAddressDetail: string;
+  deliveryMemo: string;
+  orderNote: string;
+  guestEmail: string;
 };
 
 function createAttemptKey() {
@@ -105,6 +137,39 @@ function loadTossPaymentsScript(): Promise<TossPaymentsFactory> {
   return tossScriptPromise;
 }
 
+function loadKakaoPostcodeScript(): Promise<KakaoPostcodeConstructor> {
+  if (typeof window === "undefined") {
+    return Promise.reject(new Error("브라우저에서만 주소 검색을 사용할 수 있습니다."));
+  }
+
+  if (window.daum?.Postcode) {
+    return Promise.resolve(window.daum.Postcode);
+  }
+
+  if (kakaoPostcodeScriptPromise) return kakaoPostcodeScriptPromise;
+
+  kakaoPostcodeScriptPromise = new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = KAKAO_POSTCODE_SCRIPT_SRC;
+    script.async = true;
+    script.onload = () => {
+      if (window.daum?.Postcode) {
+        resolve(window.daum.Postcode);
+      } else {
+        kakaoPostcodeScriptPromise = null;
+        reject(new Error("주소 검색 서비스를 불러오지 못했습니다."));
+      }
+    };
+    script.onerror = () => {
+      kakaoPostcodeScriptPromise = null;
+      reject(new Error("주소 검색 서비스를 불러오지 못했습니다."));
+    };
+    document.head.appendChild(script);
+  });
+
+  return kakaoPostcodeScriptPromise;
+}
+
 function normalizePhone(value: string) {
   return value.replace(/\D/g, "");
 }
@@ -129,6 +194,33 @@ function formatDeliveryAddress(address: DeliveryAddressResponse) {
 
 function getDefaultAddress(addresses: DeliveryAddressResponse[]) {
   return addresses.find((address) => address.defaultAddress) ?? null;
+}
+
+function resolvePostcodeAddress(data: KakaoPostcodeData) {
+  const baseAddress =
+    data.address ||
+    (data.userSelectedType === "J" ? data.jibunAddress || data.roadAddress : data.roadAddress || data.jibunAddress) ||
+    "";
+
+  if (data.userSelectedType !== "R") return baseAddress;
+
+  const extraAddressParts = [
+    data.bname && /[동로가]$/u.test(data.bname) ? data.bname : "",
+    data.buildingName && data.apartment === "Y" ? data.buildingName : "",
+  ].filter(Boolean);
+
+  return [baseAddress, extraAddressParts.length > 0 ? `(${extraAddressParts.join(", ")})` : ""]
+    .filter(Boolean)
+    .join(" ");
+}
+
+function formatOrderDeliveryAddress(
+  form: Pick<OrderFormState, "deliveryPostalCode" | "deliveryBaseAddress" | "deliveryAddressDetail">,
+) {
+  const baseAddress = [form.deliveryPostalCode ? `(${form.deliveryPostalCode})` : "", form.deliveryBaseAddress.trim()]
+    .filter(Boolean)
+    .join(" ");
+  return [baseAddress, form.deliveryAddressDetail.trim()].filter(Boolean).join(" ");
 }
 
 function RequiredMark() {
@@ -180,10 +272,14 @@ export default function CartDeliveryOrderClient({
   const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false);
   const [addressError, setAddressError] = useState<string | null>(null);
   const [addressForm, setAddressForm] = useState<AddressFormState>(() => createAddressFormState(currentUser));
-  const [form, setForm] = useState({
+  const orderAddressDetailInputRef = useRef<HTMLInputElement>(null);
+  const addressBookDetailInputRef = useRef<HTMLInputElement>(null);
+  const [form, setForm] = useState<OrderFormState>({
     receiverName: "",
     receiverPhone: "",
-    deliveryAddress: "",
+    deliveryPostalCode: "",
+    deliveryBaseAddress: "",
+    deliveryAddressDetail: "",
     deliveryMemo: "",
     orderNote: "",
     guestEmail: currentUser?.email ?? "",
@@ -212,12 +308,49 @@ export default function CartDeliveryOrderClient({
       setAddressForm((current) => ({ ...current, [field]: value }));
     };
 
+  const openPostcodeSearch = async (onComplete: (data: KakaoPostcodeData) => void) => {
+    const Postcode = await loadKakaoPostcodeScript();
+    new Postcode({ oncomplete: onComplete }).open();
+  };
+
+  const handleOrderPostcodeSearch = () => {
+    setError(null);
+    openPostcodeSearch((data) => {
+      setForm((current) => ({
+        ...current,
+        deliveryPostalCode: data.zonecode ?? "",
+        deliveryBaseAddress: resolvePostcodeAddress(data),
+      }));
+      orderAddressDetailInputRef.current?.focus();
+    }).catch((postcodeError) => {
+      setError(postcodeError instanceof Error ? postcodeError.message : "주소 검색 서비스를 불러오지 못했습니다.");
+    });
+  };
+
+  const handleAddressFormPostcodeSearch = () => {
+    setAddressError(null);
+    openPostcodeSearch((data) => {
+      setAddressForm((current) => ({
+        ...current,
+        postalCode: data.zonecode ?? "",
+        address: resolvePostcodeAddress(data),
+      }));
+      addressBookDetailInputRef.current?.focus();
+    }).catch((postcodeError) => {
+      setAddressError(
+        postcodeError instanceof Error ? postcodeError.message : "주소 검색 서비스를 불러오지 못했습니다.",
+      );
+    });
+  };
+
   const applyAddress = (address: DeliveryAddressResponse) => {
     setForm((current) => ({
       ...current,
       receiverName: address.receiverName || current.receiverName,
       receiverPhone: address.receiverPhone || current.receiverPhone,
-      deliveryAddress: formatDeliveryAddress(address) || current.deliveryAddress,
+      deliveryPostalCode: address.postalCode || current.deliveryPostalCode,
+      deliveryBaseAddress: address.address || current.deliveryBaseAddress,
+      deliveryAddressDetail: address.addressDetail || current.deliveryAddressDetail,
       deliveryMemo: address.deliveryMemo ?? current.deliveryMemo,
     }));
   };
@@ -230,7 +363,9 @@ export default function CartDeliveryOrderClient({
       guestEmail: currentUser?.email || current.guestEmail,
       ...(address
         ? {
-            deliveryAddress: formatDeliveryAddress(address) || current.deliveryAddress,
+            deliveryPostalCode: address.postalCode || current.deliveryPostalCode,
+            deliveryBaseAddress: address.address || current.deliveryBaseAddress,
+            deliveryAddressDetail: address.addressDetail || current.deliveryAddressDetail,
             deliveryMemo: address.deliveryMemo ?? current.deliveryMemo,
           }
         : {}),
@@ -294,7 +429,7 @@ export default function CartDeliveryOrderClient({
   const buildInput = (): GeneralItemCartDeliveryOrderInput => ({
     receiverName: form.receiverName,
     receiverPhone: form.receiverPhone,
-    deliveryAddress: form.deliveryAddress,
+    deliveryAddress: formatOrderDeliveryAddress(form),
     deliveryMemo: form.deliveryMemo,
     orderNote: form.orderNote,
     guestEmail: form.guestEmail,
@@ -349,19 +484,19 @@ export default function CartDeliveryOrderClient({
           </div>
 
           <div className="grid gap-5">
-            <div className="flex items-center gap-2 border border-white/10 bg-black/10 p-3">
-              <Checkbox
-                id="sameAsOrderer"
-                checked={isSameAsOrderer}
-                onCheckedChange={handleSameAsOrdererChange}
-                disabled={!hasOrdererInfo}
-                className="border-white/40 data-[state=checked]:border-amber-500 data-[state=checked]:bg-amber-600"
-              />
-              <label htmlFor="sameAsOrderer" className="text-sm font-medium text-gray-200">
-                주문자와 같음
-              </label>
-              {!hasOrdererInfo && <span className="text-xs text-gray-500">로그인 후 사용할 수 있습니다.</span>}
-            </div>
+            {hasOrdererInfo && (
+              <div className="flex items-center gap-2 border border-white/10 bg-black/10 p-3">
+                <Checkbox
+                  id="sameAsOrderer"
+                  checked={isSameAsOrderer}
+                  onCheckedChange={handleSameAsOrdererChange}
+                  className="border-white/40 data-[state=checked]:border-amber-500 data-[state=checked]:bg-amber-600"
+                />
+                <label htmlFor="sameAsOrderer" className="text-sm font-medium text-gray-200">
+                  주문자와 같음
+                </label>
+              </div>
+            )}
 
             <div className="grid gap-5 md:grid-cols-2">
               <div>
@@ -413,21 +548,24 @@ export default function CartDeliveryOrderClient({
 
             <div>
               <div className="mb-2 flex items-center justify-between gap-3">
-                <label className="block text-sm font-medium text-gray-200" htmlFor="deliveryAddress">
+                <span className="block text-sm font-medium text-gray-200">
                   배송 주소
                   <RequiredMark />
-                </label>
-                {hasOrdererInfo && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleAddressDialogOpenChange(true)}
-                    className="border-white/20 bg-transparent text-gray-300 hover:bg-white/10 hover:text-white"
-                  >
-                    주소 추가
-                  </Button>
-                )}
+                </span>
+                <div className="flex flex-wrap justify-end gap-2">
+                  {hasOrdererInfo && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleAddressDialogOpenChange(true)}
+                      className="border-white/20 bg-transparent text-gray-300 hover:bg-white/10 hover:text-white"
+                    >
+                      <Plus aria-hidden="true" />
+                      주소 추가
+                    </Button>
+                  )}
+                </div>
               </div>
               {hasOrdererInfo && (
                 <div className="mb-3">
@@ -458,14 +596,70 @@ export default function CartDeliveryOrderClient({
                   )}
                 </div>
               )}
-              <Textarea
-                id="deliveryAddress"
-                required
-                value={form.deliveryAddress}
-                onChange={updateField("deliveryAddress")}
-                placeholder="서울특별시 ..."
-                className="min-h-24 border-white/15 bg-black/20 text-white"
-              />
+              <div className="border-y border-white/10 py-4">
+                <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
+                  <span className="inline-flex h-6 w-6 items-center justify-center bg-amber-500 text-black">1</span>
+                  <span className="text-amber-200">주소 검색</span>
+                  <span className="h-px min-w-8 flex-1 bg-white/10" aria-hidden="true" />
+                  <span className="inline-flex h-6 w-6 items-center justify-center bg-white/10 text-gray-300">2</span>
+                  <span className="text-gray-300">상세 주소 입력</span>
+                </div>
+
+                <div className="mt-4 grid gap-3">
+                  <div className="grid gap-3 md:grid-cols-[170px_1fr] md:items-end">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handleOrderPostcodeSearch}
+                      className="h-9 border-amber-500/60 bg-amber-600 text-black hover:bg-amber-500 hover:text-black"
+                    >
+                      <Search aria-hidden="true" />
+                      배송 주소 검색
+                    </Button>
+                    <div>
+                      <label className="mb-2 block text-sm font-medium text-gray-200" htmlFor="deliveryPostalCode">
+                        우편번호
+                      </label>
+                      <Input
+                        id="deliveryPostalCode"
+                        readOnly
+                        value={form.deliveryPostalCode}
+                        placeholder="04524"
+                        className="border-white/15 bg-black/20 text-white read-only:cursor-default"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-gray-200" htmlFor="deliveryBaseAddress">
+                      기본 주소
+                      <RequiredMark />
+                    </label>
+                    <Input
+                      id="deliveryBaseAddress"
+                      readOnly
+                      required
+                      value={form.deliveryBaseAddress}
+                      placeholder="주소 검색으로 기본 주소를 선택해 주세요."
+                      className="border-white/15 bg-black/20 text-white read-only:cursor-default"
+                    />
+                  </div>
+
+                  <div className="border-t border-white/10 pt-3">
+                    <label className="mb-2 block text-sm font-medium text-gray-200" htmlFor="deliveryAddressDetail">
+                      상세 주소
+                    </label>
+                    <Input
+                      id="deliveryAddressDetail"
+                      ref={orderAddressDetailInputRef}
+                      value={form.deliveryAddressDetail}
+                      onChange={updateField("deliveryAddressDetail")}
+                      placeholder="동, 호수, 건물명 등"
+                      className="border-white/15 bg-black/20 text-white"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="grid gap-5 md:grid-cols-2">
@@ -620,42 +814,62 @@ export default function CartDeliveryOrderClient({
               </div>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-[160px_1fr]">
-              <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700" htmlFor="postalCode">
-                  우편번호
-                </label>
-                <Input
-                  id="postalCode"
-                  value={addressForm.postalCode}
-                  onChange={updateAddressField("postalCode")}
-                  placeholder="04524"
-                />
+            <div className="border-y border-gray-200 py-4">
+              <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
+                <span className="inline-flex h-6 w-6 items-center justify-center bg-amber-500 text-black">1</span>
+                <span className="text-amber-700">주소 검색</span>
+                <span className="h-px min-w-8 flex-1 bg-gray-200" aria-hidden="true" />
+                <span className="inline-flex h-6 w-6 items-center justify-center bg-gray-100 text-gray-600">2</span>
+                <span className="text-gray-600">상세 주소 입력</span>
               </div>
-              <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700" htmlFor="address">
-                  기본 주소
-                  <RequiredMark />
-                </label>
-                <Input
-                  id="address"
-                  value={addressForm.address}
-                  onChange={updateAddressField("address")}
-                  placeholder="서울특별시 중구 ..."
-                />
-              </div>
-            </div>
 
-            <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700" htmlFor="addressDetail">
-                상세 주소
-              </label>
-              <Input
-                id="addressDetail"
-                value={addressForm.addressDetail}
-                onChange={updateAddressField("addressDetail")}
-                placeholder="101호"
-              />
+              <div className="mt-4 grid gap-4">
+                <div className="grid gap-3 md:grid-cols-[160px_1fr] md:items-end">
+                  <Button type="button" variant="outline" onClick={handleAddressFormPostcodeSearch} className="h-9">
+                    <Search aria-hidden="true" />
+                    우편번호 검색
+                  </Button>
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-gray-700" htmlFor="postalCode">
+                      우편번호
+                    </label>
+                    <Input
+                      id="postalCode"
+                      readOnly
+                      value={addressForm.postalCode}
+                      placeholder="04524"
+                      className="read-only:cursor-default"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-gray-700" htmlFor="address">
+                    기본 주소
+                    <RequiredMark />
+                  </label>
+                  <Input
+                    id="address"
+                    readOnly
+                    value={addressForm.address}
+                    placeholder="서울특별시 중구 ..."
+                    className="read-only:cursor-default"
+                  />
+                </div>
+
+                <div className="border-t border-gray-200 pt-4">
+                  <label className="mb-1 block text-sm font-medium text-gray-700" htmlFor="addressDetail">
+                    상세 주소
+                  </label>
+                  <Input
+                    id="addressDetail"
+                    ref={addressBookDetailInputRef}
+                    value={addressForm.addressDetail}
+                    onChange={updateAddressField("addressDetail")}
+                    placeholder="101호"
+                  />
+                </div>
+              </div>
             </div>
 
             <div>
