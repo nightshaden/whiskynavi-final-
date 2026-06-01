@@ -1,6 +1,6 @@
 "use client";
 
-import type { BannerResponse } from "@/apis/generated/api";
+import type { AdminBannerResponse } from "@/apis/generated/api";
 import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -13,7 +13,7 @@ interface BannersContentProps {
     page?: string;
     limit?: string;
   };
-  banners: BannerResponse[];
+  banners: AdminBannerResponse[];
   totalElements: number;
 }
 

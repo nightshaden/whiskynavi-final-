@@ -1,6 +1,6 @@
 "use client";
 
-import type { SaleAnnouncementResponse } from "@/apis/generated/api";
+import type { AdminSaleAnnouncementResponse } from "@/apis/generated/api";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -28,7 +28,7 @@ interface GeneralItemSalesContentProps {
     limit?: string;
     saleStatus?: string;
   };
-  sales: SaleAnnouncementResponse[];
+  sales: AdminSaleAnnouncementResponse[];
   totalElements: number;
 }
 
@@ -48,7 +48,7 @@ function formatDateTime(value?: string) {
   });
 }
 
-function buildOrderHref(sale: SaleAnnouncementResponse) {
+function buildOrderHref(sale: AdminSaleAnnouncementResponse) {
   return sale.id != null ? `/general-items/${sale.id}` : "/general-items";
 }
 

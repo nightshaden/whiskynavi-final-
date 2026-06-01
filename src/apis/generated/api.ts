@@ -2705,6 +2705,20 @@ export interface PageableObject {
   unpaged?: boolean;
 }
 
+export interface PageAdminBannerResponse {
+  content?: AdminBannerResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
 export interface PageAdminBottleReservationApplicationResponse {
   content?: AdminBottleReservationApplicationResponse[];
   empty?: boolean;
@@ -2791,6 +2805,20 @@ export interface PageAdminItemReservationNoticeResponse {
 
 export interface PageAdminOrderResponse {
   content?: AdminOrderResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+export interface PageAdminSaleAnnouncementResponse {
+  content?: AdminSaleAnnouncementResponse[];
   empty?: boolean;
   first?: boolean;
   last?: boolean;
@@ -5044,6 +5072,23 @@ export interface UsernameRequest {
   username?: string;
 }
 
+export type GetApiAdminBannersParams = {
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
+};
+
 export type PostApiAdminBannersParams = {
 /**
  * @minLength 1
@@ -6592,6 +6637,34 @@ export type PatchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessi
    */
   trackingNumber?: string;
 };
+
+export type GetApiAdminSalesParams = {
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
+saleStatus?: GetApiAdminSalesSaleStatus;
+};
+
+export type GetApiAdminSalesSaleStatus = typeof GetApiAdminSalesSaleStatus[keyof typeof GetApiAdminSalesSaleStatus];
+
+
+export const GetApiAdminSalesSaleStatus = {
+  DRAFT: 'DRAFT',
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED',
+  SOLD_OUT: 'SOLD_OUT',
+} as const;
 
 /**
  * 판매 상품 유형
@@ -8632,6 +8705,58 @@ export type PutApiUsersMeNicknameBody = {
 };
 
 /**
+ * 관리자가 배너 목록을 조회합니다.
+ * @summary 배너 목록 조회(관리자)
+ */
+export type getApiAdminBannersResponse200 = {
+  data: PageAdminBannerResponse
+  status: 200
+}
+    
+export type getApiAdminBannersResponseSuccess = (getApiAdminBannersResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiAdminBannersResponse = (getApiAdminBannersResponseSuccess)
+
+export const getGetApiAdminBannersUrl = (params?: GetApiAdminBannersParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
+    } else {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/admin/banners?${stringifiedParams}` : `/api/admin/banners`
+}
+
+export const getApiAdminBanners = async (params?: GetApiAdminBannersParams, options?: RequestInit): Promise<getApiAdminBannersResponse> => {
+  
+  return customFetch<getApiAdminBannersResponse>(getGetApiAdminBannersUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
  * 배경/메인 이미지를 업로드하고 랜딩 페이지에 노출할 배너를 생성합니다.
  * @summary 배너 생성(관리자)
  */
@@ -8683,6 +8808,43 @@ formData.append(`mainImg`, postApiAdminBannersBody.mainImg);
     ,
     body: 
       formData,
+  }
+);}
+
+
+
+/**
+ * 관리자가 식별자로 지정한 배너의 상세 정보를 조회합니다.
+ * @summary 배너 상세 조회(관리자)
+ */
+export type getApiAdminBannersIdResponse200 = {
+  data: AdminBannerResponse
+  status: 200
+}
+    
+export type getApiAdminBannersIdResponseSuccess = (getApiAdminBannersIdResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiAdminBannersIdResponse = (getApiAdminBannersIdResponseSuccess)
+
+export const getGetApiAdminBannersIdUrl = (id: number,) => {
+
+
+  
+
+  return `/api/admin/banners/${id}`
+}
+
+export const getApiAdminBannersId = async (id: number, options?: RequestInit): Promise<getApiAdminBannersIdResponse> => {
+  
+  return customFetch<getApiAdminBannersIdResponse>(getGetApiAdminBannersIdUrl(id),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
   }
 );}
 
@@ -11629,6 +11791,57 @@ export const patchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusiness
 
 
 /**
+ * @summary 판매 공고 목록 조회(관리자)
+ */
+export type getApiAdminSalesResponse200 = {
+  data: PageAdminSaleAnnouncementResponse
+  status: 200
+}
+    
+export type getApiAdminSalesResponseSuccess = (getApiAdminSalesResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiAdminSalesResponse = (getApiAdminSalesResponseSuccess)
+
+export const getGetApiAdminSalesUrl = (params?: GetApiAdminSalesParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
+    } else {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/admin/sales?${stringifiedParams}` : `/api/admin/sales`
+}
+
+export const getApiAdminSales = async (params?: GetApiAdminSalesParams, options?: RequestInit): Promise<getApiAdminSalesResponse> => {
+  
+  return customFetch<getApiAdminSalesResponse>(getGetApiAdminSalesUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
  * @summary 판매 공고 생성
  */
 export type postApiAdminSalesResponse200 = {
@@ -11660,6 +11873,42 @@ export const postApiAdminSales = async (postApiAdminSalesBody: PostApiAdminSales
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
       postApiAdminSalesBody,)
+  }
+);}
+
+
+
+/**
+ * @summary 판매 공고 단건 조회(관리자)
+ */
+export type getApiAdminSalesSaleidResponse200 = {
+  data: AdminSaleAnnouncementResponse
+  status: 200
+}
+    
+export type getApiAdminSalesSaleidResponseSuccess = (getApiAdminSalesSaleidResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiAdminSalesSaleidResponse = (getApiAdminSalesSaleidResponseSuccess)
+
+export const getGetApiAdminSalesSaleidUrl = (saleId: number,) => {
+
+
+  
+
+  return `/api/admin/sales/${saleId}`
+}
+
+export const getApiAdminSalesSaleid = async (saleId: number, options?: RequestInit): Promise<getApiAdminSalesSaleidResponse> => {
+  
+  return customFetch<getApiAdminSalesSaleidResponse>(getGetApiAdminSalesSaleidUrl(saleId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
   }
 );}
 
