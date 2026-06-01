@@ -16,11 +16,9 @@ const Page = async () => {
     BRANDS.map(async (brand) => {
       try {
         const { data } = await getApiBottles({
-          filters: {
-            brand: [brand.id],
-            pageNumber: 0,
-            pageSize: 6,
-          },
+          brand: [brand.id],
+          page: 0,
+          size: 6,
         });
         return [brand.id, data.content ?? []] as const;
       } catch {

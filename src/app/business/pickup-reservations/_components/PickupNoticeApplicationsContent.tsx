@@ -1,8 +1,8 @@
 "use client";
 
 import type {
-  BottleReservationPickupApplicationResponse,
-  ReservationBusinessDeliveryResponse,
+  UserBottleReservationPickupApplicationResponse,
+  UserReservationBusinessDeliveryResponse,
 } from "@/apis/generated/api";
 import FilterHeader from "@/app/admin/_components/FilterHeader";
 import Pagination from "@/app/admin/_components/Pagination";
@@ -34,9 +34,9 @@ interface PickupNoticeApplicationsContentProps {
     limit?: string;
     status?: string;
   };
-  applications: BottleReservationPickupApplicationResponse[];
+  applications: UserBottleReservationPickupApplicationResponse[];
   totalElements: number;
-  deliveries: ReservationBusinessDeliveryResponse[];
+  deliveries: UserReservationBusinessDeliveryResponse[];
 }
 
 type ActionType = "payment-complete" | "waiting-pickup" | "receive-complete";
@@ -97,12 +97,12 @@ const DELIVERY_STATUS_LABEL: Record<string, string> = {
   DELIVERED: "배송 완료",
 };
 
-const formatCarrierName = (delivery: ReservationBusinessDeliveryResponse) => {
+const formatCarrierName = (delivery: UserReservationBusinessDeliveryResponse) => {
   if (delivery.deliveryMethod === "PRIVATE_CARGO") return "해당 없음 (용달)";
   return delivery.carrierName ?? delivery.carrierCode ?? "-";
 };
 
-const formatTrackingNumber = (delivery: ReservationBusinessDeliveryResponse) => {
+const formatTrackingNumber = (delivery: UserReservationBusinessDeliveryResponse) => {
   if (delivery.deliveryMethod === "PRIVATE_CARGO") return "해당 없음 (용달)";
   return delivery.trackingNumber?.trim() || "-";
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import type { OrderResponse } from "@/apis/generated/api";
+import type { UserOrderResponse } from "@/apis/generated/api";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { overlay } from "overlay-kit";
@@ -12,7 +12,7 @@ import OrderCancelModal from "./OrderCancelModal";
 interface OrderDetailModalProps {
   isOpen: boolean;
   close: () => void;
-  order: OrderResponse;
+  order: UserOrderResponse;
 }
 
 export default function OrderDetailModal({ isOpen, close, order }: OrderDetailModalProps) {

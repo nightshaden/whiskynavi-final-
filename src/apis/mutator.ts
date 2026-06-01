@@ -1,19 +1,20 @@
-import { AuthError } from "./errors";
-
 import { authLogger } from "./auth-logger";
-import { ApiError, NetworkError } from "./errors";
+import { ApiError, AuthError, NetworkError } from "./errors";
 import { refreshSessionToken } from "./refresh-token";
 
 /**
  * 인증 실패 처리.
  * - 서버: redirect("/sign-in") — Next.js가 내부적으로 throw하여 로그인 페이지로 이동
- * - 클라이언트: AuthError throw — SessionErrorHandler가 signOut 처리
+ * - 클라이언트: signOut 후 AuthError throw
  */
 async function handleAuthFailure(): Promise<never> {
   if (typeof window === "undefined") {
     const { redirect } = await import("next/navigation");
     redirect("/sign-in");
   }
+
+  const { signOut } = await import("next-auth/react");
+  await signOut({ callbackUrl: "/sign-in" });
   throw new AuthError();
 }
 
@@ -90,9 +91,9 @@ export const customFetch = async <T>(url: string, options: RequestInit): Promise
         return { data, status: retryRes.status, headers: retryRes.headers } as T;
       }
 
-      // 재시도도 401/403이면 인증 완전 실패
-      if (retryRes.status === 401 || retryRes.status === 403) {
-        authLogger.error(`retry failed (${retryRes.status}): ${fullUrl} → redirect`);
+      // 재시도도 401이면 인증 실패로 처리
+      if (retryRes.status === 401) {
+        authLogger.error(`retry failed (${retryRes.status}): ${fullUrl} → auth failure`);
         await handleAuthFailure();
       }
 
@@ -103,14 +104,6 @@ export const customFetch = async <T>(url: string, options: RequestInit): Promise
     // refresh 실패 → 로그인 페이지로
     authLogger.error("refresh returned null → redirect");
     await handleAuthFailure();
-  }
-
-  if (res.status === 403) {
-    if (typeof window !== "undefined") {
-      const { signOut } = await import("next-auth/react");
-      await signOut({ callbackUrl: "/sign-in" });
-    }
-    throw new AuthError();
   }
 
   if (!res.ok) {

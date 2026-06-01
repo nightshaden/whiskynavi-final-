@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 
-import type { BannerResponse } from "@/apis/generated/api";
+import type { UserBannerResponse } from "@/apis/generated/api";
 import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 import { ChevronDown } from "lucide-react";
 
 interface BannerSectionProps {
-  banners: BannerResponse[];
+  banners: UserBannerResponse[];
 }
 
 export default function BannerSection({ banners }: BannerSectionProps) {

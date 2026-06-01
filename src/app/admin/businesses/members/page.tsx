@@ -1,6 +1,7 @@
 import { getApiAdminBusinessesMembers, type GetApiAdminBusinessesMembersBusinessType } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
+import { parseApiPage } from "@/lib/page-response";
 import BusinessMembersContent from "./_components/BusinessMembersContent";
 import { resolveBusinessMembersSort } from "./sort";
 
@@ -47,7 +48,7 @@ export default async function BusinessMembersPage({ searchParams }: BusinessMemb
 
   const res = await getApiAdminBusinessesMembers(
     {
-      page: params.page ? Number(params.page) - 1 : 0,
+      page: parseApiPage(params.page),
       size: params.limit ? Number(params.limit) : 20,
       sort: [resolvedSort],
       businessName: searchField === "businessName" ? keyword : undefined,
@@ -69,7 +70,7 @@ export default async function BusinessMembersPage({ searchParams }: BusinessMemb
         searchField,
       }}
       members={res.data.content ?? []}
-      totalElements={res.data.totalElements ?? 0}
+      totalElements={res.data.page?.totalElements ?? 0}
     />
   );
 }

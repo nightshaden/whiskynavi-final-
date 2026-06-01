@@ -1,15 +1,11 @@
 import { getApiAdminOrders, type GetApiAdminOrdersParams } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
+import { parseDisplayPage, toApiPage } from "@/lib/page-response";
 import AdminOrdersContent, { type AdminOrdersSearchParams } from "../orders/_components/AdminOrdersContent";
 
 interface AdminBottleOrdersPageProps {
   searchParams: Promise<AdminOrdersSearchParams>;
-}
-
-function parsePage(value?: string) {
-  const page = Number(value);
-  return Number.isFinite(page) && page > 0 ? page : 1;
 }
 
 function parseSize(value?: string) {
@@ -24,12 +20,12 @@ function emptyToUndefined(value?: string) {
 export default async function AdminBottleOrdersPage({ searchParams }: AdminBottleOrdersPageProps) {
   const params = await searchParams;
   const token = await getAuthToken();
-  const page = parsePage(params.page);
+  const page = parseDisplayPage(params.page);
   const size = parseSize(params.limit);
   const orderType = emptyToUndefined(params.orderType) as GetApiAdminOrdersParams["orderType"] | undefined;
 
   const query: GetApiAdminOrdersParams = {
-    page: page - 1,
+    page: toApiPage(page),
     size,
     sort: ["createdAt,desc"],
     orderType,
@@ -57,7 +53,7 @@ export default async function AdminBottleOrdersPage({ searchParams }: AdminBottl
         productType: "BOTTLE",
       }}
       orders={response.data.content ?? []}
-      totalElements={response.data.totalElements ?? 0}
+      totalElements={response.data.page?.totalElements ?? 0}
     />
   );
 }

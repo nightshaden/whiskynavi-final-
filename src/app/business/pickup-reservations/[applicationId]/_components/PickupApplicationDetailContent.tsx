@@ -1,6 +1,6 @@
 "use client";
 
-import type { BottleReservationPickupApplicationResponse } from "@/apis/generated/api";
+import type { UserBottleReservationPickupApplicationResponse } from "@/apis/generated/api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -126,7 +126,7 @@ function StatusActionButton({ applicationId, status, applicantName }: StatusActi
 }
 
 interface PickupApplicationDetailContentProps {
-  application: BottleReservationPickupApplicationResponse;
+  application: UserBottleReservationPickupApplicationResponse;
 }
 
 export default function PickupApplicationDetailContent({ application }: PickupApplicationDetailContentProps) {

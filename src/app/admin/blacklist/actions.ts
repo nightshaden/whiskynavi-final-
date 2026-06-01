@@ -26,7 +26,7 @@ export async function searchUsersAction(name: string): Promise<{
   }
 
   try {
-    const res = await getApiAdminUsers({ filters: { name, pageSize: 10 } }, withToken(token));
+    const res = await getApiAdminUsers({ name, size: 10 }, withToken(token));
     return { success: true, data: res.data.content as AdminUserResponse[] };
   } catch (error) {
     const message = error instanceof Error ? error.message : "사용자 검색에 실패했습니다.";

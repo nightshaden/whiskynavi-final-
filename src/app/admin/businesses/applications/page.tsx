@@ -1,9 +1,7 @@
-import {
-  type GetApiAdminBusinessesApplicationsStatus,
-  getApiAdminBusinessesApplications,
-} from "@/apis/generated/api";
+import { type GetApiAdminBusinessesApplicationsStatus, getApiAdminBusinessesApplications } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
+import { parseApiPage } from "@/lib/page-response";
 import BusinessApplicationsContent from "./_components/BusinessApplicationsContent";
 
 interface BusinessApplicationsPageProps {
@@ -14,20 +12,17 @@ interface BusinessApplicationsPageProps {
   }>;
 }
 
-export default async function BusinessApplicationsPage({
-  searchParams,
-}: BusinessApplicationsPageProps) {
+export default async function BusinessApplicationsPage({ searchParams }: BusinessApplicationsPageProps) {
   const params = await searchParams;
   const token = await getAuthToken();
 
   const res = await getApiAdminBusinessesApplications(
     {
-      page: params.page ? Number(params.page) - 1 : 0,
+      page: parseApiPage(params.page),
       size: params.limit ? Number(params.limit) : 20,
       ...(params.status
         ? {
-            status:
-              params.status as GetApiAdminBusinessesApplicationsStatus,
+            status: params.status as GetApiAdminBusinessesApplicationsStatus,
           }
         : {}),
     },
@@ -38,7 +33,7 @@ export default async function BusinessApplicationsPage({
     <BusinessApplicationsContent
       searchParams={params}
       applications={res.data.content ?? []}
-      totalElements={res.data.totalElements ?? 0}
+      totalElements={res.data.page?.totalElements ?? 0}
     />
   );
 }

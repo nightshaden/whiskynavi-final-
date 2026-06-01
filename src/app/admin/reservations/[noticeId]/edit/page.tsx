@@ -1,5 +1,5 @@
 import {
-  type BottleReservationNoticeResponse,
+  type AdminBottleReservationNoticeResponse,
   getApiAdminBottlesReservationsNoticesNoticeid,
 } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
@@ -15,7 +15,7 @@ export default async function NoticeEditPage({ params }: NoticeEditPageProps) {
   const { noticeId } = await params;
   const token = await getAuthToken();
 
-  let notice: BottleReservationNoticeResponse | undefined;
+  let notice: AdminBottleReservationNoticeResponse | undefined;
   try {
     const res = await getApiAdminBottlesReservationsNoticesNoticeid(Number(noticeId), withToken(token));
     notice = res.data;

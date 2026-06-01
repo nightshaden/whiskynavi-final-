@@ -1,12 +1,12 @@
 "use client";
 
 import type {
-  BottleReservationApplicationResponse,
-  BottleReservationNoticeResponse,
+  AdminBottleReservationApplicationResponse,
+  AdminBottleReservationNoticeResponse,
+  AdminReservationBusinessDeliveryResponse,
   DeliveryCompanyResponse,
   GetApiAdminBottlesReservationsApplicationsRole,
   GetApiAdminBottlesReservationsApplicationsStatus,
-  ReservationBusinessDeliveryResponse,
 } from "@/apis/generated/api";
 import { ArrowLeft, Edit2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -19,14 +19,14 @@ import NoticeInfoSection from "./NoticeInfoSection";
 import ReservationDeliverySection from "./ReservationDeliverySection";
 
 interface NoticeDetailContentProps {
-  notice?: BottleReservationNoticeResponse;
-  applications: BottleReservationApplicationResponse[];
+  notice?: AdminBottleReservationNoticeResponse;
+  applications: AdminBottleReservationApplicationResponse[];
   applicationsTotalElements: number;
   applicationsPage: number;
   applicationsLimit: number;
   applicationsRole?: GetApiAdminBottlesReservationsApplicationsRole;
   applicationsStatus?: GetApiAdminBottlesReservationsApplicationsStatus;
-  deliveries: ReservationBusinessDeliveryResponse[];
+  deliveries: AdminReservationBusinessDeliveryResponse[];
   deliveryCompanies: DeliveryCompanyResponse[];
 }
 

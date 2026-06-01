@@ -4,6 +4,7 @@ import {
 } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
+import { parseApiPage } from "@/lib/page-response";
 import PickupReservationsContent from "./_components/PickupReservationsContent";
 
 interface PickupReservationsPageProps {
@@ -29,7 +30,7 @@ export default async function PickupReservationsPage({ searchParams }: PickupRes
   const [noticesRes, deliveriesData] = await Promise.all([
     getApiUsersBusinessesPickupReservationsNoticesStatuses(
       {
-        page: params.page ? Number(params.page) - 1 : 0,
+        page: parseApiPage(params.page),
         size: params.limit ? Number(params.limit) : 20,
       },
       withToken(token),
@@ -41,7 +42,7 @@ export default async function PickupReservationsPage({ searchParams }: PickupRes
     <PickupReservationsContent
       searchParams={params}
       notices={noticesRes.data.content ?? []}
-      totalElements={noticesRes.data.totalElements ?? 0}
+      totalElements={noticesRes.data.page?.totalElements ?? 0}
       deliveries={deliveriesData ?? []}
     />
   );

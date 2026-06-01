@@ -1,6 +1,7 @@
 import { getApiAdminBottles, getApiAdminBottlesParameters } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
+import { parseApiPage } from "@/lib/page-response";
 import ProductsContent from "./_components/ProductsContent";
 
 interface ProductsPageProps {
@@ -20,13 +21,11 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const [bottlesRes, bottleParamsRes] = await Promise.all([
     getApiAdminBottles(
       {
-        filters: {
-          pageNumber: params.page ? Number(params.page) - 1 : 0,
-          pageSize: params.limit ? Number(params.limit) : 20,
-          name: params.q || undefined,
-          brand: params.brand ? [params.brand] : undefined,
-          distillery: params.distillery ? [params.distillery] : undefined,
-        },
+        page: parseApiPage(params.page),
+        size: params.limit ? Number(params.limit) : 20,
+        name: params.q || undefined,
+        brand: params.brand ? [params.brand] : undefined,
+        distillery: params.distillery ? [params.distillery] : undefined,
       },
       withToken(token),
     ),
@@ -37,7 +36,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     <ProductsContent
       searchParams={params}
       products={bottlesRes.data.content ?? []}
-      totalElements={bottlesRes.data.totalElements ?? 0}
+      totalElements={bottlesRes.data.page?.totalElements ?? 0}
       brands={bottleParamsRes.data.brands ?? []}
       distilleries={bottleParamsRes.data.distilleries ?? []}
     />

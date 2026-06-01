@@ -4,6 +4,7 @@ import {
 } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
+import { parseApiPage } from "@/lib/page-response";
 import PickupReservationApplicationsContent from "../_components/PickupReservationApplicationsContent";
 
 interface PickupReservationApplicationsPageProps {
@@ -21,7 +22,6 @@ export default async function PickupReservationApplicationsPage({
 }: PickupReservationApplicationsPageProps) {
   const params = await searchParams;
   const token = await getAuthToken();
-  const currentPage = params.page ? Number(params.page) : 1;
   const pageSize = params.limit ? Number(params.limit) : 20;
   const keyword = params.q?.trim();
   const searchType = params.searchType ?? "userName";
@@ -35,7 +35,7 @@ export default async function PickupReservationApplicationsPage({
 
   const res = await getApiUsersBusinessesPickupReservationsApplications(
     {
-      page: currentPage - 1,
+      page: parseApiPage(params.page),
       size: pageSize,
       ...apiSearchParams,
       ...(params.status
@@ -51,7 +51,7 @@ export default async function PickupReservationApplicationsPage({
     <PickupReservationApplicationsContent
       searchParams={params}
       applications={res.data.content ?? []}
-      totalElements={res.data.totalElements ?? 0}
+      totalElements={res.data.page?.totalElements ?? 0}
     />
   );
 }

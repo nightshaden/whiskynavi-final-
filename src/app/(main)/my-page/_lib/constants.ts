@@ -1,52 +1,52 @@
-import { OrderResponseOrderStatus } from "@/apis/generated/api";
+import { UserOrderResponseOrderStatus } from "@/apis/generated/api";
 
 export const ORDER_STATUS_MAP: Record<string, { label: string; colorClass: string }> = {
-  [OrderResponseOrderStatus.ORDER_REQUESTED]: {
+  [UserOrderResponseOrderStatus.ORDER_REQUESTED]: {
     label: "주문 접수",
     colorClass: "border-yellow-600/30 bg-yellow-600/20 text-yellow-400",
   },
-  [OrderResponseOrderStatus.PAYMENT_PENDING]: {
+  [UserOrderResponseOrderStatus.PAYMENT_PENDING]: {
     label: "결제 대기",
     colorClass: "border-orange-600/30 bg-orange-600/20 text-orange-400",
   },
-  [OrderResponseOrderStatus.ORDER_PREPARING]: {
+  [UserOrderResponseOrderStatus.ORDER_PREPARING]: {
     label: "준비 중",
     colorClass: "border-blue-600/30 bg-blue-600/20 text-blue-400",
   },
-  [OrderResponseOrderStatus.SHIPPING]: {
+  [UserOrderResponseOrderStatus.SHIPPING]: {
     label: "배송중",
     colorClass: "border-blue-600/30 bg-blue-600/20 text-blue-400",
   },
-  [OrderResponseOrderStatus.DELIVERY_COMPLETED]: {
+  [UserOrderResponseOrderStatus.DELIVERY_COMPLETED]: {
     label: "배송완료",
     colorClass: "border-green-600/30 bg-green-600/20 text-green-400",
   },
-  [OrderResponseOrderStatus.RECEIPT_PENDING]: {
+  [UserOrderResponseOrderStatus.RECEIPT_PENDING]: {
     label: "수령 대기",
     colorClass: "border-purple-600/30 bg-purple-600/20 text-purple-400",
   },
-  [OrderResponseOrderStatus.RECEIPT_COMPLETED]: {
+  [UserOrderResponseOrderStatus.RECEIPT_COMPLETED]: {
     label: "수령완료",
     colorClass: "border-green-600/30 bg-green-600/20 text-green-400",
   },
-  [OrderResponseOrderStatus.ORDER_CANCELED]: {
+  [UserOrderResponseOrderStatus.ORDER_CANCELED]: {
     label: "주문 취소",
     colorClass: "border-red-600/30 bg-red-600/20 text-red-400",
   },
-  [OrderResponseOrderStatus.CANCEL_REQUESTED]: {
+  [UserOrderResponseOrderStatus.CANCEL_REQUESTED]: {
     label: "취소 요청",
     colorClass: "border-red-600/30 bg-red-600/20 text-red-400",
   },
-  [OrderResponseOrderStatus.CANCEL_REJECTED]: {
+  [UserOrderResponseOrderStatus.CANCEL_REJECTED]: {
     label: "취소 거절",
     colorClass: "border-amber-600/30 bg-amber-600/20 text-amber-400",
   },
 };
 
 export const CANCELABLE_STATUSES = [
-  OrderResponseOrderStatus.ORDER_REQUESTED,
-  OrderResponseOrderStatus.PAYMENT_PENDING,
-  OrderResponseOrderStatus.ORDER_PREPARING,
+  UserOrderResponseOrderStatus.ORDER_REQUESTED,
+  UserOrderResponseOrderStatus.PAYMENT_PENDING,
+  UserOrderResponseOrderStatus.ORDER_PREPARING,
 ] as const;
 
 export const MEMBERSHIP_ROLE = {

@@ -1,9 +1,9 @@
 "use client";
 
-import type { BottleReservationNoticeResponse } from "@/apis/generated/api";
+import type { AdminBottleReservationNoticeResponse } from "@/apis/generated/api";
 
 interface ApprovalSummarySectionProps {
-  notice: BottleReservationNoticeResponse;
+  notice: AdminBottleReservationNoticeResponse;
 }
 
 export default function ApprovalSummarySection({ notice }: ApprovalSummarySectionProps) {

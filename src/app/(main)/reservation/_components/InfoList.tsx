@@ -1,8 +1,8 @@
-import type { BottleReservationNoticePublicResponse } from "@/apis/generated/api";
+import type { UserBottleReservationNoticePublicResponse } from "@/apis/generated/api";
 import { buildInfoItems, formatDateTime, formatReservationRole } from "../_lib/utils";
 
 interface InfoListProps {
-  notice: BottleReservationNoticePublicResponse;
+  notice: UserBottleReservationNoticePublicResponse;
 }
 
 export default function InfoList({ notice }: InfoListProps) {

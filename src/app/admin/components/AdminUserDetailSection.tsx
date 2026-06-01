@@ -79,6 +79,7 @@ type UserExtWithSocialConnections = NonNullable<AdminUserResponse["userExt"]> & 
 export default function AdminUserDetailSection(props: UserDetailProps) {
   const { isEditMode, userDetails, orderSummary, onStatusToggle } = props;
   const userExt = userDetails.userExt as UserExtWithSocialConnections | undefined;
+  const orderTotalElements = orderSummary?.orders?.page?.totalElements ?? 0;
 
   const onAddRole = isEditMode ? props.onAddRole : undefined;
   const onRemoveRole = isEditMode ? props.onRemoveRole : undefined;
@@ -249,7 +250,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                   : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
               }`}
             >
-              예약 내역 ({orderSummary?.totalElements ?? 0})
+              예약 내역 ({orderTotalElements})
             </button>
           </div>
         </div>
@@ -458,13 +459,13 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                       </div>
                       <div className="text-right">
                         <p className="typo-medium-14 text-amber-100">총 주문 수</p>
-                        <p className="typo-bold-24 mt-1 text-white">{orderSummary.totalElements}건</p>
+                        <p className="typo-bold-24 mt-1 text-white">{orderTotalElements}건</p>
                       </div>
                     </div>
                   </div>
 
                   {/* 주문 테이블 */}
-                  {(orderSummary.orders ?? []).length > 0 ? (
+                  {(orderSummary.orders?.content ?? []).length > 0 ? (
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
                         <thead>
@@ -480,7 +481,7 @@ export default function AdminUserDetailSection(props: UserDetailProps) {
                           </tr>
                         </thead>
                         <tbody>
-                          {(orderSummary.orders ?? []).map((order) => (
+                          {(orderSummary.orders?.content ?? []).map((order) => (
                             <tr key={order.id} className="border-b border-gray-100 transition-colors hover:bg-gray-50">
                               <td className="px-3 py-3 font-medium text-gray-900">{order.itemName}</td>
                               <td className="px-3 py-3 text-gray-600">{order.orderNumber}</td>

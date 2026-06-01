@@ -1,8 +1,8 @@
 import {
-  type BottleReservationApplicationResponse,
-  type BottleReservationNoticeResponse,
+  type AdminBottleReservationApplicationResponse,
+  type AdminBottleReservationNoticeResponse,
+  type AdminReservationBusinessDeliveryResponse,
   type DeliveryCompanyResponse,
-  type ReservationBusinessDeliveryResponse,
   GetApiAdminBottlesReservationsApplicationsRole as AdminBottleReservationApplicationRoleOptions,
   GetApiAdminBottlesReservationsApplicationsStatus as AdminBottleReservationApplicationStatusOptions,
   getApiAdminBottlesReservationsApplications,
@@ -12,6 +12,7 @@ import {
 } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
+import { parseApiPage } from "@/lib/page-response";
 import { notFound } from "next/navigation";
 import NoticeDetailContent from "./_components/NoticeDetailContent";
 
@@ -42,10 +43,10 @@ export default async function NoticeDetailPage({ params, searchParams }: NoticeD
   const role = getEnumValue(AdminBottleReservationApplicationRoleOptions, sp.role);
   const status = getEnumValue(AdminBottleReservationApplicationStatusOptions, sp.status);
 
-  let notice: BottleReservationNoticeResponse | undefined;
-  let applications: BottleReservationApplicationResponse[] = [];
+  let notice: AdminBottleReservationNoticeResponse | undefined;
+  let applications: AdminBottleReservationApplicationResponse[] = [];
   let applicationsTotalElements = 0;
-  let deliveries: ReservationBusinessDeliveryResponse[] = [];
+  let deliveries: AdminReservationBusinessDeliveryResponse[] = [];
   let deliveryCompanies: DeliveryCompanyResponse[] = [];
 
   try {
@@ -56,7 +57,7 @@ export default async function NoticeDetailPage({ params, searchParams }: NoticeD
           noticeId: Number(noticeId),
           role,
           status,
-          page: sp.page ? Number(sp.page) - 1 : 0,
+          page: parseApiPage(sp.page),
           size: sp.limit ? Number(sp.limit) : 20,
         },
         withToken(token),
@@ -67,7 +68,7 @@ export default async function NoticeDetailPage({ params, searchParams }: NoticeD
 
     notice = noticeRes.data;
     applications = applicationsRes.data.content ?? [];
-    applicationsTotalElements = applicationsRes.data.totalElements ?? 0;
+    applicationsTotalElements = applicationsRes.data.page?.totalElements ?? 0;
     deliveries = deliveriesData ?? [];
     deliveryCompanies = companiesData ?? [];
   } catch (error) {

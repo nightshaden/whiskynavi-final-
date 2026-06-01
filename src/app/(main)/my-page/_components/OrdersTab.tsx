@@ -1,24 +1,25 @@
 "use client";
 
-import type { OrderResponse, PageOrderResponse } from "@/apis/generated/api";
+import type { PagedModelUserOrderResponse, UserOrderResponse } from "@/apis/generated/api";
 import { useIsDesktop } from "@/hooks/use-media-query";
+import { toDisplayPage } from "@/lib/page-response";
 import { useRouter, useSearchParams } from "next/navigation";
 import { overlay } from "overlay-kit";
 import OrderCard from "./OrderCard";
 import OrderDetailModal from "./OrderDetailModal";
 
 interface OrdersTabProps {
-  orders: PageOrderResponse;
+  orders: PagedModelUserOrderResponse;
 }
 
 export default function OrdersTab({ orders }: OrdersTabProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const isDesktop = useIsDesktop();
-  const currentPage = orders.number ?? 0;
-  const totalPages = orders.totalPages ?? 0;
+  const currentPage = toDisplayPage(orders.page?.number);
+  const totalPages = orders.page?.totalPages ?? 0;
 
-  const handleOrderClick = (order: OrderResponse) => {
+  const handleOrderClick = (order: UserOrderResponse) => {
     if (isDesktop) {
       overlay.open(({ isOpen, close }) => <OrderDetailModal isOpen={isOpen} close={close} order={order} />);
     } else {
@@ -54,7 +55,7 @@ export default function OrdersTab({ orders }: OrdersTabProps) {
             <div className="mt-6 flex items-center justify-center gap-2">
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
-                disabled={orders.first}
+                disabled={currentPage <= 1}
                 className="px-3 py-2 text-sm text-gray-400 transition-colors hover:text-white disabled:opacity-30 disabled:hover:text-gray-400"
               >
                 이전
@@ -62,9 +63,9 @@ export default function OrdersTab({ orders }: OrdersTabProps) {
               {Array.from({ length: totalPages }, (_, i) => (
                 <button
                   key={i}
-                  onClick={() => handlePageChange(i)}
+                  onClick={() => handlePageChange(i + 1)}
                   className={`px-3 py-2 text-sm transition-colors ${
-                    i === currentPage ? "font-bold text-white" : "text-gray-400 hover:text-white"
+                    i + 1 === currentPage ? "font-bold text-white" : "text-gray-400 hover:text-white"
                   }`}
                 >
                   {i + 1}
@@ -72,7 +73,7 @@ export default function OrdersTab({ orders }: OrdersTabProps) {
               ))}
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
-                disabled={orders.last}
+                disabled={currentPage >= totalPages}
                 className="px-3 py-2 text-sm text-gray-400 transition-colors hover:text-white disabled:opacity-30 disabled:hover:text-gray-400"
               >
                 다음

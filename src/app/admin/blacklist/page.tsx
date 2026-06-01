@@ -2,6 +2,7 @@ import type { AdminUserResponse } from "@/apis/generated/api";
 import { getApiAdminUsers } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
+import { parseApiPage } from "@/lib/page-response";
 import BlacklistContent from "./_components/BlacklistContent";
 
 interface BlacklistPageProps {
@@ -18,13 +19,10 @@ export default async function BlacklistPage({ searchParams }: BlacklistPageProps
 
   const res = await getApiAdminUsers(
     {
-      filters: {
-        pageNumber: params.page ? Number(params.page) - 1 : 0,
-        pageSize: params.limit ? Number(params.limit) : 10,
-        isBanned: true,
-        sortBy: "banStartDate",
-        sortDirection: "asc",
-      },
+      page: parseApiPage(params.page),
+      size: params.limit ? Number(params.limit) : 10,
+      isBanned: true,
+      sort: ["createdAt,asc"],
     },
     withToken(token),
   );

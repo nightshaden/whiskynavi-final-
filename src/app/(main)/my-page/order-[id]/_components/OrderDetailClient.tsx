@@ -1,6 +1,6 @@
 "use client";
 
-import type { OrderResponse } from "@/apis/generated/api";
+import type { UserOrderResponse } from "@/apis/generated/api";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -11,7 +11,7 @@ import { CANCELABLE_STATUSES } from "../../_lib/constants";
 import { formatCurrency, formatDate, getOrderStatusConfig } from "../../_lib/utils";
 
 interface OrderDetailClientProps {
-  order: OrderResponse;
+  order: UserOrderResponse;
 }
 
 export default function OrderDetailClient({ order }: OrderDetailClientProps) {

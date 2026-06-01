@@ -1,15 +1,11 @@
 import { getApiAdminOrders, type GetApiAdminOrdersParams } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
+import { parseDisplayPage, toApiPage } from "@/lib/page-response";
 import AdminOrdersContent, { type AdminOrdersSearchParams } from "../orders/_components/AdminOrdersContent";
 
 interface AdminGeneralItemOrdersPageProps {
   searchParams: Promise<AdminOrdersSearchParams>;
-}
-
-function parsePage(value?: string) {
-  const page = Number(value);
-  return Number.isFinite(page) && page > 0 ? page : 1;
 }
 
 function parseSize(value?: string) {
@@ -24,11 +20,11 @@ function emptyToUndefined(value?: string) {
 export default async function AdminGeneralItemOrdersPage({ searchParams }: AdminGeneralItemOrdersPageProps) {
   const params = await searchParams;
   const token = await getAuthToken();
-  const page = parsePage(params.page);
+  const page = parseDisplayPage(params.page);
   const size = parseSize(params.limit);
 
   const query: GetApiAdminOrdersParams = {
-    page: page - 1,
+    page: toApiPage(page),
     size,
     sort: ["createdAt,desc"],
     orderType: "GENERAL",
@@ -56,7 +52,7 @@ export default async function AdminGeneralItemOrdersPage({ searchParams }: Admin
         productType: "ITEM",
       }}
       orders={response.data.content ?? []}
-      totalElements={response.data.totalElements ?? 0}
+      totalElements={response.data.page?.totalElements ?? 0}
     />
   );
 }

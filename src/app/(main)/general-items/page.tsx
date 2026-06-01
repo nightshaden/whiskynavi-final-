@@ -1,4 +1,4 @@
-import { getApiItemsId, getApiSales, type SaleAnnouncementResponse } from "@/apis/generated/api";
+import { getApiItemsId, getApiSales, type UserSaleAnnouncementResponse } from "@/apis/generated/api";
 import { Badge } from "@/components/ui/badge";
 import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 import Link from "next/link";
@@ -39,7 +39,7 @@ function buildPageUrl(page: number, limit: number) {
   return `/general-items?${params.toString()}`;
 }
 
-async function fetchSaleImageMap(sales: SaleAnnouncementResponse[]) {
+async function fetchSaleImageMap(sales: UserSaleAnnouncementResponse[]) {
   const productIds = collectGeneralItemProductIds(sales);
   const results = await Promise.allSettled(
     productIds.map(async (productId) => {
@@ -59,7 +59,7 @@ async function fetchSaleImageMap(sales: SaleAnnouncementResponse[]) {
   );
 }
 
-function GeneralItemSaleCard({ sale, imageUrl }: { sale: SaleAnnouncementResponse; imageUrl?: string }) {
+function GeneralItemSaleCard({ sale, imageUrl }: { sale: UserSaleAnnouncementResponse; imageUrl?: string }) {
   const remainingQuantity = sale.availableQuantity ?? 0;
   const isSoldOut = remainingQuantity <= 0;
   const itemTitle = sale.title || sale.itemName || "일반상품";

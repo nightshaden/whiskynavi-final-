@@ -11,7 +11,7 @@
     "test:run": "vitest run",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "gen:api": "orval && tsx ./src/scripts/patch-generated-api.ts && prettier --write src/apis/generated/api.ts src/apis/mutator.ts",
+    "gen:api": "orval && prettier --write src/apis/generated/api.ts src/apis/mutator.ts",
     "gen:icons": "tsx ./src/scripts/gen-icons.ts",
     "postinstall": "pnpm gen:icons"
   },

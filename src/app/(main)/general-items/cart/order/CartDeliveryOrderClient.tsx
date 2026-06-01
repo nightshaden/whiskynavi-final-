@@ -2,8 +2,8 @@
 
 import type {
   CartQuoteResponse,
-  DeliveryAddressResponse,
-  OrderTicketResponse,
+  UserDeliveryAddressResponse,
+  UserOrderTicketResponse,
   UserSelfResponse,
 } from "@/apis/generated/api";
 import { Button } from "@/components/ui/button";
@@ -71,7 +71,7 @@ let kakaoPostcodeScriptPromise: Promise<KakaoPostcodeConstructor> | null = null;
 interface CartDeliveryOrderClientProps {
   quote: CartQuoteResponse;
   currentUser?: UserSelfResponse | null;
-  deliveryAddresses?: DeliveryAddressResponse[];
+  deliveryAddresses?: UserDeliveryAddressResponse[];
 }
 
 type AddressFormState = {
@@ -187,12 +187,12 @@ function createAddressFormState(user?: UserSelfResponse | null): AddressFormStat
   };
 }
 
-function formatDeliveryAddress(address: DeliveryAddressResponse) {
+function formatDeliveryAddress(address: UserDeliveryAddressResponse) {
   const streetAddress = [address.address, address.addressDetail].filter(Boolean).join(" ");
   return [address.postalCode ? `(${address.postalCode})` : "", streetAddress].filter(Boolean).join(" ");
 }
 
-function getDefaultAddress(addresses: DeliveryAddressResponse[]) {
+function getDefaultAddress(addresses: UserDeliveryAddressResponse[]) {
   return addresses.find((address) => address.defaultAddress) ?? null;
 }
 
@@ -231,7 +231,7 @@ function RequiredMark() {
   );
 }
 
-async function requestTossPayment(ticket: OrderTicketResponse, input: GeneralItemCartDeliveryOrderInput) {
+async function requestTossPayment(ticket: UserOrderTicketResponse, input: GeneralItemCartDeliveryOrderInput) {
   if (!ticket.clientKey || !ticket.pgOrderId || !ticket.amount || !ticket.successUrl || !ticket.failUrl) {
     throw new Error("토스 결제 티켓 정보가 올바르지 않습니다. 다시 시도해 주세요.");
   }
@@ -343,7 +343,7 @@ export default function CartDeliveryOrderClient({
     });
   };
 
-  const applyAddress = (address: DeliveryAddressResponse) => {
+  const applyAddress = (address: UserDeliveryAddressResponse) => {
     setForm((current) => ({
       ...current,
       receiverName: address.receiverName || current.receiverName,
@@ -355,7 +355,7 @@ export default function CartDeliveryOrderClient({
     }));
   };
 
-  const applyOrdererInfo = (address?: DeliveryAddressResponse | null) => {
+  const applyOrdererInfo = (address?: UserDeliveryAddressResponse | null) => {
     setForm((current) => ({
       ...current,
       receiverName: currentUser?.name || current.receiverName,

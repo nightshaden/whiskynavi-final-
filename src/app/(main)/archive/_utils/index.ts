@@ -1,14 +1,38 @@
 import type { BottleSearchParameterValues, GetApiBottlesParams } from "@/apis/generated/api";
+import { toApiPage } from "@/lib/page-response";
 import { FILTER_DEFAULTS, type FilterState } from "../_types";
 
-export type SearchParams = {
-  [K in keyof GetApiBottlesParams["filters"]]?: string;
-} & { page?: string; sort?: string };
+type BottleSearchUrlParams = Partial<Record<keyof GetApiBottlesParams, string | number>>;
+
+export type SearchParams = BottleSearchUrlParams & { page?: string };
+
+function getStringParam(value: string | number | undefined): string | undefined {
+  const text = value == null ? undefined : String(value).trim();
+  return text || undefined;
+}
+
+function getNumberParam(value: string | number | undefined): number | undefined {
+  if (value == null || value === "") return undefined;
+  const number = Number(value);
+  return Number.isFinite(number) ? number : undefined;
+}
+
+function getCsvArrayParam(value: string | number | undefined): string[] | undefined {
+  const text = getStringParam(value);
+  if (!text) return undefined;
+
+  const values = text
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  return values.length > 0 ? values : undefined;
+}
 
 export const buildPageUrl = (params: SearchParams, page: number): string => {
   const sp = new URLSearchParams();
   for (const [key, value] of Object.entries(params)) {
-    if (key === "page") continue;
+    if (key === "page" || key === "sort") continue;
     if (value !== undefined && value !== null && value !== "") {
       sp.set(key, String(value));
     }
@@ -16,6 +40,30 @@ export const buildPageUrl = (params: SearchParams, page: number): string => {
   sp.set("page", String(page));
   return `/archive?${sp.toString()}`;
 };
+
+export function buildBottleSearchApiParams(params: SearchParams, displayPage: number): GetApiBottlesParams {
+  return {
+    name: getStringParam(params.name),
+    keyword: getStringParam(params.keyword),
+    company: getCsvArrayParam(params.company),
+    brand: getCsvArrayParam(params.brand),
+    series: getCsvArrayParam(params.series),
+    maltType: getCsvArrayParam(params.maltType),
+    distillery: getCsvArrayParam(params.distillery),
+    caskType: getCsvArrayParam(params.caskType),
+    bottledDateFrom: getStringParam(params.bottledDateFrom),
+    bottledDateTo: getStringParam(params.bottledDateTo),
+    distillationDateFrom: getStringParam(params.distillationDateFrom),
+    distillationDateTo: getStringParam(params.distillationDateTo),
+    vintageFrom: getNumberParam(params.vintageFrom),
+    vintageTo: getNumberParam(params.vintageTo),
+    abvFrom: getNumberParam(params.abvFrom),
+    abvTo: getNumberParam(params.abvTo),
+    page: toApiPage(displayPage),
+    size: 12,
+    sort: ["bottledDate,desc"],
+  };
+}
 
 /**
  * 값이 어느 카테고리에 속하는지 찾는 함수
@@ -46,10 +94,10 @@ export function extractAllValues(params: BottleSearchParameterValues): string[] 
 }
 
 /**
- * FilterState를 API GetApiBottlesParams["filters"] 형식으로 변환
+ * FilterState를 보틀 검색 URL 쿼리 형식으로 변환
  */
-export function convertFiltersToQueries(filterState: FilterState): GetApiBottlesParams["filters"] {
-  const queries: GetApiBottlesParams["filters"] = {};
+export function convertFiltersToQueries(filterState: FilterState): BottleSearchUrlParams {
+  const queries: BottleSearchUrlParams = {};
 
   // 통합검색어
   if (filterState.keyword) {
@@ -59,7 +107,7 @@ export function convertFiltersToQueries(filterState: FilterState): GetApiBottles
   // 배열 필터를 쉼표로 구분된 문자열로 변환
   const arrayFilters: Array<{
     key: keyof FilterState;
-    queryKey: keyof GetApiBottlesParams["filters"];
+    queryKey: keyof BottleSearchUrlParams;
   }> = [
     { key: "brands", queryKey: "brand" },
     { key: "distilleries", queryKey: "distillery" },
@@ -73,7 +121,7 @@ export function convertFiltersToQueries(filterState: FilterState): GetApiBottles
   for (const { key, queryKey } of arrayFilters) {
     const values = filterState[key] as string[];
     if (values.length > 0) {
-      (queries[queryKey] as string) = values.join(",");
+      queries[queryKey] = values.join(",");
     }
   }
 
@@ -128,9 +176,9 @@ export function parseFiltersFromSearchParams(searchParams: URLSearchParams): Fil
 }
 
 /**
- * GetApiBottlesParams["filters"]를 URLSearchParams 문자열로 변환
+ * 보틀 검색 쿼리를 URLSearchParams 문자열로 변환
  */
-export function buildQueryString(queries: GetApiBottlesParams["filters"]): string {
+export function buildQueryString(queries: BottleSearchUrlParams): string {
   const params = new URLSearchParams();
 
   for (const [key, value] of Object.entries(queries)) {
@@ -140,7 +188,7 @@ export function buildQueryString(queries: GetApiBottlesParams["filters"]): strin
   }
 
   // 필터 변경 시 첫 페이지로 이동
-  params.set("page", "0");
+  params.set("page", "1");
 
   return params.toString();
 }

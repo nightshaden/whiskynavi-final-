@@ -1,6 +1,6 @@
 "use client";
 
-import type { BottleReservationNoticeResponse } from "@/apis/generated/api";
+import type { AdminBottleReservationNoticeResponse } from "@/apis/generated/api";
 import { ROLE_LABEL_MAP } from "../../../constants";
 
 const formatDateTime = (dateStr?: string): string => {
@@ -16,7 +16,7 @@ const formatDateTime = (dateStr?: string): string => {
 };
 
 interface NoticeInfoSectionProps {
-  notice: BottleReservationNoticeResponse;
+  notice: AdminBottleReservationNoticeResponse;
 }
 
 export default function NoticeInfoSection({ notice }: NoticeInfoSectionProps) {

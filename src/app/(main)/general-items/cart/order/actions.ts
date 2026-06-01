@@ -4,9 +4,9 @@ import { getUserErrorMessage } from "@/apis/errors";
 import {
   postApiOrdersGeneralItemsDeliveryCartTossConfirm,
   postApiOrdersGeneralItemsDeliveryCartTossTickets,
-  type GeneralItemDeliveryOrderResponse,
   type GeneralItemDeliveryTicketResponse,
   type PostApiOrdersGeneralItemsDeliveryCartTossTicketsBody,
+  type UserGeneralItemDeliveryOrderResponse,
 } from "@/apis/generated/api";
 import { getAuthToken } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
@@ -167,7 +167,7 @@ export async function confirmGeneralItemCartTossPayment(input: {
   orderId?: string;
   paymentKey?: string;
   amount?: string;
-}): Promise<ActionResult<GeneralItemDeliveryOrderResponse>> {
+}): Promise<ActionResult<UserGeneralItemDeliveryOrderResponse>> {
   try {
     const parsed = tossConfirmSchema.safeParse(input);
     if (!parsed.success) {

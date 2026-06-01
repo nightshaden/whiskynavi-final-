@@ -1,9 +1,9 @@
-import type { BottleReservationNoticePublicResponse } from "@/apis/generated/api";
+import type { UserBottleReservationNoticePublicResponse } from "@/apis/generated/api";
 import Link from "next/link";
 import ReservationCard from "./ReservationCard";
 
 interface RecentEndedSectionProps {
-  notices: BottleReservationNoticePublicResponse[];
+  notices: UserBottleReservationNoticePublicResponse[];
 }
 
 export default function RecentEndedSection({ notices }: RecentEndedSectionProps) {

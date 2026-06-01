@@ -1,6 +1,6 @@
 "use client";
 
-import type { BottleReservationNoticeResponse } from "@/apis/generated/api";
+import type { AdminBottleReservationNoticeResponse } from "@/apis/generated/api";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, X } from "lucide-react";
 import { useState } from "react";
@@ -17,7 +17,7 @@ interface GradeCondition {
 }
 
 interface NoticeFormFieldsProps {
-  defaultValues?: BottleReservationNoticeResponse;
+  defaultValues?: AdminBottleReservationNoticeResponse;
 }
 
 export default function NoticeFormFields({ defaultValues }: NoticeFormFieldsProps) {

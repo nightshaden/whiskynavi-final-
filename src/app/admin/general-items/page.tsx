@@ -1,6 +1,7 @@
 import { getApiAdminItems } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
+import { parseApiPage } from "@/lib/page-response";
 import GeneralItemsContent from "./_components/GeneralItemsContent";
 
 interface GeneralItemsPageProps {
@@ -15,12 +16,11 @@ export default async function GeneralItemsPage({ searchParams }: GeneralItemsPag
   const params = await searchParams;
   const token = await getAuthToken();
 
-  const currentPage = params.page ? Number(params.page) : 1;
   const itemsPerPage = params.limit ? Number(params.limit) : 20;
 
   const res = await getApiAdminItems(
     {
-      page: Math.max(0, currentPage - 1),
+      page: parseApiPage(params.page),
       size: itemsPerPage,
       keyword: params.q || undefined,
       sort: ["createdAt,desc"],
@@ -32,7 +32,7 @@ export default async function GeneralItemsPage({ searchParams }: GeneralItemsPag
     <GeneralItemsContent
       searchParams={params}
       items={res.data.content ?? []}
-      totalElements={res.data.totalElements ?? 0}
+      totalElements={res.data.page?.totalElements ?? 0}
     />
   );
 }

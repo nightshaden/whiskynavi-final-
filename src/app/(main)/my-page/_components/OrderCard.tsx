@@ -1,11 +1,11 @@
 "use client";
 
-import type { OrderResponse } from "@/apis/generated/api";
+import type { UserOrderResponse } from "@/apis/generated/api";
 import { ChevronRight } from "lucide-react";
 import { formatCurrency, formatDate, getOrderStatusConfig } from "../_lib/utils";
 
 interface OrderCardProps {
-  order: OrderResponse;
+  order: UserOrderResponse;
   onClick: () => void;
 }
 

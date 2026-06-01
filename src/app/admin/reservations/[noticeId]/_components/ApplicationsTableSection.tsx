@@ -1,7 +1,7 @@
 "use client";
 
 import type {
-  BottleReservationApplicationResponse,
+  AdminBottleReservationApplicationResponse,
   GetApiAdminBottlesReservationsApplicationsRole,
   GetApiAdminBottlesReservationsApplicationsStatus,
 } from "@/apis/generated/api";
@@ -66,7 +66,7 @@ function CommunityRoleBadge({ active, className, label }: { active: boolean; cla
 
 interface ApplicationsTableSectionProps {
   noticeId: number;
-  applications: BottleReservationApplicationResponse[];
+  applications: AdminBottleReservationApplicationResponse[];
   totalElements: number;
   currentPage: number;
   itemsPerPage: number;
@@ -87,7 +87,7 @@ export default function ApplicationsTableSection({
 }: ApplicationsTableSectionProps) {
   const router = useRouter();
 
-  const handleConfirm = (app: BottleReservationApplicationResponse) => {
+  const handleConfirm = (app: AdminBottleReservationApplicationResponse) => {
     overlay.open((props) => (
       <ApplicationConfirmModal
         {...props}
@@ -98,7 +98,7 @@ export default function ApplicationsTableSection({
     ));
   };
 
-  const handleReject = (app: BottleReservationApplicationResponse) => {
+  const handleReject = (app: AdminBottleReservationApplicationResponse) => {
     overlay.open((props) => (
       <ApplicationRejectModal
         {...props}
@@ -108,7 +108,7 @@ export default function ApplicationsTableSection({
     ));
   };
 
-  const handleCancel = (app: BottleReservationApplicationResponse) => {
+  const handleCancel = (app: AdminBottleReservationApplicationResponse) => {
     overlay.open((props) => (
       <ApplicationCancelModal
         {...props}
