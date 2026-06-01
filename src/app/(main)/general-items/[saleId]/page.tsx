@@ -2,7 +2,7 @@ import {
   getApiItemsId,
   getApiSalesSaleid,
   type ItemResponse,
-  type SaleAnnouncementResponse,
+  type UserSaleAnnouncementResponse,
 } from "@/apis/generated/api";
 import { Badge } from "@/components/ui/badge";
 import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
@@ -26,7 +26,7 @@ function formatCurrency(value?: number) {
   return `${value.toLocaleString("ko-KR")}원`;
 }
 
-async function fetchSale(saleId: number): Promise<SaleAnnouncementResponse | null> {
+async function fetchSale(saleId: number): Promise<UserSaleAnnouncementResponse | null> {
   try {
     const response = await getApiSalesSaleid(saleId);
     return response.data;
@@ -109,10 +109,7 @@ export default async function GeneralItemSaleDetailPage({ params }: GeneralItemS
                   주문 불가
                 </span>
               ) : (
-                <GeneralItemOrderForm
-                  saleAnnouncementId={sale.id ?? id}
-                  quantityLimit={quantityLimit}
-                />
+                <GeneralItemOrderForm saleAnnouncementId={sale.id ?? id} quantityLimit={quantityLimit} />
               )}
             </div>
 

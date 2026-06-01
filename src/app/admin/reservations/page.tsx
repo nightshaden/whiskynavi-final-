@@ -1,6 +1,7 @@
 import { getApiAdminBottlesReservationsNotices } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
+import { parseApiPage } from "@/lib/page-response";
 import ReservationsContent from "./_components/ReservationsContent";
 
 interface ReservationsPageProps {
@@ -17,7 +18,7 @@ export default async function ReservationsPage({ searchParams }: ReservationsPag
 
   const res = await getApiAdminBottlesReservationsNotices(
     {
-      page: params.page ? Number(params.page) - 1 : 0,
+      page: parseApiPage(params.page),
       size: params.limit ? Number(params.limit) : 20,
     },
     withToken(token),
@@ -27,7 +28,7 @@ export default async function ReservationsPage({ searchParams }: ReservationsPag
     <ReservationsContent
       searchParams={params}
       notices={res.data.content ?? []}
-      totalElements={res.data.totalElements ?? 0}
+      totalElements={res.data.page?.totalElements ?? 0}
     />
   );
 }

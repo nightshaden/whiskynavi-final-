@@ -1,8 +1,8 @@
 "use client";
 
 import type {
-  BottleReservationPickupNoticeReservationStatusResponse,
-  ReservationBusinessDeliveryResponse,
+  UserBottleReservationPickupNoticeReservationStatusResponse,
+  UserReservationBusinessDeliveryResponse,
 } from "@/apis/generated/api";
 import Pagination from "@/app/admin/_components/Pagination";
 import { Badge } from "@/components/ui/badge";
@@ -28,9 +28,9 @@ interface PickupReservationsContentProps {
     page?: string;
     limit?: string;
   };
-  notices: BottleReservationPickupNoticeReservationStatusResponse[];
+  notices: UserBottleReservationPickupNoticeReservationStatusResponse[];
   totalElements: number;
-  deliveries: ReservationBusinessDeliveryResponse[];
+  deliveries: UserReservationBusinessDeliveryResponse[];
 }
 
 interface NoticeGroup {
@@ -45,7 +45,7 @@ interface NoticeGroup {
   totalRequestedQuantity: number;
 }
 
-const mapNoticesToGroups = (notices: BottleReservationPickupNoticeReservationStatusResponse[]): NoticeGroup[] => {
+const mapNoticesToGroups = (notices: UserBottleReservationPickupNoticeReservationStatusResponse[]): NoticeGroup[] => {
   return notices.map((notice) => ({
     noticeId: notice.noticeId ?? 0,
     bottleId: notice.bottleId,
@@ -59,7 +59,7 @@ const mapNoticesToGroups = (notices: BottleReservationPickupNoticeReservationSta
   }));
 };
 
-const formatTrackingNumber = (delivery?: ReservationBusinessDeliveryResponse) => {
+const formatTrackingNumber = (delivery?: UserReservationBusinessDeliveryResponse) => {
   if (delivery?.deliveryMethod === "PRIVATE_CARGO") return "해당 없음 (용달)";
   return delivery?.trackingNumber?.trim() || "-";
 };

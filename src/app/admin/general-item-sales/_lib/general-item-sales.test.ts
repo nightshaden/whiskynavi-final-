@@ -25,14 +25,14 @@ describe("fetchGeneralItemSalesPage", () => {
             { id: 2, productType: "ITEM", saleType: "RESERVATION" },
           ],
           last: false,
-          totalPages: 2,
+          page: { totalPages: 2 },
         },
       })
       .mockResolvedValueOnce({
         data: {
           content: [firstGeneralSale, secondGeneralSale],
           last: true,
-          totalPages: 2,
+          page: { totalPages: 2 },
         },
       });
 
@@ -59,7 +59,7 @@ describe("fetchGeneralItemSalesPage", () => {
           { id: 3, productType: "ITEM", saleType: "GENERAL" },
         ],
         last: true,
-        totalPages: 1,
+        page: { totalPages: 1 },
       },
     });
 

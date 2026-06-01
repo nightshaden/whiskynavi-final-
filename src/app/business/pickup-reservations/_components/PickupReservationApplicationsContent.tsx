@@ -1,6 +1,6 @@
 "use client";
 
-import type { BottleReservationPickupApplicationResponse } from "@/apis/generated/api";
+import type { UserBottleReservationPickupApplicationResponse } from "@/apis/generated/api";
 import FilterHeader from "@/app/admin/_components/FilterHeader";
 import Pagination from "@/app/admin/_components/Pagination";
 import { useTableFilter } from "@/app/admin/_components/useTableFilter";
@@ -31,7 +31,7 @@ interface PickupReservationApplicationsContentProps {
     q?: string;
     searchType?: string;
   };
-  applications: BottleReservationPickupApplicationResponse[];
+  applications: UserBottleReservationPickupApplicationResponse[];
   totalElements: number;
 }
 

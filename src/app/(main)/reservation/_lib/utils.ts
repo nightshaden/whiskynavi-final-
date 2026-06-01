@@ -1,4 +1,4 @@
-import type { BottleReservationNoticePublicResponse } from "@/apis/generated/api";
+import type { UserBottleReservationNoticePublicResponse } from "@/apis/generated/api";
 
 export type NoticeStatus = "pending" | "active" | "applied" | "closed";
 
@@ -23,7 +23,7 @@ export function formatReservationRole(role?: string): string {
   return RESERVATION_ROLE_LABEL_MAP[role] ?? role;
 }
 
-export function getNoticeStatus(notice: BottleReservationNoticePublicResponse): NoticeStatus {
+export function getNoticeStatus(notice: UserBottleReservationNoticePublicResponse): NoticeStatus {
   const now = new Date();
   const start = notice.reservationStartAt ? new Date(notice.reservationStartAt) : null;
   const end = notice.reservationEndAt ? new Date(notice.reservationEndAt) : null;
@@ -78,7 +78,7 @@ export function getStatusBadge(status: NoticeStatus) {
   }
 }
 
-export function buildInfoItems(notice: BottleReservationNoticePublicResponse) {
+export function buildInfoItems(notice: UserBottleReservationNoticePublicResponse) {
   return [
     { label: "브랜드", value: notice.bottleBrand },
     {

@@ -1,6 +1,6 @@
 "use client";
 
-import type { BottleReservationNoticePublicResponse, PickupLocationResponse } from "@/apis/generated/api";
+import type { PickupLocationResponse, UserBottleReservationNoticePublicResponse } from "@/apis/generated/api";
 import { useState, useTransition } from "react";
 import ApplyForm from "../../_components/ApplyForm";
 import InfoList from "../../_components/InfoList";
@@ -10,12 +10,16 @@ import { useCountdownTimer } from "../../_lib/useCountdownTimer";
 import { applyReservation } from "../../actions";
 
 interface ReservationDetailClientProps {
-  notice: BottleReservationNoticePublicResponse;
+  notice: UserBottleReservationNoticePublicResponse;
   pickupLocations: PickupLocationResponse[];
   initialHasApplied: boolean;
 }
 
-export default function ReservationDetailClient({ notice, pickupLocations, initialHasApplied }: ReservationDetailClientProps) {
+export default function ReservationDetailClient({
+  notice,
+  pickupLocations,
+  initialHasApplied,
+}: ReservationDetailClientProps) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [isApplied, setIsApplied] = useState(initialHasApplied);

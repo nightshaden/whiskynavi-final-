@@ -32,14 +32,14 @@ describe("public general item sales", () => {
             { id: 2, productType: "ITEM", saleType: "RESERVATION", saleStatus: "OPEN" },
           ],
           last: false,
-          totalPages: 2,
+          page: { totalPages: 2 },
         },
       })
       .mockResolvedValueOnce({
         data: {
           content: [firstSale, secondSale],
           last: true,
-          totalPages: 2,
+          page: { totalPages: 2 },
         },
       });
 

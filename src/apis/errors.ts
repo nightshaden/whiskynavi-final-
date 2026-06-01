@@ -77,8 +77,9 @@ function defaultMessageForStatus(status: number): string {
     case 400:
       return "요청을 처리할 수 없습니다. 입력 내용을 확인해주세요.";
     case 401:
-    case 403:
       return "인증이 만료되었습니다. 다시 로그인해주세요.";
+    case 403:
+      return "접근 권한이 없습니다.";
     case 404:
       return "요청하신 정보를 찾을 수 없습니다.";
     case 409:

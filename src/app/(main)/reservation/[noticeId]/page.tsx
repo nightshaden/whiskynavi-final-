@@ -1,7 +1,7 @@
 import {
   getApiBottlesReservationsApplicationsMe,
   getApiBottlesReservationsNoticesNoticeid,
-  type BottleReservationApplicationPublicResponse,
+  type UserBottleReservationApplicationPublicResponse,
 } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { authOptions } from "@/lib/auth";
@@ -16,7 +16,7 @@ type PageProps = {
   params: Promise<{ noticeId: string }>;
 };
 
-const isAppliedApplication = (application: BottleReservationApplicationPublicResponse): boolean => {
+const isAppliedApplication = (application: UserBottleReservationApplicationPublicResponse): boolean => {
   return application.status !== "CANCELLED" && application.status !== "REJECTED";
 };
 

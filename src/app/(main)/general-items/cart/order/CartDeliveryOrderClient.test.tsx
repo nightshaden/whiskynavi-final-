@@ -1,4 +1,4 @@
-import type { DeliveryAddressResponse } from "@/apis/generated/api";
+import type { UserDeliveryAddressResponse } from "@/apis/generated/api";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -178,7 +178,7 @@ describe("CartDeliveryOrderClient", () => {
       <CartDeliveryOrderClient
         quote={baseQuote}
         currentUser={{ id: 1, email: "user@example.com", name: "홍길동", phone: "010-1234-5678" }}
-        deliveryAddresses={[] as DeliveryAddressResponse[]}
+        deliveryAddresses={[] as UserDeliveryAddressResponse[]}
       />,
     );
 

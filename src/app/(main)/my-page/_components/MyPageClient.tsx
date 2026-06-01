@@ -1,6 +1,10 @@
 "use client";
 
-import type { PageOrderResponse, UserBusinessApplicationResponse, UserSelfResponse } from "@/apis/generated/api";
+import type {
+  PagedModelUserOrderResponse,
+  UserBusinessApplicationResponse,
+  UserSelfResponse,
+} from "@/apis/generated/api";
 import { Crown, Package } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -11,7 +15,7 @@ import OrdersTab from "./OrdersTab";
 import UserProfileCard from "./UserProfileCard";
 interface MyPageClientProps {
   user: UserSelfResponse;
-  orders: PageOrderResponse;
+  orders: PagedModelUserOrderResponse;
   businessApplicationHistory: UserBusinessApplicationResponse[] | null;
 }
 

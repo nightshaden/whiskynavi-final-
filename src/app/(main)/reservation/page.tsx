@@ -1,5 +1,5 @@
 import {
-  type BottleReservationNoticePublicResponse,
+  type UserBottleReservationNoticePublicResponse,
   getApiBottlesReservationsNotices,
   getApiBottlesReservationsNoticesRecentEnded,
 } from "@/apis/generated/api";
@@ -11,14 +11,14 @@ import EmptyState from "./_components/EmptyState";
 import RecentEndedSection from "./_components/RecentEndedSection";
 import UnauthenticatedGuard from "./_components/UnauthenticatedGuard";
 
-function normalizeActiveNotices(data: unknown): BottleReservationNoticePublicResponse[] {
+function normalizeActiveNotices(data: unknown): UserBottleReservationNoticePublicResponse[] {
   if (Array.isArray(data)) {
-    return data as BottleReservationNoticePublicResponse[];
+    return data as UserBottleReservationNoticePublicResponse[];
   }
 
   if (data && typeof data === "object") {
     const page = data as {
-      content?: BottleReservationNoticePublicResponse[];
+      content?: UserBottleReservationNoticePublicResponse[];
       id?: number;
     };
 
@@ -27,7 +27,7 @@ function normalizeActiveNotices(data: unknown): BottleReservationNoticePublicRes
     }
 
     if (typeof page.id === "number") {
-      return [page as BottleReservationNoticePublicResponse];
+      return [page as UserBottleReservationNoticePublicResponse];
     }
   }
 

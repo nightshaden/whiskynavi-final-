@@ -2,6 +2,7 @@ import type { AdminUserResponse } from "@/apis/generated/api";
 import { getApiAdminUsers } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
+import { parseApiPage } from "@/lib/page-response";
 import MembershipContent from "./_components/MembershipContent";
 
 interface MembershipPageProps {
@@ -26,13 +27,10 @@ export default async function MembershipPage({ searchParams }: MembershipPagePro
 
   const res = await getApiAdminUsers(
     {
-      filters: {
-        pageNumber: params.page ? Number(params.page) - 1 : 0,
-        pageSize: params.limit ? Number(params.limit) : 20,
-        role: BRAND_ROLE_MAP[brand],
-        sortBy: params.sortBy || "createdAt",
-        sortDirection: params.sortDirection || "desc",
-      },
+      page: parseApiPage(params.page),
+      size: params.limit ? Number(params.limit) : 20,
+      role: BRAND_ROLE_MAP[brand],
+      sort: [`${params.sortBy || "createdAt"},${params.sortDirection || "desc"}`],
     },
     withToken(token),
   );
@@ -42,7 +40,7 @@ export default async function MembershipPage({ searchParams }: MembershipPagePro
       searchParams={params}
       brand={brand}
       users={(res.data.content ?? []) as AdminUserResponse[]}
-      totalElements={res.data.totalElements ?? 0}
+      totalElements={res.data.page?.totalElements ?? 0}
     />
   );
 }

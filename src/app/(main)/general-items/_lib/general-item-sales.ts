@@ -1,6 +1,10 @@
-import type { GetApiSalesParams, PageSaleAnnouncementResponse, SaleAnnouncementResponse } from "@/apis/generated/api";
+import type {
+  GetApiSalesParams,
+  PagedModelUserSaleAnnouncementResponse,
+  UserSaleAnnouncementResponse,
+} from "@/apis/generated/api";
 
-type FetchSalesPage = (params: GetApiSalesParams) => Promise<{ data: PageSaleAnnouncementResponse }>;
+type FetchSalesPage = (params: GetApiSalesParams) => Promise<{ data: PagedModelUserSaleAnnouncementResponse }>;
 
 interface FetchOpenGeneralItemSalesPageOptions {
   fetchSales: FetchSalesPage;
@@ -9,11 +13,11 @@ interface FetchOpenGeneralItemSalesPageOptions {
   sourcePageSize?: number;
 }
 
-export function isOpenGeneralItemSale(sale: SaleAnnouncementResponse) {
+export function isOpenGeneralItemSale(sale: UserSaleAnnouncementResponse) {
   return sale.productType === "ITEM" && sale.saleType === "GENERAL" && sale.saleStatus === "OPEN";
 }
 
-export function collectGeneralItemProductIds(sales: Pick<SaleAnnouncementResponse, "productId">[]) {
+export function collectGeneralItemProductIds(sales: Pick<UserSaleAnnouncementResponse, "productId">[]) {
   return Array.from(new Set(sales.map((sale) => sale.productId).filter((id): id is number => id != null)));
 }
 
@@ -25,7 +29,7 @@ export async function fetchOpenGeneralItemSalesPage({
 }: FetchOpenGeneralItemSalesPageOptions) {
   const currentPage = Number.isFinite(page) && page > 0 ? page : 1;
   const pageSize = Number.isFinite(size) && size > 0 ? size : 20;
-  const sales: SaleAnnouncementResponse[] = [];
+  const sales: UserSaleAnnouncementResponse[] = [];
   let sourcePage = 0;
   let totalPages = 1;
 
@@ -39,9 +43,8 @@ export async function fetchOpenGeneralItemSalesPage({
     const data = response.data;
 
     sales.push(...(data.content ?? []).filter(isOpenGeneralItemSale));
-    totalPages = data.totalPages ?? totalPages;
+    totalPages = data.page?.totalPages ?? totalPages;
 
-    if (data.last) break;
     sourcePage += 1;
   } while (sourcePage < totalPages);
 
@@ -53,12 +56,12 @@ export async function fetchOpenGeneralItemSalesPage({
   };
 }
 
-export function buildGeneralItemSaleDetailHref(sale: Pick<SaleAnnouncementResponse, "id">) {
+export function buildGeneralItemSaleDetailHref(sale: Pick<UserSaleAnnouncementResponse, "id">) {
   return sale.id != null ? `/general-items/${sale.id}` : "/general-items";
 }
 
 export function getGeneralItemOrderQuantityLimit(
-  sale: Pick<SaleAnnouncementResponse, "availableQuantity" | "maxOrderQuantity">,
+  sale: Pick<UserSaleAnnouncementResponse, "availableQuantity" | "maxOrderQuantity">,
 ) {
   const availableQuantity = sale.availableQuantity != null && sale.availableQuantity > 0 ? sale.availableQuantity : 0;
   const maxOrderQuantity =

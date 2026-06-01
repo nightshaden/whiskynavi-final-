@@ -1,6 +1,6 @@
 "use client";
 
-import type { BottleReservationNoticeResponse } from "@/apis/generated/api";
+import type { AdminBottleReservationNoticeResponse } from "@/apis/generated/api";
 import { Eye, Pencil, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import AdminHeader from "../../_components/AdminHeader";
@@ -31,7 +31,7 @@ interface ReservationsContentProps {
     limit?: string;
     q?: string;
   };
-  notices: BottleReservationNoticeResponse[];
+  notices: AdminBottleReservationNoticeResponse[];
   totalElements: number;
 }
 

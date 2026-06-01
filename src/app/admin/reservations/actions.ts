@@ -139,11 +139,9 @@ export async function searchBottlesAction(keyword: string): Promise<SearchBottle
     const trimmed = keyword.trim().slice(0, 100);
     const res = await getApiAdminBottles(
       {
-        filters: {
-          reservationStatus: "NO_RESERVATION",
-          keyword: trimmed || undefined,
-          pageSize: 20,
-        },
+        reservationStatus: "NO_RESERVATION",
+        keyword: trimmed || undefined,
+        size: 20,
       },
       withToken(token),
     );

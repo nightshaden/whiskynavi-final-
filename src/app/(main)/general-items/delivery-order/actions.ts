@@ -7,11 +7,11 @@ import {
   postApiOrdersGeneralItemsDeliveryTossConfirm,
   postApiOrdersGeneralItemsDeliveryTossTickets,
   postApiUsersMeDeliveryAddresses,
-  type DeliveryAddressResponse,
-  type GeneralItemDeliveryOrderResponse,
   type GeneralItemDeliveryTicketResponse,
-  type OrderResponse,
   type PostApiUsersMeDeliveryAddressesBody,
+  type UserDeliveryAddressResponse,
+  type UserGeneralItemDeliveryOrderResponse,
+  type UserOrderResponse,
 } from "@/apis/generated/api";
 import { getAuthToken } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
@@ -149,7 +149,7 @@ function guideErrorMessage(error: unknown, fallback: string): string {
 
 export async function createDeliveryAddress(
   input: PostApiUsersMeDeliveryAddressesBody,
-): Promise<ActionResult<DeliveryAddressResponse>> {
+): Promise<ActionResult<UserDeliveryAddressResponse>> {
   try {
     const token = await getAuthToken();
     if (!token) {
@@ -207,7 +207,7 @@ export async function confirmGeneralItemTossPayment(input: {
   orderId?: string;
   paymentKey?: string;
   amount?: string;
-}): Promise<ActionResult<GeneralItemDeliveryOrderResponse>> {
+}): Promise<ActionResult<UserGeneralItemDeliveryOrderResponse>> {
   try {
     const parsed = tossConfirmSchema.safeParse(input);
     if (!parsed.success) {
@@ -237,7 +237,7 @@ export async function confirmGeneralItemTossPayment(input: {
 export async function lookupGuestGeneralItemOrder(
   orderNumber: string,
   guestOrderToken: string,
-): Promise<ActionResult<OrderResponse>> {
+): Promise<ActionResult<UserOrderResponse>> {
   try {
     const parsed = guestLookupSchema.safeParse({ orderNumber, guestOrderToken });
     if (!parsed.success) {
@@ -259,7 +259,7 @@ export async function cancelGuestGeneralItemOrder(
   orderNumber: string,
   guestOrderToken: string,
   reason?: string,
-): Promise<ActionResult<OrderResponse>> {
+): Promise<ActionResult<UserOrderResponse>> {
   try {
     const parsed = guestCancelSchema.safeParse({ orderNumber, guestOrderToken, reason });
     if (!parsed.success) {

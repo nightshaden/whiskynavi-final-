@@ -6,9 +6,9 @@ import {
   postApiAdminItems,
   postApiAdminSales,
   postApiS3Upload,
+  type AdminSaleAnnouncementResponse,
   type ItemAdminResponse,
   type PostApiAdminItemsBodyExtraInfos,
-  type SaleAnnouncementResponse,
 } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
@@ -26,7 +26,7 @@ export type GeneralItemSaleFormState = {
   success: boolean;
   error?: string;
   values?: Record<string, string>;
-  data?: SaleAnnouncementResponse;
+  data?: AdminSaleAnnouncementResponse;
 };
 
 const ITEM_FORM_FIELD_NAMES = [

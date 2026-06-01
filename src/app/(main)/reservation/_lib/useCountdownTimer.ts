@@ -1,6 +1,6 @@
 "use client";
 
-import type { BottleReservationNoticePublicResponse } from "@/apis/generated/api";
+import type { UserBottleReservationNoticePublicResponse } from "@/apis/generated/api";
 import { useEffect, useState } from "react";
 import { calculateTimeRemaining, getNoticeStatus, type NoticeStatus } from "./utils";
 
@@ -9,7 +9,7 @@ interface CountdownTimerResult {
   status: NoticeStatus;
 }
 
-export function useCountdownTimer(notice: BottleReservationNoticePublicResponse): CountdownTimerResult {
+export function useCountdownTimer(notice: UserBottleReservationNoticePublicResponse): CountdownTimerResult {
   const status = getNoticeStatus(notice);
   const [timeRemaining, setTimeRemaining] = useState("");
 

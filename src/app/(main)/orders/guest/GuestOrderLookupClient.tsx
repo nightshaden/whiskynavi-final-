@@ -1,6 +1,6 @@
 "use client";
 
-import type { OrderResponse } from "@/apis/generated/api";
+import type { UserOrderResponse } from "@/apis/generated/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -49,7 +49,7 @@ function GuestOrderDetail({
   onCancel,
   isPending,
 }: {
-  order: OrderResponse;
+  order: UserOrderResponse;
   guestOrderToken: string;
   onCancel: (reason: string) => void;
   isPending: boolean;
@@ -141,7 +141,7 @@ export default function GuestOrderLookupClient({
   const [isPending, startTransition] = useTransition();
   const [orderNumber, setOrderNumber] = useState(initialOrderNumber);
   const [guestOrderToken, setGuestOrderToken] = useState(initialGuestOrderToken);
-  const [order, setOrder] = useState<OrderResponse | null>(null);
+  const [order, setOrder] = useState<UserOrderResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const lookup = (nextOrderNumber = orderNumber, nextToken = guestOrderToken) => {

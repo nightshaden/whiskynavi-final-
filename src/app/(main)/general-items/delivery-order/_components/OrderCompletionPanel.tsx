@@ -1,12 +1,12 @@
 "use client";
 
-import type { GeneralItemDeliveryOrderResponse } from "@/apis/generated/api";
+import type { UserGeneralItemDeliveryOrderResponse } from "@/apis/generated/api";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useState } from "react";
 
 interface OrderCompletionPanelProps {
-  result: GeneralItemDeliveryOrderResponse;
+  result: UserGeneralItemDeliveryOrderResponse;
 }
 
 function formatCurrency(amount?: number) {

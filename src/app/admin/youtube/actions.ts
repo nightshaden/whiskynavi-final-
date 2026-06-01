@@ -1,7 +1,7 @@
 "use server";
 
 import { ApiError, getUserErrorMessage } from "@/apis/errors";
-import { postApiAdminKvStore, updateKvStore } from "@/apis/generated/api";
+import { postApiAdminKvStore, putApiAdminKvStore } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
@@ -38,7 +38,7 @@ export async function updateYoutubeAction(_prev: FormState, formData: FormData):
   const embedUrl = parsed.data.url;
 
   try {
-    await updateKvStore({ key: YOUTUBE_KEY, value: embedUrl }, withToken(token));
+    await putApiAdminKvStore({ key: YOUTUBE_KEY, value: embedUrl }, withToken(token));
   } catch (error) {
     if (error instanceof ApiError && error.status === 404) {
       try {

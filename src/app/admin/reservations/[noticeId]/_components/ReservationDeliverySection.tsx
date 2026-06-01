@@ -1,6 +1,6 @@
 "use client";
 
-import type { DeliveryCompanyResponse, ReservationBusinessDeliveryResponse } from "@/apis/generated/api";
+import type { AdminReservationBusinessDeliveryResponse, DeliveryCompanyResponse } from "@/apis/generated/api";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -43,16 +43,16 @@ const DELIVERY_STATUS_OPTIONS = [
 
 interface ReservationDeliverySectionProps {
   noticeId: number;
-  deliveries: ReservationBusinessDeliveryResponse[];
+  deliveries: AdminReservationBusinessDeliveryResponse[];
   companies: DeliveryCompanyResponse[];
 }
 
-const formatCarrierName = (delivery: ReservationBusinessDeliveryResponse) => {
+const formatCarrierName = (delivery: AdminReservationBusinessDeliveryResponse) => {
   if (delivery.deliveryMethod === "PRIVATE_CARGO") return "해당 없음 (용달)";
   return delivery.carrierName ?? delivery.carrierCode ?? "-";
 };
 
-const formatTrackingNumber = (delivery: ReservationBusinessDeliveryResponse) => {
+const formatTrackingNumber = (delivery: AdminReservationBusinessDeliveryResponse) => {
   if (delivery.deliveryMethod === "PRIVATE_CARGO") return "해당 없음 (용달)";
   return delivery.trackingNumber?.trim() || "-";
 };
@@ -65,7 +65,7 @@ function DeliveryEditModal({
   onOpenChange,
 }: {
   noticeId: number;
-  delivery: ReservationBusinessDeliveryResponse;
+  delivery: AdminReservationBusinessDeliveryResponse;
   companies: DeliveryCompanyResponse[];
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -202,7 +202,7 @@ function DeliveryRow({
   companies,
 }: {
   noticeId: number;
-  delivery: ReservationBusinessDeliveryResponse;
+  delivery: AdminReservationBusinessDeliveryResponse;
   companies: DeliveryCompanyResponse[];
 }) {
   const [isOpen, setIsOpen] = useState(false);

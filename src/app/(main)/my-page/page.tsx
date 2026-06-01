@@ -1,6 +1,7 @@
 import { getApiOrders, getApiUsersBusinessesApplicationsMeHistory, getApiUsersMe } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { authOptions, getAuthToken } from "@/lib/auth";
+import { parseApiPage } from "@/lib/page-response";
 import { getServerSession } from "next-auth";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
@@ -26,7 +27,7 @@ export default async function MyPage({ searchParams }: MyPageProps) {
   }
 
   const params = await searchParams;
-  const page = Number(params.page) || 0;
+  const apiPage = parseApiPage(params.page);
 
   const [userResult, ordersResult, businessApplicationHistoryResult] = await Promise.all([
     getApiUsersMe(withToken(token)).catch((e) => {
@@ -34,22 +35,23 @@ export default async function MyPage({ searchParams }: MyPageProps) {
       console.error("[my-page] getApiUsersMe failed:", e);
       return null;
     }),
-    getApiOrders({ page, size: 10, sort: ["createdAt,desc"] }, withToken(token)).catch((e) => {
+    getApiOrders({ page: apiPage, size: 10, sort: ["createdAt,desc"] }, withToken(token)).catch((e) => {
       if (isRedirectError(e)) throw e;
       console.error("[my-page] getApiOrders failed:", e);
       return null;
     }),
-    getApiUsersBusinessesApplicationsMeHistory({ page, size: 10, sort: ["createdAt,desc"] }, withToken(token)).catch(
-      (e) => {
-        if (isRedirectError(e)) throw e;
-        console.error("[my-page] getBusinessApplicationHistory failed:", e);
-        return null;
-      },
-    ),
+    getApiUsersBusinessesApplicationsMeHistory(
+      { page: apiPage, size: 10, sort: ["createdAt,desc"] },
+      withToken(token),
+    ).catch((e) => {
+      if (isRedirectError(e)) throw e;
+      console.error("[my-page] getBusinessApplicationHistory failed:", e);
+      return null;
+    }),
   ]);
 
   const user = userResult?.data ?? {};
-  const orders = ordersResult?.data ?? { content: [], totalPages: 0 };
+  const orders = ordersResult?.data ?? { content: [], page: { number: apiPage, totalPages: 0 } };
   const businessApplicationHistory = businessApplicationHistoryResult?.data?.content ?? null;
 
   return (

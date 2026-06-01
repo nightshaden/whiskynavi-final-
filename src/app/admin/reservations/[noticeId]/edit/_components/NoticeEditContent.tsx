@@ -1,6 +1,6 @@
 "use client";
 
-import type { BottleReservationNoticeResponse } from "@/apis/generated/api";
+import type { AdminBottleReservationNoticeResponse } from "@/apis/generated/api";
 import { ArrowLeft, Save, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useActionState } from "react";
@@ -10,7 +10,7 @@ import { updateNoticeFormAction } from "../../../actions";
 import NoticeFormFields from "../../../new/_components/NoticeFormFields";
 
 interface NoticeEditContentProps {
-  notice: BottleReservationNoticeResponse;
+  notice: AdminBottleReservationNoticeResponse;
 }
 
 export default function NoticeEditContent({ notice }: NoticeEditContentProps) {

@@ -1,7 +1,8 @@
-import { getApiBottles, type GetApiBottlesParams } from "@/apis/generated/api";
+import { getApiBottles } from "@/apis/generated/api";
+import { parseDisplayPage } from "@/lib/page-response";
 import BottleCard from "../../_components/BottleCard";
 import type { SearchParams } from "../_utils";
-import { buildPageUrl } from "../_utils";
+import { buildBottleSearchApiParams, buildPageUrl } from "../_utils";
 import Pagination from "./Pagination";
 
 interface BottleListProps {
@@ -9,19 +10,10 @@ interface BottleListProps {
 }
 
 export default async function BottleList({ params }: BottleListProps) {
-  const currentPage = Math.max(Number(params.page) || 1, 1);
-  const { sort, ...rest } = params;
+  const currentPage = parseDisplayPage(params.page);
+  const { data: bottlesResponse } = await getApiBottles(buildBottleSearchApiParams(params, currentPage));
 
-  const { data: bottlesResponse } = await getApiBottles({
-    filters: {
-      ...rest,
-      pageNumber: currentPage - 1,
-      pageSize: 12,
-    } as GetApiBottlesParams["filters"],
-    ...(sort ? { sort } : {}),
-  });
-
-  const totalPages = bottlesResponse.totalPages ?? 0;
+  const totalPages = bottlesResponse.page?.totalPages ?? 0;
 
   return (
     <>

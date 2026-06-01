@@ -1,10 +1,10 @@
 import type {
   AdminSaleAnnouncementResponse,
   GetApiAdminSalesParams,
-  PageAdminSaleAnnouncementResponse,
+  PagedModelAdminSaleAnnouncementResponse,
 } from "@/apis/generated/api";
 
-type FetchSalesPage = (params: GetApiAdminSalesParams) => Promise<{ data: PageAdminSaleAnnouncementResponse }>;
+type FetchSalesPage = (params: GetApiAdminSalesParams) => Promise<{ data: PagedModelAdminSaleAnnouncementResponse }>;
 
 interface FetchGeneralItemSalesPageOptions {
   fetchSales: FetchSalesPage;
@@ -41,9 +41,8 @@ export async function fetchGeneralItemSalesPage({
     const data = response.data;
 
     sales.push(...(data.content ?? []).filter(isGeneralItemSale));
-    totalPages = data.totalPages ?? totalPages;
+    totalPages = data.page?.totalPages ?? totalPages;
 
-    if (data.last) break;
     sourcePage += 1;
   } while (sourcePage < totalPages);
 

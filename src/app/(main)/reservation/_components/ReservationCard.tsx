@@ -1,11 +1,11 @@
-import type { BottleReservationNoticePublicResponse } from "@/apis/generated/api";
+import type { UserBottleReservationNoticePublicResponse } from "@/apis/generated/api";
 import { Badge } from "@/components/ui/badge";
 import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 
 type ReservationStatus = "active" | "ended";
 
 interface ReservationCardProps {
-  notice: BottleReservationNoticePublicResponse;
+  notice: UserBottleReservationNoticePublicResponse;
   status: ReservationStatus;
 }
 

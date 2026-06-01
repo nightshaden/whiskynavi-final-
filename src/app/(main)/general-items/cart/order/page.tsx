@@ -1,7 +1,7 @@
 import {
   getApiUsersMe,
   getApiUsersMeDeliveryAddresses,
-  type DeliveryAddressResponse,
+  type UserDeliveryAddressResponse,
   type UserSelfResponse,
 } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
@@ -18,7 +18,7 @@ export default async function GeneralItemCartDeliveryOrderPage() {
 
   const token = await getAuthToken();
   let currentUser: UserSelfResponse | null = null;
-  let deliveryAddresses: DeliveryAddressResponse[] = [];
+  let deliveryAddresses: UserDeliveryAddressResponse[] = [];
 
   if (token) {
     const options = withToken(token);

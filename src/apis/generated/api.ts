@@ -173,51 +173,6 @@ export interface AdminBottleReservationNoticeResponse {
   updatedAt?: string;
 }
 
-/**
- * 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값
- */
-export type AdminBottleSearchRequestReservationStatus = typeof AdminBottleSearchRequestReservationStatus[keyof typeof AdminBottleSearchRequestReservationStatus];
-
-
-export const AdminBottleSearchRequestReservationStatus = {
-  NO_RESERVATION: 'NO_RESERVATION',
-  RESERVATION_ONGOING: 'RESERVATION_ONGOING',
-  RESERVATION_COMPLETED: 'RESERVATION_COMPLETED',
-} as const;
-
-export interface AdminBottleSearchRequest {
-  abvFrom?: number;
-  abvTo?: number;
-  bottledDateFrom?: string;
-  bottledDateTo?: string;
-  /** 브랜드명 목록 필터 */
-  brand?: string[];
-  /** 캐스크 타입 목록 필터 */
-  caskType?: string[];
-  /** 회사명 목록 필터 */
-  company?: string[];
-  distillationDateFrom?: string;
-  distillationDateTo?: string;
-  /** 증류소 목록 필터 */
-  distillery?: string[];
-  /** 통합검색어. 이름, 회사, 브랜드, 시리즈, 몰트 타입, 증류소, 캐스크 정보, 설명, 빈티지를 함께 검색합니다. */
-  keyword?: string;
-  /** 몰트 타입 목록 필터 */
-  maltType?: string[];
-  /** 병 이름 필터 */
-  name?: string;
-  pageNumber?: number;
-  pageSize?: number;
-  /** 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값 */
-  reservationStatus?: AdminBottleSearchRequestReservationStatus;
-  /** 시리즈명 목록 필터 */
-  series?: string[];
-  sortBy?: string;
-  sortDirection?: string;
-  vintageFrom?: number;
-  vintageTo?: number;
-}
-
 export type AdminBusinessApplicationAuditLogResponseAfterStatus = typeof AdminBusinessApplicationAuditLogResponseAfterStatus[keyof typeof AdminBusinessApplicationAuditLogResponseAfterStatus];
 
 
@@ -1130,6 +1085,18 @@ export interface AdminUserBanRequest {
   startAt?: string;
 }
 
+export interface PageMetadata {
+  number?: number;
+  size?: number;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+export interface PagedModelAdminOrderResponse {
+  content?: AdminOrderResponse[];
+  page?: PageMetadata;
+}
+
 /**
  * 관리자용 사용자 주문 요약 응답
  */
@@ -1138,26 +1105,13 @@ export interface AdminUserOrderSummaryResponse {
   canceledTotalAmount?: number;
   /** 취소 주문을 제외한 유효 주문 총액 */
   effectiveTotalAmount?: number;
-  /** 다음 페이지 존재 여부 */
-  hasNext?: boolean;
-  /** 이전 페이지 존재 여부 */
-  hasPrevious?: boolean;
-  /** 주문 내역 목록 */
-  orders?: AdminOrderResponse[];
-  /** 현재 페이지 번호 */
-  pageNumber?: number;
-  /** 페이지 크기 */
-  pageSize?: number;
+  orders?: PagedModelAdminOrderResponse;
   /** 취소 요청 중 주문 총액 */
   refundRequestedTotalAmount?: number;
   /** 취소 완료 주문 총액 */
   refundedTotalAmount?: number;
   /** 상태와 무관한 전체 주문 총액. 기존 관리자 화면 호환용 값이다. */
   totalAmount?: number;
-  /** 전체 주문 수 */
-  totalElements?: number;
-  /** 전체 페이지 수 */
-  totalPages?: number;
   /** 사용자 ID */
   userId?: number;
 }
@@ -1231,27 +1185,6 @@ export interface AdminUserRolesRemoveRequest {
    * @minItems 1
    */
   roles?: string[];
-}
-
-export interface AdminUserSearchRequest {
-  createdAtFrom?: string;
-  createdAtTo?: string;
-  email?: string;
-  excludedRoles?: string[];
-  isBanned?: boolean;
-  lastLoginAtFrom?: string;
-  lastLoginAtTo?: string;
-  name?: string;
-  pageNumber?: number;
-  pageSize?: number;
-  phone?: string;
-  role?: string;
-  sortBy?: string;
-  sortDirection?: string;
-  status?: string;
-  updatedAtFrom?: string;
-  updatedAtTo?: string;
-  username?: string;
 }
 
 /**
@@ -2690,257 +2623,84 @@ export interface OrderTicketIssueRequest {
   saleAnnouncementId: number;
 }
 
-export interface SortObject {
-  empty?: boolean;
-  sorted?: boolean;
-  unsorted?: boolean;
-}
-
-export interface PageableObject {
-  offset?: number;
-  pageNumber?: number;
-  pageSize?: number;
-  paged?: boolean;
-  sort?: SortObject;
-  unpaged?: boolean;
-}
-
-export interface PageAdminBannerResponse {
+export interface PagedModelAdminBannerResponse {
   content?: AdminBannerResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
-export interface PageAdminBottleReservationApplicationResponse {
+export interface PagedModelAdminBottleReservationApplicationResponse {
   content?: AdminBottleReservationApplicationResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
-export interface PageAdminBottleReservationNoticeResponse {
+export interface PagedModelAdminBottleReservationNoticeResponse {
   content?: AdminBottleReservationNoticeResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
-export interface PageAdminBusinessApplicationResponse {
+export interface PagedModelAdminBusinessApplicationResponse {
   content?: AdminBusinessApplicationResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
-export interface PageAdminBusinessUserResponse {
+export interface PagedModelAdminBusinessUserResponse {
   content?: AdminBusinessUserResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
-export interface PageAdminItemReservationApplicationResponse {
+export interface PagedModelAdminItemReservationApplicationResponse {
   content?: AdminItemReservationApplicationResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
-export interface PageAdminItemReservationNoticeResponse {
+export interface PagedModelAdminItemReservationNoticeResponse {
   content?: AdminItemReservationNoticeResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
-export interface PageAdminOrderResponse {
-  content?: AdminOrderResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
-}
-
-export interface PageAdminSaleAnnouncementResponse {
+export interface PagedModelAdminSaleAnnouncementResponse {
   content?: AdminSaleAnnouncementResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
-export interface PageAdminUserResponse {
+export interface PagedModelAdminUserResponse {
   content?: AdminUserResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
-export interface PageBottleAdminResponse {
+export interface PagedModelBottleAdminResponse {
   content?: BottleAdminResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
-export interface PageBottleResponse {
+export interface PagedModelBottleResponse {
   content?: BottleResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
-export interface PageDonationLinkResponse {
+export interface PagedModelDonationLinkResponse {
   content?: DonationLinkResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
-export interface PageDonationResponse {
+export interface PagedModelDonationResponse {
   content?: DonationResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
-export interface PageFundraisingCampaignResponse {
+export interface PagedModelFundraisingCampaignResponse {
   content?: FundraisingCampaignResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
-export interface PageItemAdminResponse {
+export interface PagedModelItemAdminResponse {
   content?: ItemAdminResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
-export interface PageItemResponse {
+export interface PagedModelItemResponse {
   content?: ItemResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
 export type PickupLocationResponseBusinessType = typeof PickupLocationResponseBusinessType[keyof typeof PickupLocationResponseBusinessType];
@@ -2961,18 +2721,9 @@ export interface PickupLocationResponse {
   updatedAt?: string;
 }
 
-export interface PagePickupLocationResponse {
+export interface PagedModelPickupLocationResponse {
   content?: PickupLocationResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
 /**
@@ -2995,18 +2746,9 @@ export interface PostResponse {
   updatedAt?: string;
 }
 
-export interface PagePostResponse {
+export interface PagedModelPostResponse {
   content?: PostResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
 /**
@@ -3038,18 +2780,9 @@ export interface UserAnnouncementResponse {
   title?: string;
 }
 
-export interface PageUserAnnouncementResponse {
+export interface PagedModelUserAnnouncementResponse {
   content?: UserAnnouncementResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
 /**
@@ -3070,18 +2803,9 @@ export interface UserBannerResponse {
   title?: string;
 }
 
-export interface PageUserBannerResponse {
+export interface PagedModelUserBannerResponse {
   content?: UserBannerResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
 /**
@@ -3100,18 +2824,9 @@ export interface UserBoardResponse {
   slug?: string;
 }
 
-export interface PageUserBoardResponse {
+export interface PagedModelUserBoardResponse {
   content?: UserBoardResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
 export type UserBottleReservationApplicationPublicResponseStatus = typeof UserBottleReservationApplicationPublicResponseStatus[keyof typeof UserBottleReservationApplicationPublicResponseStatus];
@@ -3145,18 +2860,9 @@ export interface UserBottleReservationApplicationPublicResponse {
   updatedAt?: string;
 }
 
-export interface PageUserBottleReservationApplicationPublicResponse {
+export interface PagedModelUserBottleReservationApplicationPublicResponse {
   content?: UserBottleReservationApplicationPublicResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
 export type UserBottleReservationGradeConditionResponseRequiredRole = typeof UserBottleReservationGradeConditionResponseRequiredRole[keyof typeof UserBottleReservationGradeConditionResponseRequiredRole];
@@ -3198,18 +2904,9 @@ export interface UserBottleReservationNoticePublicResponse {
   updatedAt?: string;
 }
 
-export interface PageUserBottleReservationNoticePublicResponse {
+export interface PagedModelUserBottleReservationNoticePublicResponse {
   content?: UserBottleReservationNoticePublicResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
 export interface UserBottleReservationPickupApplicantResponse {
@@ -3248,18 +2945,9 @@ export interface UserBottleReservationPickupApplicationResponse {
   updatedAt?: string;
 }
 
-export interface PageUserBottleReservationPickupApplicationResponse {
+export interface PagedModelUserBottleReservationPickupApplicationResponse {
   content?: UserBottleReservationPickupApplicationResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
 /**
@@ -3299,18 +2987,9 @@ export interface UserBottleReservationPickupNoticeReservationStatusResponse {
   totalRequestedQuantity?: number;
 }
 
-export interface PageUserBottleReservationPickupNoticeReservationStatusResponse {
+export interface PagedModelUserBottleReservationPickupNoticeReservationStatusResponse {
   content?: UserBottleReservationPickupNoticeReservationStatusResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
 export type UserBusinessApplicationResponseBusinessType = typeof UserBusinessApplicationResponseBusinessType[keyof typeof UserBusinessApplicationResponseBusinessType];
@@ -3350,18 +3029,9 @@ export interface UserBusinessApplicationResponse {
   updatedAt?: string;
 }
 
-export interface PageUserBusinessApplicationResponse {
+export interface PagedModelUserBusinessApplicationResponse {
   content?: UserBusinessApplicationResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
 export type UserItemReservationApplicationPublicResponseStatus = typeof UserItemReservationApplicationPublicResponseStatus[keyof typeof UserItemReservationApplicationPublicResponseStatus];
@@ -3398,18 +3068,9 @@ export interface UserItemReservationApplicationPublicResponse {
   updatedAt?: string;
 }
 
-export interface PageUserItemReservationApplicationPublicResponse {
+export interface PagedModelUserItemReservationApplicationPublicResponse {
   content?: UserItemReservationApplicationPublicResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
 export type UserItemReservationGradeConditionResponseRequiredRole = typeof UserItemReservationGradeConditionResponseRequiredRole[keyof typeof UserItemReservationGradeConditionResponseRequiredRole];
@@ -3451,18 +3112,9 @@ export interface UserItemReservationNoticePublicResponse {
   updatedAt?: string;
 }
 
-export interface PageUserItemReservationNoticePublicResponse {
+export interface PagedModelUserItemReservationNoticePublicResponse {
   content?: UserItemReservationNoticePublicResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
 export interface UserItemReservationPickupApplicantResponse {
@@ -3503,18 +3155,9 @@ export interface UserItemReservationPickupApplicationResponse {
   updatedAt?: string;
 }
 
-export interface PageUserItemReservationPickupApplicationResponse {
+export interface PagedModelUserItemReservationPickupApplicationResponse {
   content?: UserItemReservationPickupApplicationResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
 /**
@@ -3778,18 +3421,9 @@ CANCEL_REJECTED 주문은 발송 처리로 SHIPPING 전환이 가능하다.
   userId?: number;
 }
 
-export interface PageUserOrderResponse {
+export interface PagedModelUserOrderResponse {
   content?: UserOrderResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
+  page?: PageMetadata;
 }
 
 /**
@@ -3866,26 +3500,9 @@ export interface UserSaleAnnouncementResponse {
   updatedAt?: string;
 }
 
-export interface PageUserSaleAnnouncementResponse {
+export interface PagedModelUserSaleAnnouncementResponse {
   content?: UserSaleAnnouncementResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
-}
-
-export interface Pageable {
-  /** @minimum 0 */
-  page?: number;
-  /** @minimum 1 */
-  size?: number;
-  sort?: string[];
+  page?: PageMetadata;
 }
 
 /**
@@ -4774,37 +4391,6 @@ export interface UserBottleReservationPickupBulkUpdateResponse {
   updatedCount?: number;
 }
 
-export interface UserBottleSearchRequest {
-  abvFrom?: number;
-  abvTo?: number;
-  bottledDateFrom?: string;
-  bottledDateTo?: string;
-  /** 브랜드명 목록 필터 */
-  brand?: string[];
-  /** 캐스크 타입 목록 필터 */
-  caskType?: string[];
-  /** 회사명 목록 필터 */
-  company?: string[];
-  distillationDateFrom?: string;
-  distillationDateTo?: string;
-  /** 증류소 목록 필터 */
-  distillery?: string[];
-  /** 통합검색어. 이름, 회사, 브랜드, 시리즈, 몰트 타입, 증류소, 캐스크 정보, 설명, 빈티지를 함께 검색합니다. */
-  keyword?: string;
-  /** 몰트 타입 목록 필터 */
-  maltType?: string[];
-  /** 병 이름 필터 */
-  name?: string;
-  pageNumber?: number;
-  pageSize?: number;
-  /** 시리즈명 목록 필터 */
-  series?: string[];
-  sortBy?: string;
-  sortDirection?: string;
-  vintageFrom?: number;
-  vintageTo?: number;
-}
-
 export interface UserBusinessApplicationCancelRequest {
   /**
    * 신청 취소 사유
@@ -5171,47 +4757,70 @@ export type PostApiAdminBoardsAnnouncementsBody = {
 };
 
 export type GetApiAdminBottlesParams = {
-filters: {
-  abvFrom?: number;
-  abvTo?: number;
-  bottledDateFrom?: string;
-  bottledDateTo?: string;
-  /** 브랜드명 목록 필터 */
-  brand?: string[];
-  /** 캐스크 타입 목록 필터 */
-  caskType?: string[];
-  /** 회사명 목록 필터 */
-  company?: string[];
-  distillationDateFrom?: string;
-  distillationDateTo?: string;
-  /** 증류소 목록 필터 */
-  distillery?: string[];
-  /** 통합검색어. 이름, 회사, 브랜드, 시리즈, 몰트 타입, 증류소, 캐스크 정보, 설명, 빈티지를 함께 검색합니다. */
-  keyword?: string;
-  /** 몰트 타입 목록 필터 */
-  maltType?: string[];
-  /** 병 이름 필터 */
-  name?: string;
-  pageNumber?: number;
-  pageSize?: number;
-  /** 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값 */
-  reservationStatus?: GetApiAdminBottlesFiltersReservationStatus;
-  /** 시리즈명 목록 필터 */
-  series?: string[];
-  sortBy?: string;
-  sortDirection?: string;
-  vintageFrom?: number;
-  vintageTo?: number;
-};
-};
-
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
+/**
+ * 병 이름 필터
+ */
+name?: string;
+/**
+ * 통합검색어. 이름, 회사, 브랜드, 시리즈, 몰트 타입, 증류소, 캐스크 정보, 설명, 빈티지를 함께 검색합니다.
+ */
+keyword?: string;
+/**
+ * 회사명 목록 필터
+ */
+company?: string[];
+/**
+ * 브랜드명 목록 필터
+ */
+brand?: string[];
+/**
+ * 시리즈명 목록 필터
+ */
+series?: string[];
+/**
+ * 몰트 타입 목록 필터
+ */
+maltType?: string[];
+/**
+ * 증류소 목록 필터
+ */
+distillery?: string[];
+/**
+ * 캐스크 타입 목록 필터
+ */
+caskType?: string[];
 /**
  * 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값
  */
-export type GetApiAdminBottlesFiltersReservationStatus = typeof GetApiAdminBottlesFiltersReservationStatus[keyof typeof GetApiAdminBottlesFiltersReservationStatus];
+reservationStatus?: GetApiAdminBottlesReservationStatus;
+bottledDateFrom?: string;
+bottledDateTo?: string;
+distillationDateFrom?: string;
+distillationDateTo?: string;
+vintageFrom?: number;
+vintageTo?: number;
+abvFrom?: number;
+abvTo?: number;
+};
+
+export type GetApiAdminBottlesReservationStatus = typeof GetApiAdminBottlesReservationStatus[keyof typeof GetApiAdminBottlesReservationStatus];
 
 
-export const GetApiAdminBottlesFiltersReservationStatus = {
+export const GetApiAdminBottlesReservationStatus = {
   NO_RESERVATION: 'NO_RESERVATION',
   RESERVATION_ONGOING: 'RESERVATION_ONGOING',
   RESERVATION_COMPLETED: 'RESERVATION_COMPLETED',
@@ -5981,7 +5590,7 @@ export type PostApiAdminKvStoreBody = {
   value?: string;
 };
 
-export type Update1Body = {
+export type PutApiAdminKvStoreBody = {
   /**
    * @minLength 0
    * @maxLength 32
@@ -6815,26 +6424,34 @@ yearMonth: string;
 };
 
 export type GetApiAdminUsersParams = {
-filters: {
-  createdAtFrom?: string;
-  createdAtTo?: string;
-  email?: string;
-  excludedRoles?: string[];
-  isBanned?: boolean;
-  lastLoginAtFrom?: string;
-  lastLoginAtTo?: string;
-  name?: string;
-  pageNumber?: number;
-  pageSize?: number;
-  phone?: string;
-  role?: string;
-  sortBy?: string;
-  sortDirection?: string;
-  status?: string;
-  updatedAtFrom?: string;
-  updatedAtTo?: string;
-  username?: string;
-};
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
+username?: string;
+email?: string;
+phone?: string;
+name?: string;
+status?: string;
+role?: string;
+excludedRoles?: string[];
+isBanned?: boolean;
+createdAtFrom?: string;
+createdAtTo?: string;
+updatedAtFrom?: string;
+updatedAtTo?: string;
+lastLoginAtFrom?: string;
+lastLoginAtTo?: string;
 };
 
 /**
@@ -7303,13 +6920,20 @@ sort?: string[];
 };
 
 export type GetApiBoardsBoardidPostsParams = {
-pageable: {
-  /** @minimum 0 */
-  page?: number;
-  /** @minimum 1 */
-  size?: number;
-  sort?: string[];
-};
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
 /**
  * 게시글 검색 시 사용할 수 있는 검색 구분값입니다.
  */
@@ -7358,36 +6982,60 @@ export type PutApiBoardsBoardidPostsPostidBody = {
 };
 
 export type GetApiBottlesParams = {
-filters: {
-  abvFrom?: number;
-  abvTo?: number;
-  bottledDateFrom?: string;
-  bottledDateTo?: string;
-  /** 브랜드명 목록 필터 */
-  brand?: string[];
-  /** 캐스크 타입 목록 필터 */
-  caskType?: string[];
-  /** 회사명 목록 필터 */
-  company?: string[];
-  distillationDateFrom?: string;
-  distillationDateTo?: string;
-  /** 증류소 목록 필터 */
-  distillery?: string[];
-  /** 통합검색어. 이름, 회사, 브랜드, 시리즈, 몰트 타입, 증류소, 캐스크 정보, 설명, 빈티지를 함께 검색합니다. */
-  keyword?: string;
-  /** 몰트 타입 목록 필터 */
-  maltType?: string[];
-  /** 병 이름 필터 */
-  name?: string;
-  pageNumber?: number;
-  pageSize?: number;
-  /** 시리즈명 목록 필터 */
-  series?: string[];
-  sortBy?: string;
-  sortDirection?: string;
-  vintageFrom?: number;
-  vintageTo?: number;
-};
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
+/**
+ * 병 이름 필터
+ */
+name?: string;
+/**
+ * 통합검색어. 이름, 회사, 브랜드, 시리즈, 몰트 타입, 증류소, 캐스크 정보, 설명, 빈티지를 함께 검색합니다.
+ */
+keyword?: string;
+/**
+ * 회사명 목록 필터
+ */
+company?: string[];
+/**
+ * 브랜드명 목록 필터
+ */
+brand?: string[];
+/**
+ * 시리즈명 목록 필터
+ */
+series?: string[];
+/**
+ * 몰트 타입 목록 필터
+ */
+maltType?: string[];
+/**
+ * 증류소 목록 필터
+ */
+distillery?: string[];
+/**
+ * 캐스크 타입 목록 필터
+ */
+caskType?: string[];
+bottledDateFrom?: string;
+bottledDateTo?: string;
+distillationDateFrom?: string;
+distillationDateTo?: string;
+vintageFrom?: number;
+vintageTo?: number;
+abvFrom?: number;
+abvTo?: number;
 };
 
 export type GetApiBottlesReservationsApplicationsMeParams = {
@@ -8709,7 +8357,7 @@ export type PutApiUsersMeNicknameBody = {
  * @summary 배너 목록 조회(관리자)
  */
 export type getApiAdminBannersResponse200 = {
-  data: PageAdminBannerResponse
+  data: PagedModelAdminBannerResponse
   status: 200
 }
     
@@ -8724,17 +8372,9 @@ export const getGetApiAdminBannersUrl = (params?: GetApiAdminBannersParams,) => 
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -8776,17 +8416,9 @@ export const getPostApiAdminBannersUrl = (params: PostApiAdminBannersParams,) =>
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -8871,17 +8503,9 @@ export const getPatchApiAdminBannersIdUrl = (id: number,
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -9033,7 +8657,7 @@ export const deleteApiAdminBoardsBoardidPostsPostid = async (boardId: number,
  * @summary 병 목록 조회(관리자)
  */
 export type getApiAdminBottlesResponse200 = {
-  data: PageBottleAdminResponse
+  data: PagedModelBottleAdminResponse
   status: 200
 }
     
@@ -9044,21 +8668,13 @@ export type getApiAdminBottlesResponseSuccess = (getApiAdminBottlesResponse200) 
 
 export type getApiAdminBottlesResponse = (getApiAdminBottlesResponseSuccess)
 
-export const getGetApiAdminBottlesUrl = (params: GetApiAdminBottlesParams,) => {
+export const getGetApiAdminBottlesUrl = (params?: GetApiAdminBottlesParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -9067,7 +8683,7 @@ export const getGetApiAdminBottlesUrl = (params: GetApiAdminBottlesParams,) => {
   return stringifiedParams.length > 0 ? `/api/admin/bottles?${stringifiedParams}` : `/api/admin/bottles`
 }
 
-export const getApiAdminBottles = async (params: GetApiAdminBottlesParams, options?: RequestInit): Promise<getApiAdminBottlesResponse> => {
+export const getApiAdminBottles = async (params?: GetApiAdminBottlesParams, options?: RequestInit): Promise<getApiAdminBottlesResponse> => {
   
   return customFetch<getApiAdminBottlesResponse>(getGetApiAdminBottlesUrl(params),
   {      
@@ -9197,7 +8813,7 @@ export const getApiAdminBottlesReferenceValues = async ( options?: RequestInit):
  * @summary 예약 신청 목록(관리자)
  */
 export type getApiAdminBottlesReservationsApplicationsResponse200 = {
-  data: PageAdminBottleReservationApplicationResponse
+  data: PagedModelAdminBottleReservationApplicationResponse
   status: 200
 }
     
@@ -9212,17 +8828,9 @@ export const getGetApiAdminBottlesReservationsApplicationsUrl = (params?: GetApi
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -9403,7 +9011,7 @@ export const postApiAdminBottlesReservationsApplicationsApplicationidReject = as
  * @summary 예약 공고 목록(관리자)
  */
 export type getApiAdminBottlesReservationsNoticesResponse200 = {
-  data: PageAdminBottleReservationNoticeResponse
+  data: PagedModelAdminBottleReservationNoticeResponse
   status: 200
 }
     
@@ -9418,17 +9026,9 @@ export const getGetApiAdminBottlesReservationsNoticesUrl = (params?: GetApiAdmin
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -9756,7 +9356,7 @@ export const patchApiAdminBottlesId = async (id: number,
  * @summary 비즈니스 신청 목록 조회(관리자)
  */
 export type getApiAdminBusinessesApplicationsResponse200 = {
-  data: PageAdminBusinessApplicationResponse
+  data: PagedModelAdminBusinessApplicationResponse
   status: 200
 }
     
@@ -9771,17 +9371,9 @@ export const getGetApiAdminBusinessesApplicationsUrl = (params?: GetApiAdminBusi
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -9958,7 +9550,7 @@ export const postApiAdminBusinessesApplicationsApplicationidReject = async (appl
  * @summary 비즈니스 회원 목록 조회(관리자)
  */
 export type getApiAdminBusinessesMembersResponse200 = {
-  data: PageAdminBusinessUserResponse
+  data: PagedModelAdminBusinessUserResponse
   status: 200
 }
     
@@ -9973,17 +9565,9 @@ export const getGetApiAdminBusinessesMembersUrl = (params?: GetApiAdminBusinesse
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -10163,7 +9747,7 @@ export const postApiAdminBusinessesMembersUseridRolesRoleRevoke = async (userId:
  * @summary 일반 상품 목록 조회(관리자)
  */
 export type getApiAdminItemsResponse200 = {
-  data: PageItemAdminResponse
+  data: PagedModelItemAdminResponse
   status: 200
 }
     
@@ -10178,17 +9762,9 @@ export const getGetApiAdminItemsUrl = (params?: GetApiAdminItemsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -10252,7 +9828,7 @@ export const postApiAdminItems = async (postApiAdminItemsBody: PostApiAdminItems
  * @summary 예약 신청 목록(관리자)
  */
 export type getApiAdminItemsReservationsApplicationsResponse200 = {
-  data: PageAdminItemReservationApplicationResponse
+  data: PagedModelAdminItemReservationApplicationResponse
   status: 200
 }
     
@@ -10267,17 +9843,9 @@ export const getGetApiAdminItemsReservationsApplicationsUrl = (params?: GetApiAd
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -10458,7 +10026,7 @@ export const postApiAdminItemsReservationsApplicationsApplicationidReject = asyn
  * @summary 예약 공고 목록(관리자)
  */
 export type getApiAdminItemsReservationsNoticesResponse200 = {
-  data: PageAdminItemReservationNoticeResponse
+  data: PagedModelAdminItemReservationNoticeResponse
   status: 200
 }
     
@@ -10473,17 +10041,9 @@ export const getGetApiAdminItemsReservationsNoticesUrl = (params?: GetApiAdminIt
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -10870,19 +10430,19 @@ export const postApiAdminKvStore = async (postApiAdminKvStoreBody: PostApiAdminK
 
 
 
-export type update1Response200 = {
+export type putApiAdminKvStoreResponse200 = {
   data: KvStoreResponse
   status: 200
 }
     
-export type update1ResponseSuccess = (update1Response200) & {
+export type putApiAdminKvStoreResponseSuccess = (putApiAdminKvStoreResponse200) & {
   headers: Headers;
 };
 ;
 
-export type update1Response = (update1ResponseSuccess)
+export type putApiAdminKvStoreResponse = (putApiAdminKvStoreResponseSuccess)
 
-export const getUpdate1Url = () => {
+export const getPutApiAdminKvStoreUrl = () => {
 
 
   
@@ -10890,15 +10450,15 @@ export const getUpdate1Url = () => {
   return `/api/admin/kv-stores`
 }
 
-export const update1 = async (update1Body: Update1Body, options?: RequestInit): Promise<update1Response> => {
+export const putApiAdminKvStore = async (putApiAdminKvStoreBody: PutApiAdminKvStoreBody, options?: RequestInit): Promise<putApiAdminKvStoreResponse> => {
   
-  return customFetch<update1Response>(getUpdate1Url(),
+  return customFetch<putApiAdminKvStoreResponse>(getPutApiAdminKvStoreUrl(),
   {      
     ...options,
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
-      update1Body,)
+      putApiAdminKvStoreBody,)
   }
 );}
 
@@ -10991,7 +10551,7 @@ export const getApiAdminNiceidStatus = async (requestNo: string, options?: Reque
  * @summary 관리자 주문 목록 조회
  */
 export type getApiAdminOrdersResponse200 = {
-  data: PageAdminOrderResponse
+  data: PagedModelAdminOrderResponse
   status: 200
 }
     
@@ -11006,17 +10566,9 @@ export const getGetApiAdminOrdersUrl = (params?: GetApiAdminOrdersParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -11063,17 +10615,9 @@ export const getGetApiAdminOrdersDeliveryExportUrl = (params?: GetApiAdminOrders
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -11123,17 +10667,9 @@ export const getPostApiAdminOrdersDeliveryImportUrl = (params?: PostApiAdminOrde
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -11183,17 +10719,9 @@ export const getPostApiAdminOrdersDeliveryImportResultCsvUrl = (params?: PostApi
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -11276,17 +10804,9 @@ export const getGetApiAdminOrdersUsersUseridUrl = (userId: number,
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -11794,7 +11314,7 @@ export const patchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusiness
  * @summary 판매 공고 목록 조회(관리자)
  */
 export type getApiAdminSalesResponse200 = {
-  data: PageAdminSaleAnnouncementResponse
+  data: PagedModelAdminSaleAnnouncementResponse
   status: 200
 }
     
@@ -11809,17 +11329,9 @@ export const getGetApiAdminSalesUrl = (params?: GetApiAdminSalesParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -12039,17 +11551,9 @@ export const getGetApiAdminTaxInvoicesBusinessesBusinessidTaxInvoiceMonthlyPdfUr
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -12092,17 +11596,9 @@ export const getGetApiAdminTaxInvoicesBusinessesBusinessidVatReportMonthlyPdfUrl
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -12130,7 +11626,7 @@ export const getApiAdminTaxInvoicesBusinessesBusinessidVatReportMonthlyPdf = asy
  * @summary 사용자 목록 조회(관리자)
  */
 export type getApiAdminUsersResponse200 = {
-  data: PageAdminUserResponse
+  data: PagedModelAdminUserResponse
   status: 200
 }
     
@@ -12141,21 +11637,13 @@ export type getApiAdminUsersResponseSuccess = (getApiAdminUsersResponse200) & {
 
 export type getApiAdminUsersResponse = (getApiAdminUsersResponseSuccess)
 
-export const getGetApiAdminUsersUrl = (params: GetApiAdminUsersParams,) => {
+export const getGetApiAdminUsersUrl = (params?: GetApiAdminUsersParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -12164,7 +11652,7 @@ export const getGetApiAdminUsersUrl = (params: GetApiAdminUsersParams,) => {
   return stringifiedParams.length > 0 ? `/api/admin/users?${stringifiedParams}` : `/api/admin/users`
 }
 
-export const getApiAdminUsers = async (params: GetApiAdminUsersParams, options?: RequestInit): Promise<getApiAdminUsersResponse> => {
+export const getApiAdminUsers = async (params?: GetApiAdminUsersParams, options?: RequestInit): Promise<getApiAdminUsersResponse> => {
   
   return customFetch<getApiAdminUsersResponse>(getGetApiAdminUsersUrl(params),
   {      
@@ -13073,17 +12561,9 @@ export const getGetApiAuthOauthProviderCallbackUrl = (provider: string,
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -13299,7 +12779,7 @@ export const postApiAuthSignup = async (postApiAuthSignupBody: PostApiAuthSignup
  * @summary 배너 목록 조회
  */
 export type getApiBannersResponse200 = {
-  data: PageUserBannerResponse
+  data: PagedModelUserBannerResponse
   status: 200
 }
     
@@ -13314,17 +12794,9 @@ export const getGetApiBannersUrl = (params?: GetApiBannersParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -13388,7 +12860,7 @@ export const getApiBannersId = async (id: number, options?: RequestInit): Promis
  * @summary 게시판 목록 조회
  */
 export type getApiBoardsResponse200 = {
-  data: PageUserBoardResponse
+  data: PagedModelUserBoardResponse
   status: 200
 }
     
@@ -13403,17 +12875,9 @@ export const getGetApiBoardsUrl = (params?: GetApiBoardsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -13440,7 +12904,7 @@ export const getApiBoards = async (params?: GetApiBoardsParams, options?: Reques
  * @summary 게시판별 공지 조회
  */
 export type getApiBoardsAnnouncementsBoardBoardidResponse200 = {
-  data: PageUserAnnouncementResponse
+  data: PagedModelUserAnnouncementResponse
   status: 200
 }
     
@@ -13456,17 +12920,9 @@ export const getGetApiBoardsAnnouncementsBoardBoardidUrl = (boardId: number,
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -13494,7 +12950,7 @@ export const getApiBoardsAnnouncementsBoardBoardid = async (boardId: number,
  * @summary 전체 공지 조회
  */
 export type getApiBoardsAnnouncementsGlobalResponse200 = {
-  data: PageUserAnnouncementResponse
+  data: PagedModelUserAnnouncementResponse
   status: 200
 }
     
@@ -13509,17 +12965,9 @@ export const getGetApiBoardsAnnouncementsGlobalUrl = (params?: GetApiBoardsAnnou
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -13546,7 +12994,7 @@ export const getApiBoardsAnnouncementsGlobal = async (params?: GetApiBoardsAnnou
  * @summary 게시판 공지 조회
  */
 export type getApiBoardsBoardidAnnouncementsResponse200 = {
-  data: PageUserAnnouncementResponse
+  data: PagedModelUserAnnouncementResponse
   status: 200
 }
     
@@ -13562,17 +13010,9 @@ export const getGetApiBoardsBoardidAnnouncementsUrl = (boardId: number,
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -13600,7 +13040,7 @@ export const getApiBoardsBoardidAnnouncements = async (boardId: number,
  * @summary 게시글 목록 조회
  */
 export type getApiBoardsBoardidPostsResponse200 = {
-  data: PagePostResponse
+  data: PagedModelPostResponse
   status: 200
 }
     
@@ -13612,21 +13052,13 @@ export type getApiBoardsBoardidPostsResponseSuccess = (getApiBoardsBoardidPostsR
 export type getApiBoardsBoardidPostsResponse = (getApiBoardsBoardidPostsResponseSuccess)
 
 export const getGetApiBoardsBoardidPostsUrl = (boardId: number,
-    params: GetApiBoardsBoardidPostsParams,) => {
+    params?: GetApiBoardsBoardidPostsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -13636,7 +13068,7 @@ export const getGetApiBoardsBoardidPostsUrl = (boardId: number,
 }
 
 export const getApiBoardsBoardidPosts = async (boardId: number,
-    params: GetApiBoardsBoardidPostsParams, options?: RequestInit): Promise<getApiBoardsBoardidPostsResponse> => {
+    params?: GetApiBoardsBoardidPostsParams, options?: RequestInit): Promise<getApiBoardsBoardidPostsResponse> => {
   
   return customFetch<getApiBoardsBoardidPostsResponse>(getGetApiBoardsBoardidPostsUrl(boardId,params),
   {      
@@ -13773,7 +13205,7 @@ export const putApiBoardsBoardidPostsPostid = async (boardId: number,
  * @summary 보틀 목록 조회
  */
 export type getApiBottlesResponse200 = {
-  data: PageBottleResponse
+  data: PagedModelBottleResponse
   status: 200
 }
     
@@ -13784,21 +13216,13 @@ export type getApiBottlesResponseSuccess = (getApiBottlesResponse200) & {
 
 export type getApiBottlesResponse = (getApiBottlesResponseSuccess)
 
-export const getGetApiBottlesUrl = (params: GetApiBottlesParams,) => {
+export const getGetApiBottlesUrl = (params?: GetApiBottlesParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -13807,7 +13231,7 @@ export const getGetApiBottlesUrl = (params: GetApiBottlesParams,) => {
   return stringifiedParams.length > 0 ? `/api/bottles?${stringifiedParams}` : `/api/bottles`
 }
 
-export const getApiBottles = async (params: GetApiBottlesParams, options?: RequestInit): Promise<getApiBottlesResponse> => {
+export const getApiBottles = async (params?: GetApiBottlesParams, options?: RequestInit): Promise<getApiBottlesResponse> => {
   
   return customFetch<getApiBottlesResponse>(getGetApiBottlesUrl(params),
   {      
@@ -13862,7 +13286,7 @@ export const getApiBottlesParameters = async ( options?: RequestInit): Promise<g
  * @summary 내 예약 신청 목록
  */
 export type getApiBottlesReservationsApplicationsMeResponse200 = {
-  data: PageUserBottleReservationApplicationPublicResponse
+  data: PagedModelUserBottleReservationApplicationPublicResponse
   status: 200
 }
     
@@ -13877,17 +13301,9 @@ export const getGetApiBottlesReservationsApplicationsMeUrl = (params?: GetApiBot
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -13990,7 +13406,7 @@ export const putApiBottlesReservationsApplicationsApplicationid = async (applica
  * @summary 예약 공고 목록
  */
 export type getApiBottlesReservationsNoticesResponse200 = {
-  data: PageUserBottleReservationNoticePublicResponse
+  data: PagedModelUserBottleReservationNoticePublicResponse
   status: 200
 }
     
@@ -14005,17 +13421,9 @@ export const getGetApiBottlesReservationsNoticesUrl = (params?: GetApiBottlesRes
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -14429,7 +13837,7 @@ export const quote = async ( options?: RequestInit): Promise<quoteResponse> => {
  * @summary 모금 캠페인 목록 조회
  */
 export type getApiFundraisingCampaignsResponse200 = {
-  data: PageFundraisingCampaignResponse
+  data: PagedModelFundraisingCampaignResponse
   status: 200
 }
     
@@ -14444,17 +13852,9 @@ export const getGetApiFundraisingCampaignsUrl = (params?: GetApiFundraisingCampa
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -14480,7 +13880,7 @@ export const getApiFundraisingCampaigns = async (params?: GetApiFundraisingCampa
  * @summary 기부 링크 목록 조회
  */
 export type getApiDonationLinksResponse200 = {
-  data: PageDonationLinkResponse
+  data: PagedModelDonationLinkResponse
   status: 200
 }
     
@@ -14496,17 +13896,9 @@ export const getGetApiDonationLinksUrl = (campaignId: number,
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -14571,7 +13963,7 @@ export const getApiDonationLinksId = async (campaignId: number,
  * @summary 기부 신청 목록 조회
  */
 export type getApiDonationsResponse200 = {
-  data: PageDonationResponse
+  data: PagedModelDonationResponse
   status: 200
 }
     
@@ -14587,17 +13979,9 @@ export const getGetApiDonationsUrl = (campaignId: number,
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -14807,7 +14191,7 @@ export const getApiHealth = async ( options?: RequestInit): Promise<getApiHealth
  * @summary 일반 상품 목록 조회
  */
 export type getApiItemsResponse200 = {
-  data: PageItemResponse
+  data: PagedModelItemResponse
   status: 200
 }
     
@@ -14822,17 +14206,9 @@ export const getGetApiItemsUrl = (params?: GetApiItemsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -14859,7 +14235,7 @@ export const getApiItems = async (params?: GetApiItemsParams, options?: RequestI
  * @summary 내 예약 신청 목록
  */
 export type getApiItemsReservationsApplicationsMeResponse200 = {
-  data: PageUserItemReservationApplicationPublicResponse
+  data: PagedModelUserItemReservationApplicationPublicResponse
   status: 200
 }
     
@@ -14874,17 +14250,9 @@ export const getGetApiItemsReservationsApplicationsMeUrl = (params?: GetApiItems
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -14987,7 +14355,7 @@ export const putApiItemsReservationsApplicationsApplicationid = async (applicati
  * @summary 예약 공고 목록
  */
 export type getApiItemsReservationsNoticesResponse200 = {
-  data: PageUserItemReservationNoticePublicResponse
+  data: PagedModelUserItemReservationNoticePublicResponse
   status: 200
 }
     
@@ -15002,17 +14370,9 @@ export const getGetApiItemsReservationsNoticesUrl = (params?: GetApiItemsReserva
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -15257,7 +14617,7 @@ export const getApiKvStore = async (key: string, options?: RequestInit): Promise
  * @summary 주문 목록 조회
  */
 export type getApiOrdersResponse200 = {
-  data: PageUserOrderResponse
+  data: PagedModelUserOrderResponse
   status: 200
 }
     
@@ -15272,17 +14632,9 @@ export const getGetApiOrdersUrl = (params?: GetApiOrdersParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -15508,17 +14860,9 @@ export const getGetApiOrdersGuestUrl = (params: GetApiOrdersGuestParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -15598,17 +14942,9 @@ export const getGetApiOrdersGuestOrdernumberDeliveryUrl = (orderNumber: string,
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -15724,17 +15060,9 @@ export const getGetApiOrdersQueueStatusUrl = (params: GetApiOrdersQueueStatusPar
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -16150,17 +15478,9 @@ export const getGetApiS3PresignedUrl = (params: GetApiS3PresignedParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -16226,7 +15546,7 @@ formData.append(`file`, postApiS3UploadBody.file);
  * @summary 판매 공고 목록 조회
  */
 export type getApiSalesResponse200 = {
-  data: PageUserSaleAnnouncementResponse
+  data: PagedModelUserSaleAnnouncementResponse
   status: 200
 }
     
@@ -16241,17 +15561,9 @@ export const getGetApiSalesUrl = (params?: GetApiSalesParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -16328,17 +15640,9 @@ export const getGetApiTaxInvoicesTaxInvoiceMonthlyPdfUrl = (params: GetApiTaxInv
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -16379,17 +15683,9 @@ export const getGetApiTaxInvoicesVatReportMonthlyPdfUrl = (params: GetApiTaxInvo
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -16468,17 +15764,9 @@ export const getGetApiUserNiceidCallbackUrl = (params: GetApiUserNiceidCallbackP
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -16516,17 +15804,9 @@ export const getCallbackPostUrl = (params: CallbackPostParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -16606,17 +15886,9 @@ export const getGetApiUserNiceidSessionUrl = (params?: GetApiUserNiceidSessionPa
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -16696,17 +15968,9 @@ export const getPostApiUsersBusinessesApplicationsUrl = (params: PostApiUsersBus
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -16774,7 +16038,7 @@ export const getApiUsersBusinessesApplicationsMe = async ( options?: RequestInit
  * @summary 내 비즈니스 신청 이력 조회
  */
 export type getApiUsersBusinessesApplicationsMeHistoryResponse200 = {
-  data: PageUserBusinessApplicationResponse
+  data: PagedModelUserBusinessApplicationResponse
   status: 200
 }
     
@@ -16789,17 +16053,9 @@ export const getGetApiUsersBusinessesApplicationsMeHistoryUrl = (params?: GetApi
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -16865,7 +16121,7 @@ export const postApiUsersBusinessesApplicationsApplicationidCancel = async (appl
  * @summary 픽업 사업장 예약 목록 조회
  */
 export type getApiUsersBusinessesItemsReservationsApplicationsResponse200 = {
-  data: PageUserItemReservationPickupApplicationResponse
+  data: PagedModelUserItemReservationPickupApplicationResponse
   status: 200
 }
     
@@ -16880,17 +16136,9 @@ export const getGetApiUsersBusinessesItemsReservationsApplicationsUrl = (params?
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -17103,7 +16351,7 @@ export const postApiUsersBusinessesItemsReservationsApplicationsApplicationidWai
  * @summary 픽업 가능 사업장 목록
  */
 export type getApiUsersBusinessesPickupLocationsResponse200 = {
-  data: PagePickupLocationResponse
+  data: PagedModelPickupLocationResponse
   status: 200
 }
     
@@ -17118,17 +16366,9 @@ export const getGetApiUsersBusinessesPickupLocationsUrl = (params?: GetApiUsersB
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -17155,7 +16395,7 @@ export const getApiUsersBusinessesPickupLocations = async (params?: GetApiUsersB
  * @summary 픽업 사업장 예약 목록 조회
  */
 export type getApiUsersBusinessesPickupReservationsApplicationsResponse200 = {
-  data: PageUserBottleReservationPickupApplicationResponse
+  data: PagedModelUserBottleReservationPickupApplicationResponse
   status: 200
 }
     
@@ -17170,17 +16410,9 @@ export const getGetApiUsersBusinessesPickupReservationsApplicationsUrl = (params
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -17393,7 +16625,7 @@ export const postApiUsersBusinessesPickupReservationsApplicationsApplicationidWa
  * @summary 픽업 업장 예약 공고별 신청 현황 목록 조회
  */
 export type getApiUsersBusinessesPickupReservationsNoticesStatusesResponse200 = {
-  data: PageUserBottleReservationPickupNoticeReservationStatusResponse
+  data: PagedModelUserBottleReservationPickupNoticeReservationStatusResponse
   status: 200
 }
     
@@ -17408,17 +16640,9 @@ export const getGetApiUsersBusinessesPickupReservationsNoticesStatusesUrl = (par
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -17460,17 +16684,9 @@ export const getGetApiUsersBusinessesReservationDeliveriesUrl = (params?: GetApi
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    if (value === undefined) return;
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.entries(value).forEach(([k, v]) => {
-        if (v === undefined) return;
-        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
-        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
-      });
-    } else if (Array.isArray(value)) {
-      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
-    } else {
-      normalizedParams.append(key, value === null ? 'null' : String(value));
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
@@ -18007,25 +17223,3 @@ export const deleteApiUsersMeSocialLinksProvider = async (provider: string, opti
     
   }
 );}
-
-export const updateKvStore = update1;
-
-
-export type BannerResponse = UserBannerResponse;
-export type BottleReservationApplicationPublicResponse = UserBottleReservationApplicationPublicResponse;
-export type BottleReservationApplicationResponse = AdminBottleReservationApplicationResponse;
-export type BottleReservationNoticePublicResponse = UserBottleReservationNoticePublicResponse;
-export type BottleReservationNoticeResponse = AdminBottleReservationNoticeResponse;
-export type BottleReservationPickupApplicationResponse = UserBottleReservationPickupApplicationResponse;
-export type BottleReservationPickupNoticeReservationStatusResponse = UserBottleReservationPickupNoticeReservationStatusResponse;
-export type DeliveryAddressResponse = UserDeliveryAddressResponse;
-export type GeneralItemDeliveryOrderResponse = UserGeneralItemDeliveryOrderResponse;
-export type OrderDeliveryResponse = UserOrderDeliveryResponse;
-export type OrderResponse = AdminOrderResponse | UserOrderResponse;
-export type OrderResponseOrderStatus = UserOrderResponseOrderStatus;
-export const OrderResponseOrderStatus = UserOrderResponseOrderStatus;
-export type OrderTicketResponse = UserOrderTicketResponse;
-export type PageOrderResponse = PageUserOrderResponse;
-export type PageSaleAnnouncementResponse = PageUserSaleAnnouncementResponse;
-export type ReservationBusinessDeliveryResponse = AdminReservationBusinessDeliveryResponse | UserReservationBusinessDeliveryResponse;
-export type SaleAnnouncementResponse = UserSaleAnnouncementResponse;
