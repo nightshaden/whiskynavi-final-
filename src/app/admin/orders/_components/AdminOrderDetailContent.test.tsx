@@ -1,4 +1,4 @@
-import type { OrderResponse } from "@/apis/generated/api";
+import type { AdminOrderResponse as OrderResponse } from "@/apis/generated/api";
 import { render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import AdminOrderDetailContent from "./AdminOrderDetailContent";

@@ -1,6 +1,6 @@
 "use client";
 
-import type { BannerResponse } from "@/apis/generated/api";
+import type { AdminBannerResponse } from "@/apis/generated/api";
 import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 import { ArrowLeft, Edit2, ExternalLink } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -8,7 +8,7 @@ import AdminHeader from "../../../_components/AdminHeader";
 import { useSidebar } from "../../../_components/AdminLayoutClient";
 
 interface BannerDetailContentProps {
-  banner: BannerResponse;
+  banner: AdminBannerResponse;
 }
 
 export default function BannerDetailContent({ banner }: BannerDetailContentProps) {

@@ -1,4 +1,4 @@
-import { type BannerResponse, getApiBannersId } from "@/apis/generated/api";
+import { type AdminBannerResponse, getApiAdminBannersId } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
 import { notFound } from "next/navigation";
@@ -12,9 +12,9 @@ export default async function BannerEditPage({ params }: BannerEditPageProps) {
   const { bannerId } = await params;
   const token = await getAuthToken();
 
-  let banner: BannerResponse | undefined;
+  let banner: AdminBannerResponse | undefined;
   try {
-    const res = await getApiBannersId(Number(bannerId), withToken(token));
+    const res = await getApiAdminBannersId(Number(bannerId), withToken(token));
     banner = res.data;
   } catch {
     notFound();

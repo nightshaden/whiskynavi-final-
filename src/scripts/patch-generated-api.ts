@@ -66,6 +66,36 @@ if (!apiSource.includes("export const updateKvStore = update1")) {
   console.log("patch api.ts: KV store update 별칭 이미 적용됨");
 }
 
+// ─── 1-c. 백엔드 DTO 스코프 분리 전 이름 호환 패치 ───
+
+const LEGACY_TYPE_ALIASES = `
+export type BannerResponse = UserBannerResponse;
+export type BottleReservationApplicationPublicResponse = UserBottleReservationApplicationPublicResponse;
+export type BottleReservationApplicationResponse = AdminBottleReservationApplicationResponse;
+export type BottleReservationNoticePublicResponse = UserBottleReservationNoticePublicResponse;
+export type BottleReservationNoticeResponse = AdminBottleReservationNoticeResponse;
+export type BottleReservationPickupApplicationResponse = UserBottleReservationPickupApplicationResponse;
+export type BottleReservationPickupNoticeReservationStatusResponse = UserBottleReservationPickupNoticeReservationStatusResponse;
+export type DeliveryAddressResponse = UserDeliveryAddressResponse;
+export type GeneralItemDeliveryOrderResponse = UserGeneralItemDeliveryOrderResponse;
+export type OrderDeliveryResponse = UserOrderDeliveryResponse;
+export type OrderResponse = AdminOrderResponse | UserOrderResponse;
+export type OrderResponseOrderStatus = UserOrderResponseOrderStatus;
+export const OrderResponseOrderStatus = UserOrderResponseOrderStatus;
+export type OrderTicketResponse = UserOrderTicketResponse;
+export type PageOrderResponse = PageUserOrderResponse;
+export type PageSaleAnnouncementResponse = PageUserSaleAnnouncementResponse;
+export type ReservationBusinessDeliveryResponse = AdminReservationBusinessDeliveryResponse | UserReservationBusinessDeliveryResponse;
+export type SaleAnnouncementResponse = UserSaleAnnouncementResponse;
+`;
+
+if (!apiSource.includes("export type BannerResponse = UserBannerResponse")) {
+  apiSource = `${apiSource}\n${LEGACY_TYPE_ALIASES}`;
+  console.log("patch api.ts: 레거시 DTO 이름 호환 별칭 패치 완료");
+} else {
+  console.log("patch api.ts: 레거시 DTO 이름 호환 별칭 이미 적용됨");
+}
+
 writeFileSync(API_FILE, apiSource, "utf-8");
 
 // ─── 2. mutator.ts 403 인증 에러 핸들링 패치 ───

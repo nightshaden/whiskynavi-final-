@@ -1,6 +1,6 @@
 "use client";
 
-import type { BannerResponse } from "@/apis/generated/api";
+import type { AdminBannerResponse } from "@/apis/generated/api";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, Save, X } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -11,7 +11,7 @@ import ImageUploadArea from "../../../_components/ImageUploadArea";
 import { updateBannerFormAction } from "../../../actions";
 
 interface BannerEditContentProps {
-  banner: BannerResponse;
+  banner: AdminBannerResponse;
 }
 
 export default function BannerEditContent({ banner }: BannerEditContentProps) {

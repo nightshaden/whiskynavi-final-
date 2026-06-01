@@ -1,4 +1,6 @@
-import { getApiSales } from "@/apis/generated/api";
+import { getApiAdminSales } from "@/apis/generated/api";
+import { withToken } from "@/apis/mutator";
+import { getAuthToken } from "@/lib/auth";
 import GeneralItemSalesContent from "./_components/GeneralItemSalesContent";
 import { fetchGeneralItemSalesPage } from "./_lib/general-item-sales";
 
@@ -18,11 +20,12 @@ interface GeneralItemSalesPageProps {
 
 export default async function GeneralItemSalesPage({ searchParams }: GeneralItemSalesPageProps) {
   const params = await searchParams;
+  const token = await getAuthToken();
   const currentPage = params.page ? Number(params.page) : 1;
   const itemsPerPage = params.limit ? Number(params.limit) : 50;
 
   const result = await fetchGeneralItemSalesPage({
-    fetchSales: getApiSales,
+    fetchSales: (query) => getApiAdminSales(query, withToken(token)),
     page: currentPage,
     size: itemsPerPage,
     saleStatus: toSaleStatus(params.saleStatus),

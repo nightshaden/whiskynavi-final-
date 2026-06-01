@@ -1,16 +1,20 @@
-import type { GetApiSalesParams, PageSaleAnnouncementResponse, SaleAnnouncementResponse } from "@/apis/generated/api";
+import type {
+  AdminSaleAnnouncementResponse,
+  GetApiAdminSalesParams,
+  PageAdminSaleAnnouncementResponse,
+} from "@/apis/generated/api";
 
-type FetchSalesPage = (params: GetApiSalesParams) => Promise<{ data: PageSaleAnnouncementResponse }>;
+type FetchSalesPage = (params: GetApiAdminSalesParams) => Promise<{ data: PageAdminSaleAnnouncementResponse }>;
 
 interface FetchGeneralItemSalesPageOptions {
   fetchSales: FetchSalesPage;
   page: number;
   size: number;
-  saleStatus?: GetApiSalesParams["saleStatus"];
+  saleStatus?: GetApiAdminSalesParams["saleStatus"];
   sourcePageSize?: number;
 }
 
-export function isGeneralItemSale(sale: SaleAnnouncementResponse) {
+export function isGeneralItemSale(sale: AdminSaleAnnouncementResponse) {
   return sale.productType === "ITEM" && sale.saleType === "GENERAL";
 }
 
@@ -23,7 +27,7 @@ export async function fetchGeneralItemSalesPage({
 }: FetchGeneralItemSalesPageOptions) {
   const currentPage = Number.isFinite(page) && page > 0 ? page : 1;
   const pageSize = Number.isFinite(size) && size > 0 ? size : 50;
-  const sales: SaleAnnouncementResponse[] = [];
+  const sales: AdminSaleAnnouncementResponse[] = [];
   let sourcePage = 0;
   let totalPages = 1;
 

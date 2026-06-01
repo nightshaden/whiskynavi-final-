@@ -1,6 +1,6 @@
 "use client";
 
-import type { AdminUserResponse, OrderResponse } from "@/apis/generated/api";
+import type { AdminUserResponse, AdminOrderResponse as OrderResponse } from "@/apis/generated/api";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Search } from "lucide-react";

@@ -6,6 +6,218 @@
  * OpenAPI spec version: 1.0.0
  */
 import { customFetch } from '../mutator';
+/**
+ * 공지 범위(전체/게시판)를 나타냅니다.
+ */
+export type AdminAnnouncementResponseScope = typeof AdminAnnouncementResponseScope[keyof typeof AdminAnnouncementResponseScope];
+
+
+export const AdminAnnouncementResponseScope = {
+  GLOBAL: 'GLOBAL',
+  BOARD: 'BOARD',
+} as const;
+
+/**
+ * 공지사항 정보를 담은 응답 DTO입니다.
+ */
+export interface AdminAnnouncementResponse {
+  /** 게시판 공지일 때 대상 게시판 ID입니다. */
+  boardId?: number;
+  /** 공지 본문 내용입니다. */
+  content?: string;
+  /** 공지 생성 일시입니다. */
+  createdAt?: string;
+  /** 공지사항 식별자입니다. */
+  id?: number;
+  /** 공지 범위(전체/게시판)를 나타냅니다. */
+  scope?: AdminAnnouncementResponseScope;
+  /** 사용자에게 표시되는 제목입니다. */
+  title?: string;
+}
+
+/**
+ * 배너 조회 응답입니다.
+ */
+export interface AdminBannerResponse {
+  /** 배경 이미지의 CloudFront URL입니다. */
+  backgroundUrl?: string;
+  /** 배너 설명입니다. */
+  description?: string;
+  /** 배너 고유 ID입니다. */
+  id?: number;
+  /** 배너 클릭 시 이동할 링크입니다. */
+  link?: string;
+  /** 메인 이미지의 CloudFront URL입니다. */
+  mainUrl?: string;
+  /** 배너 제목입니다. */
+  title?: string;
+}
+
+/**
+ * 게시판 정의 정보를 담는 응답 DTO입니다.
+ */
+export interface AdminBoardResponse {
+  /** 게시판 생성 일시입니다. */
+  createdAt?: string;
+  /** 게시판에 표시할 설명입니다. */
+  description?: string;
+  /** 게시판 식별자입니다. */
+  id?: number;
+  /** 사용자에게 노출되는 게시판명입니다. */
+  name?: string;
+  /** 라우팅에 사용하는 고유 슬러그입니다. */
+  slug?: string;
+}
+
+export interface AdminBottleReservationApplicantResponse {
+  email?: string;
+  name?: string;
+  phone?: string;
+  roles?: string[];
+  userId?: number;
+  username?: string;
+}
+
+export type AdminBottleReservationApplicationResponseStatus = typeof AdminBottleReservationApplicationResponseStatus[keyof typeof AdminBottleReservationApplicationResponseStatus];
+
+
+export const AdminBottleReservationApplicationResponseStatus = {
+  APPLIED: 'APPLIED',
+  CANCELLED: 'CANCELLED',
+  CONFIRMED: 'CONFIRMED',
+  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
+  WAITING_PICKUP: 'WAITING_PICKUP',
+  RECEIVED: 'RECEIVED',
+  REJECTED: 'REJECTED',
+} as const;
+
+export interface AdminBottleReservationPickupBusinessResponse {
+  businessId?: number;
+  businessName?: string;
+  contact?: string;
+  pickupAddress?: string;
+  user?: AdminBottleReservationApplicantResponse;
+}
+
+export interface AdminBottleReservationApplicationResponse {
+  applicantUser?: AdminBottleReservationApplicantResponse;
+  bottleId?: number;
+  bottleImgUrl?: string;
+  bottleName?: string;
+  cancelReason?: string;
+  confirmedQuantity?: number;
+  createdAt?: string;
+  id?: number;
+  noticeId?: number;
+  pickupBusiness?: AdminBottleReservationPickupBusinessResponse;
+  pickupUserBusinessId?: number;
+  quantity?: number;
+  refundReason?: string;
+  status?: AdminBottleReservationApplicationResponseStatus;
+  totalPrice?: number;
+  unitPrice?: number;
+  updatedAt?: string;
+}
+
+export interface AdminBottleReservationAutoConfirmResponse {
+  applications?: AdminBottleReservationApplicationResponse[];
+  availableQuantityAfterConfirm?: number;
+  availableQuantityBeforeConfirm?: number;
+  confirmedApplicationCount?: number;
+  noticeId?: number;
+  rejectedApplicationCount?: number;
+  targetApplicationCount?: number;
+  totalConfirmedQuantity?: number;
+  totalRequestedQuantity?: number;
+}
+
+export type AdminBottleReservationGradeConditionResponseRequiredRole = typeof AdminBottleReservationGradeConditionResponseRequiredRole[keyof typeof AdminBottleReservationGradeConditionResponseRequiredRole];
+
+
+export const AdminBottleReservationGradeConditionResponseRequiredRole = {
+  ROLE_GUEST: 'ROLE_GUEST',
+  ROLE_USER: 'ROLE_USER',
+  ROLE_ADMIN: 'ROLE_ADMIN',
+  ROLE_SUPER_ADMIN: 'ROLE_SUPER_ADMIN',
+  ROLE_CONSUMER: 'ROLE_CONSUMER',
+  ROLE_WHISKYNAVI_MEMBER: 'ROLE_WHISKYNAVI_MEMBER',
+  ROLE_WHISKYTALES_MEMBER: 'ROLE_WHISKYTALES_MEMBER',
+  ROLE_BLIND_MEMBER: 'ROLE_BLIND_MEMBER',
+  ROLE_BUSINESS: 'ROLE_BUSINESS',
+  ROLE_TRAILNTALE_BUSINESS: 'ROLE_TRAILNTALE_BUSINESS',
+  ROLE_COMMUNITY_BUSINESS: 'ROLE_COMMUNITY_BUSINESS',
+  ROLE_PICK_UP_BUSINESS: 'ROLE_PICK_UP_BUSINESS',
+} as const;
+
+export interface AdminBottleReservationGradeConditionResponse {
+  applicableFrom?: string;
+  requiredRole?: AdminBottleReservationGradeConditionResponseRequiredRole;
+}
+
+export interface AdminBottleReservationNoticeResponse {
+  appliedQuantity?: number;
+  approvedQuantity?: number;
+  availableQuantity?: number;
+  bottleBrand?: string;
+  bottleId?: number;
+  bottleImgUrl?: string;
+  bottleName?: string;
+  createdAt?: string;
+  gradeConditions?: AdminBottleReservationGradeConditionResponse[];
+  id?: number;
+  maxOrderQuantity?: number;
+  pendingApplicationCount?: number;
+  price?: number;
+  reservationEndAt?: string;
+  reservationStartAt?: string;
+  updatedAt?: string;
+}
+
+/**
+ * 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값
+ */
+export type AdminBottleSearchRequestReservationStatus = typeof AdminBottleSearchRequestReservationStatus[keyof typeof AdminBottleSearchRequestReservationStatus];
+
+
+export const AdminBottleSearchRequestReservationStatus = {
+  NO_RESERVATION: 'NO_RESERVATION',
+  RESERVATION_ONGOING: 'RESERVATION_ONGOING',
+  RESERVATION_COMPLETED: 'RESERVATION_COMPLETED',
+} as const;
+
+export interface AdminBottleSearchRequest {
+  abvFrom?: number;
+  abvTo?: number;
+  bottledDateFrom?: string;
+  bottledDateTo?: string;
+  /** 브랜드명 목록 필터 */
+  brand?: string[];
+  /** 캐스크 타입 목록 필터 */
+  caskType?: string[];
+  /** 회사명 목록 필터 */
+  company?: string[];
+  distillationDateFrom?: string;
+  distillationDateTo?: string;
+  /** 증류소 목록 필터 */
+  distillery?: string[];
+  /** 통합검색어. 이름, 회사, 브랜드, 시리즈, 몰트 타입, 증류소, 캐스크 정보, 설명, 빈티지를 함께 검색합니다. */
+  keyword?: string;
+  /** 몰트 타입 목록 필터 */
+  maltType?: string[];
+  /** 병 이름 필터 */
+  name?: string;
+  pageNumber?: number;
+  pageSize?: number;
+  /** 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값 */
+  reservationStatus?: AdminBottleSearchRequestReservationStatus;
+  /** 시리즈명 목록 필터 */
+  series?: string[];
+  sortBy?: string;
+  sortDirection?: string;
+  vintageFrom?: number;
+  vintageTo?: number;
+}
+
 export type AdminBusinessApplicationAuditLogResponseAfterStatus = typeof AdminBusinessApplicationAuditLogResponseAfterStatus[keyof typeof AdminBusinessApplicationAuditLogResponseAfterStatus];
 
 
@@ -248,6 +460,73 @@ export interface AdminBusinessUserResponse {
 }
 
 /**
+ * 배송지 주소록 저장 요청
+ */
+export interface AdminDeliveryAddressRequest {
+  /**
+   * 기본 주소
+   * @minLength 0
+   * @maxLength 500
+   */
+  address?: string;
+  /**
+   * 상세 주소
+   * @minLength 0
+   * @maxLength 500
+   */
+  addressDetail?: string;
+  /**
+   * 배송지 이름
+   * @minLength 0
+   * @maxLength 100
+   */
+  addressName?: string;
+  /** 기본 배송지 여부 */
+  defaultAddress?: boolean;
+  /**
+   * 배송 요청 메모
+   * @minLength 0
+   * @maxLength 500
+   */
+  deliveryMemo?: string;
+  /**
+   * 우편번호
+   * @minLength 0
+   * @maxLength 20
+   */
+  postalCode?: string;
+  /**
+   * 수령인 이름
+   * @minLength 0
+   * @maxLength 100
+   */
+  receiverName?: string;
+  /**
+   * 수령인 연락처
+   * @minLength 0
+   * @maxLength 20
+   */
+  receiverPhone?: string;
+}
+
+/**
+ * 배송지 주소록 응답
+ */
+export interface AdminDeliveryAddressResponse {
+  address?: string;
+  addressDetail?: string;
+  addressName?: string;
+  createdAt?: string;
+  defaultAddress?: boolean;
+  deliveryMemo?: string;
+  id?: number;
+  postalCode?: string;
+  receiverName?: string;
+  receiverPhone?: string;
+  updatedAt?: string;
+}
+
+/**
  * 처리 후 주문 상태
  */
 export type AdminDeliveryCsvRowResultOrderStatus = typeof AdminDeliveryCsvRowResultOrderStatus[keyof typeof AdminDeliveryCsvRowResultOrderStatus];
@@ -299,25 +578,117 @@ export interface AdminDeliveryCsvUploadResponse {
   totalRows?: number;
 }
 
-/**
- * 관리자가 회원 밴 정보를 입력하기 위한 요청입니다.
- */
-export interface AdminUserBanRequest {
-  /** 밴 종료 시각 */
-  endAt?: string;
-  /**
-   * 밴 사유
-   * @minLength 1
-   */
-  reason?: string;
-  /** 밴 시작 시각 */
-  startAt?: string;
+export interface AdminItemReservationApplicantResponse {
+  email?: string;
+  name?: string;
+  phone?: string;
+  roles?: string[];
+  userId?: number;
+  username?: string;
+}
+
+export type AdminItemReservationApplicationResponseStatus = typeof AdminItemReservationApplicationResponseStatus[keyof typeof AdminItemReservationApplicationResponseStatus];
+
+
+export const AdminItemReservationApplicationResponseStatus = {
+  APPLIED: 'APPLIED',
+  CANCELLED: 'CANCELLED',
+  CONFIRMED: 'CONFIRMED',
+  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
+  SHIPPING: 'SHIPPING',
+  DELIVERED: 'DELIVERED',
+  WAITING_PICKUP: 'WAITING_PICKUP',
+  RECEIVED: 'RECEIVED',
+  REJECTED: 'REJECTED',
+} as const;
+
+export interface AdminItemReservationPickupBusinessResponse {
+  businessId?: number;
+  businessName?: string;
+  contact?: string;
+  pickupAddress?: string;
+  user?: AdminItemReservationApplicantResponse;
+}
+
+export interface AdminItemReservationApplicationResponse {
+  applicantUser?: AdminItemReservationApplicantResponse;
+  cancelReason?: string;
+  confirmedQuantity?: number;
+  createdAt?: string;
+  deliveryAddress?: string;
+  id?: number;
+  itemId?: number;
+  itemImgUrl?: string;
+  itemName?: string;
+  noticeId?: number;
+  pickupBusiness?: AdminItemReservationPickupBusinessResponse;
+  pickupUserBusinessId?: number;
+  quantity?: number;
+  refundReason?: string;
+  status?: AdminItemReservationApplicationResponseStatus;
+  totalPrice?: number;
+  unitPrice?: number;
+  updatedAt?: string;
+}
+
+export interface AdminItemReservationAutoConfirmResponse {
+  applications?: AdminItemReservationApplicationResponse[];
+  availableQuantityAfterConfirm?: number;
+  availableQuantityBeforeConfirm?: number;
+  confirmedApplicationCount?: number;
+  noticeId?: number;
+  rejectedApplicationCount?: number;
+  targetApplicationCount?: number;
+  totalConfirmedQuantity?: number;
+  totalRequestedQuantity?: number;
+}
+
+export type AdminItemReservationGradeConditionResponseRequiredRole = typeof AdminItemReservationGradeConditionResponseRequiredRole[keyof typeof AdminItemReservationGradeConditionResponseRequiredRole];
+
+
+export const AdminItemReservationGradeConditionResponseRequiredRole = {
+  ROLE_GUEST: 'ROLE_GUEST',
+  ROLE_USER: 'ROLE_USER',
+  ROLE_ADMIN: 'ROLE_ADMIN',
+  ROLE_SUPER_ADMIN: 'ROLE_SUPER_ADMIN',
+  ROLE_CONSUMER: 'ROLE_CONSUMER',
+  ROLE_WHISKYNAVI_MEMBER: 'ROLE_WHISKYNAVI_MEMBER',
+  ROLE_WHISKYTALES_MEMBER: 'ROLE_WHISKYTALES_MEMBER',
+  ROLE_BLIND_MEMBER: 'ROLE_BLIND_MEMBER',
+  ROLE_BUSINESS: 'ROLE_BUSINESS',
+  ROLE_TRAILNTALE_BUSINESS: 'ROLE_TRAILNTALE_BUSINESS',
+  ROLE_COMMUNITY_BUSINESS: 'ROLE_COMMUNITY_BUSINESS',
+  ROLE_PICK_UP_BUSINESS: 'ROLE_PICK_UP_BUSINESS',
+} as const;
+
+export interface AdminItemReservationGradeConditionResponse {
+  applicableFrom?: string;
+  requiredRole?: AdminItemReservationGradeConditionResponseRequiredRole;
+}
+
+export interface AdminItemReservationNoticeResponse {
+  appliedQuantity?: number;
+  approvedQuantity?: number;
+  availableQuantity?: number;
+  createdAt?: string;
+  gradeConditions?: AdminItemReservationGradeConditionResponse[];
+  id?: number;
+  itemBrand?: string;
+  itemId?: number;
+  itemImgUrl?: string;
+  itemName?: string;
+  maxOrderQuantity?: number;
+  pendingApplicationCount?: number;
+  price?: number;
+  reservationEndAt?: string;
+  reservationStartAt?: string;
+  updatedAt?: string;
 }
 
 /**
  * 주문 고객 정보
  */
-export interface OrderCustomerResponse {
+export interface AdminOrderCustomerResponse {
   /** 고객 이메일 */
   email?: string;
   /** 비회원 주문 여부 */
@@ -337,7 +708,7 @@ export interface OrderCustomerResponse {
 /**
  * 주문 배송 정보
  */
-export interface OrderDeliveryResponse {
+export interface AdminOrderDeliveryResponse {
   /** 배송지 주소 */
   address?: string;
   /** 배송사 */
@@ -365,10 +736,10 @@ export interface OrderDeliveryResponse {
 /**
  * 판매 상품 유형
  */
-export type OrderItemResponseProductType = typeof OrderItemResponseProductType[keyof typeof OrderItemResponseProductType];
+export type AdminOrderItemResponseProductType = typeof AdminOrderItemResponseProductType[keyof typeof AdminOrderItemResponseProductType];
 
 
-export const OrderItemResponseProductType = {
+export const AdminOrderItemResponseProductType = {
   BOTTLE: 'BOTTLE',
   ITEM: 'ITEM',
 } as const;
@@ -376,10 +747,10 @@ export const OrderItemResponseProductType = {
 /**
  * 판매 공고 유형
  */
-export type OrderItemResponseSaleType = typeof OrderItemResponseSaleType[keyof typeof OrderItemResponseSaleType];
+export type AdminOrderItemResponseSaleType = typeof AdminOrderItemResponseSaleType[keyof typeof AdminOrderItemResponseSaleType];
 
 
-export const OrderItemResponseSaleType = {
+export const AdminOrderItemResponseSaleType = {
   RESERVATION: 'RESERVATION',
   PICKUP: 'PICKUP',
   GENERAL: 'GENERAL',
@@ -388,7 +759,7 @@ export const OrderItemResponseSaleType = {
 /**
  * 주문 상품 라인 응답 정보
  */
-export interface OrderItemResponse {
+export interface AdminOrderItemResponse {
   /** 상품명 */
   itemName?: string;
   /** 상품 라인 합계 */
@@ -398,7 +769,7 @@ export interface OrderItemResponse {
   /** 판매 상품 ID */
   productId?: number;
   /** 판매 상품 유형 */
-  productType?: OrderItemResponseProductType;
+  productType?: AdminOrderItemResponseProductType;
   /** 수량 */
   quantity?: number;
   /** 판매 공고 ID */
@@ -406,52 +777,15 @@ export interface OrderItemResponse {
   /** 판매 공고 제목 */
   saleTitle?: string;
   /** 판매 공고 유형 */
-  saleType?: OrderItemResponseSaleType;
+  saleType?: AdminOrderItemResponseSaleType;
   /** 단가 */
   unitPrice?: number;
 }
 
 /**
- * 주문 상태.
-일반 아이템 배송 주문 주요 흐름:
-PAYMENT_PENDING -> ORDER_PREPARING -> SHIPPING -> DELIVERY_COMPLETED,
-ORDER_PREPARING 또는 CANCEL_REQUESTED -> ORDER_CANCELED,
-CANCEL_REJECTED 주문은 발송 처리로 SHIPPING 전환이 가능하다.
-
- */
-export type OrderResponseOrderStatus = typeof OrderResponseOrderStatus[keyof typeof OrderResponseOrderStatus];
-
-
-export const OrderResponseOrderStatus = {
-  ORDER_REQUESTED: 'ORDER_REQUESTED',
-  PAYMENT_PENDING: 'PAYMENT_PENDING',
-  ORDER_PREPARING: 'ORDER_PREPARING',
-  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
-  SHIPPING: 'SHIPPING',
-  DELIVERY_COMPLETED: 'DELIVERY_COMPLETED',
-  RECEIPT_PENDING: 'RECEIPT_PENDING',
-  RECEIPT_COMPLETED: 'RECEIPT_COMPLETED',
-  ORDER_CANCELED: 'ORDER_CANCELED',
-  CANCEL_REQUESTED: 'CANCEL_REQUESTED',
-  CANCEL_REJECTED: 'CANCEL_REJECTED',
-} as const;
-
-/**
- * 판매 유형
- */
-export type OrderResponseOrderType = typeof OrderResponseOrderType[keyof typeof OrderResponseOrderType];
-
-
-export const OrderResponseOrderType = {
-  RESERVATION: 'RESERVATION',
-  PICKUP: 'PICKUP',
-  GENERAL: 'GENERAL',
-} as const;
-
-/**
  * 결제 정보
  */
-export interface OrderPaymentResponse {
+export interface AdminOrderPaymentResponse {
   /** 계좌이체 예금주 */
   bankAccountHolderName?: string;
   /** 계좌이체 계좌번호 */
@@ -481,7 +815,7 @@ export interface OrderPaymentResponse {
 /**
  * 주문 금액 요약
  */
-export interface OrderPriceSummaryResponse {
+export interface AdminOrderPriceSummaryResponse {
   /** 할인 금액. 현재 할인 정책이 없어 0으로 내려간다. */
   discountAmount?: number;
   /** 무료배송 적용 여부 */
@@ -499,12 +833,49 @@ export interface OrderPriceSummaryResponse {
 }
 
 /**
+ * 주문 상태.
+일반 아이템 배송 주문 주요 흐름:
+PAYMENT_PENDING -> ORDER_PREPARING -> SHIPPING -> DELIVERY_COMPLETED,
+ORDER_PREPARING 또는 CANCEL_REQUESTED -> ORDER_CANCELED,
+CANCEL_REJECTED 주문은 발송 처리로 SHIPPING 전환이 가능하다.
+
+ */
+export type AdminOrderResponseOrderStatus = typeof AdminOrderResponseOrderStatus[keyof typeof AdminOrderResponseOrderStatus];
+
+
+export const AdminOrderResponseOrderStatus = {
+  ORDER_REQUESTED: 'ORDER_REQUESTED',
+  PAYMENT_PENDING: 'PAYMENT_PENDING',
+  ORDER_PREPARING: 'ORDER_PREPARING',
+  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
+  SHIPPING: 'SHIPPING',
+  DELIVERY_COMPLETED: 'DELIVERY_COMPLETED',
+  RECEIPT_PENDING: 'RECEIPT_PENDING',
+  RECEIPT_COMPLETED: 'RECEIPT_COMPLETED',
+  ORDER_CANCELED: 'ORDER_CANCELED',
+  CANCEL_REQUESTED: 'CANCEL_REQUESTED',
+  CANCEL_REJECTED: 'CANCEL_REJECTED',
+} as const;
+
+/**
+ * 판매 유형
+ */
+export type AdminOrderResponseOrderType = typeof AdminOrderResponseOrderType[keyof typeof AdminOrderResponseOrderType];
+
+
+export const AdminOrderResponseOrderType = {
+  RESERVATION: 'RESERVATION',
+  PICKUP: 'PICKUP',
+  GENERAL: 'GENERAL',
+} as const;
+
+/**
  * 판매 상품 유형
  */
-export type OrderResponseProductType = typeof OrderResponseProductType[keyof typeof OrderResponseProductType];
+export type AdminOrderResponseProductType = typeof AdminOrderResponseProductType[keyof typeof AdminOrderResponseProductType];
 
 
-export const OrderResponseProductType = {
+export const AdminOrderResponseProductType = {
   BOTTLE: 'BOTTLE',
   ITEM: 'ITEM',
 } as const;
@@ -512,10 +883,10 @@ export const OrderResponseProductType = {
 /**
  * 판매 공고 유형
  */
-export type OrderResponseSaleType = typeof OrderResponseSaleType[keyof typeof OrderResponseSaleType];
+export type AdminOrderResponseSaleType = typeof AdminOrderResponseSaleType[keyof typeof AdminOrderResponseSaleType];
 
 
-export const OrderResponseSaleType = {
+export const AdminOrderResponseSaleType = {
   RESERVATION: 'RESERVATION',
   PICKUP: 'PICKUP',
   GENERAL: 'GENERAL',
@@ -524,7 +895,7 @@ export const OrderResponseSaleType = {
 /**
  * 주문 응답 정보
  */
-export interface OrderResponse {
+export interface AdminOrderResponse {
   /** 승인 수량 */
   approvedQuantity?: number;
   /** 관리자가 현재 주문에서 수행할 수 있는 액션 목록 */
@@ -535,8 +906,8 @@ export interface OrderResponse {
   cancelReason?: string;
   /** 생성 시각 */
   createdAt?: string;
-  customer?: OrderCustomerResponse;
-  delivery?: OrderDeliveryResponse;
+  customer?: AdminOrderCustomerResponse;
+  delivery?: AdminOrderDeliveryResponse;
   /** 무료배송 적용 여부 */
   freeShippingApplied?: boolean;
   /** 무료배송 기준 금액 */
@@ -552,7 +923,7 @@ export interface OrderResponse {
   /** 상품명 */
   itemName?: string;
   /** 주문 상품 라인 목록 */
-  items?: OrderItemResponse[];
+  items?: AdminOrderItemResponse[];
   /** 주문 상품 라인 수 */
   itemsCount?: number;
   /** 목록 표시용 상품 요약. 예: 대표 상품 외 2건 */
@@ -571,15 +942,15 @@ PAYMENT_PENDING -> ORDER_PREPARING -> SHIPPING -> DELIVERY_COMPLETED,
 ORDER_PREPARING 또는 CANCEL_REQUESTED -> ORDER_CANCELED,
 CANCEL_REJECTED 주문은 발송 처리로 SHIPPING 전환이 가능하다.
  */
-  orderStatus?: OrderResponseOrderStatus;
+  orderStatus?: AdminOrderResponseOrderStatus;
   /** 판매 유형 */
-  orderType?: OrderResponseOrderType;
-  payment?: OrderPaymentResponse;
-  priceSummary?: OrderPriceSummaryResponse;
+  orderType?: AdminOrderResponseOrderType;
+  payment?: AdminOrderPaymentResponse;
+  priceSummary?: AdminOrderPriceSummaryResponse;
   /** 판매 상품 ID */
   productId?: number;
   /** 판매 상품 유형 */
-  productType?: OrderResponseProductType;
+  productType?: AdminOrderResponseProductType;
   /** Refund reason */
   refundReason?: string;
   /** 요청 수량 */
@@ -589,7 +960,7 @@ CANCEL_REJECTED 주문은 발송 처리로 SHIPPING 전환이 가능하다.
   /** 판매 공고 제목 */
   saleTitle?: string;
   /** 판매 공고 유형 */
-  saleType?: OrderResponseSaleType;
+  saleType?: AdminOrderResponseSaleType;
   /** 배송비 */
   shippingFee?: number;
   /** 배송비 정책 적용 여부 */
@@ -606,6 +977,159 @@ CANCEL_REJECTED 주문은 발송 처리로 SHIPPING 전환이 가능하다.
   userId?: number;
 }
 
+export type AdminReservationBusinessDeliveryResponseCarrierCode = typeof AdminReservationBusinessDeliveryResponseCarrierCode[keyof typeof AdminReservationBusinessDeliveryResponseCarrierCode];
+
+
+export const AdminReservationBusinessDeliveryResponseCarrierCode = {
+  CJ_LOGISTICS: 'CJ_LOGISTICS',
+  HANJIN: 'HANJIN',
+  LOTTE: 'LOTTE',
+  LOGEN: 'LOGEN',
+  POST_OFFICE: 'POST_OFFICE',
+  KGB: 'KGB',
+  ILYANG: 'ILYANG',
+  KDEXP: 'KDEXP',
+  DAESIN: 'DAESIN',
+  HAPDONG: 'HAPDONG',
+  CU_POST: 'CU_POST',
+  GS_POSTBOX: 'GS_POSTBOX',
+  EMS: 'EMS',
+  DHL: 'DHL',
+  FEDEX: 'FEDEX',
+  UPS: 'UPS',
+  TNT: 'TNT',
+  OTHER: 'OTHER',
+} as const;
+
+export type AdminReservationBusinessDeliveryResponseDeliveryMethod = typeof AdminReservationBusinessDeliveryResponseDeliveryMethod[keyof typeof AdminReservationBusinessDeliveryResponseDeliveryMethod];
+
+
+export const AdminReservationBusinessDeliveryResponseDeliveryMethod = {
+  PARCEL: 'PARCEL',
+  PRIVATE_CARGO: 'PRIVATE_CARGO',
+} as const;
+
+export type AdminReservationBusinessDeliveryResponseDeliveryStatus = typeof AdminReservationBusinessDeliveryResponseDeliveryStatus[keyof typeof AdminReservationBusinessDeliveryResponseDeliveryStatus];
+
+
+export const AdminReservationBusinessDeliveryResponseDeliveryStatus = {
+  READY: 'READY',
+  SHIPPED: 'SHIPPED',
+  IN_TRANSIT: 'IN_TRANSIT',
+  OUT_FOR_DELIVERY: 'OUT_FOR_DELIVERY',
+  DELIVERED: 'DELIVERED',
+} as const;
+
+/**
+ * 예약 공고 업장별 입고 배송 정보 응답
+ */
+export interface AdminReservationBusinessDeliveryResponse {
+  businessId?: number;
+  businessName?: string;
+  carrierCode?: AdminReservationBusinessDeliveryResponseCarrierCode;
+  carrierName?: string;
+  createdAt?: string;
+  deliveredAt?: string;
+  deliveryMemo?: string;
+  deliveryMethod?: AdminReservationBusinessDeliveryResponseDeliveryMethod;
+  deliveryStatus?: AdminReservationBusinessDeliveryResponseDeliveryStatus;
+  id?: number;
+  noticeId?: number;
+  shippedAt?: string;
+  trackable?: boolean;
+  trackingNumber?: string;
+  updatedAt?: string;
+}
+
+/**
+ * 판매 상품 유형
+ */
+export type AdminSaleAnnouncementResponseProductType = typeof AdminSaleAnnouncementResponseProductType[keyof typeof AdminSaleAnnouncementResponseProductType];
+
+
+export const AdminSaleAnnouncementResponseProductType = {
+  BOTTLE: 'BOTTLE',
+  ITEM: 'ITEM',
+} as const;
+
+/**
+ * 판매 공고 상태
+ */
+export type AdminSaleAnnouncementResponseSaleStatus = typeof AdminSaleAnnouncementResponseSaleStatus[keyof typeof AdminSaleAnnouncementResponseSaleStatus];
+
+
+export const AdminSaleAnnouncementResponseSaleStatus = {
+  DRAFT: 'DRAFT',
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED',
+  SOLD_OUT: 'SOLD_OUT',
+} as const;
+
+/**
+ * 판매 유형
+ */
+export type AdminSaleAnnouncementResponseSaleType = typeof AdminSaleAnnouncementResponseSaleType[keyof typeof AdminSaleAnnouncementResponseSaleType];
+
+
+export const AdminSaleAnnouncementResponseSaleType = {
+  RESERVATION: 'RESERVATION',
+  PICKUP: 'PICKUP',
+  GENERAL: 'GENERAL',
+} as const;
+
+/**
+ * 판매 공고 응답
+ */
+export interface AdminSaleAnnouncementResponse {
+  /** 현재 판매 가능 수량 */
+  availableQuantity?: number;
+  /** 생성 시각 */
+  createdAt?: string;
+  /** 판매 공고 ID */
+  id?: number;
+  /** 상품명 */
+  itemName?: string;
+  /** 1회 최대 주문 가능 수량 */
+  maxOrderQuantity?: number;
+  /** 주문 가능 역할 코드 목록 */
+  orderableRoles?: string[];
+  /** 판매 상품 ID */
+  productId?: number;
+  /** 판매 상품 유형 */
+  productType?: AdminSaleAnnouncementResponseProductType;
+  /** 판매 종료 시각 */
+  saleEndAt?: string;
+  /** 판매 단가 */
+  salePrice?: number;
+  /** 판매 시작 시각 */
+  saleStartAt?: string;
+  /** 판매 공고 상태 */
+  saleStatus?: AdminSaleAnnouncementResponseSaleStatus;
+  /** 판매 유형 */
+  saleType?: AdminSaleAnnouncementResponseSaleType;
+  /** 판매 공고 제목 */
+  title?: string;
+  /** 총 판매 가능 수량 */
+  totalQuantity?: number;
+  /** 수정 시각 */
+  updatedAt?: string;
+}
+
+/**
+ * 관리자가 회원 밴 정보를 입력하기 위한 요청입니다.
+ */
+export interface AdminUserBanRequest {
+  /** 밴 종료 시각 */
+  endAt?: string;
+  /**
+   * 밴 사유
+   * @minLength 1
+   */
+  reason?: string;
+  /** 밴 시작 시각 */
+  startAt?: string;
+}
+
 /**
  * 관리자용 사용자 주문 요약 응답
  */
@@ -619,7 +1143,7 @@ export interface AdminUserOrderSummaryResponse {
   /** 이전 페이지 존재 여부 */
   hasPrevious?: boolean;
   /** 주문 내역 목록 */
-  orders?: OrderResponse[];
+  orders?: AdminOrderResponse[];
   /** 현재 페이지 번호 */
   pageNumber?: number;
   /** 페이지 크기 */
@@ -774,35 +1298,6 @@ export interface AnnouncementRequest {
 }
 
 /**
- * 공지 범위(전체/게시판)를 나타냅니다.
- */
-export type AnnouncementResponseScope = typeof AnnouncementResponseScope[keyof typeof AnnouncementResponseScope];
-
-
-export const AnnouncementResponseScope = {
-  GLOBAL: 'GLOBAL',
-  BOARD: 'BOARD',
-} as const;
-
-/**
- * 공지사항 정보를 담은 응답 DTO입니다.
- */
-export interface AnnouncementResponse {
-  /** 게시판 공지일 때 대상 게시판 ID입니다. */
-  boardId?: number;
-  /** 공지 본문 내용입니다. */
-  content?: string;
-  /** 공지 생성 일시입니다. */
-  createdAt?: string;
-  /** 공지사항 식별자입니다. */
-  id?: number;
-  /** 공지 범위(전체/게시판)를 나타냅니다. */
-  scope?: AnnouncementResponseScope;
-  /** 사용자에게 표시되는 제목입니다. */
-  title?: string;
-}
-
-/**
  * 로그인한 사용자 자기 정보 응답
  */
 export interface UserSelfResponse {
@@ -862,24 +1357,6 @@ export interface AuthResponse {
 }
 
 /**
- * 배너 조회 응답입니다.
- */
-export interface BannerResponse {
-  /** 배경 이미지의 CloudFront URL입니다. */
-  backgroundUrl?: string;
-  /** 배너 설명입니다. */
-  description?: string;
-  /** 배너 고유 ID입니다. */
-  id?: number;
-  /** 배너 클릭 시 이동할 링크입니다. */
-  link?: string;
-  /** 메인 이미지의 CloudFront URL입니다. */
-  mainUrl?: string;
-  /** 배너 제목입니다. */
-  title?: string;
-}
-
-/**
  * 게시판을 생성하거나 수정할 때 사용하는 요청 본문입니다.
  */
 export interface BoardRequest {
@@ -900,22 +1377,6 @@ export interface BoardRequest {
    * @minLength 0
    * @maxLength 150
    */
-  slug?: string;
-}
-
-/**
- * 게시판 정의 정보를 담는 응답 DTO입니다.
- */
-export interface BoardResponse {
-  /** 게시판 생성 일시입니다. */
-  createdAt?: string;
-  /** 게시판에 표시할 설명입니다. */
-  description?: string;
-  /** 게시판 식별자입니다. */
-  id?: number;
-  /** 사용자에게 노출되는 게시판명입니다. */
-  name?: string;
-  /** 라우팅에 사용하는 고유 슬러그입니다. */
   slug?: string;
 }
 
@@ -1170,103 +1631,10 @@ export interface BottlePatchRequest {
   visible?: boolean;
 }
 
-export interface BottleReservationApplicantResponse {
-  email?: string;
-  name?: string;
-  phone?: string;
-  roles?: string[];
-  userId?: number;
-  username?: string;
-}
-
-export type BottleReservationApplicationPublicResponseStatus = typeof BottleReservationApplicationPublicResponseStatus[keyof typeof BottleReservationApplicationPublicResponseStatus];
-
-
-export const BottleReservationApplicationPublicResponseStatus = {
-  APPLIED: 'APPLIED',
-  CANCELLED: 'CANCELLED',
-  CONFIRMED: 'CONFIRMED',
-  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
-  WAITING_PICKUP: 'WAITING_PICKUP',
-  RECEIVED: 'RECEIVED',
-  REJECTED: 'REJECTED',
-} as const;
-
-export interface BottleReservationApplicationPublicResponse {
-  bottleId?: number;
-  bottleImgUrl?: string;
-  bottleName?: string;
-  confirmedQuantity?: number;
-  createdAt?: string;
-  id?: number;
-  noticeId?: number;
-  pickupAddress?: string;
-  pickupBusinessName?: string;
-  pickupUserBusinessId?: number;
-  quantity?: number;
-  status?: BottleReservationApplicationPublicResponseStatus;
-  totalPrice?: number;
-  unitPrice?: number;
-  updatedAt?: string;
-}
-
 export interface BottleReservationApplicationRequest {
   /** @minimum 1 */
   quantity: number;
   userBusinessId: number;
-}
-
-export type BottleReservationApplicationResponseStatus = typeof BottleReservationApplicationResponseStatus[keyof typeof BottleReservationApplicationResponseStatus];
-
-
-export const BottleReservationApplicationResponseStatus = {
-  APPLIED: 'APPLIED',
-  CANCELLED: 'CANCELLED',
-  CONFIRMED: 'CONFIRMED',
-  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
-  WAITING_PICKUP: 'WAITING_PICKUP',
-  RECEIVED: 'RECEIVED',
-  REJECTED: 'REJECTED',
-} as const;
-
-export interface BottleReservationPickupBusinessResponse {
-  businessId?: number;
-  businessName?: string;
-  contact?: string;
-  pickupAddress?: string;
-  user?: BottleReservationApplicantResponse;
-}
-
-export interface BottleReservationApplicationResponse {
-  applicantUser?: BottleReservationApplicantResponse;
-  bottleId?: number;
-  bottleImgUrl?: string;
-  bottleName?: string;
-  cancelReason?: string;
-  confirmedQuantity?: number;
-  createdAt?: string;
-  id?: number;
-  noticeId?: number;
-  pickupBusiness?: BottleReservationPickupBusinessResponse;
-  pickupUserBusinessId?: number;
-  quantity?: number;
-  refundReason?: string;
-  status?: BottleReservationApplicationResponseStatus;
-  totalPrice?: number;
-  unitPrice?: number;
-  updatedAt?: string;
-}
-
-export interface BottleReservationAutoConfirmResponse {
-  applications?: BottleReservationApplicationResponse[];
-  availableQuantityAfterConfirm?: number;
-  availableQuantityBeforeConfirm?: number;
-  confirmedApplicationCount?: number;
-  noticeId?: number;
-  rejectedApplicationCount?: number;
-  targetApplicationCount?: number;
-  totalConfirmedQuantity?: number;
-  totalRequestedQuantity?: number;
 }
 
 export interface BottleReservationDecisionRequest {
@@ -1295,45 +1663,6 @@ export const BottleReservationGradeConditionRequestRequiredRole = {
 export interface BottleReservationGradeConditionRequest {
   applicableFrom: string;
   requiredRole: BottleReservationGradeConditionRequestRequiredRole;
-}
-
-export type BottleReservationGradeConditionResponseRequiredRole = typeof BottleReservationGradeConditionResponseRequiredRole[keyof typeof BottleReservationGradeConditionResponseRequiredRole];
-
-
-export const BottleReservationGradeConditionResponseRequiredRole = {
-  ROLE_GUEST: 'ROLE_GUEST',
-  ROLE_USER: 'ROLE_USER',
-  ROLE_ADMIN: 'ROLE_ADMIN',
-  ROLE_SUPER_ADMIN: 'ROLE_SUPER_ADMIN',
-  ROLE_CONSUMER: 'ROLE_CONSUMER',
-  ROLE_WHISKYNAVI_MEMBER: 'ROLE_WHISKYNAVI_MEMBER',
-  ROLE_WHISKYTALES_MEMBER: 'ROLE_WHISKYTALES_MEMBER',
-  ROLE_BLIND_MEMBER: 'ROLE_BLIND_MEMBER',
-  ROLE_BUSINESS: 'ROLE_BUSINESS',
-  ROLE_TRAILNTALE_BUSINESS: 'ROLE_TRAILNTALE_BUSINESS',
-  ROLE_COMMUNITY_BUSINESS: 'ROLE_COMMUNITY_BUSINESS',
-  ROLE_PICK_UP_BUSINESS: 'ROLE_PICK_UP_BUSINESS',
-} as const;
-
-export interface BottleReservationGradeConditionResponse {
-  applicableFrom?: string;
-  requiredRole?: BottleReservationGradeConditionResponseRequiredRole;
-}
-
-export interface BottleReservationNoticePublicResponse {
-  availableQuantity?: number;
-  bottleBrand?: string;
-  bottleId?: number;
-  bottleImgUrl?: string;
-  bottleName?: string;
-  createdAt?: string;
-  gradeConditions?: BottleReservationGradeConditionResponse[];
-  id?: number;
-  maxOrderQuantity?: number;
-  price?: number;
-  reservationEndAt?: string;
-  reservationStartAt?: string;
-  updatedAt?: string;
 }
 
 export type BottleReservationNoticeRequestGradeConditionsItemRequiredRole = typeof BottleReservationNoticeRequestGradeConditionsItemRequiredRole[keyof typeof BottleReservationNoticeRequestGradeConditionsItemRequiredRole];
@@ -1369,119 +1698,6 @@ export interface BottleReservationNoticeRequest {
   price: number;
   reservationEndAt: string;
   reservationStartAt: string;
-}
-
-export interface BottleReservationNoticeResponse {
-  appliedQuantity?: number;
-  approvedQuantity?: number;
-  availableQuantity?: number;
-  bottleBrand?: string;
-  bottleId?: number;
-  bottleImgUrl?: string;
-  bottleName?: string;
-  createdAt?: string;
-  gradeConditions?: BottleReservationGradeConditionResponse[];
-  id?: number;
-  maxOrderQuantity?: number;
-  pendingApplicationCount?: number;
-  price?: number;
-  reservationEndAt?: string;
-  reservationStartAt?: string;
-  updatedAt?: string;
-}
-
-export interface BottleReservationPickupApplicantResponse {
-  email?: string;
-  name?: string;
-  nickname?: string;
-  phone?: string;
-}
-
-export type BottleReservationPickupApplicationResponseStatus = typeof BottleReservationPickupApplicationResponseStatus[keyof typeof BottleReservationPickupApplicationResponseStatus];
-
-
-export const BottleReservationPickupApplicationResponseStatus = {
-  APPLIED: 'APPLIED',
-  CANCELLED: 'CANCELLED',
-  CONFIRMED: 'CONFIRMED',
-  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
-  WAITING_PICKUP: 'WAITING_PICKUP',
-  RECEIVED: 'RECEIVED',
-  REJECTED: 'REJECTED',
-} as const;
-
-export interface BottleReservationPickupApplicationResponse {
-  applicantUser?: BottleReservationPickupApplicantResponse;
-  bottleId?: number;
-  bottleImgUrl?: string;
-  bottleName?: string;
-  confirmedQuantity?: number;
-  createdAt?: string;
-  id?: number;
-  noticeId?: number;
-  quantity?: number;
-  status?: BottleReservationPickupApplicationResponseStatus;
-  totalPrice?: number;
-  unitPrice?: number;
-  updatedAt?: string;
-}
-
-export type BottleReservationPickupBulkUpdateResponseStatus = typeof BottleReservationPickupBulkUpdateResponseStatus[keyof typeof BottleReservationPickupBulkUpdateResponseStatus];
-
-
-export const BottleReservationPickupBulkUpdateResponseStatus = {
-  APPLIED: 'APPLIED',
-  CANCELLED: 'CANCELLED',
-  CONFIRMED: 'CONFIRMED',
-  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
-  WAITING_PICKUP: 'WAITING_PICKUP',
-  RECEIVED: 'RECEIVED',
-  REJECTED: 'REJECTED',
-} as const;
-
-export interface BottleReservationPickupBulkUpdateResponse {
-  applicationIds?: number[];
-  bottleId?: number;
-  noticeId?: number;
-  status?: BottleReservationPickupBulkUpdateResponseStatus;
-  updatedCount?: number;
-}
-
-/**
- * 공고 상태
- */
-export type BottleReservationPickupNoticeReservationStatusResponseNoticeStatus = typeof BottleReservationPickupNoticeReservationStatusResponseNoticeStatus[keyof typeof BottleReservationPickupNoticeReservationStatusResponseNoticeStatus];
-
-
-export const BottleReservationPickupNoticeReservationStatusResponseNoticeStatus = {
-  DRAFT: 'DRAFT',
-  OPEN: 'OPEN',
-  CLOSED: 'CLOSED',
-  SOLD_OUT: 'SOLD_OUT',
-} as const;
-
-/**
- * 픽업 업장 예약 공고별 신청 현황
- */
-export interface BottleReservationPickupNoticeReservationStatusResponse {
-  /** 병 ID */
-  bottleId?: number;
-  /** 병 이미지 URL */
-  bottleImgUrl?: string;
-  /** 병 이름 */
-  bottleName?: string;
-  /** 예약 공고 ID */
-  noticeId?: number;
-  /** 공고 상태 */
-  noticeStatus?: BottleReservationPickupNoticeReservationStatusResponseNoticeStatus;
-  /** 공고 판매 단가 */
-  price?: number;
-  /** 전체 신청 건수 */
-  totalApplicationCount?: number;
-  /** 전체 확정 수량 합계 */
-  totalConfirmedQuantity?: number;
-  /** 전체 신청 수량 합계 */
-  totalRequestedQuantity?: number;
 }
 
 export interface BottleReservationPickupWaitingPickupRequest {
@@ -1550,51 +1766,6 @@ export interface BottleSearchParameterValues {
   maltTypes?: string[];
   names?: string[];
   series?: string[];
-}
-
-/**
- * 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값
- */
-export type BottleSearchRequestReservationStatus = typeof BottleSearchRequestReservationStatus[keyof typeof BottleSearchRequestReservationStatus];
-
-
-export const BottleSearchRequestReservationStatus = {
-  NO_RESERVATION: 'NO_RESERVATION',
-  RESERVATION_ONGOING: 'RESERVATION_ONGOING',
-  RESERVATION_COMPLETED: 'RESERVATION_COMPLETED',
-} as const;
-
-export interface BottleSearchRequest {
-  abvFrom?: number;
-  abvTo?: number;
-  bottledDateFrom?: string;
-  bottledDateTo?: string;
-  /** 브랜드명 목록 필터 */
-  brand?: string[];
-  /** 캐스크 타입 목록 필터 */
-  caskType?: string[];
-  /** 회사명 목록 필터 */
-  company?: string[];
-  distillationDateFrom?: string;
-  distillationDateTo?: string;
-  /** 증류소 목록 필터 */
-  distillery?: string[];
-  /** 통합검색어. 이름, 회사, 브랜드, 시리즈, 몰트 타입, 증류소, 캐스크 정보, 설명, 빈티지를 함께 검색합니다. */
-  keyword?: string;
-  /** 몰트 타입 목록 필터 */
-  maltType?: string[];
-  /** 병 이름 필터 */
-  name?: string;
-  pageNumber?: number;
-  pageSize?: number;
-  /** 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값 */
-  reservationStatus?: BottleSearchRequestReservationStatus;
-  /** 시리즈명 목록 필터 */
-  series?: string[];
-  sortBy?: string;
-  sortDirection?: string;
-  vintageFrom?: number;
-  vintageTo?: number;
 }
 
 export interface CartGeneralItemDeliveryOrderRequest {
@@ -1701,73 +1872,6 @@ export interface CreatePostRequest {
    * @maxLength 200
    */
   title?: string;
-}
-
-/**
- * 배송지 주소록 저장 요청
- */
-export interface DeliveryAddressRequest {
-  /**
-   * 기본 주소
-   * @minLength 0
-   * @maxLength 500
-   */
-  address?: string;
-  /**
-   * 상세 주소
-   * @minLength 0
-   * @maxLength 500
-   */
-  addressDetail?: string;
-  /**
-   * 배송지 이름
-   * @minLength 0
-   * @maxLength 100
-   */
-  addressName?: string;
-  /** 기본 배송지 여부 */
-  defaultAddress?: boolean;
-  /**
-   * 배송 요청 메모
-   * @minLength 0
-   * @maxLength 500
-   */
-  deliveryMemo?: string;
-  /**
-   * 우편번호
-   * @minLength 0
-   * @maxLength 20
-   */
-  postalCode?: string;
-  /**
-   * 수령인 이름
-   * @minLength 0
-   * @maxLength 100
-   */
-  receiverName?: string;
-  /**
-   * 수령인 연락처
-   * @minLength 0
-   * @maxLength 20
-   */
-  receiverPhone?: string;
-}
-
-/**
- * 배송지 주소록 응답
- */
-export interface DeliveryAddressResponse {
-  address?: string;
-  addressDetail?: string;
-  addressName?: string;
-  createdAt?: string;
-  defaultAddress?: boolean;
-  deliveryMemo?: string;
-  id?: number;
-  postalCode?: string;
-  receiverName?: string;
-  receiverPhone?: string;
-  updatedAt?: string;
 }
 
 /**
@@ -1914,29 +2018,13 @@ export interface GeneralItemDeliveryOrderRequest {
   saleAnnouncementId: number;
 }
 
-export interface GeneralItemDeliveryOrderResponse {
-  /** 계좌이체 입금 기한 */
-  depositDeadlineAt?: string;
-  /** 비회원 주문 조회 코드. 비회원 주문의 최초 생성/결제 확정 응답에만 내려가며, 회원 주문은 null이다. */
-  guestOrderToken?: string;
-  order?: OrderResponse;
-  /** 결제 금액 */
-  paidAmount?: number;
-  /** 결제 완료 시각 */
-  paidAt?: string;
-  /** 결제 수단 */
-  paymentMethod?: string;
-  /** 결제 상태 */
-  paymentStatus?: string;
-}
-
 /**
  * 주문 시도 상태
  */
-export type OrderTicketResponseStatus = typeof OrderTicketResponseStatus[keyof typeof OrderTicketResponseStatus];
+export type UserOrderTicketResponseStatus = typeof UserOrderTicketResponseStatus[keyof typeof UserOrderTicketResponseStatus];
 
 
-export const OrderTicketResponseStatus = {
+export const UserOrderTicketResponseStatus = {
   QUEUED: 'QUEUED',
   ENTRY_GRANTED: 'ENTRY_GRANTED',
   TICKET_ISSUED: 'TICKET_ISSUED',
@@ -1946,7 +2034,7 @@ export const OrderTicketResponseStatus = {
   EXPIRED: 'EXPIRED',
 } as const;
 
-export interface OrderTicketResponse {
+export interface UserOrderTicketResponse {
   /** 결제 요청 금액 */
   amount?: number;
   /** 주문 시도 ID */
@@ -1964,7 +2052,7 @@ export interface OrderTicketResponse {
   /** PG 주문 ID */
   pgOrderId?: string;
   /** 주문 시도 상태 */
-  status?: OrderTicketResponseStatus;
+  status?: UserOrderTicketResponseStatus;
   /** 결제 성공 리다이렉트 URL */
   successUrl?: string;
   /** 주문 티켓 ID */
@@ -1972,7 +2060,7 @@ export interface OrderTicketResponse {
 }
 
 export interface GeneralItemDeliveryTicketResponse {
-  ticket?: OrderTicketResponse;
+  ticket?: UserOrderTicketResponse;
 }
 
 export interface GeneralItemDeliveryTossConfirmRequest {
@@ -2005,9 +2093,9 @@ export interface GuestOrderCancelRequest {
 }
 
 export interface HealthCheckResponse {
-  checkedAt?: string;
   service?: string;
   status?: string;
+  timestamp?: string;
 }
 
 /**
@@ -2115,49 +2203,6 @@ export interface ItemPatchRequest {
   visible?: boolean;
 }
 
-export interface ItemReservationApplicantResponse {
-  email?: string;
-  name?: string;
-  phone?: string;
-  roles?: string[];
-  userId?: number;
-  username?: string;
-}
-
-export type ItemReservationApplicationPublicResponseStatus = typeof ItemReservationApplicationPublicResponseStatus[keyof typeof ItemReservationApplicationPublicResponseStatus];
-
-
-export const ItemReservationApplicationPublicResponseStatus = {
-  APPLIED: 'APPLIED',
-  CANCELLED: 'CANCELLED',
-  CONFIRMED: 'CONFIRMED',
-  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
-  SHIPPING: 'SHIPPING',
-  DELIVERED: 'DELIVERED',
-  WAITING_PICKUP: 'WAITING_PICKUP',
-  RECEIVED: 'RECEIVED',
-  REJECTED: 'REJECTED',
-} as const;
-
-export interface ItemReservationApplicationPublicResponse {
-  confirmedQuantity?: number;
-  createdAt?: string;
-  deliveryAddress?: string;
-  id?: number;
-  itemId?: number;
-  itemImgUrl?: string;
-  itemName?: string;
-  noticeId?: number;
-  pickupAddress?: string;
-  pickupBusinessName?: string;
-  pickupUserBusinessId?: number;
-  quantity?: number;
-  status?: ItemReservationApplicationPublicResponseStatus;
-  totalPrice?: number;
-  unitPrice?: number;
-  updatedAt?: string;
-}
-
 export interface ItemReservationApplicationRequest {
   /**
    * @minLength 0
@@ -2166,62 +2211,6 @@ export interface ItemReservationApplicationRequest {
   deliveryAddress?: string;
   /** @minimum 1 */
   quantity: number;
-}
-
-export type ItemReservationApplicationResponseStatus = typeof ItemReservationApplicationResponseStatus[keyof typeof ItemReservationApplicationResponseStatus];
-
-
-export const ItemReservationApplicationResponseStatus = {
-  APPLIED: 'APPLIED',
-  CANCELLED: 'CANCELLED',
-  CONFIRMED: 'CONFIRMED',
-  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
-  SHIPPING: 'SHIPPING',
-  DELIVERED: 'DELIVERED',
-  WAITING_PICKUP: 'WAITING_PICKUP',
-  RECEIVED: 'RECEIVED',
-  REJECTED: 'REJECTED',
-} as const;
-
-export interface ItemReservationPickupBusinessResponse {
-  businessId?: number;
-  businessName?: string;
-  contact?: string;
-  pickupAddress?: string;
-  user?: ItemReservationApplicantResponse;
-}
-
-export interface ItemReservationApplicationResponse {
-  applicantUser?: ItemReservationApplicantResponse;
-  cancelReason?: string;
-  confirmedQuantity?: number;
-  createdAt?: string;
-  deliveryAddress?: string;
-  id?: number;
-  itemId?: number;
-  itemImgUrl?: string;
-  itemName?: string;
-  noticeId?: number;
-  pickupBusiness?: ItemReservationPickupBusinessResponse;
-  pickupUserBusinessId?: number;
-  quantity?: number;
-  refundReason?: string;
-  status?: ItemReservationApplicationResponseStatus;
-  totalPrice?: number;
-  unitPrice?: number;
-  updatedAt?: string;
-}
-
-export interface ItemReservationAutoConfirmResponse {
-  applications?: ItemReservationApplicationResponse[];
-  availableQuantityAfterConfirm?: number;
-  availableQuantityBeforeConfirm?: number;
-  confirmedApplicationCount?: number;
-  noticeId?: number;
-  rejectedApplicationCount?: number;
-  targetApplicationCount?: number;
-  totalConfirmedQuantity?: number;
-  totalRequestedQuantity?: number;
 }
 
 export interface ItemReservationDecisionRequest {
@@ -2250,45 +2239,6 @@ export const ItemReservationGradeConditionRequestRequiredRole = {
 export interface ItemReservationGradeConditionRequest {
   applicableFrom: string;
   requiredRole: ItemReservationGradeConditionRequestRequiredRole;
-}
-
-export type ItemReservationGradeConditionResponseRequiredRole = typeof ItemReservationGradeConditionResponseRequiredRole[keyof typeof ItemReservationGradeConditionResponseRequiredRole];
-
-
-export const ItemReservationGradeConditionResponseRequiredRole = {
-  ROLE_GUEST: 'ROLE_GUEST',
-  ROLE_USER: 'ROLE_USER',
-  ROLE_ADMIN: 'ROLE_ADMIN',
-  ROLE_SUPER_ADMIN: 'ROLE_SUPER_ADMIN',
-  ROLE_CONSUMER: 'ROLE_CONSUMER',
-  ROLE_WHISKYNAVI_MEMBER: 'ROLE_WHISKYNAVI_MEMBER',
-  ROLE_WHISKYTALES_MEMBER: 'ROLE_WHISKYTALES_MEMBER',
-  ROLE_BLIND_MEMBER: 'ROLE_BLIND_MEMBER',
-  ROLE_BUSINESS: 'ROLE_BUSINESS',
-  ROLE_TRAILNTALE_BUSINESS: 'ROLE_TRAILNTALE_BUSINESS',
-  ROLE_COMMUNITY_BUSINESS: 'ROLE_COMMUNITY_BUSINESS',
-  ROLE_PICK_UP_BUSINESS: 'ROLE_PICK_UP_BUSINESS',
-} as const;
-
-export interface ItemReservationGradeConditionResponse {
-  applicableFrom?: string;
-  requiredRole?: ItemReservationGradeConditionResponseRequiredRole;
-}
-
-export interface ItemReservationNoticePublicResponse {
-  availableQuantity?: number;
-  createdAt?: string;
-  gradeConditions?: ItemReservationGradeConditionResponse[];
-  id?: number;
-  itemBrand?: string;
-  itemId?: number;
-  itemImgUrl?: string;
-  itemName?: string;
-  maxOrderQuantity?: number;
-  price?: number;
-  reservationEndAt?: string;
-  reservationStartAt?: string;
-  updatedAt?: string;
 }
 
 export type ItemReservationNoticeRequestGradeConditionsItemRequiredRole = typeof ItemReservationNoticeRequestGradeConditionsItemRequiredRole[keyof typeof ItemReservationNoticeRequestGradeConditionsItemRequiredRole];
@@ -2324,86 +2274,6 @@ export interface ItemReservationNoticeRequest {
   price: number;
   reservationEndAt: string;
   reservationStartAt: string;
-}
-
-export interface ItemReservationNoticeResponse {
-  appliedQuantity?: number;
-  approvedQuantity?: number;
-  availableQuantity?: number;
-  createdAt?: string;
-  gradeConditions?: ItemReservationGradeConditionResponse[];
-  id?: number;
-  itemBrand?: string;
-  itemId?: number;
-  itemImgUrl?: string;
-  itemName?: string;
-  maxOrderQuantity?: number;
-  pendingApplicationCount?: number;
-  price?: number;
-  reservationEndAt?: string;
-  reservationStartAt?: string;
-  updatedAt?: string;
-}
-
-export interface ItemReservationPickupApplicantResponse {
-  email?: string;
-  name?: string;
-  nickname?: string;
-  phone?: string;
-}
-
-export type ItemReservationPickupApplicationResponseStatus = typeof ItemReservationPickupApplicationResponseStatus[keyof typeof ItemReservationPickupApplicationResponseStatus];
-
-
-export const ItemReservationPickupApplicationResponseStatus = {
-  APPLIED: 'APPLIED',
-  CANCELLED: 'CANCELLED',
-  CONFIRMED: 'CONFIRMED',
-  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
-  SHIPPING: 'SHIPPING',
-  DELIVERED: 'DELIVERED',
-  WAITING_PICKUP: 'WAITING_PICKUP',
-  RECEIVED: 'RECEIVED',
-  REJECTED: 'REJECTED',
-} as const;
-
-export interface ItemReservationPickupApplicationResponse {
-  applicantUser?: ItemReservationPickupApplicantResponse;
-  confirmedQuantity?: number;
-  createdAt?: string;
-  id?: number;
-  itemId?: number;
-  itemImgUrl?: string;
-  itemName?: string;
-  noticeId?: number;
-  quantity?: number;
-  status?: ItemReservationPickupApplicationResponseStatus;
-  totalPrice?: number;
-  unitPrice?: number;
-  updatedAt?: string;
-}
-
-export type ItemReservationPickupBulkUpdateResponseStatus = typeof ItemReservationPickupBulkUpdateResponseStatus[keyof typeof ItemReservationPickupBulkUpdateResponseStatus];
-
-
-export const ItemReservationPickupBulkUpdateResponseStatus = {
-  APPLIED: 'APPLIED',
-  CANCELLED: 'CANCELLED',
-  CONFIRMED: 'CONFIRMED',
-  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
-  SHIPPING: 'SHIPPING',
-  DELIVERED: 'DELIVERED',
-  WAITING_PICKUP: 'WAITING_PICKUP',
-  RECEIVED: 'RECEIVED',
-  REJECTED: 'REJECTED',
-} as const;
-
-export interface ItemReservationPickupBulkUpdateResponse {
-  applicationIds?: number[];
-  itemId?: number;
-  noticeId?: number;
-  status?: ItemReservationPickupBulkUpdateResponseStatus;
-  updatedCount?: number;
 }
 
 export interface ItemReservationPickupWaitingPickupRequest {
@@ -2724,40 +2594,9 @@ export interface OrderPaymentConfirmRequest {
   pgOrderId?: string;
 }
 
-export interface OrderPaymentConfirmResponse {
-  order?: OrderResponse;
-  /** 승인 금액 */
-  paidAmount?: number;
-  /** 결제 승인 시각 */
-  paidAt?: string;
-  /** 토스페이먼츠 paymentKey */
-  paymentKey?: string;
-  /** 결제 수단 */
-  paymentMethod?: string;
-  /** 결제 상태 */
-  paymentStatus?: string;
-  /** PG 주문 ID */
-  pgOrderId?: string;
-}
-
 export interface OrderQueueJoinRequest {
   /** 판매 공고 ID */
   saleAnnouncementId: number;
-}
-
-export interface OrderQueueStatusResponse {
-  /** 입장 토큰 발급 여부 */
-  entryGranted?: boolean;
-  /** 현재 대기 순번. 입장 가능 상태면 0, 미등록이면 -1 */
-  position?: number;
-  /** 입장 토큰 */
-  queueToken?: string;
-  /** 입장 토큰 만료 시각 */
-  queueTokenExpiresAt?: string;
-  /** 현재 사용자가 대기열에 올라가 있는지 여부 */
-  queued?: boolean;
-  /** 판매 공고 ID */
-  saleAnnouncementId?: number;
 }
 
 /**
@@ -2866,6 +2705,48 @@ export interface PageableObject {
   unpaged?: boolean;
 }
 
+export interface PageAdminBannerResponse {
+  content?: AdminBannerResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+export interface PageAdminBottleReservationApplicationResponse {
+  content?: AdminBottleReservationApplicationResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+export interface PageAdminBottleReservationNoticeResponse {
+  content?: AdminBottleReservationNoticeResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
 export interface PageAdminBusinessApplicationResponse {
   content?: AdminBusinessApplicationResponse[];
   empty?: boolean;
@@ -2894,6 +2775,62 @@ export interface PageAdminBusinessUserResponse {
   totalPages?: number;
 }
 
+export interface PageAdminItemReservationApplicationResponse {
+  content?: AdminItemReservationApplicationResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+export interface PageAdminItemReservationNoticeResponse {
+  content?: AdminItemReservationNoticeResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+export interface PageAdminOrderResponse {
+  content?: AdminOrderResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+export interface PageAdminSaleAnnouncementResponse {
+  content?: AdminSaleAnnouncementResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
 export interface PageAdminUserResponse {
   content?: AdminUserResponse[];
   empty?: boolean;
@@ -2908,134 +2845,8 @@ export interface PageAdminUserResponse {
   totalPages?: number;
 }
 
-export interface PageAnnouncementResponse {
-  content?: AnnouncementResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
-}
-
-export interface PageBannerResponse {
-  content?: BannerResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
-}
-
-export interface PageBoardResponse {
-  content?: BoardResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
-}
-
 export interface PageBottleAdminResponse {
   content?: BottleAdminResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
-}
-
-export interface PageBottleReservationApplicationPublicResponse {
-  content?: BottleReservationApplicationPublicResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
-}
-
-export interface PageBottleReservationApplicationResponse {
-  content?: BottleReservationApplicationResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
-}
-
-export interface PageBottleReservationNoticePublicResponse {
-  content?: BottleReservationNoticePublicResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
-}
-
-export interface PageBottleReservationNoticeResponse {
-  content?: BottleReservationNoticeResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
-}
-
-export interface PageBottleReservationPickupApplicationResponse {
-  content?: BottleReservationPickupApplicationResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
-}
-
-export interface PageBottleReservationPickupNoticeReservationStatusResponse {
-  content?: BottleReservationPickupNoticeReservationStatusResponse[];
   empty?: boolean;
   first?: boolean;
   last?: boolean;
@@ -3118,92 +2929,8 @@ export interface PageItemAdminResponse {
   totalPages?: number;
 }
 
-export interface PageItemReservationApplicationPublicResponse {
-  content?: ItemReservationApplicationPublicResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
-}
-
-export interface PageItemReservationApplicationResponse {
-  content?: ItemReservationApplicationResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
-}
-
-export interface PageItemReservationNoticePublicResponse {
-  content?: ItemReservationNoticePublicResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
-}
-
-export interface PageItemReservationNoticeResponse {
-  content?: ItemReservationNoticeResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
-}
-
-export interface PageItemReservationPickupApplicationResponse {
-  content?: ItemReservationPickupApplicationResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
-}
-
 export interface PageItemResponse {
   content?: ItemResponse[];
-  empty?: boolean;
-  first?: boolean;
-  last?: boolean;
-  number?: number;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  size?: number;
-  sort?: SortObject;
-  totalElements?: number;
-  totalPages?: number;
-}
-
-export interface PageOrderResponse {
-  content?: OrderResponse[];
   empty?: boolean;
   first?: boolean;
   last?: boolean;
@@ -3283,23 +3010,265 @@ export interface PagePostResponse {
 }
 
 /**
- * 판매 상품 유형
+ * 공지 범위(전체/게시판)를 나타냅니다.
  */
-export type SaleAnnouncementResponseProductType = typeof SaleAnnouncementResponseProductType[keyof typeof SaleAnnouncementResponseProductType];
+export type UserAnnouncementResponseScope = typeof UserAnnouncementResponseScope[keyof typeof UserAnnouncementResponseScope];
 
 
-export const SaleAnnouncementResponseProductType = {
-  BOTTLE: 'BOTTLE',
-  ITEM: 'ITEM',
+export const UserAnnouncementResponseScope = {
+  GLOBAL: 'GLOBAL',
+  BOARD: 'BOARD',
 } as const;
 
 /**
- * 판매 공고 상태
+ * 공지사항 정보를 담은 응답 DTO입니다.
  */
-export type SaleAnnouncementResponseSaleStatus = typeof SaleAnnouncementResponseSaleStatus[keyof typeof SaleAnnouncementResponseSaleStatus];
+export interface UserAnnouncementResponse {
+  /** 게시판 공지일 때 대상 게시판 ID입니다. */
+  boardId?: number;
+  /** 공지 본문 내용입니다. */
+  content?: string;
+  /** 공지 생성 일시입니다. */
+  createdAt?: string;
+  /** 공지사항 식별자입니다. */
+  id?: number;
+  /** 공지 범위(전체/게시판)를 나타냅니다. */
+  scope?: UserAnnouncementResponseScope;
+  /** 사용자에게 표시되는 제목입니다. */
+  title?: string;
+}
+
+export interface PageUserAnnouncementResponse {
+  content?: UserAnnouncementResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+/**
+ * 배너 조회 응답입니다.
+ */
+export interface UserBannerResponse {
+  /** 배경 이미지의 CloudFront URL입니다. */
+  backgroundUrl?: string;
+  /** 배너 설명입니다. */
+  description?: string;
+  /** 배너 고유 ID입니다. */
+  id?: number;
+  /** 배너 클릭 시 이동할 링크입니다. */
+  link?: string;
+  /** 메인 이미지의 CloudFront URL입니다. */
+  mainUrl?: string;
+  /** 배너 제목입니다. */
+  title?: string;
+}
+
+export interface PageUserBannerResponse {
+  content?: UserBannerResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+/**
+ * 게시판 정의 정보를 담는 응답 DTO입니다.
+ */
+export interface UserBoardResponse {
+  /** 게시판 생성 일시입니다. */
+  createdAt?: string;
+  /** 게시판에 표시할 설명입니다. */
+  description?: string;
+  /** 게시판 식별자입니다. */
+  id?: number;
+  /** 사용자에게 노출되는 게시판명입니다. */
+  name?: string;
+  /** 라우팅에 사용하는 고유 슬러그입니다. */
+  slug?: string;
+}
+
+export interface PageUserBoardResponse {
+  content?: UserBoardResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+export type UserBottleReservationApplicationPublicResponseStatus = typeof UserBottleReservationApplicationPublicResponseStatus[keyof typeof UserBottleReservationApplicationPublicResponseStatus];
 
 
-export const SaleAnnouncementResponseSaleStatus = {
+export const UserBottleReservationApplicationPublicResponseStatus = {
+  APPLIED: 'APPLIED',
+  CANCELLED: 'CANCELLED',
+  CONFIRMED: 'CONFIRMED',
+  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
+  WAITING_PICKUP: 'WAITING_PICKUP',
+  RECEIVED: 'RECEIVED',
+  REJECTED: 'REJECTED',
+} as const;
+
+export interface UserBottleReservationApplicationPublicResponse {
+  bottleId?: number;
+  bottleImgUrl?: string;
+  bottleName?: string;
+  confirmedQuantity?: number;
+  createdAt?: string;
+  id?: number;
+  noticeId?: number;
+  pickupAddress?: string;
+  pickupBusinessName?: string;
+  pickupUserBusinessId?: number;
+  quantity?: number;
+  status?: UserBottleReservationApplicationPublicResponseStatus;
+  totalPrice?: number;
+  unitPrice?: number;
+  updatedAt?: string;
+}
+
+export interface PageUserBottleReservationApplicationPublicResponse {
+  content?: UserBottleReservationApplicationPublicResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+export type UserBottleReservationGradeConditionResponseRequiredRole = typeof UserBottleReservationGradeConditionResponseRequiredRole[keyof typeof UserBottleReservationGradeConditionResponseRequiredRole];
+
+
+export const UserBottleReservationGradeConditionResponseRequiredRole = {
+  ROLE_GUEST: 'ROLE_GUEST',
+  ROLE_USER: 'ROLE_USER',
+  ROLE_ADMIN: 'ROLE_ADMIN',
+  ROLE_SUPER_ADMIN: 'ROLE_SUPER_ADMIN',
+  ROLE_CONSUMER: 'ROLE_CONSUMER',
+  ROLE_WHISKYNAVI_MEMBER: 'ROLE_WHISKYNAVI_MEMBER',
+  ROLE_WHISKYTALES_MEMBER: 'ROLE_WHISKYTALES_MEMBER',
+  ROLE_BLIND_MEMBER: 'ROLE_BLIND_MEMBER',
+  ROLE_BUSINESS: 'ROLE_BUSINESS',
+  ROLE_TRAILNTALE_BUSINESS: 'ROLE_TRAILNTALE_BUSINESS',
+  ROLE_COMMUNITY_BUSINESS: 'ROLE_COMMUNITY_BUSINESS',
+  ROLE_PICK_UP_BUSINESS: 'ROLE_PICK_UP_BUSINESS',
+} as const;
+
+export interface UserBottleReservationGradeConditionResponse {
+  applicableFrom?: string;
+  requiredRole?: UserBottleReservationGradeConditionResponseRequiredRole;
+}
+
+export interface UserBottleReservationNoticePublicResponse {
+  availableQuantity?: number;
+  bottleBrand?: string;
+  bottleId?: number;
+  bottleImgUrl?: string;
+  bottleName?: string;
+  createdAt?: string;
+  gradeConditions?: UserBottleReservationGradeConditionResponse[];
+  id?: number;
+  maxOrderQuantity?: number;
+  price?: number;
+  reservationEndAt?: string;
+  reservationStartAt?: string;
+  updatedAt?: string;
+}
+
+export interface PageUserBottleReservationNoticePublicResponse {
+  content?: UserBottleReservationNoticePublicResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+export interface UserBottleReservationPickupApplicantResponse {
+  email?: string;
+  name?: string;
+  nickname?: string;
+  phone?: string;
+}
+
+export type UserBottleReservationPickupApplicationResponseStatus = typeof UserBottleReservationPickupApplicationResponseStatus[keyof typeof UserBottleReservationPickupApplicationResponseStatus];
+
+
+export const UserBottleReservationPickupApplicationResponseStatus = {
+  APPLIED: 'APPLIED',
+  CANCELLED: 'CANCELLED',
+  CONFIRMED: 'CONFIRMED',
+  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
+  WAITING_PICKUP: 'WAITING_PICKUP',
+  RECEIVED: 'RECEIVED',
+  REJECTED: 'REJECTED',
+} as const;
+
+export interface UserBottleReservationPickupApplicationResponse {
+  applicantUser?: UserBottleReservationPickupApplicantResponse;
+  bottleId?: number;
+  bottleImgUrl?: string;
+  bottleName?: string;
+  confirmedQuantity?: number;
+  createdAt?: string;
+  id?: number;
+  noticeId?: number;
+  quantity?: number;
+  status?: UserBottleReservationPickupApplicationResponseStatus;
+  totalPrice?: number;
+  unitPrice?: number;
+  updatedAt?: string;
+}
+
+export interface PageUserBottleReservationPickupApplicationResponse {
+  content?: UserBottleReservationPickupApplicationResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+/**
+ * 공고 상태
+ */
+export type UserBottleReservationPickupNoticeReservationStatusResponseNoticeStatus = typeof UserBottleReservationPickupNoticeReservationStatusResponseNoticeStatus[keyof typeof UserBottleReservationPickupNoticeReservationStatusResponseNoticeStatus];
+
+
+export const UserBottleReservationPickupNoticeReservationStatusResponseNoticeStatus = {
   DRAFT: 'DRAFT',
   OPEN: 'OPEN',
   CLOSED: 'CLOSED',
@@ -3307,57 +3276,31 @@ export const SaleAnnouncementResponseSaleStatus = {
 } as const;
 
 /**
- * 판매 유형
+ * 픽업 업장 예약 공고별 신청 현황
  */
-export type SaleAnnouncementResponseSaleType = typeof SaleAnnouncementResponseSaleType[keyof typeof SaleAnnouncementResponseSaleType];
-
-
-export const SaleAnnouncementResponseSaleType = {
-  RESERVATION: 'RESERVATION',
-  PICKUP: 'PICKUP',
-  GENERAL: 'GENERAL',
-} as const;
-
-/**
- * 판매 공고 응답
- */
-export interface SaleAnnouncementResponse {
-  /** 현재 판매 가능 수량 */
-  availableQuantity?: number;
-  /** 생성 시각 */
-  createdAt?: string;
-  /** 판매 공고 ID */
-  id?: number;
-  /** 상품명 */
-  itemName?: string;
-  /** 1회 최대 주문 가능 수량 */
-  maxOrderQuantity?: number;
-  /** 주문 가능 역할 코드 목록 */
-  orderableRoles?: string[];
-  /** 판매 상품 ID */
-  productId?: number;
-  /** 판매 상품 유형 */
-  productType?: SaleAnnouncementResponseProductType;
-  /** 판매 종료 시각 */
-  saleEndAt?: string;
-  /** 판매 단가 */
-  salePrice?: number;
-  /** 판매 시작 시각 */
-  saleStartAt?: string;
-  /** 판매 공고 상태 */
-  saleStatus?: SaleAnnouncementResponseSaleStatus;
-  /** 판매 유형 */
-  saleType?: SaleAnnouncementResponseSaleType;
-  /** 판매 공고 제목 */
-  title?: string;
-  /** 총 판매 가능 수량 */
-  totalQuantity?: number;
-  /** 수정 시각 */
-  updatedAt?: string;
+export interface UserBottleReservationPickupNoticeReservationStatusResponse {
+  /** 병 ID */
+  bottleId?: number;
+  /** 병 이미지 URL */
+  bottleImgUrl?: string;
+  /** 병 이름 */
+  bottleName?: string;
+  /** 예약 공고 ID */
+  noticeId?: number;
+  /** 공고 상태 */
+  noticeStatus?: UserBottleReservationPickupNoticeReservationStatusResponseNoticeStatus;
+  /** 공고 판매 단가 */
+  price?: number;
+  /** 전체 신청 건수 */
+  totalApplicationCount?: number;
+  /** 전체 확정 수량 합계 */
+  totalConfirmedQuantity?: number;
+  /** 전체 신청 수량 합계 */
+  totalRequestedQuantity?: number;
 }
 
-export interface PageSaleAnnouncementResponse {
-  content?: SaleAnnouncementResponse[];
+export interface PageUserBottleReservationPickupNoticeReservationStatusResponse {
+  content?: UserBottleReservationPickupNoticeReservationStatusResponse[];
   empty?: boolean;
   first?: boolean;
   last?: boolean;
@@ -3409,6 +3352,522 @@ export interface UserBusinessApplicationResponse {
 
 export interface PageUserBusinessApplicationResponse {
   content?: UserBusinessApplicationResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+export type UserItemReservationApplicationPublicResponseStatus = typeof UserItemReservationApplicationPublicResponseStatus[keyof typeof UserItemReservationApplicationPublicResponseStatus];
+
+
+export const UserItemReservationApplicationPublicResponseStatus = {
+  APPLIED: 'APPLIED',
+  CANCELLED: 'CANCELLED',
+  CONFIRMED: 'CONFIRMED',
+  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
+  SHIPPING: 'SHIPPING',
+  DELIVERED: 'DELIVERED',
+  WAITING_PICKUP: 'WAITING_PICKUP',
+  RECEIVED: 'RECEIVED',
+  REJECTED: 'REJECTED',
+} as const;
+
+export interface UserItemReservationApplicationPublicResponse {
+  confirmedQuantity?: number;
+  createdAt?: string;
+  deliveryAddress?: string;
+  id?: number;
+  itemId?: number;
+  itemImgUrl?: string;
+  itemName?: string;
+  noticeId?: number;
+  pickupAddress?: string;
+  pickupBusinessName?: string;
+  pickupUserBusinessId?: number;
+  quantity?: number;
+  status?: UserItemReservationApplicationPublicResponseStatus;
+  totalPrice?: number;
+  unitPrice?: number;
+  updatedAt?: string;
+}
+
+export interface PageUserItemReservationApplicationPublicResponse {
+  content?: UserItemReservationApplicationPublicResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+export type UserItemReservationGradeConditionResponseRequiredRole = typeof UserItemReservationGradeConditionResponseRequiredRole[keyof typeof UserItemReservationGradeConditionResponseRequiredRole];
+
+
+export const UserItemReservationGradeConditionResponseRequiredRole = {
+  ROLE_GUEST: 'ROLE_GUEST',
+  ROLE_USER: 'ROLE_USER',
+  ROLE_ADMIN: 'ROLE_ADMIN',
+  ROLE_SUPER_ADMIN: 'ROLE_SUPER_ADMIN',
+  ROLE_CONSUMER: 'ROLE_CONSUMER',
+  ROLE_WHISKYNAVI_MEMBER: 'ROLE_WHISKYNAVI_MEMBER',
+  ROLE_WHISKYTALES_MEMBER: 'ROLE_WHISKYTALES_MEMBER',
+  ROLE_BLIND_MEMBER: 'ROLE_BLIND_MEMBER',
+  ROLE_BUSINESS: 'ROLE_BUSINESS',
+  ROLE_TRAILNTALE_BUSINESS: 'ROLE_TRAILNTALE_BUSINESS',
+  ROLE_COMMUNITY_BUSINESS: 'ROLE_COMMUNITY_BUSINESS',
+  ROLE_PICK_UP_BUSINESS: 'ROLE_PICK_UP_BUSINESS',
+} as const;
+
+export interface UserItemReservationGradeConditionResponse {
+  applicableFrom?: string;
+  requiredRole?: UserItemReservationGradeConditionResponseRequiredRole;
+}
+
+export interface UserItemReservationNoticePublicResponse {
+  availableQuantity?: number;
+  createdAt?: string;
+  gradeConditions?: UserItemReservationGradeConditionResponse[];
+  id?: number;
+  itemBrand?: string;
+  itemId?: number;
+  itemImgUrl?: string;
+  itemName?: string;
+  maxOrderQuantity?: number;
+  price?: number;
+  reservationEndAt?: string;
+  reservationStartAt?: string;
+  updatedAt?: string;
+}
+
+export interface PageUserItemReservationNoticePublicResponse {
+  content?: UserItemReservationNoticePublicResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+export interface UserItemReservationPickupApplicantResponse {
+  email?: string;
+  name?: string;
+  nickname?: string;
+  phone?: string;
+}
+
+export type UserItemReservationPickupApplicationResponseStatus = typeof UserItemReservationPickupApplicationResponseStatus[keyof typeof UserItemReservationPickupApplicationResponseStatus];
+
+
+export const UserItemReservationPickupApplicationResponseStatus = {
+  APPLIED: 'APPLIED',
+  CANCELLED: 'CANCELLED',
+  CONFIRMED: 'CONFIRMED',
+  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
+  SHIPPING: 'SHIPPING',
+  DELIVERED: 'DELIVERED',
+  WAITING_PICKUP: 'WAITING_PICKUP',
+  RECEIVED: 'RECEIVED',
+  REJECTED: 'REJECTED',
+} as const;
+
+export interface UserItemReservationPickupApplicationResponse {
+  applicantUser?: UserItemReservationPickupApplicantResponse;
+  confirmedQuantity?: number;
+  createdAt?: string;
+  id?: number;
+  itemId?: number;
+  itemImgUrl?: string;
+  itemName?: string;
+  noticeId?: number;
+  quantity?: number;
+  status?: UserItemReservationPickupApplicationResponseStatus;
+  totalPrice?: number;
+  unitPrice?: number;
+  updatedAt?: string;
+}
+
+export interface PageUserItemReservationPickupApplicationResponse {
+  content?: UserItemReservationPickupApplicationResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+/**
+ * 주문 배송 정보
+ */
+export interface UserOrderDeliveryResponse {
+  /** 배송지 주소 */
+  address?: string;
+  /** 배송사 */
+  carrierName?: string;
+  /** 배송 완료 시각 */
+  deliveredAt?: string;
+  /** 배송 메모 */
+  deliveryMemo?: string;
+  /** 배송 방식 */
+  deliveryMethod?: string;
+  /** 배송 정보 ID */
+  id?: number;
+  /** 주문 ID */
+  orderId?: number;
+  /** 수령인 이름 */
+  receiverName?: string;
+  /** 수령인 연락처 */
+  receiverPhone?: string;
+  /** 발송 시각 */
+  shippedAt?: string;
+  /** 운송장 번호 */
+  trackingNumber?: string;
+}
+
+/**
+ * 판매 상품 유형
+ */
+export type UserOrderItemResponseProductType = typeof UserOrderItemResponseProductType[keyof typeof UserOrderItemResponseProductType];
+
+
+export const UserOrderItemResponseProductType = {
+  BOTTLE: 'BOTTLE',
+  ITEM: 'ITEM',
+} as const;
+
+/**
+ * 판매 공고 유형
+ */
+export type UserOrderItemResponseSaleType = typeof UserOrderItemResponseSaleType[keyof typeof UserOrderItemResponseSaleType];
+
+
+export const UserOrderItemResponseSaleType = {
+  RESERVATION: 'RESERVATION',
+  PICKUP: 'PICKUP',
+  GENERAL: 'GENERAL',
+} as const;
+
+/**
+ * 주문 상품 라인 응답 정보
+ */
+export interface UserOrderItemResponse {
+  /** 상품명 */
+  itemName?: string;
+  /** 상품 라인 합계 */
+  lineTotalPrice?: number;
+  /** 주문 상품 라인 ID */
+  orderItemId?: number;
+  /** 판매 상품 ID */
+  productId?: number;
+  /** 판매 상품 유형 */
+  productType?: UserOrderItemResponseProductType;
+  /** 수량 */
+  quantity?: number;
+  /** 판매 공고 ID */
+  saleAnnouncementId?: number;
+  /** 판매 공고 제목 */
+  saleTitle?: string;
+  /** 판매 공고 유형 */
+  saleType?: UserOrderItemResponseSaleType;
+  /** 단가 */
+  unitPrice?: number;
+}
+
+/**
+ * 주문 상태.
+일반 아이템 배송 주문 주요 흐름:
+PAYMENT_PENDING -> ORDER_PREPARING -> SHIPPING -> DELIVERY_COMPLETED,
+ORDER_PREPARING 또는 CANCEL_REQUESTED -> ORDER_CANCELED,
+CANCEL_REJECTED 주문은 발송 처리로 SHIPPING 전환이 가능하다.
+
+ */
+export type UserOrderResponseOrderStatus = typeof UserOrderResponseOrderStatus[keyof typeof UserOrderResponseOrderStatus];
+
+
+export const UserOrderResponseOrderStatus = {
+  ORDER_REQUESTED: 'ORDER_REQUESTED',
+  PAYMENT_PENDING: 'PAYMENT_PENDING',
+  ORDER_PREPARING: 'ORDER_PREPARING',
+  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
+  SHIPPING: 'SHIPPING',
+  DELIVERY_COMPLETED: 'DELIVERY_COMPLETED',
+  RECEIPT_PENDING: 'RECEIPT_PENDING',
+  RECEIPT_COMPLETED: 'RECEIPT_COMPLETED',
+  ORDER_CANCELED: 'ORDER_CANCELED',
+  CANCEL_REQUESTED: 'CANCEL_REQUESTED',
+  CANCEL_REJECTED: 'CANCEL_REJECTED',
+} as const;
+
+/**
+ * 판매 유형
+ */
+export type UserOrderResponseOrderType = typeof UserOrderResponseOrderType[keyof typeof UserOrderResponseOrderType];
+
+
+export const UserOrderResponseOrderType = {
+  RESERVATION: 'RESERVATION',
+  PICKUP: 'PICKUP',
+  GENERAL: 'GENERAL',
+} as const;
+
+/**
+ * 결제 정보
+ */
+export interface UserOrderPaymentResponse {
+  /** 계좌이체 예금주 */
+  bankAccountHolderName?: string;
+  /** 계좌이체 계좌번호 */
+  bankAccountNumber?: string;
+  /** 계좌이체 은행명 */
+  bankName?: string;
+  /** 계좌이체 입금 안내 문구 */
+  bankTransferGuideMessage?: string;
+  /** 계좌이체 입금 기한 */
+  depositDeadlineAt?: string;
+  /** 계좌이체 입금 기한 초과 여부 */
+  depositOverdue?: boolean;
+  /** 결제 금액 */
+  paidAmount?: number;
+  /** 결제 완료 시각 */
+  paidAt?: string;
+  /** 결제 수단 */
+  paymentMethod?: string;
+  /** 결제 상태 */
+  paymentStatus?: string;
+}
+
+/**
+ * 주문 금액 요약
+ */
+export interface UserOrderPriceSummaryResponse {
+  /** 할인 금액. 현재 할인 정책이 없어 0으로 내려간다. */
+  discountAmount?: number;
+  /** 무료배송 적용 여부 */
+  freeShippingApplied?: boolean;
+  /** 무료배송까지 남은 금액 */
+  freeShippingRemainingAmount?: number;
+  /** 무료배송 기준 금액 */
+  freeShippingThreshold?: number;
+  /** 상품 합계 금액 */
+  itemsTotalPrice?: number;
+  /** 배송비 */
+  shippingFee?: number;
+  /** 최종 결제 금액 */
+  totalPrice?: number;
+}
+
+/**
+ * 판매 상품 유형
+ */
+export type UserOrderResponseProductType = typeof UserOrderResponseProductType[keyof typeof UserOrderResponseProductType];
+
+
+export const UserOrderResponseProductType = {
+  BOTTLE: 'BOTTLE',
+  ITEM: 'ITEM',
+} as const;
+
+/**
+ * 판매 공고 유형
+ */
+export type UserOrderResponseSaleType = typeof UserOrderResponseSaleType[keyof typeof UserOrderResponseSaleType];
+
+
+export const UserOrderResponseSaleType = {
+  RESERVATION: 'RESERVATION',
+  PICKUP: 'PICKUP',
+  GENERAL: 'GENERAL',
+} as const;
+
+/**
+ * 주문 응답 정보
+ */
+export interface UserOrderResponse {
+  /** 승인 수량 */
+  approvedQuantity?: number;
+  /** 사업장 ID */
+  businessId?: number;
+  /** Cancel reason */
+  cancelReason?: string;
+  /** 생성 시각 */
+  createdAt?: string;
+  delivery?: UserOrderDeliveryResponse;
+  /** 무료배송 적용 여부 */
+  freeShippingApplied?: boolean;
+  /** 무료배송 기준 금액 */
+  freeShippingThreshold?: number;
+  /** 주문 ID */
+  id?: number;
+  /** 수입사 ID */
+  importerId?: number;
+  /** 상품명 */
+  itemName?: string;
+  /** 주문 상품 라인 목록 */
+  items?: UserOrderItemResponse[];
+  /** 주문 상품 라인 수 */
+  itemsCount?: number;
+  /** 목록 표시용 상품 요약. 예: 대표 상품 외 2건 */
+  itemsSummary?: string;
+  /** 상품 합계 금액 */
+  itemsTotalPrice?: number;
+  /** Order note */
+  orderNote?: string;
+  /** 주문 번호 */
+  orderNumber?: string;
+  /** 주문 생성 방식. SINGLE_ITEM 또는 CART */
+  orderSource?: string;
+  /** 주문 상태.
+일반 아이템 배송 주문 주요 흐름:
+PAYMENT_PENDING -> ORDER_PREPARING -> SHIPPING -> DELIVERY_COMPLETED,
+ORDER_PREPARING 또는 CANCEL_REQUESTED -> ORDER_CANCELED,
+CANCEL_REJECTED 주문은 발송 처리로 SHIPPING 전환이 가능하다.
+ */
+  orderStatus?: UserOrderResponseOrderStatus;
+  /** 판매 유형 */
+  orderType?: UserOrderResponseOrderType;
+  payment?: UserOrderPaymentResponse;
+  priceSummary?: UserOrderPriceSummaryResponse;
+  /** 판매 상품 ID */
+  productId?: number;
+  /** 판매 상품 유형 */
+  productType?: UserOrderResponseProductType;
+  /** Refund reason */
+  refundReason?: string;
+  /** 요청 수량 */
+  requestedQuantity?: number;
+  /** 판매 공고 ID */
+  saleAnnouncementId?: number;
+  /** 판매 공고 제목 */
+  saleTitle?: string;
+  /** 판매 공고 유형 */
+  saleType?: UserOrderResponseSaleType;
+  /** 배송비 */
+  shippingFee?: number;
+  /** 배송비 정책 적용 여부 */
+  shippingPolicyEnabled?: boolean;
+  /** 총액 */
+  totalPrice?: number;
+  /** 전체 주문 수량 합계 */
+  totalQuantity?: number;
+  /** 단가 */
+  unitPrice?: number;
+  /** 수정 시각 */
+  updatedAt?: string;
+  /** 주문자 사용자 ID */
+  userId?: number;
+}
+
+export interface PageUserOrderResponse {
+  content?: UserOrderResponse[];
+  empty?: boolean;
+  first?: boolean;
+  last?: boolean;
+  number?: number;
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  size?: number;
+  sort?: SortObject;
+  totalElements?: number;
+  totalPages?: number;
+}
+
+/**
+ * 판매 상품 유형
+ */
+export type UserSaleAnnouncementResponseProductType = typeof UserSaleAnnouncementResponseProductType[keyof typeof UserSaleAnnouncementResponseProductType];
+
+
+export const UserSaleAnnouncementResponseProductType = {
+  BOTTLE: 'BOTTLE',
+  ITEM: 'ITEM',
+} as const;
+
+/**
+ * 판매 공고 상태
+ */
+export type UserSaleAnnouncementResponseSaleStatus = typeof UserSaleAnnouncementResponseSaleStatus[keyof typeof UserSaleAnnouncementResponseSaleStatus];
+
+
+export const UserSaleAnnouncementResponseSaleStatus = {
+  DRAFT: 'DRAFT',
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED',
+  SOLD_OUT: 'SOLD_OUT',
+} as const;
+
+/**
+ * 판매 유형
+ */
+export type UserSaleAnnouncementResponseSaleType = typeof UserSaleAnnouncementResponseSaleType[keyof typeof UserSaleAnnouncementResponseSaleType];
+
+
+export const UserSaleAnnouncementResponseSaleType = {
+  RESERVATION: 'RESERVATION',
+  PICKUP: 'PICKUP',
+  GENERAL: 'GENERAL',
+} as const;
+
+/**
+ * 판매 공고 응답
+ */
+export interface UserSaleAnnouncementResponse {
+  /** 현재 판매 가능 수량 */
+  availableQuantity?: number;
+  /** 생성 시각 */
+  createdAt?: string;
+  /** 판매 공고 ID */
+  id?: number;
+  /** 상품명 */
+  itemName?: string;
+  /** 1회 최대 주문 가능 수량 */
+  maxOrderQuantity?: number;
+  /** 주문 가능 역할 코드 목록 */
+  orderableRoles?: string[];
+  /** 판매 상품 ID */
+  productId?: number;
+  /** 판매 상품 유형 */
+  productType?: UserSaleAnnouncementResponseProductType;
+  /** 판매 종료 시각 */
+  saleEndAt?: string;
+  /** 판매 단가 */
+  salePrice?: number;
+  /** 판매 시작 시각 */
+  saleStartAt?: string;
+  /** 판매 공고 상태 */
+  saleStatus?: UserSaleAnnouncementResponseSaleStatus;
+  /** 판매 유형 */
+  saleType?: UserSaleAnnouncementResponseSaleType;
+  /** 판매 공고 제목 */
+  title?: string;
+  /** 총 판매 가능 수량 */
+  totalQuantity?: number;
+  /** 수정 시각 */
+  updatedAt?: string;
+}
+
+export interface PageUserSaleAnnouncementResponse {
+  content?: UserSaleAnnouncementResponse[];
   empty?: boolean;
   first?: boolean;
   last?: boolean;
@@ -3960,70 +4419,6 @@ export interface ReservationBusinessDeliveryRequest {
   trackingNumber?: string;
 }
 
-export type ReservationBusinessDeliveryResponseCarrierCode = typeof ReservationBusinessDeliveryResponseCarrierCode[keyof typeof ReservationBusinessDeliveryResponseCarrierCode];
-
-
-export const ReservationBusinessDeliveryResponseCarrierCode = {
-  CJ_LOGISTICS: 'CJ_LOGISTICS',
-  HANJIN: 'HANJIN',
-  LOTTE: 'LOTTE',
-  LOGEN: 'LOGEN',
-  POST_OFFICE: 'POST_OFFICE',
-  KGB: 'KGB',
-  ILYANG: 'ILYANG',
-  KDEXP: 'KDEXP',
-  DAESIN: 'DAESIN',
-  HAPDONG: 'HAPDONG',
-  CU_POST: 'CU_POST',
-  GS_POSTBOX: 'GS_POSTBOX',
-  EMS: 'EMS',
-  DHL: 'DHL',
-  FEDEX: 'FEDEX',
-  UPS: 'UPS',
-  TNT: 'TNT',
-  OTHER: 'OTHER',
-} as const;
-
-export type ReservationBusinessDeliveryResponseDeliveryMethod = typeof ReservationBusinessDeliveryResponseDeliveryMethod[keyof typeof ReservationBusinessDeliveryResponseDeliveryMethod];
-
-
-export const ReservationBusinessDeliveryResponseDeliveryMethod = {
-  PARCEL: 'PARCEL',
-  PRIVATE_CARGO: 'PRIVATE_CARGO',
-} as const;
-
-export type ReservationBusinessDeliveryResponseDeliveryStatus = typeof ReservationBusinessDeliveryResponseDeliveryStatus[keyof typeof ReservationBusinessDeliveryResponseDeliveryStatus];
-
-
-export const ReservationBusinessDeliveryResponseDeliveryStatus = {
-  READY: 'READY',
-  SHIPPED: 'SHIPPED',
-  IN_TRANSIT: 'IN_TRANSIT',
-  OUT_FOR_DELIVERY: 'OUT_FOR_DELIVERY',
-  DELIVERED: 'DELIVERED',
-} as const;
-
-/**
- * 예약 공고 업장별 입고 배송 정보 응답
- */
-export interface ReservationBusinessDeliveryResponse {
-  businessId?: number;
-  businessName?: string;
-  carrierCode?: ReservationBusinessDeliveryResponseCarrierCode;
-  carrierName?: string;
-  createdAt?: string;
-  deliveredAt?: string;
-  deliveryMemo?: string;
-  deliveryMethod?: ReservationBusinessDeliveryResponseDeliveryMethod;
-  deliveryStatus?: ReservationBusinessDeliveryResponseDeliveryStatus;
-  id?: number;
-  noticeId?: number;
-  shippedAt?: string;
-  trackable?: boolean;
-  trackingNumber?: string;
-  updatedAt?: string;
-}
-
 /**
  * 임시 비밀번호가 발급되었음을 알려주는 응답입니다.
  */
@@ -4358,6 +4753,58 @@ export interface UpdatePostRequest {
   title?: string;
 }
 
+export type UserBottleReservationPickupBulkUpdateResponseStatus = typeof UserBottleReservationPickupBulkUpdateResponseStatus[keyof typeof UserBottleReservationPickupBulkUpdateResponseStatus];
+
+
+export const UserBottleReservationPickupBulkUpdateResponseStatus = {
+  APPLIED: 'APPLIED',
+  CANCELLED: 'CANCELLED',
+  CONFIRMED: 'CONFIRMED',
+  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
+  WAITING_PICKUP: 'WAITING_PICKUP',
+  RECEIVED: 'RECEIVED',
+  REJECTED: 'REJECTED',
+} as const;
+
+export interface UserBottleReservationPickupBulkUpdateResponse {
+  applicationIds?: number[];
+  bottleId?: number;
+  noticeId?: number;
+  status?: UserBottleReservationPickupBulkUpdateResponseStatus;
+  updatedCount?: number;
+}
+
+export interface UserBottleSearchRequest {
+  abvFrom?: number;
+  abvTo?: number;
+  bottledDateFrom?: string;
+  bottledDateTo?: string;
+  /** 브랜드명 목록 필터 */
+  brand?: string[];
+  /** 캐스크 타입 목록 필터 */
+  caskType?: string[];
+  /** 회사명 목록 필터 */
+  company?: string[];
+  distillationDateFrom?: string;
+  distillationDateTo?: string;
+  /** 증류소 목록 필터 */
+  distillery?: string[];
+  /** 통합검색어. 이름, 회사, 브랜드, 시리즈, 몰트 타입, 증류소, 캐스크 정보, 설명, 빈티지를 함께 검색합니다. */
+  keyword?: string;
+  /** 몰트 타입 목록 필터 */
+  maltType?: string[];
+  /** 병 이름 필터 */
+  name?: string;
+  pageNumber?: number;
+  pageSize?: number;
+  /** 시리즈명 목록 필터 */
+  series?: string[];
+  sortBy?: string;
+  sortDirection?: string;
+  vintageFrom?: number;
+  vintageTo?: number;
+}
+
 export interface UserBusinessApplicationCancelRequest {
   /**
    * 신청 취소 사유
@@ -4404,6 +4851,207 @@ export interface UserBusinessApplicationSubmitResponse {
 }
 
 /**
+ * 배송지 주소록 저장 요청
+ */
+export interface UserDeliveryAddressRequest {
+  /**
+   * 기본 주소
+   * @minLength 0
+   * @maxLength 500
+   */
+  address?: string;
+  /**
+   * 상세 주소
+   * @minLength 0
+   * @maxLength 500
+   */
+  addressDetail?: string;
+  /**
+   * 배송지 이름
+   * @minLength 0
+   * @maxLength 100
+   */
+  addressName?: string;
+  /** 기본 배송지 여부 */
+  defaultAddress?: boolean;
+  /**
+   * 배송 요청 메모
+   * @minLength 0
+   * @maxLength 500
+   */
+  deliveryMemo?: string;
+  /**
+   * 우편번호
+   * @minLength 0
+   * @maxLength 20
+   */
+  postalCode?: string;
+  /**
+   * 수령인 이름
+   * @minLength 0
+   * @maxLength 100
+   */
+  receiverName?: string;
+  /**
+   * 수령인 연락처
+   * @minLength 0
+   * @maxLength 20
+   */
+  receiverPhone?: string;
+}
+
+/**
+ * 배송지 주소록 응답
+ */
+export interface UserDeliveryAddressResponse {
+  address?: string;
+  addressDetail?: string;
+  addressName?: string;
+  createdAt?: string;
+  defaultAddress?: boolean;
+  deliveryMemo?: string;
+  id?: number;
+  postalCode?: string;
+  receiverName?: string;
+  receiverPhone?: string;
+  updatedAt?: string;
+}
+
+export interface UserGeneralItemDeliveryOrderResponse {
+  /** 계좌이체 입금 기한 */
+  depositDeadlineAt?: string;
+  /** 비회원 주문 조회 코드. 비회원 주문의 최초 생성/결제 확정 응답에만 내려가며, 회원 주문은 null이다. */
+  guestOrderToken?: string;
+  order?: UserOrderResponse;
+  /** 결제 금액 */
+  paidAmount?: number;
+  /** 결제 완료 시각 */
+  paidAt?: string;
+  /** 결제 수단 */
+  paymentMethod?: string;
+  /** 결제 상태 */
+  paymentStatus?: string;
+}
+
+export type UserItemReservationPickupBulkUpdateResponseStatus = typeof UserItemReservationPickupBulkUpdateResponseStatus[keyof typeof UserItemReservationPickupBulkUpdateResponseStatus];
+
+
+export const UserItemReservationPickupBulkUpdateResponseStatus = {
+  APPLIED: 'APPLIED',
+  CANCELLED: 'CANCELLED',
+  CONFIRMED: 'CONFIRMED',
+  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
+  SHIPPING: 'SHIPPING',
+  DELIVERED: 'DELIVERED',
+  WAITING_PICKUP: 'WAITING_PICKUP',
+  RECEIVED: 'RECEIVED',
+  REJECTED: 'REJECTED',
+} as const;
+
+export interface UserItemReservationPickupBulkUpdateResponse {
+  applicationIds?: number[];
+  itemId?: number;
+  noticeId?: number;
+  status?: UserItemReservationPickupBulkUpdateResponseStatus;
+  updatedCount?: number;
+}
+
+export interface UserOrderPaymentConfirmResponse {
+  order?: UserOrderResponse;
+  /** 승인 금액 */
+  paidAmount?: number;
+  /** 결제 승인 시각 */
+  paidAt?: string;
+  /** 토스페이먼츠 paymentKey */
+  paymentKey?: string;
+  /** 결제 수단 */
+  paymentMethod?: string;
+  /** 결제 상태 */
+  paymentStatus?: string;
+  /** PG 주문 ID */
+  pgOrderId?: string;
+}
+
+export interface UserOrderQueueStatusResponse {
+  /** 입장 토큰 발급 여부 */
+  entryGranted?: boolean;
+  /** 현재 대기 순번. 입장 가능 상태면 0, 미등록이면 -1 */
+  position?: number;
+  /** 입장 토큰 */
+  queueToken?: string;
+  /** 입장 토큰 만료 시각 */
+  queueTokenExpiresAt?: string;
+  /** 현재 사용자가 대기열에 올라가 있는지 여부 */
+  queued?: boolean;
+  /** 판매 공고 ID */
+  saleAnnouncementId?: number;
+}
+
+export type UserReservationBusinessDeliveryResponseCarrierCode = typeof UserReservationBusinessDeliveryResponseCarrierCode[keyof typeof UserReservationBusinessDeliveryResponseCarrierCode];
+
+
+export const UserReservationBusinessDeliveryResponseCarrierCode = {
+  CJ_LOGISTICS: 'CJ_LOGISTICS',
+  HANJIN: 'HANJIN',
+  LOTTE: 'LOTTE',
+  LOGEN: 'LOGEN',
+  POST_OFFICE: 'POST_OFFICE',
+  KGB: 'KGB',
+  ILYANG: 'ILYANG',
+  KDEXP: 'KDEXP',
+  DAESIN: 'DAESIN',
+  HAPDONG: 'HAPDONG',
+  CU_POST: 'CU_POST',
+  GS_POSTBOX: 'GS_POSTBOX',
+  EMS: 'EMS',
+  DHL: 'DHL',
+  FEDEX: 'FEDEX',
+  UPS: 'UPS',
+  TNT: 'TNT',
+  OTHER: 'OTHER',
+} as const;
+
+export type UserReservationBusinessDeliveryResponseDeliveryMethod = typeof UserReservationBusinessDeliveryResponseDeliveryMethod[keyof typeof UserReservationBusinessDeliveryResponseDeliveryMethod];
+
+
+export const UserReservationBusinessDeliveryResponseDeliveryMethod = {
+  PARCEL: 'PARCEL',
+  PRIVATE_CARGO: 'PRIVATE_CARGO',
+} as const;
+
+export type UserReservationBusinessDeliveryResponseDeliveryStatus = typeof UserReservationBusinessDeliveryResponseDeliveryStatus[keyof typeof UserReservationBusinessDeliveryResponseDeliveryStatus];
+
+
+export const UserReservationBusinessDeliveryResponseDeliveryStatus = {
+  READY: 'READY',
+  SHIPPED: 'SHIPPED',
+  IN_TRANSIT: 'IN_TRANSIT',
+  OUT_FOR_DELIVERY: 'OUT_FOR_DELIVERY',
+  DELIVERED: 'DELIVERED',
+} as const;
+
+/**
+ * 예약 공고 업장별 입고 배송 정보 응답
+ */
+export interface UserReservationBusinessDeliveryResponse {
+  businessId?: number;
+  businessName?: string;
+  carrierCode?: UserReservationBusinessDeliveryResponseCarrierCode;
+  carrierName?: string;
+  createdAt?: string;
+  deliveredAt?: string;
+  deliveryMemo?: string;
+  deliveryMethod?: UserReservationBusinessDeliveryResponseDeliveryMethod;
+  deliveryStatus?: UserReservationBusinessDeliveryResponseDeliveryStatus;
+  id?: number;
+  noticeId?: number;
+  shippedAt?: string;
+  trackable?: boolean;
+  trackingNumber?: string;
+  updatedAt?: string;
+}
+
+/**
  * 사용자명 중복 여부 응답
  */
 export interface UsernameAvailabilityResponse {
@@ -4423,6 +5071,23 @@ export interface UsernameRequest {
    */
   username?: string;
 }
+
+export type GetApiAdminBannersParams = {
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
+};
 
 export type PostApiAdminBannersParams = {
 /**
@@ -5973,6 +6638,34 @@ export type PatchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessi
   trackingNumber?: string;
 };
 
+export type GetApiAdminSalesParams = {
+/**
+ * Zero-based page index (0..N)
+ * @minimum 0
+ */
+page?: number;
+/**
+ * The size of the page to be returned
+ * @minimum 1
+ */
+size?: number;
+/**
+ * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+ */
+sort?: string[];
+saleStatus?: GetApiAdminSalesSaleStatus;
+};
+
+export type GetApiAdminSalesSaleStatus = typeof GetApiAdminSalesSaleStatus[keyof typeof GetApiAdminSalesSaleStatus];
+
+
+export const GetApiAdminSalesSaleStatus = {
+  DRAFT: 'DRAFT',
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED',
+  SOLD_OUT: 'SOLD_OUT',
+} as const;
+
 /**
  * 판매 상품 유형
  */
@@ -6688,8 +7381,6 @@ filters: {
   name?: string;
   pageNumber?: number;
   pageSize?: number;
-  /** 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값 */
-  reservationStatus?: GetApiBottlesFiltersReservationStatus;
   /** 시리즈명 목록 필터 */
   series?: string[];
   sortBy?: string;
@@ -6698,18 +7389,6 @@ filters: {
   vintageTo?: number;
 };
 };
-
-/**
- * 관리자 병 목록 조회에서 예약 상태 필터에 사용하는 값
- */
-export type GetApiBottlesFiltersReservationStatus = typeof GetApiBottlesFiltersReservationStatus[keyof typeof GetApiBottlesFiltersReservationStatus];
-
-
-export const GetApiBottlesFiltersReservationStatus = {
-  NO_RESERVATION: 'NO_RESERVATION',
-  RESERVATION_ONGOING: 'RESERVATION_ONGOING',
-  RESERVATION_COMPLETED: 'RESERVATION_COMPLETED',
-} as const;
 
 export type GetApiBottlesReservationsApplicationsMeParams = {
 /**
@@ -8026,11 +8705,63 @@ export type PutApiUsersMeNicknameBody = {
 };
 
 /**
+ * 관리자가 배너 목록을 조회합니다.
+ * @summary 배너 목록 조회(관리자)
+ */
+export type getApiAdminBannersResponse200 = {
+  data: PageAdminBannerResponse
+  status: 200
+}
+    
+export type getApiAdminBannersResponseSuccess = (getApiAdminBannersResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiAdminBannersResponse = (getApiAdminBannersResponseSuccess)
+
+export const getGetApiAdminBannersUrl = (params?: GetApiAdminBannersParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
+    } else {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/admin/banners?${stringifiedParams}` : `/api/admin/banners`
+}
+
+export const getApiAdminBanners = async (params?: GetApiAdminBannersParams, options?: RequestInit): Promise<getApiAdminBannersResponse> => {
+  
+  return customFetch<getApiAdminBannersResponse>(getGetApiAdminBannersUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
  * 배경/메인 이미지를 업로드하고 랜딩 페이지에 노출할 배너를 생성합니다.
  * @summary 배너 생성(관리자)
  */
 export type postApiAdminBannersResponse200 = {
-  data: BannerResponse
+  data: AdminBannerResponse
   status: 200
 }
     
@@ -8083,11 +8814,48 @@ formData.append(`mainImg`, postApiAdminBannersBody.mainImg);
 
 
 /**
+ * 관리자가 식별자로 지정한 배너의 상세 정보를 조회합니다.
+ * @summary 배너 상세 조회(관리자)
+ */
+export type getApiAdminBannersIdResponse200 = {
+  data: AdminBannerResponse
+  status: 200
+}
+    
+export type getApiAdminBannersIdResponseSuccess = (getApiAdminBannersIdResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiAdminBannersIdResponse = (getApiAdminBannersIdResponseSuccess)
+
+export const getGetApiAdminBannersIdUrl = (id: number,) => {
+
+
+  
+
+  return `/api/admin/banners/${id}`
+}
+
+export const getApiAdminBannersId = async (id: number, options?: RequestInit): Promise<getApiAdminBannersIdResponse> => {
+  
+  return customFetch<getApiAdminBannersIdResponse>(getGetApiAdminBannersIdUrl(id),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
  * 배너의 메타데이터를 수정하고 필요 시 업로드 이미지를 교체합니다.
  * @summary 배너 수정(관리자)
  */
 export type patchApiAdminBannersIdResponse200 = {
-  data: BannerResponse
+  data: AdminBannerResponse
   status: 200
 }
     
@@ -8150,7 +8918,7 @@ if(patchApiAdminBannersIdBody.mainImg !== undefined) {
  * @summary 게시판 생성(관리자)
  */
 export type postApiAdminBoardsResponse200 = {
-  data: BoardResponse
+  data: AdminBoardResponse
   status: 200
 }
     
@@ -8188,7 +8956,7 @@ export const postApiAdminBoards = async (postApiAdminBoardsBody: PostApiAdminBoa
  * @summary 공지 등록(관리자)
  */
 export type postApiAdminBoardsAnnouncementsResponse200 = {
-  data: AnnouncementResponse
+  data: AdminAnnouncementResponse
   status: 200
 }
     
@@ -8429,7 +9197,7 @@ export const getApiAdminBottlesReferenceValues = async ( options?: RequestInit):
  * @summary 예약 신청 목록(관리자)
  */
 export type getApiAdminBottlesReservationsApplicationsResponse200 = {
-  data: PageBottleReservationApplicationResponse
+  data: PageAdminBottleReservationApplicationResponse
   status: 200
 }
     
@@ -8481,7 +9249,7 @@ export const getApiAdminBottlesReservationsApplications = async (params?: GetApi
  * @summary 예약 신청 상세(관리자)
  */
 export type getApiAdminBottlesReservationsApplicationsApplicationidResponse200 = {
-  data: BottleReservationApplicationResponse
+  data: AdminBottleReservationApplicationResponse
   status: 200
 }
     
@@ -8518,7 +9286,7 @@ export const getApiAdminBottlesReservationsApplicationsApplicationid = async (ap
  * @summary 예약 신청 취소
  */
 export type postApiAdminBottlesReservationsApplicationsApplicationidCancelResponse200 = {
-  data: BottleReservationApplicationResponse
+  data: AdminBottleReservationApplicationResponse
   status: 200
 }
     
@@ -8557,7 +9325,7 @@ export const postApiAdminBottlesReservationsApplicationsApplicationidCancel = as
  * @summary 예약 신청 확정
  */
 export type postApiAdminBottlesReservationsApplicationsApplicationidConfirmResponse200 = {
-  data: BottleReservationApplicationResponse
+  data: AdminBottleReservationApplicationResponse
   status: 200
 }
     
@@ -8596,7 +9364,7 @@ export const postApiAdminBottlesReservationsApplicationsApplicationidConfirm = a
  * @summary 예약 신청 거절
  */
 export type postApiAdminBottlesReservationsApplicationsApplicationidRejectResponse200 = {
-  data: BottleReservationApplicationResponse
+  data: AdminBottleReservationApplicationResponse
   status: 200
 }
     
@@ -8635,7 +9403,7 @@ export const postApiAdminBottlesReservationsApplicationsApplicationidReject = as
  * @summary 예약 공고 목록(관리자)
  */
 export type getApiAdminBottlesReservationsNoticesResponse200 = {
-  data: PageBottleReservationNoticeResponse
+  data: PageAdminBottleReservationNoticeResponse
   status: 200
 }
     
@@ -8687,7 +9455,7 @@ export const getApiAdminBottlesReservationsNotices = async (params?: GetApiAdmin
  * @summary 예약 공고 생성(관리자)
  */
 export type postApiAdminBottlesReservationsNoticesResponse200 = {
-  data: BottleReservationNoticeResponse
+  data: AdminBottleReservationNoticeResponse
   status: 200
 }
     
@@ -8725,7 +9493,7 @@ export const postApiAdminBottlesReservationsNotices = async (postApiAdminBottles
  * @summary 예약 공고 상세(관리자)
  */
 export type getApiAdminBottlesReservationsNoticesNoticeidResponse200 = {
-  data: BottleReservationNoticeResponse
+  data: AdminBottleReservationNoticeResponse
   status: 200
 }
     
@@ -8762,7 +9530,7 @@ export const getApiAdminBottlesReservationsNoticesNoticeid = async (noticeId: nu
  * @summary 예약 공고 수정(관리자)
  */
 export type putApiAdminBottlesReservationsNoticesNoticeidResponse200 = {
-  data: BottleReservationNoticeResponse
+  data: AdminBottleReservationNoticeResponse
   status: 200
 }
     
@@ -8801,7 +9569,7 @@ export const putApiAdminBottlesReservationsNoticesNoticeid = async (noticeId: nu
  * @summary 예약 공고 자동 확정
  */
 export type postApiAdminBottlesReservationsNoticesNoticeidAutoConfirmResponse200 = {
-  data: BottleReservationAutoConfirmResponse
+  data: AdminBottleReservationAutoConfirmResponse
   status: 200
 }
     
@@ -9484,7 +10252,7 @@ export const postApiAdminItems = async (postApiAdminItemsBody: PostApiAdminItems
  * @summary 예약 신청 목록(관리자)
  */
 export type getApiAdminItemsReservationsApplicationsResponse200 = {
-  data: PageItemReservationApplicationResponse
+  data: PageAdminItemReservationApplicationResponse
   status: 200
 }
     
@@ -9536,7 +10304,7 @@ export const getApiAdminItemsReservationsApplications = async (params?: GetApiAd
  * @summary 예약 신청 상세(관리자)
  */
 export type getApiAdminItemsReservationsApplicationsApplicationidResponse200 = {
-  data: ItemReservationApplicationResponse
+  data: AdminItemReservationApplicationResponse
   status: 200
 }
     
@@ -9573,7 +10341,7 @@ export const getApiAdminItemsReservationsApplicationsApplicationid = async (appl
  * @summary 예약 신청 취소
  */
 export type postApiAdminItemsReservationsApplicationsApplicationidCancelResponse200 = {
-  data: ItemReservationApplicationResponse
+  data: AdminItemReservationApplicationResponse
   status: 200
 }
     
@@ -9612,7 +10380,7 @@ export const postApiAdminItemsReservationsApplicationsApplicationidCancel = asyn
  * @summary 예약 신청 확정
  */
 export type postApiAdminItemsReservationsApplicationsApplicationidConfirmResponse200 = {
-  data: ItemReservationApplicationResponse
+  data: AdminItemReservationApplicationResponse
   status: 200
 }
     
@@ -9651,7 +10419,7 @@ export const postApiAdminItemsReservationsApplicationsApplicationidConfirm = asy
  * @summary 예약 신청 거절
  */
 export type postApiAdminItemsReservationsApplicationsApplicationidRejectResponse200 = {
-  data: ItemReservationApplicationResponse
+  data: AdminItemReservationApplicationResponse
   status: 200
 }
     
@@ -9690,7 +10458,7 @@ export const postApiAdminItemsReservationsApplicationsApplicationidReject = asyn
  * @summary 예약 공고 목록(관리자)
  */
 export type getApiAdminItemsReservationsNoticesResponse200 = {
-  data: PageItemReservationNoticeResponse
+  data: PageAdminItemReservationNoticeResponse
   status: 200
 }
     
@@ -9742,7 +10510,7 @@ export const getApiAdminItemsReservationsNotices = async (params?: GetApiAdminIt
  * @summary 예약 공고 생성(관리자)
  */
 export type postApiAdminItemsReservationsNoticesResponse200 = {
-  data: ItemReservationNoticeResponse
+  data: AdminItemReservationNoticeResponse
   status: 200
 }
     
@@ -9780,7 +10548,7 @@ export const postApiAdminItemsReservationsNotices = async (postApiAdminItemsRese
  * @summary 예약 공고 상세(관리자)
  */
 export type getApiAdminItemsReservationsNoticesNoticeidResponse200 = {
-  data: ItemReservationNoticeResponse
+  data: AdminItemReservationNoticeResponse
   status: 200
 }
     
@@ -9817,7 +10585,7 @@ export const getApiAdminItemsReservationsNoticesNoticeid = async (noticeId: numb
  * @summary 예약 공고 수정(관리자)
  */
 export type putApiAdminItemsReservationsNoticesNoticeidResponse200 = {
-  data: ItemReservationNoticeResponse
+  data: AdminItemReservationNoticeResponse
   status: 200
 }
     
@@ -9856,7 +10624,7 @@ export const putApiAdminItemsReservationsNoticesNoticeid = async (noticeId: numb
  * @summary 예약 공고 자동 확정
  */
 export type postApiAdminItemsReservationsNoticesNoticeidAutoConfirmResponse200 = {
-  data: ItemReservationAutoConfirmResponse
+  data: AdminItemReservationAutoConfirmResponse
   status: 200
 }
     
@@ -10223,7 +10991,7 @@ export const getApiAdminNiceidStatus = async (requestNo: string, options?: Reque
  * @summary 관리자 주문 목록 조회
  */
 export type getApiAdminOrdersResponse200 = {
-  data: PageOrderResponse
+  data: PageAdminOrderResponse
   status: 200
 }
     
@@ -10456,7 +11224,7 @@ formData.append(`file`, postApiAdminOrdersDeliveryImportResultCsvBody.file);
  * @summary 관리자 주문번호 기반 상세 조회
  */
 export type getApiAdminOrdersNumbersOrdernumberResponse200 = {
-  data: OrderResponse
+  data: AdminOrderResponse
   status: 200
 }
     
@@ -10546,7 +11314,7 @@ export const getApiAdminOrdersUsersUserid = async (userId: number,
  * @summary 관리자 주문 상세 조회
  */
 export type getApiAdminOrdersOrderidResponse200 = {
-  data: OrderResponse
+  data: AdminOrderResponse
   status: 200
 }
     
@@ -10582,7 +11350,7 @@ export const getApiAdminOrdersOrderid = async (orderId: number, options?: Reques
  * @summary 관리자 주문 승인/수량 조정
  */
 export type patchApiAdminOrdersOrderidApproveResponse200 = {
-  data: OrderResponse
+  data: AdminOrderResponse
   status: 200
 }
     
@@ -10620,7 +11388,7 @@ export const patchApiAdminOrdersOrderidApprove = async (orderId: number,
  * @summary 관리자 주문 배송 정보 조회
  */
 export type getApiAdminOrdersOrderidDeliveryResponse200 = {
-  data: OrderDeliveryResponse
+  data: AdminOrderDeliveryResponse
   status: 200
 }
     
@@ -10661,7 +11429,7 @@ DELIVERY_COMPLETED 이후에는 배송 이력 정합성을 위해 수정할 수 
  * @summary 관리자 주문 배송 정보 수정
  */
 export type patchApiAdminOrdersOrderidDeliveryResponse200 = {
-  data: OrderDeliveryResponse
+  data: AdminOrderDeliveryResponse
   status: 200
 }
     
@@ -10700,7 +11468,7 @@ export const patchApiAdminOrdersOrderidDelivery = async (orderId: number,
  * @summary 관리자 주문 배송 완료 처리
  */
 export type patchApiAdminOrdersOrderidDeliveryCompleteResponse200 = {
-  data: OrderDeliveryResponse
+  data: AdminOrderDeliveryResponse
   status: 200
 }
     
@@ -10742,7 +11510,7 @@ export const patchApiAdminOrdersOrderidDeliveryComplete = async (orderId: number
  * @summary 관리자 주문 발송 처리
  */
 export type patchApiAdminOrdersOrderidDeliveryShipResponse200 = {
-  data: OrderDeliveryResponse
+  data: AdminOrderDeliveryResponse
   status: 200
 }
     
@@ -10793,7 +11561,7 @@ export const patchApiAdminOrdersOrderidDeliveryShip = async (orderId: number,
  * @summary 관리자 주문 상태 변경
  */
 export type patchApiAdminOrdersOrderidStatusResponse200 = {
-  data: OrderResponse
+  data: AdminOrderResponse
   status: 200
 }
     
@@ -10869,7 +11637,7 @@ export const getApiAdminReservationDeliveriesCompanies = async ( options?: Reque
  * @summary 예약 공고 업장별 입고 배송 정보 목록 조회
  */
 export type getApiAdminReservationDeliveriesNoticesNoticeidResponse200 = {
-  data: ReservationBusinessDeliveryResponse[]
+  data: AdminReservationBusinessDeliveryResponse[]
   status: 200
 }
     
@@ -10906,7 +11674,7 @@ export const getApiAdminReservationDeliveriesNoticesNoticeid = async (noticeId: 
  * @summary 예약 공고 업장별 입고 배송 정보 조회
  */
 export type getApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidResponse200 = {
-  data: ReservationBusinessDeliveryResponse
+  data: AdminReservationBusinessDeliveryResponse
   status: 200
 }
     
@@ -10945,7 +11713,7 @@ export const getApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessid
  * @summary 예약 공고 업장별 입고 배송 정보 저장
  */
 export type putApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidResponse200 = {
-  data: ReservationBusinessDeliveryResponse
+  data: AdminReservationBusinessDeliveryResponse
   status: 200
 }
     
@@ -10986,7 +11754,7 @@ export const putApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessid
  * @summary 예약 공고 업장별 택배 송장번호 수정
  */
 export type patchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusinessidTrackingNumberResponse200 = {
-  data: ReservationBusinessDeliveryResponse
+  data: AdminReservationBusinessDeliveryResponse
   status: 200
 }
     
@@ -11023,10 +11791,61 @@ export const patchApiAdminReservationDeliveriesNoticesNoticeidBusinessesBusiness
 
 
 /**
+ * @summary 판매 공고 목록 조회(관리자)
+ */
+export type getApiAdminSalesResponse200 = {
+  data: PageAdminSaleAnnouncementResponse
+  status: 200
+}
+    
+export type getApiAdminSalesResponseSuccess = (getApiAdminSalesResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiAdminSalesResponse = (getApiAdminSalesResponseSuccess)
+
+export const getGetApiAdminSalesUrl = (params?: GetApiAdminSalesParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value === undefined) return;
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (v === undefined) return;
+        if (Array.isArray(v)) { v.forEach(item => normalizedParams.append(k, item == null ? 'null' : String(item))); }
+        else { normalizedParams.append(k, v === null ? 'null' : String(v)); }
+      });
+    } else if (Array.isArray(value)) {
+      value.forEach(v => normalizedParams.append(key, v == null ? 'null' : String(v)));
+    } else {
+      normalizedParams.append(key, value === null ? 'null' : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/admin/sales?${stringifiedParams}` : `/api/admin/sales`
+}
+
+export const getApiAdminSales = async (params?: GetApiAdminSalesParams, options?: RequestInit): Promise<getApiAdminSalesResponse> => {
+  
+  return customFetch<getApiAdminSalesResponse>(getGetApiAdminSalesUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
  * @summary 판매 공고 생성
  */
 export type postApiAdminSalesResponse200 = {
-  data: SaleAnnouncementResponse
+  data: AdminSaleAnnouncementResponse
   status: 200
 }
     
@@ -11060,10 +11879,46 @@ export const postApiAdminSales = async (postApiAdminSalesBody: PostApiAdminSales
 
 
 /**
+ * @summary 판매 공고 단건 조회(관리자)
+ */
+export type getApiAdminSalesSaleidResponse200 = {
+  data: AdminSaleAnnouncementResponse
+  status: 200
+}
+    
+export type getApiAdminSalesSaleidResponseSuccess = (getApiAdminSalesSaleidResponse200) & {
+  headers: Headers;
+};
+;
+
+export type getApiAdminSalesSaleidResponse = (getApiAdminSalesSaleidResponseSuccess)
+
+export const getGetApiAdminSalesSaleidUrl = (saleId: number,) => {
+
+
+  
+
+  return `/api/admin/sales/${saleId}`
+}
+
+export const getApiAdminSalesSaleid = async (saleId: number, options?: RequestInit): Promise<getApiAdminSalesSaleidResponse> => {
+  
+  return customFetch<getApiAdminSalesSaleidResponse>(getGetApiAdminSalesSaleidUrl(saleId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+);}
+
+
+
+/**
  * @summary 판매 공고 수정
  */
 export type patchApiAdminSalesSaleidResponse200 = {
-  data: SaleAnnouncementResponse
+  data: AdminSaleAnnouncementResponse
   status: 200
 }
     
@@ -11595,7 +12450,7 @@ export const patchApiAdminUsersIdStatus = async (id: number,
  * @summary 사용자 배송지 주소록 목록 조회(관리자)
  */
 export type getApiAdminUsersUseridDeliveryAddressesResponse200 = {
-  data: DeliveryAddressResponse[]
+  data: AdminDeliveryAddressResponse[]
   status: 200
 }
     
@@ -11631,7 +12486,7 @@ export const getApiAdminUsersUseridDeliveryAddresses = async (userId: number, op
  * @summary 사용자 배송지 주소록 등록(관리자)
  */
 export type postApiAdminUsersUseridDeliveryAddressesResponse200 = {
-  data: DeliveryAddressResponse
+  data: AdminDeliveryAddressResponse
   status: 200
 }
     
@@ -11743,7 +12598,7 @@ export const deleteApiAdminUsersUseridDeliveryAddressesAddressid = async (userId
  * @summary 사용자 배송지 주소록 상세 조회(관리자)
  */
 export type getApiAdminUsersUseridDeliveryAddressesAddressidResponse200 = {
-  data: DeliveryAddressResponse
+  data: AdminDeliveryAddressResponse
   status: 200
 }
     
@@ -11781,7 +12636,7 @@ export const getApiAdminUsersUseridDeliveryAddressesAddressid = async (userId: n
  * @summary 사용자 배송지 주소록 수정(관리자)
  */
 export type putApiAdminUsersUseridDeliveryAddressesAddressidResponse200 = {
-  data: DeliveryAddressResponse
+  data: AdminDeliveryAddressResponse
   status: 200
 }
     
@@ -11821,7 +12676,7 @@ export const putApiAdminUsersUseridDeliveryAddressesAddressid = async (userId: n
  * @summary 사용자 기본 배송지 설정(관리자)
  */
 export type patchApiAdminUsersUseridDeliveryAddressesAddressidDefaultResponse200 = {
-  data: DeliveryAddressResponse
+  data: AdminDeliveryAddressResponse
   status: 200
 }
     
@@ -12444,7 +13299,7 @@ export const postApiAuthSignup = async (postApiAuthSignupBody: PostApiAuthSignup
  * @summary 배너 목록 조회
  */
 export type getApiBannersResponse200 = {
-  data: PageBannerResponse
+  data: PageUserBannerResponse
   status: 200
 }
     
@@ -12496,7 +13351,7 @@ export const getApiBanners = async (params?: GetApiBannersParams, options?: Requ
  * @summary 배너 상세 조회
  */
 export type getApiBannersIdResponse200 = {
-  data: BannerResponse
+  data: UserBannerResponse
   status: 200
 }
     
@@ -12533,7 +13388,7 @@ export const getApiBannersId = async (id: number, options?: RequestInit): Promis
  * @summary 게시판 목록 조회
  */
 export type getApiBoardsResponse200 = {
-  data: PageBoardResponse
+  data: PageUserBoardResponse
   status: 200
 }
     
@@ -12585,7 +13440,7 @@ export const getApiBoards = async (params?: GetApiBoardsParams, options?: Reques
  * @summary 게시판별 공지 조회
  */
 export type getApiBoardsAnnouncementsBoardBoardidResponse200 = {
-  data: PageAnnouncementResponse
+  data: PageUserAnnouncementResponse
   status: 200
 }
     
@@ -12639,7 +13494,7 @@ export const getApiBoardsAnnouncementsBoardBoardid = async (boardId: number,
  * @summary 전체 공지 조회
  */
 export type getApiBoardsAnnouncementsGlobalResponse200 = {
-  data: PageAnnouncementResponse
+  data: PageUserAnnouncementResponse
   status: 200
 }
     
@@ -12691,7 +13546,7 @@ export const getApiBoardsAnnouncementsGlobal = async (params?: GetApiBoardsAnnou
  * @summary 게시판 공지 조회
  */
 export type getApiBoardsBoardidAnnouncementsResponse200 = {
-  data: PageAnnouncementResponse
+  data: PageUserAnnouncementResponse
   status: 200
 }
     
@@ -13007,7 +13862,7 @@ export const getApiBottlesParameters = async ( options?: RequestInit): Promise<g
  * @summary 내 예약 신청 목록
  */
 export type getApiBottlesReservationsApplicationsMeResponse200 = {
-  data: PageBottleReservationApplicationPublicResponse
+  data: PageUserBottleReservationApplicationPublicResponse
   status: 200
 }
     
@@ -13096,7 +13951,7 @@ export const deleteApiBottlesReservationsApplicationsApplicationid = async (appl
  * @summary 예약 신청 수정
  */
 export type putApiBottlesReservationsApplicationsApplicationidResponse200 = {
-  data: BottleReservationApplicationPublicResponse
+  data: UserBottleReservationApplicationPublicResponse
   status: 200
 }
     
@@ -13135,7 +13990,7 @@ export const putApiBottlesReservationsApplicationsApplicationid = async (applica
  * @summary 예약 공고 목록
  */
 export type getApiBottlesReservationsNoticesResponse200 = {
-  data: PageBottleReservationNoticePublicResponse
+  data: PageUserBottleReservationNoticePublicResponse
   status: 200
 }
     
@@ -13187,7 +14042,7 @@ export const getApiBottlesReservationsNotices = async (params?: GetApiBottlesRes
  * @summary 최근 생성된 종료되지 않은 예약 공고
  */
 export type getApiBottlesReservationsNoticesLatestActiveResponse200 = {
-  data: BottleReservationNoticePublicResponse
+  data: UserBottleReservationNoticePublicResponse
   status: 200
 }
     
@@ -13224,7 +14079,7 @@ export const getApiBottlesReservationsNoticesLatestActive = async ( options?: Re
  * @summary 최근 종료된 예약 공고 10건
  */
 export type getApiBottlesReservationsNoticesRecentEndedResponse200 = {
-  data: BottleReservationNoticePublicResponse[]
+  data: UserBottleReservationNoticePublicResponse[]
   status: 200
 }
     
@@ -13261,7 +14116,7 @@ export const getApiBottlesReservationsNoticesRecentEnded = async ( options?: Req
  * @summary 예약 공고 상세
  */
 export type getApiBottlesReservationsNoticesNoticeidResponse200 = {
-  data: BottleReservationNoticePublicResponse
+  data: UserBottleReservationNoticePublicResponse
   status: 200
 }
     
@@ -13298,7 +14153,7 @@ export const getApiBottlesReservationsNoticesNoticeid = async (noticeId: number,
  * @summary 예약 신청
  */
 export type postApiBottlesReservationsNoticesNoticeidApplicationsResponse200 = {
-  data: BottleReservationApplicationPublicResponse
+  data: UserBottleReservationApplicationPublicResponse
   status: 200
 }
     
@@ -14004,7 +14859,7 @@ export const getApiItems = async (params?: GetApiItemsParams, options?: RequestI
  * @summary 내 예약 신청 목록
  */
 export type getApiItemsReservationsApplicationsMeResponse200 = {
-  data: PageItemReservationApplicationPublicResponse
+  data: PageUserItemReservationApplicationPublicResponse
   status: 200
 }
     
@@ -14093,7 +14948,7 @@ export const deleteApiItemsReservationsApplicationsApplicationid = async (applic
  * @summary 예약 신청 수정
  */
 export type putApiItemsReservationsApplicationsApplicationidResponse200 = {
-  data: ItemReservationApplicationPublicResponse
+  data: UserItemReservationApplicationPublicResponse
   status: 200
 }
     
@@ -14132,7 +14987,7 @@ export const putApiItemsReservationsApplicationsApplicationid = async (applicati
  * @summary 예약 공고 목록
  */
 export type getApiItemsReservationsNoticesResponse200 = {
-  data: PageItemReservationNoticePublicResponse
+  data: PageUserItemReservationNoticePublicResponse
   status: 200
 }
     
@@ -14184,7 +15039,7 @@ export const getApiItemsReservationsNotices = async (params?: GetApiItemsReserva
  * @summary 최근 생성된 종료되지 않은 예약 공고
  */
 export type getApiItemsReservationsNoticesLatestActiveResponse200 = {
-  data: ItemReservationNoticePublicResponse
+  data: UserItemReservationNoticePublicResponse
   status: 200
 }
     
@@ -14221,7 +15076,7 @@ export const getApiItemsReservationsNoticesLatestActive = async ( options?: Requ
  * @summary 최근 종료된 예약 공고 10건
  */
 export type getApiItemsReservationsNoticesRecentEndedResponse200 = {
-  data: ItemReservationNoticePublicResponse[]
+  data: UserItemReservationNoticePublicResponse[]
   status: 200
 }
     
@@ -14258,7 +15113,7 @@ export const getApiItemsReservationsNoticesRecentEnded = async ( options?: Reque
  * @summary 예약 공고 상세
  */
 export type getApiItemsReservationsNoticesNoticeidResponse200 = {
-  data: ItemReservationNoticePublicResponse
+  data: UserItemReservationNoticePublicResponse
   status: 200
 }
     
@@ -14295,7 +15150,7 @@ export const getApiItemsReservationsNoticesNoticeid = async (noticeId: number, o
  * @summary 예약 신청
  */
 export type postApiItemsReservationsNoticesNoticeidApplicationsResponse200 = {
-  data: ItemReservationApplicationPublicResponse
+  data: UserItemReservationApplicationPublicResponse
   status: 200
 }
     
@@ -14402,7 +15257,7 @@ export const getApiKvStore = async (key: string, options?: RequestInit): Promise
  * @summary 주문 목록 조회
  */
 export type getApiOrdersResponse200 = {
-  data: PageOrderResponse
+  data: PageUserOrderResponse
   status: 200
 }
     
@@ -14453,7 +15308,7 @@ export const getApiOrders = async (params?: GetApiOrdersParams, options?: Reques
  * @summary 주문 생성
  */
 export type postApiOrdersResponse200 = {
-  data: OrderResponse
+  data: UserOrderResponse
   status: 200
 }
     
@@ -14490,7 +15345,7 @@ export const postApiOrders = async (postApiOrdersBody: PostApiOrdersBody, option
  * @summary 장바구니 일반 아이템 배송 주문 토스 결제 승인 확정
  */
 export type postApiOrdersGeneralItemsDeliveryCartTossConfirmResponse200 = {
-  data: GeneralItemDeliveryOrderResponse
+  data: UserGeneralItemDeliveryOrderResponse
   status: 200
 }
     
@@ -14564,7 +15419,7 @@ export const postApiOrdersGeneralItemsDeliveryCartTossTickets = async (postApiOr
  * @summary 일반 아이템 배송 주문 토스 결제 승인 확정
  */
 export type postApiOrdersGeneralItemsDeliveryTossConfirmResponse200 = {
-  data: GeneralItemDeliveryOrderResponse
+  data: UserGeneralItemDeliveryOrderResponse
   status: 200
 }
     
@@ -14638,7 +15493,7 @@ export const postApiOrdersGeneralItemsDeliveryTossTickets = async (postApiOrders
  * @summary 비회원 주문 상세 조회
  */
 export type getApiOrdersGuestResponse200 = {
-  data: OrderResponse
+  data: UserOrderResponse
   status: 200
 }
     
@@ -14689,7 +15544,7 @@ export const getApiOrdersGuest = async (params: GetApiOrdersGuestParams, options
  * @summary 비회원 주문 취소 요청
  */
 export type patchApiOrdersGuestOrdernumberCancelResponse200 = {
-  data: OrderResponse
+  data: UserOrderResponse
   status: 200
 }
     
@@ -14727,7 +15582,7 @@ export const patchApiOrdersGuestOrdernumberCancel = async (orderNumber: string,
  * @summary 비회원 주문 배송 정보 조회
  */
 export type getApiOrdersGuestOrdernumberDeliveryResponse200 = {
-  data: OrderDeliveryResponse
+  data: UserOrderDeliveryResponse
   status: 200
 }
     
@@ -14780,7 +15635,7 @@ export const getApiOrdersGuestOrdernumberDelivery = async (orderNumber: string,
  * @summary 토스페이먼츠 결제 승인 확정
  */
 export type postApiOrdersPaymentsConfirmResponse200 = {
-  data: OrderPaymentConfirmResponse
+  data: UserOrderPaymentConfirmResponse
   status: 200
 }
     
@@ -14817,7 +15672,7 @@ export const postApiOrdersPaymentsConfirm = async (postApiOrdersPaymentsConfirmB
  * @summary 주문 대기열 진입
  */
 export type postApiOrdersQueueJoinResponse200 = {
-  data: OrderQueueStatusResponse
+  data: UserOrderQueueStatusResponse
   status: 200
 }
     
@@ -14854,7 +15709,7 @@ export const postApiOrdersQueueJoin = async (postApiOrdersQueueJoinBody: PostApi
  * @summary 주문 대기열 상태 조회
  */
 export type getApiOrdersQueueStatusResponse200 = {
-  data: OrderQueueStatusResponse
+  data: UserOrderQueueStatusResponse
   status: 200
 }
     
@@ -14905,7 +15760,7 @@ export const getApiOrdersQueueStatus = async (params: GetApiOrdersQueueStatusPar
  * @summary 주문 티켓 발급
  */
 export type postApiOrdersTicketsResponse200 = {
-  data: OrderTicketResponse
+  data: UserOrderTicketResponse
   status: 200
 }
     
@@ -14942,7 +15797,7 @@ export const postApiOrdersTickets = async (postApiOrdersTicketsBody: PostApiOrde
  * @summary 주문 상세 조회
  */
 export type getApiOrdersOrderidResponse200 = {
-  data: OrderResponse
+  data: UserOrderResponse
   status: 200
 }
     
@@ -14978,7 +15833,7 @@ export const getApiOrdersOrderid = async (orderId: number, options?: RequestInit
  * @summary 주문 취소 요청
  */
 export type patchApiOrdersOrderidCancelResponse200 = {
-  data: OrderResponse
+  data: UserOrderResponse
   status: 200
 }
     
@@ -15016,7 +15871,7 @@ export const patchApiOrdersOrderidCancel = async (orderId: number,
  * @summary 내 주문 배송 정보 조회
  */
 export type getApiOrdersOrderidDeliveryResponse200 = {
-  data: OrderDeliveryResponse
+  data: UserOrderDeliveryResponse
   status: 200
 }
     
@@ -15371,7 +16226,7 @@ formData.append(`file`, postApiS3UploadBody.file);
  * @summary 판매 공고 목록 조회
  */
 export type getApiSalesResponse200 = {
-  data: PageSaleAnnouncementResponse
+  data: PageUserSaleAnnouncementResponse
   status: 200
 }
     
@@ -15422,7 +16277,7 @@ export const getApiSales = async (params?: GetApiSalesParams, options?: RequestI
  * @summary 판매 공고 단건 조회
  */
 export type getApiSalesSaleidResponse200 = {
-  data: SaleAnnouncementResponse
+  data: UserSaleAnnouncementResponse
   status: 200
 }
     
@@ -16010,7 +16865,7 @@ export const postApiUsersBusinessesApplicationsApplicationidCancel = async (appl
  * @summary 픽업 사업장 예약 목록 조회
  */
 export type getApiUsersBusinessesItemsReservationsApplicationsResponse200 = {
-  data: PageItemReservationPickupApplicationResponse
+  data: PageUserItemReservationPickupApplicationResponse
   status: 200
 }
     
@@ -16062,7 +16917,7 @@ export const getApiUsersBusinessesItemsReservationsApplications = async (params?
  * @summary 픽업 사업장 수령 대기 일괄 처리
  */
 export type postApiUsersBusinessesItemsReservationsApplicationsWaitingPickupResponse200 = {
-  data: ItemReservationPickupBulkUpdateResponse
+  data: UserItemReservationPickupBulkUpdateResponse
   status: 200
 }
     
@@ -16100,7 +16955,7 @@ export const postApiUsersBusinessesItemsReservationsApplicationsWaitingPickup = 
  * @summary 픽업 사업장 예약 상세 조회
  */
 export type getApiUsersBusinessesItemsReservationsApplicationsApplicationidResponse200 = {
-  data: ItemReservationPickupApplicationResponse
+  data: UserItemReservationPickupApplicationResponse
   status: 200
 }
     
@@ -16137,7 +16992,7 @@ export const getApiUsersBusinessesItemsReservationsApplicationsApplicationid = a
  * @summary 픽업 사업장 결제 완료 처리
  */
 export type postApiUsersBusinessesItemsReservationsApplicationsApplicationidPaymentCompleteResponse200 = {
-  data: ItemReservationPickupApplicationResponse
+  data: UserItemReservationPickupApplicationResponse
   status: 200
 }
     
@@ -16174,7 +17029,7 @@ export const postApiUsersBusinessesItemsReservationsApplicationsApplicationidPay
  * @summary 픽업 사업장 수령 완료 처리
  */
 export type postApiUsersBusinessesItemsReservationsApplicationsApplicationidReceiveCompleteResponse200 = {
-  data: ItemReservationPickupApplicationResponse
+  data: UserItemReservationPickupApplicationResponse
   status: 200
 }
     
@@ -16211,7 +17066,7 @@ export const postApiUsersBusinessesItemsReservationsApplicationsApplicationidRec
  * @summary 픽업 사업장 수령 대기 처리
  */
 export type postApiUsersBusinessesItemsReservationsApplicationsApplicationidWaitingPickupResponse200 = {
-  data: ItemReservationPickupApplicationResponse
+  data: UserItemReservationPickupApplicationResponse
   status: 200
 }
     
@@ -16300,7 +17155,7 @@ export const getApiUsersBusinessesPickupLocations = async (params?: GetApiUsersB
  * @summary 픽업 사업장 예약 목록 조회
  */
 export type getApiUsersBusinessesPickupReservationsApplicationsResponse200 = {
-  data: PageBottleReservationPickupApplicationResponse
+  data: PageUserBottleReservationPickupApplicationResponse
   status: 200
 }
     
@@ -16352,7 +17207,7 @@ export const getApiUsersBusinessesPickupReservationsApplications = async (params
  * @summary 픽업 사업장 수령 대기 일괄 처리
  */
 export type postApiUsersBusinessesPickupReservationsApplicationsWaitingPickupResponse200 = {
-  data: BottleReservationPickupBulkUpdateResponse
+  data: UserBottleReservationPickupBulkUpdateResponse
   status: 200
 }
     
@@ -16390,7 +17245,7 @@ export const postApiUsersBusinessesPickupReservationsApplicationsWaitingPickup =
  * @summary 픽업 사업장 예약 상세 조회
  */
 export type getApiUsersBusinessesPickupReservationsApplicationsApplicationidResponse200 = {
-  data: BottleReservationPickupApplicationResponse
+  data: UserBottleReservationPickupApplicationResponse
   status: 200
 }
     
@@ -16427,7 +17282,7 @@ export const getApiUsersBusinessesPickupReservationsApplicationsApplicationid = 
  * @summary 픽업 사업장 결제 완료 처리
  */
 export type postApiUsersBusinessesPickupReservationsApplicationsApplicationidPaymentCompleteResponse200 = {
-  data: BottleReservationPickupApplicationResponse
+  data: UserBottleReservationPickupApplicationResponse
   status: 200
 }
     
@@ -16464,7 +17319,7 @@ export const postApiUsersBusinessesPickupReservationsApplicationsApplicationidPa
  * @summary 픽업 사업장 수령 완료 처리
  */
 export type postApiUsersBusinessesPickupReservationsApplicationsApplicationidReceiveCompleteResponse200 = {
-  data: BottleReservationPickupApplicationResponse
+  data: UserBottleReservationPickupApplicationResponse
   status: 200
 }
     
@@ -16501,7 +17356,7 @@ export const postApiUsersBusinessesPickupReservationsApplicationsApplicationidRe
  * @summary 픽업 사업장 수령 대기 처리
  */
 export type postApiUsersBusinessesPickupReservationsApplicationsApplicationidWaitingPickupResponse200 = {
-  data: BottleReservationPickupApplicationResponse
+  data: UserBottleReservationPickupApplicationResponse
   status: 200
 }
     
@@ -16538,7 +17393,7 @@ export const postApiUsersBusinessesPickupReservationsApplicationsApplicationidWa
  * @summary 픽업 업장 예약 공고별 신청 현황 목록 조회
  */
 export type getApiUsersBusinessesPickupReservationsNoticesStatusesResponse200 = {
-  data: PageBottleReservationPickupNoticeReservationStatusResponse
+  data: PageUserBottleReservationPickupNoticeReservationStatusResponse
   status: 200
 }
     
@@ -16590,7 +17445,7 @@ export const getApiUsersBusinessesPickupReservationsNoticesStatuses = async (par
  * @summary 내 업장 예약 입고 배송 정보 목록 조회
  */
 export type getApiUsersBusinessesReservationDeliveriesResponse200 = {
-  data: ReservationBusinessDeliveryResponse[]
+  data: UserReservationBusinessDeliveryResponse[]
   status: 200
 }
     
@@ -16678,7 +17533,7 @@ export const getApiUsersMe = async ( options?: RequestInit): Promise<getApiUsers
  * @summary 내 배송지 주소록 목록 조회
  */
 export type getApiUsersMeDeliveryAddressesResponse200 = {
-  data: DeliveryAddressResponse[]
+  data: UserDeliveryAddressResponse[]
   status: 200
 }
     
@@ -16714,7 +17569,7 @@ export const getApiUsersMeDeliveryAddresses = async ( options?: RequestInit): Pr
  * @summary 내 배송지 주소록 등록
  */
 export type postApiUsersMeDeliveryAddressesResponse200 = {
-  data: DeliveryAddressResponse
+  data: UserDeliveryAddressResponse
   status: 200
 }
     
@@ -16823,7 +17678,7 @@ export const deleteApiUsersMeDeliveryAddressesAddressid = async (addressId: numb
  * @summary 내 배송지 주소록 상세 조회
  */
 export type getApiUsersMeDeliveryAddressesAddressidResponse200 = {
-  data: DeliveryAddressResponse
+  data: UserDeliveryAddressResponse
   status: 200
 }
     
@@ -16859,7 +17714,7 @@ export const getApiUsersMeDeliveryAddressesAddressid = async (addressId: number,
  * @summary 내 배송지 주소록 수정
  */
 export type putApiUsersMeDeliveryAddressesAddressidResponse200 = {
-  data: DeliveryAddressResponse
+  data: UserDeliveryAddressResponse
   status: 200
 }
     
@@ -16897,7 +17752,7 @@ export const putApiUsersMeDeliveryAddressesAddressid = async (addressId: number,
  * @summary 기본 배송지 설정
  */
 export type patchApiUsersMeDeliveryAddressesAddressidDefaultResponse200 = {
-  data: DeliveryAddressResponse
+  data: UserDeliveryAddressResponse
   status: 200
 }
     
@@ -17154,3 +18009,23 @@ export const deleteApiUsersMeSocialLinksProvider = async (provider: string, opti
 );}
 
 export const updateKvStore = update1;
+
+
+export type BannerResponse = UserBannerResponse;
+export type BottleReservationApplicationPublicResponse = UserBottleReservationApplicationPublicResponse;
+export type BottleReservationApplicationResponse = AdminBottleReservationApplicationResponse;
+export type BottleReservationNoticePublicResponse = UserBottleReservationNoticePublicResponse;
+export type BottleReservationNoticeResponse = AdminBottleReservationNoticeResponse;
+export type BottleReservationPickupApplicationResponse = UserBottleReservationPickupApplicationResponse;
+export type BottleReservationPickupNoticeReservationStatusResponse = UserBottleReservationPickupNoticeReservationStatusResponse;
+export type DeliveryAddressResponse = UserDeliveryAddressResponse;
+export type GeneralItemDeliveryOrderResponse = UserGeneralItemDeliveryOrderResponse;
+export type OrderDeliveryResponse = UserOrderDeliveryResponse;
+export type OrderResponse = AdminOrderResponse | UserOrderResponse;
+export type OrderResponseOrderStatus = UserOrderResponseOrderStatus;
+export const OrderResponseOrderStatus = UserOrderResponseOrderStatus;
+export type OrderTicketResponse = UserOrderTicketResponse;
+export type PageOrderResponse = PageUserOrderResponse;
+export type PageSaleAnnouncementResponse = PageUserSaleAnnouncementResponse;
+export type ReservationBusinessDeliveryResponse = AdminReservationBusinessDeliveryResponse | UserReservationBusinessDeliveryResponse;
+export type SaleAnnouncementResponse = UserSaleAnnouncementResponse;

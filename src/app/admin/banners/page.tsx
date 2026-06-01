@@ -1,4 +1,4 @@
-import { getApiBanners } from "@/apis/generated/api";
+import { getApiAdminBanners } from "@/apis/generated/api";
 import { withToken } from "@/apis/mutator";
 import { getAuthToken } from "@/lib/auth";
 import BannersContent from "./_components/BannersContent";
@@ -17,7 +17,7 @@ export default async function BannersPage({ searchParams }: BannersPageProps) {
   const page = params.page ? Number(params.page) - 1 : 0;
   const size = params.limit ? Number(params.limit) : 12;
 
-  const res = await getApiBanners({ page, size }, withToken(token));
+  const res = await getApiAdminBanners({ page, size }, withToken(token));
 
   return (
     <BannersContent
